@@ -5,9 +5,21 @@
   "description": "The single source of truth for the Mosaic Server-Driven-UI contract. Language bindings (Go, TypeScript, Dart) are GENERATED from this file — do not hand-edit them. The root object exists only so a generator reaches every top-level type; the useful types are in $defs.",
   "type": "object",
   "properties": {
-    "node": { "$ref": "#/$defs/UINode" },
-    "action": { "$ref": "#/$defs/Action" },
-    "definition": { "$ref": "#/$defs/ComponentDefinition" }
+    "node": {
+      "$ref": "#/$defs/UINode"
+    },
+    "action": {
+      "$ref": "#/$defs/Action"
+    },
+    "definition": {
+      "$ref": "#/$defs/ComponentDefinition"
+    },
+    "boxStyle": {
+      "$ref": "#/$defs/BoxStyle"
+    },
+    "textStyle": {
+      "$ref": "#/$defs/TextStyle"
+    }
   },
   "additionalProperties": false,
   "$defs": {
@@ -15,41 +27,125 @@
       "title": "UINode",
       "description": "One element of a server-driven UI tree. The `type` is an open vocabulary: a client that does not recognise a type renders a placeholder rather than failing.",
       "type": "object",
-      "required": ["type"],
+      "required": [
+        "type"
+      ],
       "properties": {
-        "type": { "type": "string", "description": "Component discriminator, e.g. \"PosterCard\"." },
-        "id": { "type": "string" },
-        "props": { "type": "object", "additionalProperties": true, "description": "Component-specific data. Open by design." },
-        "children": { "type": "array", "items": { "$ref": "#/$defs/UINode" } },
-        "slots": { "type": "object", "additionalProperties": { "type": "array", "items": { "$ref": "#/$defs/UINode" } } }
+        "type": {
+          "type": "string",
+          "description": "Component discriminator, e.g. \"PosterCard\"."
+        },
+        "id": {
+          "type": "string"
+        },
+        "props": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Component-specific data. Open by design."
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/UINode"
+          }
+        },
+        "slots": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/UINode"
+            }
+          }
+        }
       },
       "additionalProperties": false
     },
-    "Tone": { "title": "Tone", "enum": ["neutral", "accent", "success", "warning", "danger", "info"] },
-    "Surface": { "title": "Surface", "enum": ["modal", "sheet", "drawer"] },
+    "Tone": {
+      "title": "Tone",
+      "enum": [
+        "neutral",
+        "accent",
+        "success",
+        "warning",
+        "danger",
+        "info"
+      ]
+    },
+    "Surface": {
+      "title": "Surface",
+      "enum": [
+        "modal",
+        "sheet",
+        "drawer"
+      ]
+    },
     "ActionKind": {
       "title": "ActionKind",
-      "enum": ["navigate", "back", "openUrl", "invoke", "openOverlay", "closeOverlay", "playPart", "toast", "sequence"]
+      "enum": [
+        "navigate",
+        "back",
+        "openUrl",
+        "invoke",
+        "openOverlay",
+        "closeOverlay",
+        "playPart",
+        "toast",
+        "sequence"
+      ]
     },
     "Action": {
       "title": "Action",
       "description": "A declarative behaviour envelope. Data, never code — the client interprets the kind. Each kind uses a subset of the fields.",
       "type": "object",
-      "required": ["kind"],
+      "required": [
+        "kind"
+      ],
       "properties": {
-        "kind": { "$ref": "#/$defs/ActionKind" },
-        "screen": { "type": "string" },
-        "params": { "type": "object", "additionalProperties": true },
-        "url": { "type": "string" },
-        "mutation": { "type": "string" },
-        "input": { "type": "object", "additionalProperties": true },
-        "surface": { "$ref": "#/$defs/Surface" },
-        "node": { "$ref": "#/$defs/UINode" },
-        "partId": { "type": "string" },
-        "nodeId": { "type": "string" },
-        "message": { "type": "string" },
-        "tone": { "$ref": "#/$defs/Tone" },
-        "actions": { "type": "array", "items": { "$ref": "#/$defs/Action" } }
+        "kind": {
+          "$ref": "#/$defs/ActionKind"
+        },
+        "screen": {
+          "type": "string"
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "url": {
+          "type": "string"
+        },
+        "mutation": {
+          "type": "string"
+        },
+        "input": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "surface": {
+          "$ref": "#/$defs/Surface"
+        },
+        "node": {
+          "$ref": "#/$defs/UINode"
+        },
+        "partId": {
+          "type": "string"
+        },
+        "nodeId": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "tone": {
+          "$ref": "#/$defs/Tone"
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Action"
+          }
+        }
       },
       "additionalProperties": false
     },
@@ -57,13 +153,439 @@
       "title": "ComponentDefinition",
       "description": "A component expressed as data: a name, default params, and a template of primitives. Clients register definitions and expand them; this is how a module contributes a component without shipping client code. A template node's props may hold binding objects ({\"$bind\":\"path\"} / {\"$match\":{…}}) and control keys ($if / $ifNot / $each / $as); a node of type \"Outlet\" renders the caller's children or a named slot.",
       "type": "object",
-      "required": ["name", "template"],
+      "required": [
+        "name",
+        "template"
+      ],
       "properties": {
-        "name": { "type": "string", "description": "The node type this definition provides." },
-        "params": { "type": "object", "additionalProperties": true, "description": "Default param values, overridden by the caller's props." },
-        "template": { "$ref": "#/$defs/UINode" }
+        "name": {
+          "type": "string",
+          "description": "The node type this definition provides."
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Default param values, overridden by the caller's props."
+        },
+        "template": {
+          "$ref": "#/$defs/UINode"
+        }
       },
       "additionalProperties": false
+    },
+    "ColorToken": {
+      "title": "ColorToken",
+      "description": "A colour by ROLE, never a literal. The value behind it comes from the token set the Platform serves, so a re-skin changes no payload and no client.",
+      "enum": [
+        "bg",
+        "surface",
+        "surface-raised",
+        "surface-overlay",
+        "text",
+        "text-muted",
+        "text-faint",
+        "text-on-accent",
+        "accent",
+        "accent-hover",
+        "accent-quiet",
+        "success",
+        "warning",
+        "danger",
+        "info",
+        "success-quiet",
+        "warning-quiet",
+        "danger-quiet",
+        "info-quiet",
+        "rating",
+        "border",
+        "border-strong"
+      ]
+    },
+    "SpaceToken": {
+      "title": "SpaceToken",
+      "description": "A step on the spacing scale (0–9), or \"gutter\" — the fluid page margin that clamps with the viewport, so page padding is responsive without a breakpoint.",
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9
+        },
+        {
+          "const": "gutter"
+        }
+      ]
+    },
+    "RadiusToken": {
+      "title": "RadiusToken",
+      "description": "A corner radius from the scale.",
+      "enum": [
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "pill"
+      ]
+    },
+    "ShadowToken": {
+      "title": "ShadowToken",
+      "description": "An elevation step.",
+      "enum": [
+        "1",
+        "2",
+        "3"
+      ]
+    },
+    "TextVariant": {
+      "title": "TextVariant",
+      "description": "A step on the type scale.",
+      "enum": [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "2xl",
+        "3xl",
+        "4xl"
+      ]
+    },
+    "FontWeight": {
+      "title": "FontWeight",
+      "description": "A weight on the type scale.",
+      "enum": [
+        "regular",
+        "medium",
+        "bold"
+      ]
+    },
+    "Dimension": {
+      "title": "Dimension",
+      "description": "A size: a number of pixels, \"full\" (100% of the parent), \"screen\" (the viewport in that axis — the one non-parent-relative size, for full-bleed surfaces and the app frame), \"auto\", or a percentage string.",
+      "oneOf": [
+        {
+          "type": "number"
+        },
+        {
+          "enum": [
+            "full",
+            "screen",
+            "auto"
+          ]
+        },
+        {
+          "type": "string",
+          "pattern": "^[0-9]+(\\\\.[0-9]+)?%$"
+        }
+      ]
+    },
+    "BoxStyle": {
+      "title": "BoxStyle",
+      "description": "Layout and surface styling for a Box, in TOKENS ONLY — no literal colours, no raw pixels except explicit dimensions. This is the technology-agnostic seam: it is the intersection of what a flexbox client and a Flutter client can render identically, so a definition written once renders the same everywhere. A client implements this vocabulary natively; growing it is the only change that requires a client release (ADR 0024).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "layout": {
+          "enum": [
+            "flex",
+            "grid"
+          ],
+          "description": "Layout mode. \"grid\" enables the grid-* fields."
+        },
+        "direction": {
+          "enum": [
+            "row",
+            "column"
+          ]
+        },
+        "gap": {
+          "$ref": "#/$defs/SpaceToken"
+        },
+        "align": {
+          "enum": [
+            "start",
+            "center",
+            "end",
+            "stretch",
+            "baseline"
+          ],
+          "description": "Cross-axis alignment."
+        },
+        "justify": {
+          "enum": [
+            "start",
+            "center",
+            "end",
+            "between",
+            "around"
+          ],
+          "description": "Main-axis distribution."
+        },
+        "wrap": {
+          "type": "boolean"
+        },
+        "gridMin": {
+          "type": "number",
+          "description": "grid: responsive auto-fill columns of at least this width in px."
+        },
+        "gridFlow": {
+          "enum": [
+            "row",
+            "column"
+          ],
+          "description": "grid: flow direction; \"column\" makes a horizontal rail."
+        },
+        "gridAutoColumns": {
+          "type": "number",
+          "description": "grid: fixed track size for a rail, in px."
+        },
+        "overflowX": {
+          "enum": [
+            "auto",
+            "hidden",
+            "visible"
+          ]
+        },
+        "overflowY": {
+          "enum": [
+            "auto",
+            "hidden",
+            "visible"
+          ]
+        },
+        "overflow": {
+          "enum": [
+            "hidden",
+            "auto",
+            "visible"
+          ]
+        },
+        "snap": {
+          "enum": [
+            "x",
+            "y"
+          ],
+          "description": "Scroll snapping axis, for carousels."
+        },
+        "snapAlign": {
+          "enum": [
+            "start",
+            "center"
+          ]
+        },
+        "p": {
+          "$ref": "#/$defs/SpaceToken"
+        },
+        "px": {
+          "$ref": "#/$defs/SpaceToken"
+        },
+        "py": {
+          "$ref": "#/$defs/SpaceToken"
+        },
+        "pt": {
+          "$ref": "#/$defs/SpaceToken"
+        },
+        "pr": {
+          "$ref": "#/$defs/SpaceToken"
+        },
+        "pb": {
+          "$ref": "#/$defs/SpaceToken"
+        },
+        "pl": {
+          "$ref": "#/$defs/SpaceToken"
+        },
+        "bg": {
+          "$ref": "#/$defs/ColorToken"
+        },
+        "bgGradient": {
+          "type": "object",
+          "description": "A linear gradient between two token colours (or \"transparent\"), at an angle in degrees.",
+          "properties": {
+            "from": {
+              "$ref": "#/$defs/GradientStop"
+            },
+            "to": {
+              "$ref": "#/$defs/GradientStop"
+            },
+            "angle": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "from",
+            "to"
+          ],
+          "additionalProperties": false
+        },
+        "glass": {
+          "type": "boolean",
+          "description": "Render this surface in the acrylic material: translucent, blurred, and lit by the current light source (the focused artwork, or the brand light when there is none). A client without the material renders a plain translucent surface."
+        },
+        "color": {
+          "$ref": "#/$defs/ColorToken"
+        },
+        "radius": {
+          "$ref": "#/$defs/RadiusToken"
+        },
+        "border": {
+          "type": "boolean"
+        },
+        "borderColor": {
+          "$ref": "#/$defs/ColorToken"
+        },
+        "width": {
+          "$ref": "#/$defs/Dimension"
+        },
+        "height": {
+          "$ref": "#/$defs/Dimension"
+        },
+        "minWidth": {
+          "$ref": "#/$defs/Dimension"
+        },
+        "maxWidth": {
+          "$ref": "#/$defs/Dimension"
+        },
+        "minHeight": {
+          "$ref": "#/$defs/Dimension"
+        },
+        "aspectRatio": {
+          "type": "string",
+          "description": "An aspect ratio as \"w / h\"."
+        },
+        "flex": {
+          "type": "number"
+        },
+        "grow": {
+          "type": "boolean"
+        },
+        "position": {
+          "enum": [
+            "relative",
+            "absolute",
+            "sticky",
+            "fixed"
+          ]
+        },
+        "top": {
+          "$ref": "#/$defs/SpaceToken"
+        },
+        "right": {
+          "$ref": "#/$defs/SpaceToken"
+        },
+        "bottom": {
+          "$ref": "#/$defs/SpaceToken"
+        },
+        "left": {
+          "$ref": "#/$defs/SpaceToken"
+        },
+        "z": {
+          "enum": [
+            "raised",
+            "overlay",
+            "toast"
+          ],
+          "description": "Portable stack order for chrome that overlays content — not an arbitrary index."
+        },
+        "shadow": {
+          "$ref": "#/$defs/ShadowToken"
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "hidden": {
+          "type": "boolean",
+          "description": "Take the box out of the layout entirely. Its purpose is `responsive`: one payload carries both a desktop and a phone arrangement, and each viewport drops the half it does not use."
+        },
+        "responsive": {
+          "type": "object",
+          "description": "A style override applied below a viewport width — the vocabulary's one responsive capability, and what lets a layout adapt as DATA rather than through a client stylesheet. The override is a plain BoxStyle merged over the base: a field it does not mention keeps its base value, and null clears one (these travel as JSON, where an undefined member would vanish silently). One breakpoint, not a cascade.",
+          "properties": {
+            "below": {
+              "type": "number",
+              "description": "Viewport width in px, below which the override applies."
+            },
+            "style": {
+              "$ref": "#/$defs/BoxStyle"
+            }
+          },
+          "required": [
+            "below",
+            "style"
+          ],
+          "additionalProperties": false
+        },
+        "kind": {
+          "type": "string",
+          "description": "DEPRECATED in favour of `responsive`. A named hook a client may map to a rule of its own; it makes a layout depend on client CSS, which is what `responsive` exists to avoid."
+        }
+      }
+    },
+    "GradientStop": {
+      "title": "GradientStop",
+      "description": "A gradient endpoint: a colour token or \"transparent\".",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ColorToken"
+        },
+        {
+          "const": "transparent"
+        }
+      ]
+    },
+    "TextStyle": {
+      "title": "TextStyle",
+      "description": "Typography for a Text node, in tokens only.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "variant": {
+          "$ref": "#/$defs/TextVariant"
+        },
+        "weight": {
+          "$ref": "#/$defs/FontWeight"
+        },
+        "color": {
+          "$ref": "#/$defs/ColorToken"
+        },
+        "align": {
+          "enum": [
+            "start",
+            "center",
+            "end"
+          ]
+        },
+        "transform": {
+          "enum": [
+            "uppercase",
+            "capitalize",
+            "none"
+          ]
+        },
+        "tracking": {
+          "enum": [
+            "tight",
+            "normal",
+            "wide"
+          ],
+          "description": "Letter-spacing: tight for display headings, wide for an eyebrow."
+        },
+        "italic": {
+          "type": "boolean"
+        },
+        "mono": {
+          "type": "boolean"
+        },
+        "tabular": {
+          "type": "boolean",
+          "description": "Tabular figures, so numbers in a column line up."
+        },
+        "lineClamp": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Truncate after this many lines."
+        }
+      }
     }
   }
 }
