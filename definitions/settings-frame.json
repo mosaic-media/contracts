@@ -1,0 +1,203 @@
+{
+  "name": "SettingsFrame",
+  "params": {
+    "title": "Settings"
+  },
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "direction": "row",
+        "align": "start",
+        "gap": 8,
+        "px": "gutter",
+        "pt": 9,
+        "pb": 9,
+        "responsive": {
+          "below": 720,
+          "style": {
+            "direction": "column",
+            "align": "stretch",
+            "gap": 5,
+            "pt": 8
+          }
+        }
+      }
+    },
+    "children": [
+      {
+        "type": "Pressable",
+        "props": {
+          "$if": {
+            "$bind": "selected"
+          },
+          "action": {
+            "kind": "navigate",
+            "screen": "settings"
+          },
+          "label": {
+            "$bind": "title"
+          },
+          "style": {
+            "hidden": true,
+            "direction": "row",
+            "align": "center",
+            "gap": 2,
+            "py": 2,
+            "color": "text-muted",
+            "responsive": {
+              "below": 720,
+              "style": {
+                "hidden": false
+              }
+            }
+          }
+        },
+        "children": [
+          {
+            "type": "Icon",
+            "props": {
+              "name": "chevron-left",
+              "size": "1.1em"
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "text": {
+                "$bind": "title"
+              },
+              "style": {
+                "variant": "sm",
+                "weight": "medium"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "direction": "column",
+            "gap": 5,
+            "width": 248,
+            "minWidth": 248,
+            "position": "sticky",
+            "top": 9,
+            "responsive": {
+              "$match": {
+                "on": {
+                  "$bind": "selected"
+                },
+                "cases": {
+                  "true": {
+                    "below": 720,
+                    "style": {
+                      "hidden": true
+                    }
+                  }
+                },
+                "default": {
+                  "below": 720,
+                  "style": {
+                    "width": "full",
+                    "minWidth": 0,
+                    "position": "relative",
+                    "top": 0,
+                    "gap": 5
+                  }
+                }
+              }
+            }
+          }
+        },
+        "children": [
+          {
+            "type": "Text",
+            "props": {
+              "$if": {
+                "$bind": "title"
+              },
+              "text": {
+                "$bind": "title"
+              },
+              "style": {
+                "variant": "2xl",
+                "weight": "bold",
+                "tracking": "tight"
+              }
+            }
+          },
+          {
+            "type": "Outlet",
+            "props": {
+              "name": "nav"
+            }
+          },
+          {
+            "type": "Outlet",
+            "props": {
+              "name": "footer"
+            }
+          }
+        ]
+      },
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "direction": "column",
+            "gap": 6,
+            "grow": true,
+            "minWidth": 320,
+            "maxWidth": 720,
+            "responsive": {
+              "$match": {
+                "on": {
+                  "$bind": "selected"
+                },
+                "cases": {
+                  "true": {
+                    "below": 720,
+                    "style": {
+                      "minWidth": 0,
+                      "maxWidth": "full"
+                    }
+                  }
+                },
+                "default": {
+                  "below": 720,
+                  "style": {
+                    "hidden": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "children": [
+          {
+            "type": "Text",
+            "props": {
+              "$if": {
+                "$bind": "heading"
+              },
+              "text": {
+                "$bind": "heading"
+              },
+              "style": {
+                "variant": "2xl",
+                "weight": "bold",
+                "tracking": "tight"
+              }
+            }
+          },
+          {
+            "type": "Outlet"
+          }
+        ]
+      }
+    ]
+  }
+}

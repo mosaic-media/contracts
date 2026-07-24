@@ -1,0 +1,40 @@
+{
+  "name": "Toggle",
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "direction": "row",
+        "align": "center",
+        "gap": 3
+      }
+    },
+    "children": [
+      {
+        "type": "Switch",
+        "props": {
+          "value": {
+            "$bind": "on"
+          },
+          "action": {
+            "$bind": "action"
+          }
+        }
+      },
+      {
+        "type": "Text",
+        "props": {
+          "$if": {
+            "$bind": "label"
+          },
+          "text": {
+            "$bind": "label"
+          },
+          "style": {
+            "variant": "sm"
+          }
+        }
+      }
+    ]
+  }
+}

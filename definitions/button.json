@@ -1,0 +1,118 @@
+{
+  "name": "Button",
+  "params": {
+    "variant": "primary",
+    "label": "Button"
+  },
+  "template": {
+    "type": "Pressable",
+    "props": {
+      "action": {
+        "$bind": "action"
+      },
+      "disabled": {
+        "$bind": "disabled"
+      },
+      "style": {
+        "$match": {
+          "on": {
+            "$bind": "variant"
+          },
+          "cases": {
+            "primary": {
+              "direction": "row",
+              "align": "center",
+              "justify": "center",
+              "gap": 2,
+              "px": 4,
+              "py": 3,
+              "radius": "md",
+              "glass": true,
+              "bg": "accent-quiet",
+              "color": "text",
+              "border": true,
+              "borderColor": "accent"
+            },
+            "secondary": {
+              "direction": "row",
+              "align": "center",
+              "justify": "center",
+              "gap": 2,
+              "px": 4,
+              "py": 3,
+              "radius": "md",
+              "glass": true,
+              "bg": "surface-raised",
+              "color": "text",
+              "border": true,
+              "borderColor": "border-strong"
+            },
+            "ghost": {
+              "direction": "row",
+              "align": "center",
+              "justify": "center",
+              "gap": 2,
+              "px": 4,
+              "py": 3,
+              "radius": "md",
+              "color": "text-muted"
+            },
+            "danger": {
+              "direction": "row",
+              "align": "center",
+              "justify": "center",
+              "gap": 2,
+              "px": 4,
+              "py": 3,
+              "radius": "md",
+              "glass": true,
+              "bg": "danger-quiet",
+              "color": "danger",
+              "border": true,
+              "borderColor": "danger"
+            }
+          },
+          "default": {
+            "direction": "row",
+            "align": "center",
+            "justify": "center",
+            "gap": 2,
+            "px": 4,
+            "py": 3,
+            "radius": "md",
+            "glass": true,
+            "bg": "accent-quiet",
+            "color": "text",
+            "border": true,
+            "borderColor": "accent"
+          }
+        }
+      }
+    },
+    "children": [
+      {
+        "type": "Icon",
+        "props": {
+          "$if": {
+            "$bind": "icon"
+          },
+          "name": {
+            "$bind": "icon"
+          },
+          "size": "1em"
+        }
+      },
+      {
+        "type": "Text",
+        "props": {
+          "text": {
+            "$bind": "label"
+          },
+          "style": {
+            "weight": "medium"
+          }
+        }
+      }
+    ]
+  }
+}

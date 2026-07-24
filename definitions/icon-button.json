@@ -1,0 +1,63 @@
+{
+  "name": "IconButton",
+  "params": {
+    "icon": "dots",
+    "label": "Action",
+    "variant": "ghost"
+  },
+  "template": {
+    "type": "Pressable",
+    "props": {
+      "action": {
+        "$bind": "action"
+      },
+      "label": {
+        "$bind": "label"
+      },
+      "style": {
+        "$match": {
+          "on": {
+            "$bind": "variant"
+          },
+          "cases": {
+            "solid": {
+              "width": 38,
+              "height": 38,
+              "radius": "md",
+              "align": "center",
+              "justify": "center",
+              "bg": "accent",
+              "color": "text-on-accent"
+            },
+            "ghost": {
+              "width": 38,
+              "height": 38,
+              "radius": "md",
+              "align": "center",
+              "justify": "center",
+              "color": "text-muted"
+            }
+          },
+          "default": {
+            "width": 38,
+            "height": 38,
+            "radius": "md",
+            "align": "center",
+            "justify": "center",
+            "color": "text-muted"
+          }
+        }
+      }
+    },
+    "children": [
+      {
+        "type": "Icon",
+        "props": {
+          "name": {
+            "$bind": "icon"
+          }
+        }
+      }
+    ]
+  }
+}

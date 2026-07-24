@@ -1,0 +1,58 @@
+{
+  "name": "StatusIndicator",
+  "params": {
+    "tone": "neutral"
+  },
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "direction": "row",
+        "align": "center",
+        "gap": 2
+      }
+    },
+    "children": [
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "width": 9,
+            "height": 9,
+            "radius": "pill",
+            "bg": {
+              "$match": {
+                "on": {
+                  "$bind": "tone"
+                },
+                "cases": {
+                  "accent": "accent",
+                  "success": "success",
+                  "warning": "warning",
+                  "danger": "danger",
+                  "info": "info"
+                },
+                "default": "text-faint"
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "Text",
+        "props": {
+          "$if": {
+            "$bind": "label"
+          },
+          "text": {
+            "$bind": "label"
+          },
+          "style": {
+            "variant": "sm",
+            "color": "text-muted"
+          }
+        }
+      }
+    ]
+  }
+}

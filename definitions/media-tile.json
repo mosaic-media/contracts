@@ -1,5 +1,5 @@
 {
-  "name": "PosterCard",
+  "name": "MediaTile",
   "params": {
     "title": "Untitled"
   },
@@ -11,6 +11,10 @@
       },
       "lift": true,
       "style": {
+        "glass": true,
+        "radius": "lg",
+        "border": true,
+        "p": 2,
         "gap": 2
       }
     },
@@ -24,9 +28,7 @@
             "overflow": "hidden",
             "aspectRatio": "2 / 3",
             "bg": "surface-raised",
-            "glass": true,
-            "border": true,
-            "shadow": "2"
+            "glass": true
           }
         },
         "children": [
@@ -57,12 +59,12 @@
               },
               "style": {
                 "position": "absolute",
-                "top": 2,
-                "left": 2,
-                "bg": "surface-overlay",
+                "top": 1,
+                "left": 1,
                 "glass": true,
+                "bg": "surface-overlay",
                 "border": true,
-                "radius": "sm",
+                "radius": "pill",
                 "px": 2,
                 "py": 1
               }
@@ -81,35 +83,17 @@
                 }
               }
             ]
-          },
-          {
-            "type": "Box",
-            "props": {
-              "$if": {
-                "$bind": "progress"
-              },
-              "style": {
-                "position": "absolute",
-                "left": 2,
-                "right": 2,
-                "bottom": 2
-              }
-            },
-            "children": [
-              {
-                "type": "ProgressBar",
-                "props": {
-                  "value": {
-                    "$bind": "progress"
-                  }
-                }
-              }
-            ]
           }
         ]
       },
       {
         "type": "Box",
+        "props": {
+          "style": {
+            "px": 1,
+            "gap": 0
+          }
+        },
         "children": [
           {
             "type": "Text",

@@ -1,0 +1,147 @@
+{
+  "name": "ErrorState",
+  "params": {
+    "category": "Internal"
+  },
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "align": "center",
+        "gap": 2,
+        "p": 6,
+        "radius": "lg",
+        "border": true,
+        "bg": "surface",
+        "glass": true
+      }
+    },
+    "children": [
+      {
+        "type": "Icon",
+        "props": {
+          "name": {
+            "$match": {
+              "on": {
+                "$bind": "category"
+              },
+              "cases": {
+                "InvalidArgument": "warning",
+                "PermissionDenied": "warning",
+                "Conflict": "warning",
+                "Unauthenticated": "info",
+                "NotFound": "info"
+              },
+              "default": "error"
+            }
+          },
+          "color": {
+            "$match": {
+              "on": {
+                "$bind": "category"
+              },
+              "cases": {
+                "InvalidArgument": "warning",
+                "PermissionDenied": "warning",
+                "Conflict": "warning",
+                "Unauthenticated": "info",
+                "NotFound": "text-faint"
+              },
+              "default": "danger"
+            }
+          },
+          "size": 28
+        }
+      },
+      {
+        "type": "Text",
+        "props": {
+          "text": {
+            "$match": {
+              "on": {
+                "$bind": "category"
+              },
+              "cases": {
+                "InvalidArgument": "That didn't look right",
+                "Unauthenticated": "Please sign in",
+                "PermissionDenied": "Not allowed",
+                "NotFound": "Nothing here",
+                "Conflict": "Already exists",
+                "Unavailable": "Platform unavailable",
+                "Internal": "Something went wrong"
+              },
+              "default": "Something went wrong"
+            }
+          },
+          "style": {
+            "variant": "lg",
+            "weight": "bold"
+          }
+        }
+      },
+      {
+        "type": "Text",
+        "props": {
+          "$if": {
+            "$bind": "message"
+          },
+          "text": {
+            "$bind": "message"
+          },
+          "style": {
+            "color": "text-muted",
+            "align": "center"
+          }
+        }
+      },
+      {
+        "type": "Text",
+        "props": {
+          "text": {
+            "$bind": "category"
+          },
+          "style": {
+            "variant": "xs",
+            "color": "text-faint",
+            "mono": true
+          }
+        }
+      },
+      {
+        "type": "Pressable",
+        "props": {
+          "$if": {
+            "$bind": "retry"
+          },
+          "action": {
+            "$bind": "retry"
+          },
+          "style": {
+            "direction": "row",
+            "align": "center",
+            "justify": "center",
+            "gap": 2,
+            "px": 4,
+            "py": 3,
+            "radius": "md",
+            "bg": "surface-raised",
+            "glass": true,
+            "border": true,
+            "borderColor": "border-strong"
+          }
+        },
+        "children": [
+          {
+            "type": "Text",
+            "props": {
+              "text": "Try again",
+              "style": {
+                "weight": "medium"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

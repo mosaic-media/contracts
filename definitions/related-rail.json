@@ -1,0 +1,67 @@
+{
+  "name": "RelatedRail",
+  "params": {
+    "title": "Related"
+  },
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "gap": 4
+      }
+    },
+    "children": [
+      {
+        "type": "Text",
+        "props": {
+          "text": {
+            "$bind": "title"
+          },
+          "style": {
+            "variant": "xl",
+            "weight": "bold"
+          }
+        }
+      },
+      {
+        "type": "Carousel",
+        "props": {
+          "$if": {
+            "$bind": "$childCount"
+          }
+        },
+        "children": [
+          {
+            "type": "Outlet"
+          }
+        ]
+      },
+      {
+        "type": "Box",
+        "props": {
+          "$ifNot": {
+            "$bind": "$childCount"
+          },
+          "style": {
+            "p": 4,
+            "radius": "md",
+            "border": true,
+            "borderColor": "border-strong"
+          }
+        },
+        "children": [
+          {
+            "type": "Text",
+            "props": {
+              "text": "No related titles yet.",
+              "style": {
+                "variant": "sm",
+                "color": "text-faint"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

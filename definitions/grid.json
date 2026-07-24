@@ -1,0 +1,23 @@
+{
+  "name": "Grid",
+  "params": {
+    "minColumnWidth": 172
+  },
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "layout": "grid",
+        "gridMin": {
+          "$bind": "minColumnWidth"
+        },
+        "gap": 4
+      }
+    },
+    "children": [
+      {
+        "type": "Outlet"
+      }
+    ]
+  }
+}

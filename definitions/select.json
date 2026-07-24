@@ -1,0 +1,40 @@
+{
+  "name": "Select",
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "gap": 2
+      }
+    },
+    "children": [
+      {
+        "type": "Text",
+        "props": {
+          "$if": {
+            "$bind": "label"
+          },
+          "text": {
+            "$bind": "label"
+          },
+          "style": {
+            "variant": "sm",
+            "weight": "medium",
+            "color": "text-muted"
+          }
+        }
+      },
+      {
+        "type": "SelectInput",
+        "props": {
+          "options": {
+            "$bind": "options"
+          },
+          "value": {
+            "$bind": "value"
+          }
+        }
+      }
+    ]
+  }
+}

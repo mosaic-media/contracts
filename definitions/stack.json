@@ -1,0 +1,43 @@
+{
+  "name": "Stack",
+  "params": {
+    "direction": "vertical",
+    "gap": 4
+  },
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "direction": {
+          "$match": {
+            "on": {
+              "$bind": "direction"
+            },
+            "cases": {
+              "horizontal": "row",
+              "vertical": "column"
+            },
+            "default": "column"
+          }
+        },
+        "gap": {
+          "$bind": "gap"
+        },
+        "align": {
+          "$bind": "align"
+        },
+        "justify": {
+          "$bind": "justify"
+        },
+        "wrap": {
+          "$bind": "wrap"
+        }
+      }
+    },
+    "children": [
+      {
+        "type": "Outlet"
+      }
+    ]
+  }
+}

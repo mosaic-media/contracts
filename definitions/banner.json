@@ -1,0 +1,108 @@
+{
+  "name": "Banner",
+  "params": {
+    "tone": "info"
+  },
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "direction": "row",
+        "gap": 3,
+        "align": "start",
+        "px": 4,
+        "py": 3,
+        "radius": "md",
+        "bg": "surface-raised",
+        "glass": true,
+        "border": true,
+        "borderColor": {
+          "$match": {
+            "on": {
+              "$bind": "tone"
+            },
+            "cases": {
+              "success": "success",
+              "warning": "warning",
+              "danger": "danger",
+              "info": "info"
+            },
+            "default": "border"
+          }
+        }
+      }
+    },
+    "children": [
+      {
+        "type": "Icon",
+        "props": {
+          "name": {
+            "$match": {
+              "on": {
+                "$bind": "tone"
+              },
+              "cases": {
+                "success": "success",
+                "warning": "warning",
+                "danger": "error",
+                "info": "info"
+              },
+              "default": "info"
+            }
+          },
+          "color": {
+            "$match": {
+              "on": {
+                "$bind": "tone"
+              },
+              "cases": {
+                "accent": "accent",
+                "success": "success",
+                "warning": "warning",
+                "danger": "danger",
+                "info": "info"
+              },
+              "default": "text-faint"
+            }
+          }
+        }
+      },
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "gap": 0
+          }
+        },
+        "children": [
+          {
+            "type": "Text",
+            "props": {
+              "$if": {
+                "$bind": "title"
+              },
+              "text": {
+                "$bind": "title"
+              },
+              "style": {
+                "variant": "sm",
+                "weight": "bold"
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "text": {
+                "$bind": "message"
+              },
+              "style": {
+                "variant": "sm"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

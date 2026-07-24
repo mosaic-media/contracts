@@ -1,0 +1,93 @@
+{
+  "name": "SourcePicker",
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "gap": 2
+      }
+    },
+    "children": [
+      {
+        "type": "Pressable",
+        "props": {
+          "$each": {
+            "$bind": "sources"
+          },
+          "$as": "s",
+          "action": {
+            "$bind": "s.action"
+          },
+          "style": {
+            "direction": "row",
+            "align": "center",
+            "gap": 3,
+            "px": 4,
+            "py": 3,
+            "radius": "md",
+            "border": true,
+            "bg": "surface-raised",
+            "glass": true
+          }
+        },
+        "children": [
+          {
+            "type": "Icon",
+            "props": {
+              "name": "play",
+              "color": "accent"
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "text": {
+                "$bind": "s.label"
+              },
+              "style": {
+                "variant": "md",
+                "weight": "medium"
+              }
+            }
+          },
+          {
+            "type": "Spacer",
+            "props": {
+              "grow": true
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "$if": {
+                "$bind": "s.quality"
+              },
+              "text": {
+                "$bind": "s.quality"
+              },
+              "style": {
+                "variant": "xs",
+                "color": "accent"
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "$if": {
+                "$bind": "s.provider"
+              },
+              "text": {
+                "$bind": "s.provider"
+              },
+              "style": {
+                "variant": "xs",
+                "color": "text-faint"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

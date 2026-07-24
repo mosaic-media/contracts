@@ -1,18 +1,61 @@
 {
   "name": "Badge",
-  "params": { "tone": "neutral" },
+  "params": {
+    "tone": "neutral"
+  },
   "template": {
     "type": "Box",
     "props": {
       "style": {
         "direction": "row",
         "align": "center",
-        "bg": { "$match": { "on": { "$bind": "tone" }, "cases": { "accent": "accent-quiet", "success": "success-quiet", "warning": "warning-quiet", "danger": "danger-quiet", "info": "info-quiet" }, "default": "surface-overlay" } },
-        "color": { "$match": { "on": { "$bind": "tone" }, "cases": { "accent": "accent", "success": "success", "warning": "warning", "danger": "danger", "info": "info" }, "default": "text-muted" } },
+        "bg": {
+          "$match": {
+            "on": {
+              "$bind": "tone"
+            },
+            "cases": {
+              "accent": "accent-quiet",
+              "success": "success-quiet",
+              "warning": "warning-quiet",
+              "danger": "danger-quiet",
+              "info": "info-quiet"
+            },
+            "default": "surface-overlay"
+          }
+        },
+        "color": {
+          "$match": {
+            "on": {
+              "$bind": "tone"
+            },
+            "cases": {
+              "accent": "accent",
+              "success": "success",
+              "warning": "warning",
+              "danger": "danger",
+              "info": "info"
+            },
+            "default": "text-muted"
+          }
+        },
         "radius": "sm",
         "px": 2
       }
     },
-    "children": [{ "type": "Text", "props": { "text": { "$bind": "label" }, "style": { "variant": "xs", "weight": "medium" } } }]
+    "children": [
+      {
+        "type": "Text",
+        "props": {
+          "text": {
+            "$bind": "label"
+          },
+          "style": {
+            "variant": "xs",
+            "weight": "medium"
+          }
+        }
+      }
+    ]
   }
 }

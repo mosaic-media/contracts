@@ -1,0 +1,73 @@
+{
+  "name": "GenreTag",
+  "template": {
+    "type": "Fragment",
+    "children": [
+      {
+        "type": "Pressable",
+        "props": {
+          "$if": {
+            "$bind": "action"
+          },
+          "action": {
+            "$bind": "action"
+          },
+          "style": {
+            "direction": "row",
+            "align": "center",
+            "bg": "surface-raised",
+            "glass": true,
+            "border": true,
+            "radius": "pill",
+            "px": 3
+          }
+        },
+        "children": [
+          {
+            "type": "Text",
+            "props": {
+              "text": {
+                "$bind": "label"
+              },
+              "style": {
+                "variant": "xs",
+                "color": "text-muted"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "Box",
+        "props": {
+          "$ifNot": {
+            "$bind": "action"
+          },
+          "style": {
+            "direction": "row",
+            "align": "center",
+            "bg": "surface-raised",
+            "glass": true,
+            "border": true,
+            "radius": "pill",
+            "px": 3
+          }
+        },
+        "children": [
+          {
+            "type": "Text",
+            "props": {
+              "text": {
+                "$bind": "label"
+              },
+              "style": {
+                "variant": "xs",
+                "color": "text-muted"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

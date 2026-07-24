@@ -1,0 +1,151 @@
+{
+  "name": "EpisodeRow",
+  "template": {
+    "type": "Pressable",
+    "props": {
+      "action": {
+        "$bind": "action"
+      },
+      "style": {
+        "direction": "row",
+        "align": "start",
+        "gap": 4,
+        "p": 3,
+        "radius": "md"
+      }
+    },
+    "children": [
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "width": 148,
+            "aspectRatio": "16 / 9",
+            "radius": "sm",
+            "overflow": "hidden",
+            "bg": "surface-raised",
+            "glass": true
+          }
+        },
+        "children": [
+          {
+            "type": "Image",
+            "props": {
+              "src": {
+                "$bind": "thumbnail"
+              },
+              "placeholder": " ",
+              "style": {
+                "width": "full",
+                "height": "full"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "grow": true,
+            "gap": 1
+          }
+        },
+        "children": [
+          {
+            "type": "Box",
+            "props": {
+              "style": {
+                "direction": "row",
+                "justify": "between",
+                "align": "baseline",
+                "gap": 3
+              }
+            },
+            "children": [
+              {
+                "type": "Box",
+                "props": {
+                  "style": {
+                    "direction": "row",
+                    "align": "baseline",
+                    "gap": 2
+                  }
+                },
+                "children": [
+                  {
+                    "type": "Text",
+                    "props": {
+                      "$if": {
+                        "$bind": "index"
+                      },
+                      "text": {
+                        "$bind": "index"
+                      },
+                      "style": {
+                        "color": "text-faint",
+                        "tabular": true
+                      }
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "text": {
+                        "$bind": "title"
+                      },
+                      "style": {
+                        "weight": "medium"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "Text",
+                "props": {
+                  "$if": {
+                    "$bind": "runtime"
+                  },
+                  "text": {
+                    "$bind": "runtime"
+                  },
+                  "style": {
+                    "variant": "sm",
+                    "color": "text-faint"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "Text",
+            "props": {
+              "$if": {
+                "$bind": "overview"
+              },
+              "text": {
+                "$bind": "overview"
+              },
+              "style": {
+                "variant": "sm",
+                "color": "text-muted",
+                "lineClamp": 2
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "Icon",
+        "props": {
+          "$if": {
+            "$bind": "watched"
+          },
+          "name": "check",
+          "color": "success"
+        }
+      }
+    ]
+  }
+}

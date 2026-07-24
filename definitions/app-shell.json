@@ -1,0 +1,153 @@
+{
+  "name": "AppShell",
+  "params": {
+    "title": "Mosaic"
+  },
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "position": "relative",
+        "direction": "column",
+        "height": "screen"
+      }
+    },
+    "children": [
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "direction": "column",
+            "grow": true,
+            "overflowY": "auto"
+          }
+        },
+        "children": [
+          {
+            "type": "Outlet",
+            "props": {
+              "name": "content"
+            }
+          }
+        ]
+      },
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "position": "absolute",
+            "top": 0,
+            "left": 0,
+            "right": 0,
+            "z": "overlay",
+            "direction": "row",
+            "align": "center",
+            "gap": 4,
+            "px": "gutter",
+            "py": 3
+          }
+        },
+        "children": [
+          {
+            "type": "Pressable",
+            "props": {
+              "action": {
+                "kind": "navigate",
+                "screen": "home"
+              },
+              "label": "Home",
+              "style": {
+                "direction": "row",
+                "align": "center",
+                "gap": 3
+              }
+            },
+            "children": [
+              {
+                "type": "Box",
+                "props": {
+                  "style": {
+                    "width": 26,
+                    "height": 26,
+                    "radius": "sm",
+                    "bgGradient": {
+                      "from": "accent",
+                      "to": "info",
+                      "angle": 135
+                    },
+                    "shadow": "1"
+                  }
+                }
+              },
+              {
+                "type": "Text",
+                "props": {
+                  "text": {
+                    "$bind": "title"
+                  },
+                  "style": {
+                    "variant": "lg",
+                    "weight": "bold",
+                    "transform": "uppercase",
+                    "tracking": "wide"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "Box",
+            "props": {
+              "style": {
+                "direction": "row",
+                "align": "center",
+                "justify": "center",
+                "grow": true,
+                "minWidth": 180,
+                "kind": "top-search"
+              }
+            },
+            "children": [
+              {
+                "type": "Outlet",
+                "props": {
+                  "name": "topbar"
+                }
+              }
+            ]
+          },
+          {
+            "type": "Box",
+            "props": {
+              "style": {
+                "direction": "row",
+                "align": "center",
+                "gap": 3,
+                "kind": "account"
+              }
+            },
+            "children": [
+              {
+                "type": "Outlet",
+                "props": {
+                  "name": "account"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "NavBar",
+        "children": [
+          {
+            "type": "Outlet",
+            "props": {
+              "name": "nav"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

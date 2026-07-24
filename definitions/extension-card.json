@@ -1,0 +1,137 @@
+{
+  "name": "ExtensionCard",
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "direction": "column",
+        "gap": 4,
+        "p": 5,
+        "radius": "lg",
+        "border": true,
+        "bg": "surface",
+        "glass": true
+      }
+    },
+    "children": [
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "direction": "row",
+            "align": "start",
+            "justify": "between",
+            "gap": 4,
+            "responsive": {
+              "below": 720,
+              "style": {
+                "direction": "column",
+                "align": "stretch",
+                "gap": 4
+              }
+            }
+          }
+        },
+        "children": [
+          {
+            "type": "Box",
+            "props": {
+              "style": {
+                "direction": "column",
+                "gap": 1
+              }
+            },
+            "children": [
+              {
+                "type": "Text",
+                "props": {
+                  "text": {
+                    "$bind": "name"
+                  },
+                  "style": {
+                    "variant": "lg",
+                    "weight": "bold"
+                  }
+                }
+              },
+              {
+                "type": "Text",
+                "props": {
+                  "$if": {
+                    "$bind": "origin"
+                  },
+                  "text": {
+                    "$bind": "origin"
+                  },
+                  "style": {
+                    "variant": "xs",
+                    "color": "text-faint",
+                    "mono": true
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "Box",
+            "props": {
+              "style": {
+                "direction": "row",
+                "align": "center",
+                "gap": 2
+              }
+            },
+            "children": [
+              {
+                "type": "Outlet"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Text",
+        "props": {
+          "$if": {
+            "$bind": "summary"
+          },
+          "text": {
+            "$bind": "summary"
+          },
+          "style": {
+            "variant": "sm",
+            "color": "text-muted"
+          }
+        }
+      },
+      {
+        "type": "Box",
+        "props": {
+          "$if": {
+            "$bind": "capabilities"
+          },
+          "style": {
+            "direction": "row",
+            "wrap": true,
+            "gap": 2
+          }
+        },
+        "children": [
+          {
+            "type": "Badge",
+            "props": {
+              "$each": {
+                "$bind": "capabilities"
+              },
+              "$as": "c",
+              "label": {
+                "$bind": "c.label"
+              },
+              "tone": "neutral"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

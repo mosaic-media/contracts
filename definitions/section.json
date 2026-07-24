@@ -1,26 +1,86 @@
 {
   "name": "Section",
-  "params": { "actionLabel": "See all" },
+  "params": {
+    "actionLabel": "See all"
+  },
   "template": {
     "type": "Box",
-    "props": { "style": { "gap": 4 } },
+    "props": {
+      "style": {
+        "gap": 5
+      }
+    },
     "children": [
       {
         "type": "Box",
-        "props": { "$if": { "$bind": "title" }, "style": { "direction": "row", "align": "center", "justify": "between", "gap": 4 } },
+        "props": {
+          "$if": {
+            "$bind": "title"
+          },
+          "style": {
+            "direction": "row",
+            "align": "center",
+            "justify": "between",
+            "gap": 4
+          }
+        },
         "children": [
-          { "type": "Text", "props": { "text": { "$bind": "title" }, "style": { "variant": "xl", "weight": "bold" } } },
+          {
+            "type": "Text",
+            "props": {
+              "text": {
+                "$bind": "title"
+              },
+              "style": {
+                "variant": "xl",
+                "weight": "bold",
+                "tracking": "tight"
+              }
+            }
+          },
           {
             "type": "Pressable",
-            "props": { "$if": { "$bind": "action" }, "action": { "$bind": "action" }, "style": { "direction": "row", "align": "center", "gap": 1, "color": "text-muted" } },
+            "props": {
+              "$if": {
+                "$bind": "action"
+              },
+              "action": {
+                "$bind": "action"
+              },
+              "style": {
+                "direction": "row",
+                "align": "center",
+                "gap": 1,
+                "color": "text-muted"
+              }
+            },
             "children": [
-              { "type": "Text", "props": { "text": { "$bind": "actionLabel" }, "style": { "variant": "sm", "weight": "medium" } } },
-              { "type": "Icon", "props": { "name": "chevron-right", "size": "1em" } }
+              {
+                "type": "Text",
+                "props": {
+                  "text": {
+                    "$bind": "actionLabel"
+                  },
+                  "style": {
+                    "variant": "sm",
+                    "weight": "medium"
+                  }
+                }
+              },
+              {
+                "type": "Icon",
+                "props": {
+                  "name": "chevron-right",
+                  "size": "1em"
+                }
+              }
             ]
           }
         ]
       },
-      { "type": "Outlet" }
+      {
+        "type": "Outlet"
+      }
     ]
   }
 }

@@ -1,0 +1,122 @@
+{
+  "name": "InfoPanel",
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "glass": true,
+        "radius": "xl",
+        "border": true,
+        "p": 5,
+        "gap": 4,
+        "minWidth": 232,
+        "maxWidth": 320,
+        "grow": true
+      }
+    },
+    "children": [
+      {
+        "type": "Box",
+        "props": {
+          "$if": {
+            "$bind": "rating"
+          },
+          "style": {
+            "direction": "row",
+            "align": "center",
+            "gap": 2
+          }
+        },
+        "children": [
+          {
+            "type": "Icon",
+            "props": {
+              "name": "star",
+              "color": "rating",
+              "size": "1.4em"
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "text": {
+                "$bind": "rating"
+              },
+              "style": {
+                "variant": "2xl",
+                "weight": "bold"
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "$if": {
+                "$bind": "ratingLabel"
+              },
+              "text": {
+                "$bind": "ratingLabel"
+              },
+              "style": {
+                "variant": "xs",
+                "color": "text-faint"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "gap": 3
+          }
+        },
+        "children": [
+          {
+            "type": "Box",
+            "props": {
+              "$each": {
+                "$bind": "rows"
+              },
+              "$as": "r",
+              "style": {
+                "direction": "row",
+                "justify": "between",
+                "align": "baseline",
+                "gap": 4
+              }
+            },
+            "children": [
+              {
+                "type": "Text",
+                "props": {
+                  "text": {
+                    "$bind": "r.label"
+                  },
+                  "style": {
+                    "variant": "sm",
+                    "color": "text-faint"
+                  }
+                }
+              },
+              {
+                "type": "Text",
+                "props": {
+                  "text": {
+                    "$bind": "r.value"
+                  },
+                  "style": {
+                    "variant": "sm",
+                    "weight": "medium",
+                    "align": "end"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

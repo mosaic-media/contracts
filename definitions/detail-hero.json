@@ -1,0 +1,313 @@
+{
+  "name": "DetailHero",
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "position": "relative",
+        "overflow": "hidden",
+        "minHeight": 660,
+        "justify": "end"
+      }
+    },
+    "children": [
+      {
+        "type": "Image",
+        "props": {
+          "src": {
+            "$bind": "backdrop"
+          },
+          "placeholder": " ",
+          "artLight": "ambient",
+          "style": {
+            "position": "absolute",
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0,
+            "width": "full",
+            "height": "full"
+          }
+        }
+      },
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "position": "absolute",
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0,
+            "bgGradient": {
+              "from": "bg",
+              "to": "transparent",
+              "angle": 70
+            }
+          }
+        }
+      },
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "position": "absolute",
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0,
+            "bgGradient": {
+              "from": "bg",
+              "to": "transparent",
+              "angle": 0
+            }
+          }
+        }
+      },
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "position": "relative",
+            "direction": "row",
+            "align": "end",
+            "gap": 5,
+            "px": "gutter",
+            "pt": 8,
+            "pb": 7,
+            "wrap": true,
+            "kind": "detail-panels"
+          }
+        },
+        "children": [
+          {
+            "type": "Box",
+            "props": {
+              "style": {
+                "glass": true,
+                "radius": "xl",
+                "border": true,
+                "p": 6,
+                "gap": 4,
+                "grow": true,
+                "maxWidth": 640,
+                "minWidth": 280,
+                "justify": "end"
+              }
+            },
+            "children": [
+              {
+                "type": "Box",
+                "props": {
+                  "$if": {
+                    "$bind": "kicker"
+                  },
+                  "style": {
+                    "direction": "row"
+                  }
+                },
+                "children": [
+                  {
+                    "type": "Box",
+                    "props": {
+                      "style": {
+                        "direction": "row",
+                        "align": "center",
+                        "gap": 2,
+                        "px": 3,
+                        "py": 1,
+                        "radius": "pill",
+                        "bg": "surface-overlay",
+                        "glass": true,
+                        "border": true
+                      }
+                    },
+                    "children": [
+                      {
+                        "type": "Box",
+                        "props": {
+                          "style": {
+                            "width": 6,
+                            "height": 6,
+                            "radius": "pill",
+                            "bg": "accent"
+                          }
+                        }
+                      },
+                      {
+                        "type": "Text",
+                        "props": {
+                          "text": {
+                            "$bind": "kicker"
+                          },
+                          "style": {
+                            "variant": "xs",
+                            "weight": "medium",
+                            "transform": "uppercase",
+                            "tracking": "wide"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "Box",
+                "props": {
+                  "$if": {
+                    "$bind": "logo"
+                  },
+                  "style": {
+                    "height": 84,
+                    "maxWidth": 400
+                  }
+                },
+                "children": [
+                  {
+                    "type": "Image",
+                    "props": {
+                      "src": {
+                        "$bind": "logo"
+                      },
+                      "fit": "contain",
+                      "placeholder": " ",
+                      "style": {
+                        "width": "full",
+                        "height": "full"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "Text",
+                "props": {
+                  "$ifNot": {
+                    "$bind": "logo"
+                  },
+                  "text": {
+                    "$bind": "title"
+                  },
+                  "style": {
+                    "variant": "4xl",
+                    "weight": "bold",
+                    "tracking": "tight"
+                  }
+                }
+              },
+              {
+                "type": "Box",
+                "props": {
+                  "$if": {
+                    "$bind": "meta"
+                  },
+                  "style": {
+                    "direction": "row",
+                    "gap": 2,
+                    "wrap": true,
+                    "align": "center"
+                  }
+                },
+                "children": [
+                  {
+                    "type": "Box",
+                    "props": {
+                      "$each": {
+                        "$bind": "meta"
+                      },
+                      "$as": "m",
+                      "style": {
+                        "bg": "surface-overlay",
+                        "glass": true,
+                        "border": true,
+                        "radius": "pill",
+                        "px": 3,
+                        "py": 1
+                      }
+                    },
+                    "children": [
+                      {
+                        "type": "Text",
+                        "props": {
+                          "text": {
+                            "$bind": "m"
+                          },
+                          "style": {
+                            "variant": "xs",
+                            "color": "text-muted"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "Box",
+                "props": {
+                  "$if": {
+                    "$bind": "showTags"
+                  },
+                  "style": {
+                    "direction": "row",
+                    "wrap": true,
+                    "gap": 2
+                  }
+                },
+                "children": [
+                  {
+                    "type": "Outlet",
+                    "props": {
+                      "name": "tags"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "Text",
+                "props": {
+                  "$if": {
+                    "$bind": "overview"
+                  },
+                  "text": {
+                    "$bind": "overview"
+                  },
+                  "style": {
+                    "color": "text-muted",
+                    "lineClamp": 4
+                  }
+                }
+              },
+              {
+                "type": "Box",
+                "props": {
+                  "style": {
+                    "direction": "row",
+                    "gap": 3,
+                    "wrap": true,
+                    "pt": 2
+                  }
+                },
+                "children": [
+                  {
+                    "type": "Outlet",
+                    "props": {
+                      "name": "actions"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "Outlet",
+            "props": {
+              "name": "aside"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

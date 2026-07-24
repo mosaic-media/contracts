@@ -1,0 +1,85 @@
+{
+  "name": "PersonChip",
+  "template": {
+    "type": "Pressable",
+    "props": {
+      "action": {
+        "$bind": "action"
+      },
+      "style": {
+        "direction": "row",
+        "align": "center",
+        "gap": 3,
+        "p": 1,
+        "radius": "md"
+      }
+    },
+    "children": [
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "width": 42,
+            "height": 42,
+            "radius": "pill",
+            "overflow": "hidden",
+            "bg": "surface-overlay",
+            "glass": true,
+            "align": "center",
+            "justify": "center"
+          }
+        },
+        "children": [
+          {
+            "type": "Image",
+            "props": {
+              "src": {
+                "$bind": "avatar"
+              },
+              "placeholder": {
+                "$bind": "name"
+              },
+              "placeholderMode": "initials",
+              "style": {
+                "width": "full",
+                "height": "full"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "Box",
+        "children": [
+          {
+            "type": "Text",
+            "props": {
+              "text": {
+                "$bind": "name"
+              },
+              "style": {
+                "variant": "sm",
+                "weight": "medium"
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "$if": {
+                "$bind": "role"
+              },
+              "text": {
+                "$bind": "role"
+              },
+              "style": {
+                "variant": "xs",
+                "color": "text-muted"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

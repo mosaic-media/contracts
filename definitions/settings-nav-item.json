@@ -1,0 +1,115 @@
+{
+  "name": "SettingsNavItem",
+  "params": {
+    "icon": "settings"
+  },
+  "template": {
+    "type": "Pressable",
+    "props": {
+      "action": {
+        "$bind": "action"
+      },
+      "label": {
+        "$bind": "label"
+      },
+      "style": {
+        "direction": "row",
+        "align": "center",
+        "justify": "between",
+        "gap": 3,
+        "px": 4,
+        "py": 3,
+        "radius": "md",
+        "bg": {
+          "$match": {
+            "on": {
+              "$bind": "active"
+            },
+            "cases": {
+              "true": "accent-quiet"
+            }
+          }
+        },
+        "color": {
+          "$match": {
+            "on": {
+              "$bind": "active"
+            },
+            "cases": {
+              "true": "text"
+            },
+            "default": "text-muted"
+          }
+        },
+        "responsive": {
+          "below": 720,
+          "style": {
+            "py": 4,
+            "px": 3,
+            "bg": null,
+            "color": "text"
+          }
+        }
+      }
+    },
+    "children": [
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "direction": "row",
+            "align": "center",
+            "gap": 3
+          }
+        },
+        "children": [
+          {
+            "type": "Icon",
+            "props": {
+              "name": {
+                "$bind": "icon"
+              },
+              "size": "1.15em"
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "text": {
+                "$bind": "label"
+              },
+              "style": {
+                "variant": "sm",
+                "weight": "medium"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "hidden": true,
+            "color": "text-faint",
+            "responsive": {
+              "below": 720,
+              "style": {
+                "hidden": false
+              }
+            }
+          }
+        },
+        "children": [
+          {
+            "type": "Icon",
+            "props": {
+              "name": "chevron-right",
+              "size": "1.1em"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

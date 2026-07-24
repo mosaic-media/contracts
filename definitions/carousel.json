@@ -1,0 +1,27 @@
+{
+  "name": "Carousel",
+  "params": {
+    "itemWidth": 210
+  },
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "layout": "grid",
+        "gridFlow": "column",
+        "gridAutoColumns": {
+          "$bind": "itemWidth"
+        },
+        "gap": 6,
+        "overflowX": "auto",
+        "snap": "x",
+        "py": 2
+      }
+    },
+    "children": [
+      {
+        "type": "Outlet"
+      }
+    ]
+  }
+}

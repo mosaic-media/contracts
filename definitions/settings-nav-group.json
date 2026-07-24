@@ -1,0 +1,46 @@
+{
+  "name": "SettingsNavGroup",
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "direction": "column",
+        "gap": 2
+      }
+    },
+    "children": [
+      {
+        "type": "Text",
+        "props": {
+          "$if": {
+            "$bind": "label"
+          },
+          "text": {
+            "$bind": "label"
+          },
+          "style": {
+            "variant": "xs",
+            "weight": "bold",
+            "color": "text-faint",
+            "transform": "uppercase",
+            "tracking": "wide"
+          }
+        }
+      },
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "direction": "column",
+            "gap": 1
+          }
+        },
+        "children": [
+          {
+            "type": "Outlet"
+          }
+        ]
+      }
+    ]
+  }
+}

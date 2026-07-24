@@ -1,0 +1,58 @@
+{
+  "name": "TextField",
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "gap": 2
+      }
+    },
+    "children": [
+      {
+        "type": "Text",
+        "props": {
+          "$if": {
+            "$bind": "label"
+          },
+          "text": {
+            "$bind": "label"
+          },
+          "style": {
+            "variant": "sm",
+            "weight": "medium",
+            "color": "text-muted"
+          }
+        }
+      },
+      {
+        "type": "TextInput",
+        "props": {
+          "inputType": {
+            "$bind": "inputType"
+          },
+          "placeholder": {
+            "$bind": "placeholder"
+          },
+          "value": {
+            "$bind": "value"
+          }
+        }
+      },
+      {
+        "type": "Text",
+        "props": {
+          "$if": {
+            "$bind": "help"
+          },
+          "text": {
+            "$bind": "help"
+          },
+          "style": {
+            "variant": "xs",
+            "color": "text-faint"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "name": "EmptyState",
+  "params": {
+    "icon": "grid",
+    "title": "Nothing here yet"
+  },
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "align": "center",
+        "gap": 3,
+        "py": 7,
+        "px": 4
+      }
+    },
+    "children": [
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "width": 64,
+            "height": 64,
+            "radius": "pill",
+            "bg": "surface-raised",
+            "glass": true,
+            "align": "center",
+            "justify": "center",
+            "color": "text-faint"
+          }
+        },
+        "children": [
+          {
+            "type": "Icon",
+            "props": {
+              "name": {
+                "$bind": "icon"
+              },
+              "size": 26
+            }
+          }
+        ]
+      },
+      {
+        "type": "Text",
+        "props": {
+          "text": {
+            "$bind": "title"
+          },
+          "style": {
+            "variant": "lg",
+            "weight": "bold"
+          }
+        }
+      },
+      {
+        "type": "Text",
+        "props": {
+          "$if": {
+            "$bind": "message"
+          },
+          "text": {
+            "$bind": "message"
+          },
+          "style": {
+            "color": "text-muted",
+            "align": "center"
+          }
+        }
+      },
+      {
+        "type": "Outlet",
+        "props": {
+          "name": "action"
+        }
+      }
+    ]
+  }
+}

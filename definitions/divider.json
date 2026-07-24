@@ -1,0 +1,68 @@
+{
+  "name": "Divider",
+  "template": {
+    "type": "Fragment",
+    "children": [
+      {
+        "type": "Box",
+        "props": {
+          "$ifNot": {
+            "$bind": "label"
+          },
+          "style": {
+            "height": 1,
+            "bg": "border"
+          }
+        }
+      },
+      {
+        "type": "Box",
+        "props": {
+          "$if": {
+            "$bind": "label"
+          },
+          "style": {
+            "direction": "row",
+            "align": "center",
+            "gap": 3
+          }
+        },
+        "children": [
+          {
+            "type": "Box",
+            "props": {
+              "style": {
+                "height": 1,
+                "bg": "border",
+                "grow": true
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "text": {
+                "$bind": "label"
+              },
+              "style": {
+                "variant": "xs",
+                "color": "text-faint",
+                "transform": "uppercase"
+              }
+            }
+          },
+          {
+            "type": "Box",
+            "props": {
+              "style": {
+                "height": 1,
+                "bg": "border",
+                "grow": true
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

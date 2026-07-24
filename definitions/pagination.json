@@ -1,0 +1,100 @@
+{
+  "name": "Pagination",
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "direction": "row",
+        "align": "center",
+        "justify": "center",
+        "gap": 3
+      }
+    },
+    "children": [
+      {
+        "type": "Pressable",
+        "props": {
+          "action": {
+            "$bind": "prevAction"
+          },
+          "disabled": {
+            "$ifNot": {
+              "$bind": "hasPrev"
+            }
+          },
+          "label": "Previous",
+          "style": {
+            "width": 34,
+            "height": 34,
+            "radius": "pill",
+            "align": "center",
+            "justify": "center",
+            "bg": "surface-raised",
+            "glass": true,
+            "border": true,
+            "color": "text-muted"
+          }
+        },
+        "children": [
+          {
+            "type": "Icon",
+            "props": {
+              "name": "chevron-left",
+              "size": "1.1em"
+            }
+          }
+        ]
+      },
+      {
+        "type": "Text",
+        "props": {
+          "$if": {
+            "$bind": "label"
+          },
+          "text": {
+            "$bind": "label"
+          },
+          "style": {
+            "variant": "sm",
+            "color": "text-muted",
+            "tabular": true
+          }
+        }
+      },
+      {
+        "type": "Pressable",
+        "props": {
+          "action": {
+            "$bind": "nextAction"
+          },
+          "disabled": {
+            "$ifNot": {
+              "$bind": "hasNext"
+            }
+          },
+          "label": "Next",
+          "style": {
+            "width": 34,
+            "height": 34,
+            "radius": "pill",
+            "align": "center",
+            "justify": "center",
+            "bg": "surface-raised",
+            "glass": true,
+            "border": true,
+            "color": "text-muted"
+          }
+        },
+        "children": [
+          {
+            "type": "Icon",
+            "props": {
+              "name": "chevron-right",
+              "size": "1.1em"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
