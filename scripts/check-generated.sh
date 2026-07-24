@@ -12,7 +12,7 @@ scripts/generate.sh >/dev/null
 # init — the failure this guard now prevents.
 GENERATED=(
   sdui/contract/contract.gen.go ts/contract.gen.ts ui/components.gen.go ts/ui.ts
-  gen gen-ts
+  ts/definitions.gen.ts tokens/tokens.css gen gen-ts
 )
 if ! git diff --quiet -- "${GENERATED[@]}"; then
   echo "ERROR: generated bindings are stale. Run scripts/generate.sh and commit." >&2

@@ -8,16 +8,19 @@
   "exports": {
     ".": "./ts/contract.gen.ts",
     "./ui": "./ts/ui.ts",
+    "./definitions": "./ts/definitions.gen.ts",
     "./session": "./gen-ts/mosaic/session/v1/session_pb.ts",
     "./auth": "./gen-ts/mosaic/auth/v1/auth_pb.ts",
     "./sdui-pb": "./gen-ts/mosaic/sdui/v1/sdui_pb.ts",
     "./definitions/*": "./definitions/*",
     "./tokens.json": "./tokens/tokens.json",
+    "./tokens.css": "./tokens/tokens.css",
     "./schema.json": "./schema/sdui.schema.json"
   },
   "files": [
     "ts/contract.gen.ts",
     "ts/ui.ts",
+    "ts/definitions.gen.ts",
     "ts/ui_runtime.ts",
     "gen-ts",
     "definitions",
@@ -30,7 +33,7 @@
   "scripts": {
     "generate": "bash scripts/generate.sh",
     "check:generated": "bash scripts/check-generated.sh",
-    "typecheck": "tsc --noEmit --strict --module esnext --moduleResolution bundler --target es2022 --lib es2022,dom ts/contract.gen.ts ts/ui.ts gen-ts/mosaic/session/v1/session_pb.ts gen-ts/mosaic/sdui/v1/sdui_pb.ts gen-ts/mosaic/auth/v1/auth_pb.ts"
+    "typecheck": "tsc --noEmit --strict --module esnext --moduleResolution bundler --target es2022 --lib es2022,dom ts/contract.gen.ts ts/ui.ts ts/definitions.gen.ts gen-ts/mosaic/session/v1/session_pb.ts gen-ts/mosaic/sdui/v1/sdui_pb.ts gen-ts/mosaic/auth/v1/auth_pb.ts"
   },
   "repository": {
     "type": "git",

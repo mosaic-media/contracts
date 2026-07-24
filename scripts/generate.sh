@@ -39,6 +39,18 @@ sed -i '1s|^|// Code generated from schema/sdui.schema.json by quicktype. DO NOT
 echo "generating ui layer -> ui/components.gen.go, ts/ui.ts (+ spec lint)"
 go run ./tools/genui
 
+# The component library as one importable module, for a JS consumer with no
+# Platform to push it. The definitions are authored as definitions/*.json; this
+# is an aggregate of them, as definitions.Library() is on the Go side.
+echo "generating definition library -> ts/definitions.gen.ts"
+node scripts/gen-definitions.mjs
+
+# The design tokens as CSS custom properties, for a web client to apply before
+# the session connects. tokens/tokens.json is the authored source and the
+# Platform serves it; this is the bootstrap copy, never a second source.
+echo "generating design tokens -> tokens/tokens.css"
+node scripts/gen-tokens.mjs
+
 # The protobuf bindings (ADR 0044): Go + Connect stubs and TypeScript for the
 # client-facing contracts, Go + gRPC stubs for the module wire (ADR 0064). Two
 # templates because the two surfaces need different plugins — Connect for a
