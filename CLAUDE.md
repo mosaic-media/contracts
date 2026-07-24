@@ -49,6 +49,31 @@ the workaround silently.
   exists.
 - **Do not add a component because one screen wants it.** The Platform's
   emit-side is a consumer of this contract, not its owner.
+- **`definitions/*.json` is the only place a component is authored. This is a
+  hard rule and it has been broken before.** Every composition — `PosterCard`,
+  `Section`, `AppShell`, `SettingsFrame` — is data here, one file per component,
+  and the aggregates are generated: `definitions.Library()` for the Platform to
+  serve, `ts/definitions.gen.ts` for a JS consumer with no Platform to ask.
+  Neither aggregate is a place to add one.
+
+  The rule exists because it was violated for most of this repository's life: ~30
+  components lived as hand-written TypeScript inside the React client, the
+  Platform served a dump of *that*, and this directory held four stale copies of
+  components the client had since changed — three of the four had drifted, and
+  nothing anywhere reported it. A component written in a client renders on that
+  client and nowhere else, which is precisely what the definition model exists to
+  prevent. If you are looking at a `.tsx` file and about to describe a layout in
+  it, stop: the file you want is here.
+- **The authoring layer must keep up.** `ui.spec.json` exposes a helper for every
+  prop a definition binds, and `go run ./tools/genui -lint` fails when it does
+  not — so a definition cannot be added without the Go and TS builders to author
+  it. A prop with no helper is a prop the emit-side sets by string, which is how
+  `ui.Subtitle` came to be set on a `Stack` that renders no subtitle, silently,
+  for the whole life of a screen.
+- **One prop key, one type, across every component.** `value` is a field's text,
+  so a switch's state is `on`; `meta` is a hero's variadic line, so a card's
+  provenance is `origin`. The generated helpers are typed, and a key that is a
+  string in one component and a boolean in another cannot be.
 
 ## Versioning and release
 
