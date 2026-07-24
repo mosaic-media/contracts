@@ -448,6 +448,15 @@ message Manifest {
   // that every declared role is actually served, so a role named but not
   // implemented is refused at connect time rather than discovered at call time.
   repeated string provides = 4;
+  // One sentence about what this module IS, in its author's words — "AIOStreams
+  // aggregates many sources behind one instance", not a list of roles.
+  //
+  // The Platform cannot write this: the roles say what a module can DO and are
+  // read off this manifest, but only the author can say what it is FOR, and a
+  // table of other people's modules maintained in the Platform would be stale
+  // the day a third party published one. Optional: a module that says nothing
+  // is described by its capabilities alone.
+  string description = 5;
 }
 
 message ManifestRequest {}

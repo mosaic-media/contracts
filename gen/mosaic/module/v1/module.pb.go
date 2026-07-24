@@ -2892,7 +2892,16 @@ type Manifest struct {
 	// The provider roles this module fills (ADR 0027). The handshake verifies
 	// that every declared role is actually served, so a role named but not
 	// implemented is refused at connect time rather than discovered at call time.
-	Provides      []string `protobuf:"bytes,4,rep,name=provides,proto3" json:"provides,omitempty"`
+	Provides []string `protobuf:"bytes,4,rep,name=provides,proto3" json:"provides,omitempty"`
+	// One sentence about what this module IS, in its author's words — "AIOStreams
+	// aggregates many sources behind one instance", not a list of roles.
+	//
+	// The Platform cannot write this: the roles say what a module can DO and are
+	// read off this manifest, but only the author can say what it is FOR, and a
+	// table of other people's modules maintained in the Platform would be stale
+	// the day a third party published one. Optional: a module that says nothing
+	// is described by its capabilities alone.
+	Description   string `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2953,6 +2962,13 @@ func (x *Manifest) GetProvides() []string {
 		return x.Provides
 	}
 	return nil
+}
+
+func (x *Manifest) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
 }
 
 type ManifestRequest struct {
@@ -7078,12 +7094,13 @@ const file_mosaic_module_v1_module_proto_rawDesc = "" +
 	"\x02id\x18\x03 \x01(\tR\x02id\":\n" +
 	"\x10ExternalIdentity\x12\x16\n" +
 	"\x06scheme\x18\x01 \x01(\tR\x06scheme\x12\x0e\n" +
-	"\x02id\x18\x02 \x01(\tR\x02id\"d\n" +
+	"\x02id\x18\x02 \x01(\tR\x02id\"\x86\x01\n" +
 	"\bManifest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x18\n" +
 	"\aversion\x18\x02 \x01(\tR\aversion\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1a\n" +
-	"\bprovides\x18\x04 \x03(\tR\bprovides\"\x11\n" +
+	"\bprovides\x18\x04 \x03(\tR\bprovides\x12 \n" +
+	"\vdescription\x18\x05 \x01(\tR\vdescription\"\x11\n" +
 	"\x0fManifestRequest\"J\n" +
 	"\x10ManifestResponse\x126\n" +
 	"\bmanifest\x18\x01 \x01(\v2\x1a.mosaic.module.v1.ManifestR\bmanifest\"\x8d\x01\n" +
