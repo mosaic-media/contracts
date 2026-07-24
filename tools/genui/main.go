@@ -246,8 +246,12 @@ func goType(t string) string {
 		return "float64"
 	case "Action":
 		return "Action"
+	case "bool":
+		return "bool"
 	case "props":
 		return "map[string]any"
+	case "[]props":
+		return "[]any"
 	default:
 		fatalf("unknown Go type %q", t)
 		return ""
@@ -379,8 +383,12 @@ func tsType(t string) string {
 		return "number"
 	case "Action":
 		return "Action"
+	case "bool":
+		return "boolean"
 	case "props":
 		return "Props"
+	case "[]props":
+		return "Props[]"
 	default:
 		fatalf("unknown TS type %q", t)
 		return ""
@@ -488,8 +496,19 @@ func runLint(sp spec, defsDir string) []string {
 		binds, aliases, outlets := map[string]bool{}, map[string]bool{}, map[string]bool{}
 		collect(def.Template, binds, aliases, outlets)
 		for b := range binds {
-			if aliases[b] {
-				continue // a local $each alias, not a component prop
+			// A $each alias and anything under it ("s", "s.label") is a loop
+			// variable, not a component prop. Matching only the bare alias missed
+			// every dotted path, which is the form a repeated node actually uses —
+			// so any definition with an $each in it could not pass this lint, and
+			// none of them lived here.
+			if root, _, _ := strings.Cut(b, "."); aliases[root] {
+				continue
+			}
+			// Runtime-injected bindings ($childCount, $slots) are supplied by the
+			// expander from what the caller passed, so no helper sets them and
+			// none should.
+			if strings.HasPrefix(b, "$") {
+				continue
 			}
 			if !authorable[b] {
 				errs = append(errs, fmt.Sprintf("%s: template binds %q but no ui helper sets it (add it as a positional arg or sugar in ui.spec.json)", base, b))
