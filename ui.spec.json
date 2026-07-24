@@ -197,6 +197,246 @@
       "key": "partId",
       "type": "string",
       "doc": "PartID names the release a Player is playing, recorded with the position so a resume returns to the same encode (ADR 0046)."
+    },
+    {
+      "func": "Disabled",
+      "key": "disabled",
+      "type": "bool",
+      "doc": "Disabled greys a control and stops it emitting."
+    },
+    {
+      "func": "Icon",
+      "key": "icon",
+      "type": "string",
+      "doc": "Icon names the glyph a control or row shows."
+    },
+    {
+      "func": "ItemWidth",
+      "key": "itemWidth",
+      "type": "int",
+      "doc": "ItemWidth fixes a carousel's track width in px."
+    },
+    {
+      "func": "MinColumnWidth",
+      "key": "minColumnWidth",
+      "type": "int",
+      "doc": "MinColumnWidth is a grid's smallest column before it reflows, in px."
+    },
+    {
+      "func": "Rating",
+      "key": "rating",
+      "type": "string",
+      "doc": "Rating sets a displayed score."
+    },
+    {
+      "func": "RatingLabel",
+      "key": "ratingLabel",
+      "type": "string",
+      "doc": "RatingLabel is the source a rating came from."
+    },
+    {
+      "func": "Year",
+      "key": "year",
+      "type": "string",
+      "doc": "Year sets a release year."
+    },
+    {
+      "func": "Index",
+      "key": "index",
+      "type": "int",
+      "doc": "Index is an episode's number within its season."
+    },
+    {
+      "func": "Runtime",
+      "key": "runtime",
+      "type": "string",
+      "doc": "Runtime is a human-readable duration."
+    },
+    {
+      "func": "Thumbnail",
+      "key": "thumbnail",
+      "type": "string",
+      "doc": "Thumbnail sets a row's still image."
+    },
+    {
+      "func": "Watched",
+      "key": "watched",
+      "type": "bool",
+      "doc": "Watched marks an episode as already seen."
+    },
+    {
+      "func": "Credits",
+      "key": "credits",
+      "type": "[]string",
+      "doc": "Credits sets a hero's cast/crew line."
+    },
+    {
+      "func": "Kicker",
+      "key": "kicker",
+      "type": "string",
+      "doc": "Kicker is the eyebrow line above a hero's title."
+    },
+    {
+      "func": "NativeTitle",
+      "key": "nativeTitle",
+      "type": "string",
+      "doc": "NativeTitle is the original-language title shown beside the localised one."
+    },
+    {
+      "func": "ProgressLabel",
+      "key": "progressLabel",
+      "type": "string",
+      "doc": "ProgressLabel describes progress in words (\"24m left\")."
+    },
+    {
+      "func": "ShowTags",
+      "key": "showTags",
+      "type": "bool",
+      "doc": "ShowTags reveals a hero's tag row."
+    },
+    {
+      "func": "Avatar",
+      "key": "avatar",
+      "type": "string",
+      "doc": "Avatar sets a person's portrait."
+    },
+    {
+      "func": "Role",
+      "key": "role",
+      "type": "string",
+      "doc": "Role is a person's part — a character, or a crew credit."
+    },
+    {
+      "func": "Align",
+      "key": "align",
+      "type": "string",
+      "doc": "Align sets a stack's cross-axis alignment."
+    },
+    {
+      "func": "Justify",
+      "key": "justify",
+      "type": "string",
+      "doc": "Justify sets a stack's main-axis distribution."
+    },
+    {
+      "func": "Wrap",
+      "key": "wrap",
+      "type": "bool",
+      "doc": "Wrap lets a stack run onto more than one line."
+    },
+    {
+      "func": "Retry",
+      "key": "retry",
+      "type": "Action",
+      "doc": "Retry is what an error state's try-again control emits."
+    },
+    {
+      "func": "Rows",
+      "key": "rows",
+      "type": "[]props",
+      "doc": "Rows are an info panel's label/value pairs."
+    },
+    {
+      "func": "Sources",
+      "key": "sources",
+      "type": "[]props",
+      "doc": "Sources are the resolved streams a picker offers."
+    },
+    {
+      "func": "Options",
+      "key": "options",
+      "type": "[]props",
+      "doc": "Options are a select's choices."
+    },
+    {
+      "func": "Capabilities",
+      "key": "capabilities",
+      "type": "[]props",
+      "doc": "Capabilities are the provider roles a module declares, as chips."
+    },
+    {
+      "func": "Summary",
+      "key": "summary",
+      "type": "string",
+      "doc": "Summary is a card's one-line description."
+    },
+    {
+      "func": "Value",
+      "key": "value",
+      "type": "string",
+      "doc": "Value is a field's current value."
+    },
+    {
+      "func": "Placeholder",
+      "key": "placeholder",
+      "type": "string",
+      "doc": "Placeholder is a field's empty-state hint."
+    },
+    {
+      "func": "Help",
+      "key": "help",
+      "type": "string",
+      "doc": "Help is the note under a field."
+    },
+    {
+      "func": "InputType",
+      "key": "inputType",
+      "type": "string",
+      "doc": "InputType selects the keyboard/validation a field asks for."
+    },
+    {
+      "func": "Heading",
+      "key": "heading",
+      "type": "string",
+      "doc": "Heading titles a frame's panel."
+    },
+    {
+      "func": "Selected",
+      "key": "selected",
+      "type": "bool",
+      "doc": "Selected says a section was asked for rather than defaulted to — what lets one payload drill down on a phone and show two panes on a desktop."
+    },
+    {
+      "func": "Active",
+      "key": "active",
+      "type": "bool",
+      "doc": "Active marks the open nav row."
+    },
+    {
+      "func": "HasPrev",
+      "key": "hasPrev",
+      "type": "bool",
+      "doc": "HasPrev enables a pagination's previous control."
+    },
+    {
+      "func": "HasNext",
+      "key": "hasNext",
+      "type": "bool",
+      "doc": "HasNext enables a pagination's next control."
+    },
+    {
+      "func": "PrevAction",
+      "key": "prevAction",
+      "type": "Action",
+      "doc": "PrevAction is what a pagination's previous control emits."
+    },
+    {
+      "func": "NextAction",
+      "key": "nextAction",
+      "type": "Action",
+      "doc": "NextAction is what a pagination's next control emits."
+    },
+    {
+      "func": "On",
+      "key": "on",
+      "type": "bool",
+      "doc": "On is a switch's state. Distinct from Value, which is a field's text: one prop key cannot be a string in one component and a boolean in another, and a switch that read \\\"true\\\" as text would render on for the string \\\"false\\\" too."
+    },
+    {
+      "func": "Origin",
+      "key": "origin",
+      "type": "string",
+      "doc": "Origin is where a thing came from — an extension's id, version and repository. Distinct from Meta, which is a hero's variadic meta line: the same key cannot be a string in one component and a list in another."
     }
   ],
   "slots": [
@@ -209,6 +449,56 @@
       "func": "Aside",
       "name": "aside",
       "doc": "Aside fills the \"aside\" slot (a hero's docked poster)."
+    },
+    {
+      "func": "ActionSlot",
+      "name": "action",
+      "doc": "ActionSlot fills the \"action\" slot (an empty state's call to action)."
+    },
+    {
+      "func": "Header",
+      "name": "header",
+      "doc": "Header fills a screen's \"header\" slot."
+    },
+    {
+      "func": "Bleed",
+      "name": "bleed",
+      "doc": "Bleed fills a screen's edge-to-edge \"bleed\" slot (a cinematic hero)."
+    },
+    {
+      "func": "Rail",
+      "name": "rail",
+      "doc": "Rail fills a hero's \"rail\" slot."
+    },
+    {
+      "func": "Tags",
+      "name": "tags",
+      "doc": "Tags fills a hero's \"tags\" slot."
+    },
+    {
+      "func": "Nav",
+      "name": "nav",
+      "doc": "Nav fills a frame's \"nav\" slot."
+    },
+    {
+      "func": "Footer",
+      "name": "footer",
+      "doc": "Footer fills a frame's \"footer\" slot (level controls, not sections)."
+    },
+    {
+      "func": "Content",
+      "name": "content",
+      "doc": "Content fills the app frame's \"content\" region — where the current screen renders."
+    },
+    {
+      "func": "TopBar",
+      "name": "topbar",
+      "doc": "TopBar fills the app frame's \"topbar\" slot."
+    },
+    {
+      "func": "Account",
+      "name": "account",
+      "doc": "Account fills the app frame's \"account\" slot."
     }
   ],
   "components": [
@@ -410,6 +700,226 @@
         {
           "name": "title",
           "key": "title",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "func": "AppShell",
+      "type": "AppShell",
+      "doc": "AppShell is the application frame (ADR 0031): the brand bar, the nav and the region the current screen renders into.",
+      "positional": [
+        {
+          "name": "title",
+          "key": "title",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "func": "DetailHero",
+      "type": "DetailHero",
+      "doc": "DetailHero is a title's cinematic header — backdrop, logo and the actions docked over it.",
+      "positional": [
+        {
+          "name": "title",
+          "key": "title",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "func": "Divider",
+      "type": "Divider",
+      "doc": "Divider is a rule, optionally labelled."
+    },
+    {
+      "func": "ErrorState",
+      "type": "ErrorState",
+      "doc": "ErrorState renders a Platform error category as something a person can act on.",
+      "positional": [
+        {
+          "name": "category",
+          "key": "category",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "func": "ExtensionCard",
+      "type": "ExtensionCard",
+      "doc": "ExtensionCard is one extension module — what it is, what it can do, and where its bytes come from (ADR 0081).",
+      "positional": [
+        {
+          "name": "name",
+          "key": "name",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "func": "IconButton",
+      "type": "IconButton",
+      "doc": "IconButton is a Button reduced to its icon; the label stays for assistive tech.",
+      "positional": [
+        {
+          "name": "icon",
+          "key": "icon",
+          "type": "string"
+        },
+        {
+          "name": "label",
+          "key": "label",
+          "type": "string"
+        },
+        {
+          "name": "variant",
+          "key": "variant",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "func": "InfoPanel",
+      "type": "InfoPanel",
+      "doc": "InfoPanel is a docked facts panel — a rating and a run of label/value rows."
+    },
+    {
+      "func": "MediaTile",
+      "type": "MediaTile",
+      "doc": "MediaTile is a landscape card for episodes and continue-watching.",
+      "positional": [
+        {
+          "name": "title",
+          "key": "title",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "func": "Pagination",
+      "type": "Pagination",
+      "doc": "Pagination is a prev/next pair. The server supplies both targets; the client does no arithmetic."
+    },
+    {
+      "func": "PlaybackBar",
+      "type": "PlaybackBar",
+      "doc": "PlaybackBar is the resume strip for something already started.",
+      "positional": [
+        {
+          "name": "title",
+          "key": "title",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "func": "RelatedRail",
+      "type": "RelatedRail",
+      "doc": "RelatedRail is a titled rail that says so when it is empty.",
+      "positional": [
+        {
+          "name": "title",
+          "key": "title",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "func": "Select",
+      "type": "Select",
+      "doc": "Select is a labelled dropdown over server-supplied options.",
+      "positional": [
+        {
+          "name": "label",
+          "key": "label",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "func": "SettingsFrame",
+      "type": "SettingsFrame",
+      "doc": "SettingsFrame is the Platform-owned settings chrome (ADR 0038): a nav beside the panel the open section fills.",
+      "positional": [
+        {
+          "name": "title",
+          "key": "title",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "func": "SettingsNavGroup",
+      "type": "SettingsNavGroup",
+      "doc": "SettingsNavGroup is one labelled run of settings nav rows.",
+      "positional": [
+        {
+          "name": "label",
+          "key": "label",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "func": "SettingsNavItem",
+      "type": "SettingsNavItem",
+      "doc": "SettingsNavItem is one settings nav row. The server marks the active one — it is the side that knows the params (ADR 0039).",
+      "positional": [
+        {
+          "name": "label",
+          "key": "label",
+          "type": "string"
+        },
+        {
+          "name": "icon",
+          "key": "icon",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "func": "SourcePicker",
+      "type": "SourcePicker",
+      "doc": "SourcePicker lists the resolved sources for a Part."
+    },
+    {
+      "func": "StatusIndicator",
+      "type": "StatusIndicator",
+      "doc": "StatusIndicator is a coloured dot with a label.",
+      "positional": [
+        {
+          "name": "label",
+          "key": "label",
+          "type": "string"
+        },
+        {
+          "name": "tone",
+          "key": "tone",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "func": "TextField",
+      "type": "TextField",
+      "doc": "TextField is a labelled text input with optional help.",
+      "positional": [
+        {
+          "name": "label",
+          "key": "label",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "func": "Toggle",
+      "type": "Toggle",
+      "doc": "Toggle is a switch with a label. It carries the value it moves TO — the client reports the flip, the server decides what it means.",
+      "positional": [
+        {
+          "name": "label",
+          "key": "label",
           "type": "string"
         }
       ]

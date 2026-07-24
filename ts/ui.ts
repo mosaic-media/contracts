@@ -92,6 +92,101 @@ export function EmptyState(icon: string, title: string): Element {
   return compose("EmptyState", { icon, title }, []);
 }
 
+/** AppShell is the application frame (ADR 0031): the brand bar, the nav and the region the current screen renders into. */
+export function AppShell(title: string, ...els: Elish[]): Element {
+  return compose("AppShell", { title }, els);
+}
+
+/** DetailHero is a title's cinematic header — backdrop, logo and the actions docked over it. */
+export function DetailHero(title: string, ...els: Elish[]): Element {
+  return compose("DetailHero", { title }, els);
+}
+
+/** Divider is a rule, optionally labelled. */
+export function Divider(...els: Elish[]): Element {
+  return compose("Divider", undefined, els);
+}
+
+/** ErrorState renders a Platform error category as something a person can act on. */
+export function ErrorState(category: string, ...els: Elish[]): Element {
+  return compose("ErrorState", { category }, els);
+}
+
+/** ExtensionCard is one extension module — what it is, what it can do, and where its bytes come from (ADR 0081). */
+export function ExtensionCard(name: string, ...els: Elish[]): Element {
+  return compose("ExtensionCard", { name }, els);
+}
+
+/** IconButton is a Button reduced to its icon; the label stays for assistive tech. */
+export function IconButton(icon: string, label: string, variant: string, ...els: Elish[]): Element {
+  return compose("IconButton", { icon, label, variant }, els);
+}
+
+/** InfoPanel is a docked facts panel — a rating and a run of label/value rows. */
+export function InfoPanel(...els: Elish[]): Element {
+  return compose("InfoPanel", undefined, els);
+}
+
+/** MediaTile is a landscape card for episodes and continue-watching. */
+export function MediaTile(title: string, ...els: Elish[]): Element {
+  return compose("MediaTile", { title }, els);
+}
+
+/** Pagination is a prev/next pair. The server supplies both targets; the client does no arithmetic. */
+export function Pagination(...els: Elish[]): Element {
+  return compose("Pagination", undefined, els);
+}
+
+/** PlaybackBar is the resume strip for something already started. */
+export function PlaybackBar(title: string, ...els: Elish[]): Element {
+  return compose("PlaybackBar", { title }, els);
+}
+
+/** RelatedRail is a titled rail that says so when it is empty. */
+export function RelatedRail(title: string, ...els: Elish[]): Element {
+  return compose("RelatedRail", { title }, els);
+}
+
+/** Select is a labelled dropdown over server-supplied options. */
+export function Select(label: string, ...els: Elish[]): Element {
+  return compose("Select", { label }, els);
+}
+
+/** SettingsFrame is the Platform-owned settings chrome (ADR 0038): a nav beside the panel the open section fills. */
+export function SettingsFrame(title: string, ...els: Elish[]): Element {
+  return compose("SettingsFrame", { title }, els);
+}
+
+/** SettingsNavGroup is one labelled run of settings nav rows. */
+export function SettingsNavGroup(label: string, ...els: Elish[]): Element {
+  return compose("SettingsNavGroup", { label }, els);
+}
+
+/** SettingsNavItem is one settings nav row. The server marks the active one — it is the side that knows the params (ADR 0039). */
+export function SettingsNavItem(label: string, icon: string, ...els: Elish[]): Element {
+  return compose("SettingsNavItem", { label, icon }, els);
+}
+
+/** SourcePicker lists the resolved sources for a Part. */
+export function SourcePicker(...els: Elish[]): Element {
+  return compose("SourcePicker", undefined, els);
+}
+
+/** StatusIndicator is a coloured dot with a label. */
+export function StatusIndicator(label: string, tone: string, ...els: Elish[]): Element {
+  return compose("StatusIndicator", { label, tone }, els);
+}
+
+/** TextField is a labelled text input with optional help. */
+export function TextField(label: string, ...els: Elish[]): Element {
+  return compose("TextField", { label }, els);
+}
+
+/** Toggle is a switch with a label. It carries the value it moves TO — the client reports the flip, the server decides what it means. */
+export function Toggle(label: string, ...els: Elish[]): Element {
+  return compose("Toggle", { label }, els);
+}
+
 /** Component is the generic constructor for a type without a helper (a standard component like SeasonSelector, or a module's own). */
 export function Component(typ: string, ...els: Elish[]): Element {
   return compose(typ, undefined, els);
@@ -107,6 +202,56 @@ export function Actions(...els: Elish[]): El {
 /** Aside fills the "aside" slot (a hero's docked poster). */
 export function Aside(...els: Elish[]): El {
   return Slot("aside", ...els);
+}
+
+/** ActionSlot fills the "action" slot (an empty state's call to action). */
+export function ActionSlot(...els: Elish[]): El {
+  return Slot("action", ...els);
+}
+
+/** Header fills a screen's "header" slot. */
+export function Header(...els: Elish[]): El {
+  return Slot("header", ...els);
+}
+
+/** Bleed fills a screen's edge-to-edge "bleed" slot (a cinematic hero). */
+export function Bleed(...els: Elish[]): El {
+  return Slot("bleed", ...els);
+}
+
+/** Rail fills a hero's "rail" slot. */
+export function Rail(...els: Elish[]): El {
+  return Slot("rail", ...els);
+}
+
+/** Tags fills a hero's "tags" slot. */
+export function Tags(...els: Elish[]): El {
+  return Slot("tags", ...els);
+}
+
+/** Nav fills a frame's "nav" slot. */
+export function Nav(...els: Elish[]): El {
+  return Slot("nav", ...els);
+}
+
+/** Footer fills a frame's "footer" slot (level controls, not sections). */
+export function Footer(...els: Elish[]): El {
+  return Slot("footer", ...els);
+}
+
+/** Content fills the app frame's "content" region — where the current screen renders. */
+export function Content(...els: Elish[]): El {
+  return Slot("content", ...els);
+}
+
+/** TopBar fills the app frame's "topbar" slot. */
+export function TopBar(...els: Elish[]): El {
+  return Slot("topbar", ...els);
+}
+
+/** Account fills the app frame's "account" slot. */
+export function Account(...els: Elish[]): El {
+  return Slot("account", ...els);
 }
 
 // ── sugar ──────────────────────────────────────────────────────────────────
@@ -189,6 +334,206 @@ export function NodeID(v: string): El {
 /** PartID names the release a Player is playing, recorded with the position so a resume returns to the same encode (ADR 0046). */
 export function PartID(v: string): El {
   return Prop("partId", v);
+}
+
+/** Disabled greys a control and stops it emitting. */
+export function Disabled(v: boolean): El {
+  return Prop("disabled", v);
+}
+
+/** Icon names the glyph a control or row shows. */
+export function Icon(v: string): El {
+  return Prop("icon", v);
+}
+
+/** ItemWidth fixes a carousel's track width in px. */
+export function ItemWidth(v: number): El {
+  return Prop("itemWidth", v);
+}
+
+/** MinColumnWidth is a grid's smallest column before it reflows, in px. */
+export function MinColumnWidth(v: number): El {
+  return Prop("minColumnWidth", v);
+}
+
+/** Rating sets a displayed score. */
+export function Rating(v: string): El {
+  return Prop("rating", v);
+}
+
+/** RatingLabel is the source a rating came from. */
+export function RatingLabel(v: string): El {
+  return Prop("ratingLabel", v);
+}
+
+/** Year sets a release year. */
+export function Year(v: string): El {
+  return Prop("year", v);
+}
+
+/** Index is an episode's number within its season. */
+export function Index(v: number): El {
+  return Prop("index", v);
+}
+
+/** Runtime is a human-readable duration. */
+export function Runtime(v: string): El {
+  return Prop("runtime", v);
+}
+
+/** Thumbnail sets a row's still image. */
+export function Thumbnail(v: string): El {
+  return Prop("thumbnail", v);
+}
+
+/** Watched marks an episode as already seen. */
+export function Watched(v: boolean): El {
+  return Prop("watched", v);
+}
+
+/** Credits sets a hero's cast/crew line. */
+export function Credits(...v: string[]): El {
+  return Prop("credits", v);
+}
+
+/** Kicker is the eyebrow line above a hero's title. */
+export function Kicker(v: string): El {
+  return Prop("kicker", v);
+}
+
+/** NativeTitle is the original-language title shown beside the localised one. */
+export function NativeTitle(v: string): El {
+  return Prop("nativeTitle", v);
+}
+
+/** ProgressLabel describes progress in words ("24m left"). */
+export function ProgressLabel(v: string): El {
+  return Prop("progressLabel", v);
+}
+
+/** ShowTags reveals a hero's tag row. */
+export function ShowTags(v: boolean): El {
+  return Prop("showTags", v);
+}
+
+/** Avatar sets a person's portrait. */
+export function Avatar(v: string): El {
+  return Prop("avatar", v);
+}
+
+/** Role is a person's part — a character, or a crew credit. */
+export function Role(v: string): El {
+  return Prop("role", v);
+}
+
+/** Align sets a stack's cross-axis alignment. */
+export function Align(v: string): El {
+  return Prop("align", v);
+}
+
+/** Justify sets a stack's main-axis distribution. */
+export function Justify(v: string): El {
+  return Prop("justify", v);
+}
+
+/** Wrap lets a stack run onto more than one line. */
+export function Wrap(v: boolean): El {
+  return Prop("wrap", v);
+}
+
+/** Retry is what an error state's try-again control emits. */
+export function Retry(v: Action): El {
+  return Prop("retry", v);
+}
+
+/** Rows are an info panel's label/value pairs. */
+export function Rows(v: Props[]): El {
+  return Prop("rows", v);
+}
+
+/** Sources are the resolved streams a picker offers. */
+export function Sources(v: Props[]): El {
+  return Prop("sources", v);
+}
+
+/** Options are a select's choices. */
+export function Options(v: Props[]): El {
+  return Prop("options", v);
+}
+
+/** Capabilities are the provider roles a module declares, as chips. */
+export function Capabilities(v: Props[]): El {
+  return Prop("capabilities", v);
+}
+
+/** Summary is a card's one-line description. */
+export function Summary(v: string): El {
+  return Prop("summary", v);
+}
+
+/** Value is a field's current value. */
+export function Value(v: string): El {
+  return Prop("value", v);
+}
+
+/** Placeholder is a field's empty-state hint. */
+export function Placeholder(v: string): El {
+  return Prop("placeholder", v);
+}
+
+/** Help is the note under a field. */
+export function Help(v: string): El {
+  return Prop("help", v);
+}
+
+/** InputType selects the keyboard/validation a field asks for. */
+export function InputType(v: string): El {
+  return Prop("inputType", v);
+}
+
+/** Heading titles a frame's panel. */
+export function Heading(v: string): El {
+  return Prop("heading", v);
+}
+
+/** Selected says a section was asked for rather than defaulted to — what lets one payload drill down on a phone and show two panes on a desktop. */
+export function Selected(v: boolean): El {
+  return Prop("selected", v);
+}
+
+/** Active marks the open nav row. */
+export function Active(v: boolean): El {
+  return Prop("active", v);
+}
+
+/** HasPrev enables a pagination's previous control. */
+export function HasPrev(v: boolean): El {
+  return Prop("hasPrev", v);
+}
+
+/** HasNext enables a pagination's next control. */
+export function HasNext(v: boolean): El {
+  return Prop("hasNext", v);
+}
+
+/** PrevAction is what a pagination's previous control emits. */
+export function PrevAction(v: Action): El {
+  return Prop("prevAction", v);
+}
+
+/** NextAction is what a pagination's next control emits. */
+export function NextAction(v: Action): El {
+  return Prop("nextAction", v);
+}
+
+/** On is a switch's state. Distinct from Value, which is a field's text: one prop key cannot be a string in one component and a boolean in another, and a switch that read \"true\" as text would render on for the string \"false\" too. */
+export function On(v: boolean): El {
+  return Prop("on", v);
+}
+
+/** Origin is where a thing came from — an extension's id, version and repository. Distinct from Meta, which is a hero's variadic meta line: the same key cannot be a string in one component and a list in another. */
+export function Origin(v: string): El {
+  return Prop("origin", v);
 }
 
 // Tone values (the open-bag string encoding), mirroring the Go Tone constants.

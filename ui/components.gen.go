@@ -82,6 +82,93 @@ func EmptyState(icon string, title string) *Element {
 	return compose("EmptyState", map[string]any{"icon": icon, "title": title}, nil)
 }
 
+// AppShell is the application frame (ADR 0031): the brand bar, the nav and the region the current screen renders into.
+func AppShell(title string, els ...El) *Element {
+	return compose("AppShell", map[string]any{"title": title}, els)
+}
+
+// DetailHero is a title's cinematic header — backdrop, logo and the actions docked over it.
+func DetailHero(title string, els ...El) *Element {
+	return compose("DetailHero", map[string]any{"title": title}, els)
+}
+
+// Divider is a rule, optionally labelled.
+func Divider(els ...El) *Element { return compose("Divider", nil, els) }
+
+// ErrorState renders a Platform error category as something a person can act on.
+func ErrorState(category string, els ...El) *Element {
+	return compose("ErrorState", map[string]any{"category": category}, els)
+}
+
+// ExtensionCard is one extension module — what it is, what it can do, and where its bytes come from (ADR 0081).
+func ExtensionCard(name string, els ...El) *Element {
+	return compose("ExtensionCard", map[string]any{"name": name}, els)
+}
+
+// IconButton is a Button reduced to its icon; the label stays for assistive tech.
+func IconButton(icon string, label string, variant string, els ...El) *Element {
+	return compose("IconButton", map[string]any{"icon": icon, "label": label, "variant": variant}, els)
+}
+
+// InfoPanel is a docked facts panel — a rating and a run of label/value rows.
+func InfoPanel(els ...El) *Element { return compose("InfoPanel", nil, els) }
+
+// MediaTile is a landscape card for episodes and continue-watching.
+func MediaTile(title string, els ...El) *Element {
+	return compose("MediaTile", map[string]any{"title": title}, els)
+}
+
+// Pagination is a prev/next pair. The server supplies both targets; the client does no arithmetic.
+func Pagination(els ...El) *Element { return compose("Pagination", nil, els) }
+
+// PlaybackBar is the resume strip for something already started.
+func PlaybackBar(title string, els ...El) *Element {
+	return compose("PlaybackBar", map[string]any{"title": title}, els)
+}
+
+// RelatedRail is a titled rail that says so when it is empty.
+func RelatedRail(title string, els ...El) *Element {
+	return compose("RelatedRail", map[string]any{"title": title}, els)
+}
+
+// Select is a labelled dropdown over server-supplied options.
+func Select(label string, els ...El) *Element {
+	return compose("Select", map[string]any{"label": label}, els)
+}
+
+// SettingsFrame is the Platform-owned settings chrome (ADR 0038): a nav beside the panel the open section fills.
+func SettingsFrame(title string, els ...El) *Element {
+	return compose("SettingsFrame", map[string]any{"title": title}, els)
+}
+
+// SettingsNavGroup is one labelled run of settings nav rows.
+func SettingsNavGroup(label string, els ...El) *Element {
+	return compose("SettingsNavGroup", map[string]any{"label": label}, els)
+}
+
+// SettingsNavItem is one settings nav row. The server marks the active one — it is the side that knows the params (ADR 0039).
+func SettingsNavItem(label string, icon string, els ...El) *Element {
+	return compose("SettingsNavItem", map[string]any{"label": label, "icon": icon}, els)
+}
+
+// SourcePicker lists the resolved sources for a Part.
+func SourcePicker(els ...El) *Element { return compose("SourcePicker", nil, els) }
+
+// StatusIndicator is a coloured dot with a label.
+func StatusIndicator(label string, tone string, els ...El) *Element {
+	return compose("StatusIndicator", map[string]any{"label": label, "tone": tone}, els)
+}
+
+// TextField is a labelled text input with optional help.
+func TextField(label string, els ...El) *Element {
+	return compose("TextField", map[string]any{"label": label}, els)
+}
+
+// Toggle is a switch with a label. It carries the value it moves TO — the client reports the flip, the server decides what it means.
+func Toggle(label string, els ...El) *Element {
+	return compose("Toggle", map[string]any{"label": label}, els)
+}
+
 // Component is the generic constructor for a type without a helper (a standard component like SeasonSelector, or a module's own).
 func Component(typ string, els ...El) *Element { return compose(typ, nil, els) }
 
@@ -92,6 +179,36 @@ func Actions(els ...El) El { return Slot("actions", els...) }
 
 // Aside fills the "aside" slot (a hero's docked poster).
 func Aside(els ...El) El { return Slot("aside", els...) }
+
+// ActionSlot fills the "action" slot (an empty state's call to action).
+func ActionSlot(els ...El) El { return Slot("action", els...) }
+
+// Header fills a screen's "header" slot.
+func Header(els ...El) El { return Slot("header", els...) }
+
+// Bleed fills a screen's edge-to-edge "bleed" slot (a cinematic hero).
+func Bleed(els ...El) El { return Slot("bleed", els...) }
+
+// Rail fills a hero's "rail" slot.
+func Rail(els ...El) El { return Slot("rail", els...) }
+
+// Tags fills a hero's "tags" slot.
+func Tags(els ...El) El { return Slot("tags", els...) }
+
+// Nav fills a frame's "nav" slot.
+func Nav(els ...El) El { return Slot("nav", els...) }
+
+// Footer fills a frame's "footer" slot (level controls, not sections).
+func Footer(els ...El) El { return Slot("footer", els...) }
+
+// Content fills the app frame's "content" region — where the current screen renders.
+func Content(els ...El) El { return Slot("content", els...) }
+
+// TopBar fills the app frame's "topbar" slot.
+func TopBar(els ...El) El { return Slot("topbar", els...) }
+
+// Account fills the app frame's "account" slot.
+func Account(els ...El) El { return Slot("account", els...) }
 
 // ── sugar ──────────────────────────────────────────────────────────────────
 
@@ -142,6 +259,126 @@ func NodeID(v string) El { return Prop("nodeId", v) }
 
 // PartID names the release a Player is playing, recorded with the position so a resume returns to the same encode (ADR 0046).
 func PartID(v string) El { return Prop("partId", v) }
+
+// Disabled greys a control and stops it emitting.
+func Disabled(v bool) El { return Prop("disabled", v) }
+
+// Icon names the glyph a control or row shows.
+func Icon(v string) El { return Prop("icon", v) }
+
+// ItemWidth fixes a carousel's track width in px.
+func ItemWidth(v int) El { return Prop("itemWidth", v) }
+
+// MinColumnWidth is a grid's smallest column before it reflows, in px.
+func MinColumnWidth(v int) El { return Prop("minColumnWidth", v) }
+
+// Rating sets a displayed score.
+func Rating(v string) El { return Prop("rating", v) }
+
+// RatingLabel is the source a rating came from.
+func RatingLabel(v string) El { return Prop("ratingLabel", v) }
+
+// Year sets a release year.
+func Year(v string) El { return Prop("year", v) }
+
+// Index is an episode's number within its season.
+func Index(v int) El { return Prop("index", v) }
+
+// Runtime is a human-readable duration.
+func Runtime(v string) El { return Prop("runtime", v) }
+
+// Thumbnail sets a row's still image.
+func Thumbnail(v string) El { return Prop("thumbnail", v) }
+
+// Watched marks an episode as already seen.
+func Watched(v bool) El { return Prop("watched", v) }
+
+// Credits sets a hero's cast/crew line.
+func Credits(v ...string) El { return Prop("credits", v) }
+
+// Kicker is the eyebrow line above a hero's title.
+func Kicker(v string) El { return Prop("kicker", v) }
+
+// NativeTitle is the original-language title shown beside the localised one.
+func NativeTitle(v string) El { return Prop("nativeTitle", v) }
+
+// ProgressLabel describes progress in words ("24m left").
+func ProgressLabel(v string) El { return Prop("progressLabel", v) }
+
+// ShowTags reveals a hero's tag row.
+func ShowTags(v bool) El { return Prop("showTags", v) }
+
+// Avatar sets a person's portrait.
+func Avatar(v string) El { return Prop("avatar", v) }
+
+// Role is a person's part — a character, or a crew credit.
+func Role(v string) El { return Prop("role", v) }
+
+// Align sets a stack's cross-axis alignment.
+func Align(v string) El { return Prop("align", v) }
+
+// Justify sets a stack's main-axis distribution.
+func Justify(v string) El { return Prop("justify", v) }
+
+// Wrap lets a stack run onto more than one line.
+func Wrap(v bool) El { return Prop("wrap", v) }
+
+// Retry is what an error state's try-again control emits.
+func Retry(v Action) El { return Prop("retry", v) }
+
+// Rows are an info panel's label/value pairs.
+func Rows(v []any) El { return Prop("rows", v) }
+
+// Sources are the resolved streams a picker offers.
+func Sources(v []any) El { return Prop("sources", v) }
+
+// Options are a select's choices.
+func Options(v []any) El { return Prop("options", v) }
+
+// Capabilities are the provider roles a module declares, as chips.
+func Capabilities(v []any) El { return Prop("capabilities", v) }
+
+// Summary is a card's one-line description.
+func Summary(v string) El { return Prop("summary", v) }
+
+// Value is a field's current value.
+func Value(v string) El { return Prop("value", v) }
+
+// Placeholder is a field's empty-state hint.
+func Placeholder(v string) El { return Prop("placeholder", v) }
+
+// Help is the note under a field.
+func Help(v string) El { return Prop("help", v) }
+
+// InputType selects the keyboard/validation a field asks for.
+func InputType(v string) El { return Prop("inputType", v) }
+
+// Heading titles a frame's panel.
+func Heading(v string) El { return Prop("heading", v) }
+
+// Selected says a section was asked for rather than defaulted to — what lets one payload drill down on a phone and show two panes on a desktop.
+func Selected(v bool) El { return Prop("selected", v) }
+
+// Active marks the open nav row.
+func Active(v bool) El { return Prop("active", v) }
+
+// HasPrev enables a pagination's previous control.
+func HasPrev(v bool) El { return Prop("hasPrev", v) }
+
+// HasNext enables a pagination's next control.
+func HasNext(v bool) El { return Prop("hasNext", v) }
+
+// PrevAction is what a pagination's previous control emits.
+func PrevAction(v Action) El { return Prop("prevAction", v) }
+
+// NextAction is what a pagination's next control emits.
+func NextAction(v Action) El { return Prop("nextAction", v) }
+
+// On is a switch's state. Distinct from Value, which is a field's text: one prop key cannot be a string in one component and a boolean in another, and a switch that read \"true\" as text would render on for the string \"false\" too.
+func On(v bool) El { return Prop("on", v) }
+
+// Origin is where a thing came from — an extension's id, version and repository. Distinct from Meta, which is a hero's variadic meta line: the same key cannot be a string in one component and a list in another.
+func Origin(v string) El { return Prop("origin", v) }
 
 // Tone values (the open-bag string encoding), re-exported from the producer binding.
 const (
