@@ -33,6 +33,36 @@ type Node = *sduiv1.UINode
 // generated constructors (Navigate, Invoke, Play).
 type Action = sdui.Action
 
+// Surface names where an overlay is presented — a modal, a sheet or a drawer.
+// Re-exported with its values so an author does not reach past the ui layer for
+// a constant.
+type Surface = sdui.Surface
+
+const (
+	SurfaceModal  = sdui.SurfaceModal
+	SurfaceSheet  = sdui.SurfaceSheet
+	SurfaceDrawer = sdui.SurfaceDrawer
+)
+
+// Overlay presents an element over the current screen instead of navigating to
+// it — a confirmation, a picker, a detail sheet.
+//
+// It is hand-written rather than generated because it is the one action whose
+// argument is a *tree*: the node rides inside the action, so the authoring layer
+// has to build it. The generated constructors take scalars and prop bags.
+//
+// Reach for it when what you are presenting is a decision about the screen
+// you're on. A screen is the wrong shape for that — it takes the context away
+// and needs a way back to it — which is why the extension install confirmation
+// is this and not a route.
+func Overlay(surface Surface, el *Element) Action {
+	return sdui.OpenOverlay(surface, el.Build())
+}
+
+// DismissOverlay closes the topmost overlay. It is what a cancel control emits:
+// the overlay never navigated anywhere, so there is nothing to navigate back to.
+func DismissOverlay() Action { return sdui.CloseOverlay() }
+
 // El is anything that composes into an element: a child, a prop, or a slot. A
 // component accepts ...El and lets them intermix.
 type El interface{ applyTo(*Element) }
