@@ -110,12 +110,49 @@ func TestExpansionCorpusIsWellFormed(t *testing.T) {
 	}
 }
 
+// The submit corpus, likewise published and not executed here: the merge is a
+// client dispatcher's behaviour and this repository has no dispatcher. Writing
+// one in Go to run the corpus is the same manufactured drift as an expander.
+//
+// It is worth saying why this file exists at all, since the rule in it looks
+// like a detail. The merge decided whose value wins when a form and its action
+// both name a field, it got that backwards, and it lived inline in the
+// dispatcher where nothing could call it. The symptom was a settings form that
+// reported success and saved nothing (ADR 0096). It was found by filling the
+// form in, which is the only way it could have been found.
+func TestSubmitCorpusIsWellFormed(t *testing.T) {
+	raw, err := conformance.Cases("submit")
+	if err != nil {
+		t.Fatalf("read: %v", err)
+	}
+	var doc struct {
+		Cases []struct {
+			Name   string         `json:"name"`
+			Action map[string]any `json:"action"`
+			Values map[string]any `json:"values"`
+			Into   string         `json:"into"`
+			Expect map[string]any `json:"expect"`
+		} `json:"cases"`
+	}
+	if err := json.Unmarshal(raw, &doc); err != nil {
+		t.Fatalf("parse: %v", err)
+	}
+	if len(doc.Cases) < 8 {
+		t.Fatalf("the submit corpus has shrunk to %d cases", len(doc.Cases))
+	}
+	for _, c := range doc.Cases {
+		if c.Name == "" || c.Action == nil || c.Expect == nil {
+			t.Errorf("case %q is incomplete", c.Name)
+		}
+	}
+}
+
 // Every corpus file is reachable through the embed, so one added to the
 // directory and forgotten in the loader is a failure rather than a file nobody
 // runs.
 func TestEveryCorpusFileIsAccountedFor(t *testing.T) {
 	files := conformance.CaseFiles()
-	if len(files) != 4 {
-		t.Errorf("corpus files = %v; the runners cover four", files)
+	if len(files) != 5 {
+		t.Errorf("corpus files = %v; the runners cover five", files)
 	}
 }

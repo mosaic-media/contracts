@@ -1,0 +1,111 @@
+{
+  "$comment": "Golden cases for the submit merge (ADR 0096): what a form sends, given the values it collected and the action it carries. The rule this asserts is that the scope wins over the action's own input for the names the form declares. That is the reverse of what ADR 0088 decided, and the reversal is here rather than in prose because the original rule was wrong in a way no build could see: it discarded what a person typed and reported success. `into` is the destination, absent for the top level.",
+  "cases": [
+    {
+      "name": "values land at the top of the input when there is no destination",
+      "action": { "kind": "invoke", "command": "createLocalUser" },
+      "values": { "displayName": "Ada" },
+      "expect": { "kind": "invoke", "command": "createLocalUser", "input": { "displayName": "Ada" } }
+    },
+    {
+      "name": "values land under the destination when there is one",
+      "action": { "kind": "invoke", "command": "configureModule", "input": { "moduleId": "tmdb" } },
+      "values": { "apiKey": "secret" },
+      "into": "settings",
+      "expect": {
+        "kind": "invoke",
+        "command": "configureModule",
+        "input": { "moduleId": "tmdb", "settings": { "apiKey": "secret" } }
+      }
+    },
+    {
+      "name": "the destination merges into what the action already put there",
+      "action": {
+        "kind": "invoke",
+        "command": "configureModule",
+        "input": { "moduleId": "tmdb", "settings": { "language": "en-US", "region": "" } }
+      },
+      "values": { "region": "GB" },
+      "into": "settings",
+      "expect": {
+        "kind": "invoke",
+        "command": "configureModule",
+        "input": { "moduleId": "tmdb", "settings": { "language": "en-US", "region": "GB" } }
+      }
+    },
+    {
+      "name": "a typed value beats the blank the producer sent for the same field",
+      "$comment": "The case the live migration failed. A module rewrites its whole settings document, so it must send `region` — and it sends it blank, because a form that rendered the old value back would make every save look like a no-op. Under the old rule that blank won and the save silently stored nothing.",
+      "action": { "kind": "invoke", "command": "configureModule", "input": { "settings": { "region": "" } } },
+      "values": { "region": "GB" },
+      "into": "settings",
+      "expect": { "kind": "invoke", "command": "configureModule", "input": { "settings": { "region": "GB" } } }
+    },
+    {
+      "name": "a field the form does not declare keeps the producer's value",
+      "$comment": "Pinning still works, and this is how: leave the field out of the form's scope. What the producer set is then the only value there is.",
+      "action": { "kind": "invoke", "command": "configureModule", "input": { "settings": { "apiKey": "kept", "region": "" } } },
+      "values": { "region": "GB" },
+      "into": "settings",
+      "expect": {
+        "kind": "invoke",
+        "command": "configureModule",
+        "input": { "settings": { "apiKey": "kept", "region": "GB" } }
+      }
+    },
+    {
+      "name": "a pending-addition field arrives beside the list it will be folded into",
+      "$comment": "How appending is done without a list operation on the wire: the module reads `addAddon`, appends it to `addons`, and stores the field back empty. The merge itself knows nothing about any of that — it delivers a string.",
+      "action": {
+        "kind": "invoke",
+        "command": "configureModule",
+        "input": { "settings": { "addons": ["a", "b"], "addAddon": "" } }
+      },
+      "values": { "addAddon": "https://example.test/manifest.json" },
+      "into": "settings",
+      "expect": {
+        "kind": "invoke",
+        "command": "configureModule",
+        "input": {
+          "settings": { "addons": ["a", "b"], "addAddon": "https://example.test/manifest.json" }
+        }
+      }
+    },
+    {
+      "name": "sibling keys outside the destination are untouched",
+      "action": {
+        "kind": "invoke",
+        "command": "configureModule",
+        "input": { "moduleId": "stremio", "settings": {} }
+      },
+      "values": { "moduleId": "spoofed" },
+      "into": "settings",
+      "expect": {
+        "kind": "invoke",
+        "command": "configureModule",
+        "input": { "moduleId": "stremio", "settings": { "moduleId": "spoofed" } }
+      }
+    },
+    {
+      "name": "no values collected leaves the action as it was",
+      "action": { "kind": "invoke", "command": "configureModule", "input": { "settings": { "region": "GB" } } },
+      "values": {},
+      "into": "settings",
+      "expect": { "kind": "invoke", "command": "configureModule", "input": { "settings": { "region": "GB" } } }
+    },
+    {
+      "name": "a non-invoke action is carried through untouched",
+      "$comment": "A navigate has no input to merge into. Inventing one would send it somewhere it was not pointed, so the values are dropped and the action goes as written.",
+      "action": { "kind": "navigate", "screen": "settings" },
+      "values": { "region": "GB" },
+      "expect": { "kind": "navigate", "screen": "settings" }
+    },
+    {
+      "name": "a destination on a non-invoke action changes nothing",
+      "action": { "kind": "navigate", "screen": "settings" },
+      "values": { "region": "GB" },
+      "into": "settings",
+      "expect": { "kind": "navigate", "screen": "settings" }
+    }
+  ]
+}
