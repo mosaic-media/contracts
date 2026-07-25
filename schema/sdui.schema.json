@@ -82,16 +82,20 @@
     },
     "ActionKind": {
       "title": "ActionKind",
+      "description": "The behaviours a client interprets. Kept in step with ui.spec.json and proto/mosaic/sdui/v1/sdui.proto by `go run ./tools/genui -lint`, which fails when the three disagree — they had drifted to ten, nine and four before that gate existed.",
       "enum": [
         "navigate",
-        "back",
-        "openUrl",
         "invoke",
+        "playPart",
+        "openUrl",
+        "back",
+        "query",
         "openOverlay",
         "closeOverlay",
-        "playPart",
         "toast",
-        "sequence"
+        "sequence",
+        "setValue",
+        "submit"
       ]
     },
     "Action": {
@@ -139,6 +143,14 @@
         },
         "tone": {
           "$ref": "#/$defs/Tone"
+        },
+        "field": {
+          "type": "string",
+          "description": "setValue: the name of the field written in the enclosing state scope."
+        },
+        "value": {
+          "type": "string",
+          "description": "setValue: the value written."
         },
         "actions": {
           "type": "array",

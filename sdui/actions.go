@@ -60,6 +60,37 @@ func Sequence(actions ...Action) Action {
 	return Action{Kind: KindSequence, Actions: actions}
 }
 
+// Query re-reads a screen's data without changing the route — the refresh a
+// search field wants when the term changes but the URL should not.
+//
+// A kind called `query` was removed from the contract by ADR 0061 along with
+// GraphQL; that one carried a raw GraphQL string and a region name, and was
+// unimplementable once there was no endpoint to send it to. This is a different
+// action wearing the same name: it names a screen the server already knows how
+// to build, exactly as Navigate does, and differs from Navigate only in not
+// pushing history.
+func Query(screen string, params map[string]any) Action {
+	return Action{Kind: KindQuery, Screen: strp(screen), Params: params}
+}
+
+// SetValue writes a value into a named field of the enclosing state scope.
+//
+// Declared, and not yet interpreted by any client — the scopes it writes into
+// arrive with state (S4) and forms (S5). It is in the vocabulary now because the
+// vocabulary is versioned and negotiated as a whole, not because anything emits
+// one; conformance/vocabulary.json is what makes that gap visible to a client
+// rather than leaving it to be discovered by a control that does nothing.
+func SetValue(field, value string) Action {
+	return Action{Kind: KindSetValue, Field: strp(field), Value: strp(value)}
+}
+
+// Submit validates the enclosing form and, if it passes, emits that form's
+// submit action with the collected field values merged into its input.
+//
+// Declared and not yet interpreted, for the same reason as SetValue: the form
+// scope it submits is S5's.
+func Submit() Action { return Action{Kind: KindSubmit} }
+
 // nodeToMap renders a node to the JSON object form that rides inside an action's
 // open bag (OpenOverlay). Nodes embedded in an action are rare; when absent this
 // is never called.

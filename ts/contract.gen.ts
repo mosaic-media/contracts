@@ -11,7 +11,11 @@
  * kind uses a subset of the fields.
  */
 export interface Action {
-    actions?:  Action[];
+    actions?: Action[];
+    /**
+     * setValue: the name of the field written in the enclosing state scope.
+     */
+    field?:    string;
     input?:    { [key: string]: any };
     kind:      ActionKind;
     message?:  string;
@@ -24,8 +28,17 @@ export interface Action {
     surface?:  Surface;
     tone?:     Tone;
     url?:      string;
+    /**
+     * setValue: the value written.
+     */
+    value?: string;
 }
 
+/**
+ * The behaviours a client interprets. Kept in step with ui.spec.json and
+ * proto/mosaic/sdui/v1/sdui.proto by `go run ./tools/genui -lint`, which fails when the
+ * three disagree — they had drifted to ten, nine and four before that gate existed.
+ */
 export enum ActionKind {
     Back = "back",
     CloseOverlay = "closeOverlay",
@@ -34,7 +47,10 @@ export enum ActionKind {
     OpenOverlay = "openOverlay",
     OpenURL = "openUrl",
     PlayPart = "playPart",
+    Query = "query",
     Sequence = "sequence",
+    SetValue = "setValue",
+    Submit = "submit",
     Toast = "toast",
 }
 

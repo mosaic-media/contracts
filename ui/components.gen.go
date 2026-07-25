@@ -6,6 +6,118 @@ package ui
 
 import "github.com/mosaic-media/contracts/sdui"
 
+// ── primitives ─────────────────────────────────────────────────────────────
+// The native tier: node types a client implements itself. They are authored
+// here rather than through Component("Box", …) because a type spelled as a
+// string is a type nothing checks — which is how seven primitives came to be
+// emitted by name with no entry in any contract.
+
+// Box is the layout container every composition is built from.
+// Native: The irreducible layout leaf. A definition is a tree of primitives, so the base case cannot itself be a definition. It also resolves style.responsive against the live viewport, which is a render-time branch no static tree can carry.
+func Box(els ...El) *Element { return compose("Box", nil, els) }
+
+// Text renders a run of text in a token style. Children render after the text, for inline nesting.
+// Native: The irreducible text leaf.
+func Text(els ...El) *Element { return compose("Text", nil, els) }
+
+// Image renders a remote or proxied image with a placeholder fallback.
+// Native: Loading a resource, handling decode failure and falling back to a placeholder are client behaviours. It also feeds the art-light sampler, which reads decoded pixels.
+func Image(els ...El) *Element { return compose("Image", nil, els) }
+
+// Icon renders one glyph from the client's bundled icon set.
+// Native: Resolves a name to a vector the client ships. The glyph set is a client asset, not data.
+func Icon(els ...El) *Element { return compose("Icon", nil, els) }
+
+// Pressable makes its subtree activate an Action.
+// Native: Turning a pointer, key or remote-control event into an Action dispatch is client behaviour.
+func Pressable(els ...El) *Element { return compose("Pressable", nil, els) }
+
+// Spacer occupies empty space in a stack, fixed or growing.
+// Native: An irreducible layout leaf.
+func Spacer(els ...El) *Element { return compose("Spacer", nil, els) }
+
+// Fragment renders its children with no wrapper of its own.
+// Native: A transparent grouping node the expander needs in order to return several nodes where one is expected.
+func Fragment(els ...El) *Element { return compose("Fragment", nil, els) }
+
+// Outlet marks the point in a definition's template where the caller's slot content is substituted.
+// Native: It is the definition expander's own mechanism. A definition defined in terms of Outlet cannot itself be expanded without it, so it must be native.
+func Outlet(els ...El) *Element { return compose("Outlet", nil, els) }
+
+// NavItem is one entry in the app frame's navigation.
+// Native: Owns active-route state: it compares the current screen against its own target, which only the client knows.
+func NavItem(els ...El) *Element { return compose("NavItem", nil, els) }
+
+// NavBar groups NavItems into the frame's responsive navigation.
+// Native: Presents as an inline bar or a bottom tab strip depending on the viewport — a render-time branch, not data.
+func NavBar(els ...El) *Element { return compose("NavBar", nil, els) }
+
+// Tabs shows one panel at a time behind a tab strip. Each tab's content goes in the named slot matching its id, not in the ordered child list — an ordered child is dropped.
+// Native: Owns the active tab index.
+func Tabs(els ...El) *Element { return compose("Tabs", nil, els) }
+
+// Rotator cross-fades through its children on a timer.
+// Native: Owns a timer and derives the active index from it, and republishes the active slide's palette to the acrylic surfaces.
+func Rotator(els ...El) *Element { return compose("Rotator", nil, els) }
+
+// TextInput is a bare text entry field.
+// Native: Owns its input value between keystroke and submission.
+func TextInput(els ...El) *Element { return compose("TextInput", nil, els) }
+
+// Switch is a bare on/off control.
+// Native: Owns its on/off state.
+func Switch(els ...El) *Element { return compose("Switch", nil, els) }
+
+// SelectInput is a bare dropdown.
+// Native: Owns its selected value.
+func SelectInput(els ...El) *Element { return compose("SelectInput", nil, els) }
+
+// Form collects the values of the fields in its subtree and submits them as one action.
+// Native: Aggregates live state across a whole subtree into a single action payload at submit time. No static tree can read its descendants' current values, which is why a multi-field screen was previously impossible to express.
+func Form(els ...El) *Element { return compose("Form", nil, els) }
+
+// SubmitField is a single text field with its own submit control.
+// Native: Owns its input value and substitutes it into the action at submit time.
+func SubmitField(els ...El) *Element { return compose("SubmitField", nil, els) }
+
+// SearchBar is the frame's persistent search entry.
+// Native: The submitted action must carry the live input value, and in a live session the value streams up debounced as it changes.
+func SearchBar(els ...El) *Element { return compose("SearchBar", nil, els) }
+
+// Menu is a click-to-open list of actions behind a trigger.
+// Native: Owns its open/closed state.
+func Menu(els ...El) *Element { return compose("Menu", nil, els) }
+
+// Slider selects a number in a range.
+// Native: Displays its own live value beside itself, so output couples to internal state.
+func Slider(els ...El) *Element { return compose("Slider", nil, els) }
+
+// RatingControl selects a star rating.
+// Native: Owns the selection.
+func RatingControl(els ...El) *Element { return compose("RatingControl", nil, els) }
+
+// SeasonSelector picks one season of a series.
+// Native: Owns the selected season.
+func SeasonSelector(els ...El) *Element { return compose("SeasonSelector", nil, els) }
+
+// ProgressBar shows a linear completion fraction.
+// Native: Fill geometry is computed from the value at render.
+func ProgressBar(els ...El) *Element { return compose("ProgressBar", nil, els) }
+
+// ProgressRing shows a circular completion fraction with the percentage inside.
+// Native: Arc geometry is computed from the value at render.
+func ProgressRing(els ...El) *Element { return compose("ProgressRing", nil, els) }
+
+// Skeleton is an animated loading placeholder.
+// Native: Expands to a repeated animated shape; the animation is a client concern.
+func Skeleton(els ...El) *Element { return compose("Skeleton", nil, els) }
+
+// Player is the playback surface.
+// Native: The client owns the decoding pipeline and the transport controls (ADR 0047, ADR 0070). A scrub bar cannot be driven over a network at frame rate.
+func Player(src string, els ...El) *Element {
+	return compose("Player", map[string]any{"src": src}, els)
+}
+
 // ── components ─────────────────────────────────────────────────────────────
 
 // Screen is the root of a server-defined page.
@@ -70,11 +182,6 @@ func PersonChip(name string, els ...El) *Element {
 // GenreTag is a genre chip.
 func GenreTag(label string, els ...El) *Element {
 	return compose("GenreTag", map[string]any{"label": label}, els)
-}
-
-// Player renders a video surface over a server-issued playback ticket (ADR 0047). The client owns the decoding pipeline and the transport controls; every field here is server-decided.
-func Player(src string, els ...El) *Element {
-	return compose("Player", map[string]any{"src": src}, els)
 }
 
 // EmptyState is a titled empty placeholder.
@@ -263,8 +370,8 @@ func PartID(v string) El { return Prop("partId", v) }
 // Disabled greys a control and stops it emitting.
 func Disabled(v bool) El { return Prop("disabled", v) }
 
-// Icon names the glyph a control or row shows.
-func Icon(v string) El { return Prop("icon", v) }
+// IconName names the glyph a control or row shows. It is not called Icon because Icon is the primitive that renders a glyph as a node of its own; this sets the `icon` prop of something that draws one.
+func IconName(v string) El { return Prop("icon", v) }
 
 // ItemWidth fixes a carousel's track width in px.
 func ItemWidth(v int) El { return Prop("itemWidth", v) }
@@ -383,6 +490,7 @@ func Origin(v string) El { return Prop("origin", v) }
 // Tone values (the open-bag string encoding), re-exported from the producer binding.
 const (
 	ToneNeutral = sdui.ToneNeutral
+	ToneAccent  = sdui.ToneAccent
 	ToneSuccess = sdui.ToneSuccess
 	ToneWarning = sdui.ToneWarning
 	ToneDanger  = sdui.ToneDanger
@@ -392,8 +500,16 @@ const (
 // Action constructors, re-exported from the producer binding; they ride the open
 // props bag as JSON (ADR 0044).
 var (
-	Navigate = sdui.Navigate
-	Invoke   = sdui.Invoke
-	Play     = sdui.Play
-	OpenURL  = sdui.OpenURL
+	Navigate     = sdui.Navigate
+	Invoke       = sdui.Invoke
+	Play         = sdui.Play
+	OpenURL      = sdui.OpenURL
+	Back         = sdui.Back
+	Query        = sdui.Query
+	OpenOverlay  = sdui.OpenOverlay
+	CloseOverlay = sdui.CloseOverlay
+	Toast        = sdui.Toast
+	Sequence     = sdui.Sequence
+	SetValue     = sdui.SetValue
+	Submit       = sdui.Submit
 )

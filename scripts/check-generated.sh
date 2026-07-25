@@ -13,6 +13,7 @@ scripts/generate.sh >/dev/null
 GENERATED=(
   sdui/contract/contract.gen.go ts/contract.gen.ts ui/components.gen.go ts/ui.ts
   ts/definitions.gen.ts tokens/tokens.css gen gen-ts
+  sdui/vocabulary.gen.go ts/vocabulary.gen.ts conformance/vocabulary.json
 )
 if ! git diff --quiet -- "${GENERATED[@]}"; then
   echo "ERROR: generated bindings are stale. Run scripts/generate.sh and commit." >&2

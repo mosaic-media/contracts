@@ -2,13 +2,198 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-FileCopyrightText: 2026 the Mosaic authors
 
-import { ActionKind, type Action } from "./contract.gen.js";
+import { ActionKind, Tone, type Action, type Surface } from "./contract.gen.js";
 import { compose, Prop, Slot, type El, type Elish, type Element, type Props } from "./ui_runtime.js";
 
 export { Group, ID, Prop, Slot, When, Element } from "./ui_runtime.js";
 export type { El, Elish, Props } from "./ui_runtime.js";
 export { ActionKind, Surface, Tone } from "./contract.gen.js";
 export type { Action, UINode } from "./contract.gen.js";
+
+// ── primitives ─────────────────────────────────────────────────────────────
+// The native tier: node types a client implements itself (ADR 0024).
+
+/** Box is the layout container every composition is built from.
+ *
+ *  Native: The irreducible layout leaf. A definition is a tree of primitives, so the base case cannot itself be a definition. It also resolves style.responsive against the live viewport, which is a render-time branch no static tree can carry. */
+export function Box(...els: Elish[]): Element {
+  return compose("Box", undefined, els);
+}
+
+/** Text renders a run of text in a token style. Children render after the text, for inline nesting.
+ *
+ *  Native: The irreducible text leaf. */
+export function Text(...els: Elish[]): Element {
+  return compose("Text", undefined, els);
+}
+
+/** Image renders a remote or proxied image with a placeholder fallback.
+ *
+ *  Native: Loading a resource, handling decode failure and falling back to a placeholder are client behaviours. It also feeds the art-light sampler, which reads decoded pixels. */
+export function Image(...els: Elish[]): Element {
+  return compose("Image", undefined, els);
+}
+
+/** Icon renders one glyph from the client's bundled icon set.
+ *
+ *  Native: Resolves a name to a vector the client ships. The glyph set is a client asset, not data. */
+export function Icon(...els: Elish[]): Element {
+  return compose("Icon", undefined, els);
+}
+
+/** Pressable makes its subtree activate an Action.
+ *
+ *  Native: Turning a pointer, key or remote-control event into an Action dispatch is client behaviour. */
+export function Pressable(...els: Elish[]): Element {
+  return compose("Pressable", undefined, els);
+}
+
+/** Spacer occupies empty space in a stack, fixed or growing.
+ *
+ *  Native: An irreducible layout leaf. */
+export function Spacer(...els: Elish[]): Element {
+  return compose("Spacer", undefined, els);
+}
+
+/** Fragment renders its children with no wrapper of its own.
+ *
+ *  Native: A transparent grouping node the expander needs in order to return several nodes where one is expected. */
+export function Fragment(...els: Elish[]): Element {
+  return compose("Fragment", undefined, els);
+}
+
+/** Outlet marks the point in a definition's template where the caller's slot content is substituted.
+ *
+ *  Native: It is the definition expander's own mechanism. A definition defined in terms of Outlet cannot itself be expanded without it, so it must be native. */
+export function Outlet(...els: Elish[]): Element {
+  return compose("Outlet", undefined, els);
+}
+
+/** NavItem is one entry in the app frame's navigation.
+ *
+ *  Native: Owns active-route state: it compares the current screen against its own target, which only the client knows. */
+export function NavItem(...els: Elish[]): Element {
+  return compose("NavItem", undefined, els);
+}
+
+/** NavBar groups NavItems into the frame's responsive navigation.
+ *
+ *  Native: Presents as an inline bar or a bottom tab strip depending on the viewport — a render-time branch, not data. */
+export function NavBar(...els: Elish[]): Element {
+  return compose("NavBar", undefined, els);
+}
+
+/** Tabs shows one panel at a time behind a tab strip. Each tab's content goes in the named slot matching its id, not in the ordered child list — an ordered child is dropped.
+ *
+ *  Native: Owns the active tab index. */
+export function Tabs(...els: Elish[]): Element {
+  return compose("Tabs", undefined, els);
+}
+
+/** Rotator cross-fades through its children on a timer.
+ *
+ *  Native: Owns a timer and derives the active index from it, and republishes the active slide's palette to the acrylic surfaces. */
+export function Rotator(...els: Elish[]): Element {
+  return compose("Rotator", undefined, els);
+}
+
+/** TextInput is a bare text entry field.
+ *
+ *  Native: Owns its input value between keystroke and submission. */
+export function TextInput(...els: Elish[]): Element {
+  return compose("TextInput", undefined, els);
+}
+
+/** Switch is a bare on/off control.
+ *
+ *  Native: Owns its on/off state. */
+export function Switch(...els: Elish[]): Element {
+  return compose("Switch", undefined, els);
+}
+
+/** SelectInput is a bare dropdown.
+ *
+ *  Native: Owns its selected value. */
+export function SelectInput(...els: Elish[]): Element {
+  return compose("SelectInput", undefined, els);
+}
+
+/** Form collects the values of the fields in its subtree and submits them as one action.
+ *
+ *  Native: Aggregates live state across a whole subtree into a single action payload at submit time. No static tree can read its descendants' current values, which is why a multi-field screen was previously impossible to express. */
+export function Form(...els: Elish[]): Element {
+  return compose("Form", undefined, els);
+}
+
+/** SubmitField is a single text field with its own submit control.
+ *
+ *  Native: Owns its input value and substitutes it into the action at submit time. */
+export function SubmitField(...els: Elish[]): Element {
+  return compose("SubmitField", undefined, els);
+}
+
+/** SearchBar is the frame's persistent search entry.
+ *
+ *  Native: The submitted action must carry the live input value, and in a live session the value streams up debounced as it changes. */
+export function SearchBar(...els: Elish[]): Element {
+  return compose("SearchBar", undefined, els);
+}
+
+/** Menu is a click-to-open list of actions behind a trigger.
+ *
+ *  Native: Owns its open/closed state. */
+export function Menu(...els: Elish[]): Element {
+  return compose("Menu", undefined, els);
+}
+
+/** Slider selects a number in a range.
+ *
+ *  Native: Displays its own live value beside itself, so output couples to internal state. */
+export function Slider(...els: Elish[]): Element {
+  return compose("Slider", undefined, els);
+}
+
+/** RatingControl selects a star rating.
+ *
+ *  Native: Owns the selection. */
+export function RatingControl(...els: Elish[]): Element {
+  return compose("RatingControl", undefined, els);
+}
+
+/** SeasonSelector picks one season of a series.
+ *
+ *  Native: Owns the selected season. */
+export function SeasonSelector(...els: Elish[]): Element {
+  return compose("SeasonSelector", undefined, els);
+}
+
+/** ProgressBar shows a linear completion fraction.
+ *
+ *  Native: Fill geometry is computed from the value at render. */
+export function ProgressBar(...els: Elish[]): Element {
+  return compose("ProgressBar", undefined, els);
+}
+
+/** ProgressRing shows a circular completion fraction with the percentage inside.
+ *
+ *  Native: Arc geometry is computed from the value at render. */
+export function ProgressRing(...els: Elish[]): Element {
+  return compose("ProgressRing", undefined, els);
+}
+
+/** Skeleton is an animated loading placeholder.
+ *
+ *  Native: Expands to a repeated animated shape; the animation is a client concern. */
+export function Skeleton(...els: Elish[]): Element {
+  return compose("Skeleton", undefined, els);
+}
+
+/** Player is the playback surface.
+ *
+ *  Native: The client owns the decoding pipeline and the transport controls (ADR 0047, ADR 0070). A scrub bar cannot be driven over a network at frame rate. */
+export function Player(src: string, ...els: Elish[]): Element {
+  return compose("Player", { src }, els);
+}
 
 // ── components ─────────────────────────────────────────────────────────────
 
@@ -80,11 +265,6 @@ export function PersonChip(name: string, ...els: Elish[]): Element {
 /** GenreTag is a genre chip. */
 export function GenreTag(label: string, ...els: Elish[]): Element {
   return compose("GenreTag", { label }, els);
-}
-
-/** Player renders a video surface over a server-issued playback ticket (ADR 0047). The client owns the decoding pipeline and the transport controls; every field here is server-decided. */
-export function Player(src: string, ...els: Elish[]): Element {
-  return compose("Player", { src }, els);
 }
 
 /** EmptyState is a titled empty placeholder. */
@@ -341,8 +521,8 @@ export function Disabled(v: boolean): El {
   return Prop("disabled", v);
 }
 
-/** Icon names the glyph a control or row shows. */
-export function Icon(v: string): El {
+/** IconName names the glyph a control or row shows. It is not called Icon because Icon is the primitive that renders a glyph as a node of its own; this sets the `icon` prop of something that draws one. */
+export function IconName(v: string): El {
   return Prop("icon", v);
 }
 
@@ -536,12 +716,15 @@ export function Origin(v: string): El {
   return Prop("origin", v);
 }
 
-// Tone values (the open-bag string encoding), mirroring the Go Tone constants.
-export const ToneNeutral = "neutral" as const;
-export const ToneSuccess = "success" as const;
-export const ToneWarning = "warning" as const;
-export const ToneDanger = "danger" as const;
-export const ToneInfo = "info" as const;
+// Tone values, mirroring the Go Tone constants. They are the schema enum's
+// members rather than bare strings, so passing one where the contract wants a
+// Tone typechecks.
+export const ToneNeutral = Tone.Neutral;
+export const ToneAccent = Tone.Accent;
+export const ToneSuccess = Tone.Success;
+export const ToneWarning = Tone.Warning;
+export const ToneDanger = Tone.Danger;
+export const ToneInfo = Tone.Info;
 
 // ── actions ────────────────────────────────────────────────────────────────
 // Actions ride inside the open props bag as JSON (ADR 0044); each constructor
@@ -565,4 +748,44 @@ export function Play(partId: string): Action {
 /** OpenURL opens an external URL (the client validates the scheme). */
 export function OpenURL(url: string): Action {
   return { kind: ActionKind.OpenURL, url };
+}
+
+/** Back returns to the previous screen. */
+export function Back(): Action {
+  return { kind: ActionKind.Back };
+}
+
+/** Query re-reads a screen's data without changing the route. */
+export function Query(screen: string, params?: Props): Action {
+  return { kind: ActionKind.Query, screen, ...(params ? { params } : {}) };
+}
+
+/** OpenOverlay presents a node as a modal, sheet or drawer. */
+export function OpenOverlay(surface: Surface): Action {
+  return { kind: ActionKind.OpenOverlay, surface };
+}
+
+/** CloseOverlay dismisses the topmost overlay. */
+export function CloseOverlay(): Action {
+  return { kind: ActionKind.CloseOverlay };
+}
+
+/** Toast shows a transient message. */
+export function Toast(message: string, tone?: Tone): Action {
+  return { kind: ActionKind.Toast, message, ...(tone ? { tone } : {}) };
+}
+
+/** Sequence runs several actions in order, stopping at the first failure. */
+export function Sequence(): Action {
+  return { kind: ActionKind.Sequence };
+}
+
+/** SetValue writes a value into a named field in the enclosing form scope. */
+export function SetValue(field: string, value: string): Action {
+  return { kind: ActionKind.SetValue, field, value };
+}
+
+/** Submit validates the enclosing form and, if it passes, emits its submitAction with the collected field values merged into the input. */
+export function Submit(): Action {
+  return { kind: ActionKind.Submit };
 }

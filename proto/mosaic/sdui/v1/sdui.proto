@@ -54,7 +54,10 @@ enum Surface {
   SURFACE_DRAWER = 3;
 }
 
-// ActionKind discriminates an Action's behaviour.
+// ActionKind discriminates an Action's behaviour. It is one of the three places
+// the vocabulary is written down — ui.spec.json and schema/sdui.schema.json are
+// the others — and `go run ./tools/genui -lint` fails when they disagree. They
+// did, silently, for the whole life of the project.
 enum ActionKind {
   ACTION_KIND_UNSPECIFIED = 0;
   ACTION_KIND_NAVIGATE = 1;
@@ -67,6 +70,8 @@ enum ActionKind {
   ACTION_KIND_PLAY_PART = 8;
   ACTION_KIND_TOAST = 9;
   ACTION_KIND_SEQUENCE = 10;
+  ACTION_KIND_SET_VALUE = 11;
+  ACTION_KIND_SUBMIT = 12;
 }
 
 // Action is a declarative behaviour envelope — data, never code. The client
@@ -74,15 +79,22 @@ enum ActionKind {
 // translation of the JSON-Schema Action; a `oneof` by kind is a possible future
 // refinement (it would churn the ergonomic constructors, so it is deferred).
 message Action {
+  // 7, 8 and 9 were the GraphQL query action's raw query string, its variables
+  // and the region to refresh into. ADR 0061 deleted GraphQL and removed that
+  // kind from the contract; the fields outlived it here because nothing
+  // reconciled this file against the schema. The numbers are reserved rather
+  // than reused: `query` is a live kind again with an entirely different
+  // payload, and a client reading an old message must not decode one as the
+  // other.
+  reserved 7, 8, 9;
+  reserved "query", "variables", "into";
+
   ActionKind kind = 1;
   string screen = 2;
   google.protobuf.Struct params = 3;
   string url = 4;
   string mutation = 5;
   google.protobuf.Struct input = 6;
-  string query = 7;
-  google.protobuf.Struct variables = 8;
-  string into = 9;
   Surface surface = 10;
   UINode node = 11;
   string part_id = 12;
@@ -90,6 +102,9 @@ message Action {
   string message = 14;
   Tone tone = 15;
   repeated Action actions = 16;
+  // setValue's target and value.
+  string field = 17;
+  string value = 18;
 }
 
 // ComponentDefinition expresses a component as data: a name, default params, and

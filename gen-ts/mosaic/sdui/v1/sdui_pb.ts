@@ -24,7 +24,7 @@ import type { JsonObject, Message } from "@bufbuild/protobuf";
  * Describes the file mosaic/sdui/v1/sdui.proto.
  */
 export const file_mosaic_sdui_v1_sdui: GenFile = /*@__PURE__*/
-  fileDesc("Chltb3NhaWMvc2R1aS92MS9zZHVpLnByb3RvEg5tb3NhaWMuc2R1aS52MSLuAQoGVUlOb2RlEgwKBHR5cGUYASABKAkSCgoCaWQYAiABKAkSJgoFcHJvcHMYAyABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0EigKCGNoaWxkcmVuGAQgAygLMhYubW9zYWljLnNkdWkudjEuVUlOb2RlEjAKBXNsb3RzGAUgAygLMiEubW9zYWljLnNkdWkudjEuVUlOb2RlLlNsb3RzRW50cnkaRgoKU2xvdHNFbnRyeRILCgNrZXkYASABKAkSJwoFdmFsdWUYAiABKAsyGC5tb3NhaWMuc2R1aS52MS5Ob2RlTGlzdDoCOAEiMQoITm9kZUxpc3QSJQoFbm9kZXMYASADKAsyFi5tb3NhaWMuc2R1aS52MS5VSU5vZGUiywMKBkFjdGlvbhIoCgRraW5kGAEgASgOMhoubW9zYWljLnNkdWkudjEuQWN0aW9uS2luZBIOCgZzY3JlZW4YAiABKAkSJwoGcGFyYW1zGAMgASgLMhcuZ29vZ2xlLnByb3RvYnVmLlN0cnVjdBILCgN1cmwYBCABKAkSEAoIbXV0YXRpb24YBSABKAkSJgoFaW5wdXQYBiABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0Eg0KBXF1ZXJ5GAcgASgJEioKCXZhcmlhYmxlcxgIIAEoCzIXLmdvb2dsZS5wcm90b2J1Zi5TdHJ1Y3QSDAoEaW50bxgJIAEoCRIoCgdzdXJmYWNlGAogASgOMhcubW9zYWljLnNkdWkudjEuU3VyZmFjZRIkCgRub2RlGAsgASgLMhYubW9zYWljLnNkdWkudjEuVUlOb2RlEg8KB3BhcnRfaWQYDCABKAkSDwoHbm9kZV9pZBgNIAEoCRIPCgdtZXNzYWdlGA4gASgJEiIKBHRvbmUYDyABKA4yFC5tb3NhaWMuc2R1aS52MS5Ub25lEicKB2FjdGlvbnMYECADKAsyFi5tb3NhaWMuc2R1aS52MS5BY3Rpb24idgoTQ29tcG9uZW50RGVmaW5pdGlvbhIMCgRuYW1lGAEgASgJEicKBnBhcmFtcxgCIAEoCzIXLmdvb2dsZS5wcm90b2J1Zi5TdHJ1Y3QSKAoIdGVtcGxhdGUYAyABKAsyFi5tb3NhaWMuc2R1aS52MS5VSU5vZGUqgwEKBFRvbmUSFAoQVE9ORV9VTlNQRUNJRklFRBAAEhAKDFRPTkVfTkVVVFJBTBABEg8KC1RPTkVfQUNDRU5UEAISEAoMVE9ORV9TVUNDRVNTEAMSEAoMVE9ORV9XQVJOSU5HEAQSDwoLVE9ORV9EQU5HRVIQBRINCglUT05FX0lORk8QBipcCgdTdXJmYWNlEhcKE1NVUkZBQ0VfVU5TUEVDSUZJRUQQABIRCg1TVVJGQUNFX01PREFMEAESEQoNU1VSRkFDRV9TSEVFVBACEhIKDlNVUkZBQ0VfRFJBV0VSEAMqqwIKCkFjdGlvbktpbmQSGwoXQUNUSU9OX0tJTkRfVU5TUEVDSUZJRUQQABIYChRBQ1RJT05fS0lORF9OQVZJR0FURRABEhQKEEFDVElPTl9LSU5EX0JBQ0sQAhIYChRBQ1RJT05fS0lORF9PUEVOX1VSTBADEhYKEkFDVElPTl9LSU5EX0lOVk9LRRAEEhUKEUFDVElPTl9LSU5EX1FVRVJZEAUSHAoYQUNUSU9OX0tJTkRfT1BFTl9PVkVSTEFZEAYSHQoZQUNUSU9OX0tJTkRfQ0xPU0VfT1ZFUkxBWRAHEhkKFUFDVElPTl9LSU5EX1BMQVlfUEFSVBAIEhUKEUFDVElPTl9LSU5EX1RPQVNUEAkSGAoUQUNUSU9OX0tJTkRfU0VRVUVOQ0UQCkI9WjtnaXRodWIuY29tL21vc2FpYy1tZWRpYS9jb250cmFjdHMvZ2VuL21vc2FpYy9zZHVpL3YxO3NkdWl2MWIGcHJvdG8z", [file_google_protobuf_struct]);
+  fileDesc("Chltb3NhaWMvc2R1aS92MS9zZHVpLnByb3RvEg5tb3NhaWMuc2R1aS52MSLuAQoGVUlOb2RlEgwKBHR5cGUYASABKAkSCgoCaWQYAiABKAkSJgoFcHJvcHMYAyABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0EigKCGNoaWxkcmVuGAQgAygLMhYubW9zYWljLnNkdWkudjEuVUlOb2RlEjAKBXNsb3RzGAUgAygLMiEubW9zYWljLnNkdWkudjEuVUlOb2RlLlNsb3RzRW50cnkaRgoKU2xvdHNFbnRyeRILCgNrZXkYASABKAkSJwoFdmFsdWUYAiABKAsyGC5tb3NhaWMuc2R1aS52MS5Ob2RlTGlzdDoCOAEiMQoITm9kZUxpc3QSJQoFbm9kZXMYASADKAsyFi5tb3NhaWMuc2R1aS52MS5VSU5vZGUiygMKBkFjdGlvbhIoCgRraW5kGAEgASgOMhoubW9zYWljLnNkdWkudjEuQWN0aW9uS2luZBIOCgZzY3JlZW4YAiABKAkSJwoGcGFyYW1zGAMgASgLMhcuZ29vZ2xlLnByb3RvYnVmLlN0cnVjdBILCgN1cmwYBCABKAkSEAoIbXV0YXRpb24YBSABKAkSJgoFaW5wdXQYBiABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0EigKB3N1cmZhY2UYCiABKA4yFy5tb3NhaWMuc2R1aS52MS5TdXJmYWNlEiQKBG5vZGUYCyABKAsyFi5tb3NhaWMuc2R1aS52MS5VSU5vZGUSDwoHcGFydF9pZBgMIAEoCRIPCgdub2RlX2lkGA0gASgJEg8KB21lc3NhZ2UYDiABKAkSIgoEdG9uZRgPIAEoDjIULm1vc2FpYy5zZHVpLnYxLlRvbmUSJwoHYWN0aW9ucxgQIAMoCzIWLm1vc2FpYy5zZHVpLnYxLkFjdGlvbhINCgVmaWVsZBgRIAEoCRINCgV2YWx1ZRgSIAEoCUoECAcQCEoECAgQCUoECAkQClIFcXVlcnlSCXZhcmlhYmxlc1IEaW50byJ2ChNDb21wb25lbnREZWZpbml0aW9uEgwKBG5hbWUYASABKAkSJwoGcGFyYW1zGAIgASgLMhcuZ29vZ2xlLnByb3RvYnVmLlN0cnVjdBIoCgh0ZW1wbGF0ZRgDIAEoCzIWLm1vc2FpYy5zZHVpLnYxLlVJTm9kZSqDAQoEVG9uZRIUChBUT05FX1VOU1BFQ0lGSUVEEAASEAoMVE9ORV9ORVVUUkFMEAESDwoLVE9ORV9BQ0NFTlQQAhIQCgxUT05FX1NVQ0NFU1MQAxIQCgxUT05FX1dBUk5JTkcQBBIPCgtUT05FX0RBTkdFUhAFEg0KCVRPTkVfSU5GTxAGKlwKB1N1cmZhY2USFwoTU1VSRkFDRV9VTlNQRUNJRklFRBAAEhEKDVNVUkZBQ0VfTU9EQUwQARIRCg1TVVJGQUNFX1NIRUVUEAISEgoOU1VSRkFDRV9EUkFXRVIQAyreAgoKQWN0aW9uS2luZBIbChdBQ1RJT05fS0lORF9VTlNQRUNJRklFRBAAEhgKFEFDVElPTl9LSU5EX05BVklHQVRFEAESFAoQQUNUSU9OX0tJTkRfQkFDSxACEhgKFEFDVElPTl9LSU5EX09QRU5fVVJMEAMSFgoSQUNUSU9OX0tJTkRfSU5WT0tFEAQSFQoRQUNUSU9OX0tJTkRfUVVFUlkQBRIcChhBQ1RJT05fS0lORF9PUEVOX09WRVJMQVkQBhIdChlBQ1RJT05fS0lORF9DTE9TRV9PVkVSTEFZEAcSGQoVQUNUSU9OX0tJTkRfUExBWV9QQVJUEAgSFQoRQUNUSU9OX0tJTkRfVE9BU1QQCRIYChRBQ1RJT05fS0lORF9TRVFVRU5DRRAKEhkKFUFDVElPTl9LSU5EX1NFVF9WQUxVRRALEhYKEkFDVElPTl9LSU5EX1NVQk1JVBAMQj1aO2dpdGh1Yi5jb20vbW9zYWljLW1lZGlhL2NvbnRyYWN0cy9nZW4vbW9zYWljL3NkdWkvdjE7c2R1aXYxYgZwcm90bzM", [file_google_protobuf_struct]);
 
 /**
  * UINode is one element of a server-driven UI tree. `type` is an open
@@ -127,21 +127,6 @@ export type Action = Message<"mosaic.sdui.v1.Action"> & {
   input?: JsonObject | undefined;
 
   /**
-   * @generated from field: string query = 7;
-   */
-  query: string;
-
-  /**
-   * @generated from field: google.protobuf.Struct variables = 8;
-   */
-  variables?: JsonObject | undefined;
-
-  /**
-   * @generated from field: string into = 9;
-   */
-  into: string;
-
-  /**
    * @generated from field: mosaic.sdui.v1.Surface surface = 10;
    */
   surface: Surface;
@@ -175,6 +160,18 @@ export type Action = Message<"mosaic.sdui.v1.Action"> & {
    * @generated from field: repeated mosaic.sdui.v1.Action actions = 16;
    */
   actions: Action[];
+
+  /**
+   * setValue's target and value.
+   *
+   * @generated from field: string field = 17;
+   */
+  field: string;
+
+  /**
+   * @generated from field: string value = 18;
+   */
+  value: string;
 };
 
 /**
@@ -297,7 +294,10 @@ export const SurfaceSchema: GenEnum<Surface> = /*@__PURE__*/
   enumDesc(file_mosaic_sdui_v1_sdui, 1);
 
 /**
- * ActionKind discriminates an Action's behaviour.
+ * ActionKind discriminates an Action's behaviour. It is one of the three places
+ * the vocabulary is written down — ui.spec.json and schema/sdui.schema.json are
+ * the others — and `go run ./tools/genui -lint` fails when they disagree. They
+ * did, silently, for the whole life of the project.
  *
  * @generated from enum mosaic.sdui.v1.ActionKind
  */
@@ -356,6 +356,16 @@ export enum ActionKind {
    * @generated from enum value: ACTION_KIND_SEQUENCE = 10;
    */
   SEQUENCE = 10,
+
+  /**
+   * @generated from enum value: ACTION_KIND_SET_VALUE = 11;
+   */
+  SET_VALUE = 11,
+
+  /**
+   * @generated from enum value: ACTION_KIND_SUBMIT = 12;
+   */
+  SUBMIT = 12,
 }
 
 /**

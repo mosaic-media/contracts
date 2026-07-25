@@ -47,6 +47,18 @@ the workaround silently.
   Growing the primitive set is the only thing that requires a client release, so
   it is a decision, not a convenience — prefer a definition composed from what
   exists.
+- **`ui.spec.json` is the vocabulary and all three tiers are generated from it**
+  (ADR 0083). Primitives, components, actions, tones, surfaces, validators and
+  predicates are declared there once; `go run ./tools/genui` emits the Go and TS
+  constructors, the registry (`sdui/vocabulary.gen.go`, `ts/vocabulary.gen.ts`)
+  and the client conformance fixture (`conformance/vocabulary.json`). **A
+  primitive is added here, not in a client** — that tier drifted for the whole
+  life of the project because ADR 0082's rule only ever covered components, and
+  the lint gates exist to keep it from happening again. Every primitive states
+  why it cannot be a definition, and lint refuses one that does not.
+- **The spec, `schema/sdui.schema.json` and `proto/mosaic/sdui/v1/sdui.proto`
+  must agree**, and `genui -lint` fails when they do not. Adding an action kind
+  means adding it in all three; that is the point.
 - **Do not add a component because one screen wants it.** The Platform's
   emit-side is a consumer of this contract, not its owner.
 - **`definitions/*.json` is the only place a component is authored. This is a

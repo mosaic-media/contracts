@@ -150,7 +150,10 @@ func (Surface) EnumDescriptor() ([]byte, []int) {
 	return file_mosaic_sdui_v1_sdui_proto_rawDescGZIP(), []int{1}
 }
 
-// ActionKind discriminates an Action's behaviour.
+// ActionKind discriminates an Action's behaviour. It is one of the three places
+// the vocabulary is written down — ui.spec.json and schema/sdui.schema.json are
+// the others — and `go run ./tools/genui -lint` fails when they disagree. They
+// did, silently, for the whole life of the project.
 type ActionKind int32
 
 const (
@@ -165,6 +168,8 @@ const (
 	ActionKind_ACTION_KIND_PLAY_PART     ActionKind = 8
 	ActionKind_ACTION_KIND_TOAST         ActionKind = 9
 	ActionKind_ACTION_KIND_SEQUENCE      ActionKind = 10
+	ActionKind_ACTION_KIND_SET_VALUE     ActionKind = 11
+	ActionKind_ACTION_KIND_SUBMIT        ActionKind = 12
 )
 
 // Enum value maps for ActionKind.
@@ -181,6 +186,8 @@ var (
 		8:  "ACTION_KIND_PLAY_PART",
 		9:  "ACTION_KIND_TOAST",
 		10: "ACTION_KIND_SEQUENCE",
+		11: "ACTION_KIND_SET_VALUE",
+		12: "ACTION_KIND_SUBMIT",
 	}
 	ActionKind_value = map[string]int32{
 		"ACTION_KIND_UNSPECIFIED":   0,
@@ -194,6 +201,8 @@ var (
 		"ACTION_KIND_PLAY_PART":     8,
 		"ACTION_KIND_TOAST":         9,
 		"ACTION_KIND_SEQUENCE":      10,
+		"ACTION_KIND_SET_VALUE":     11,
+		"ACTION_KIND_SUBMIT":        12,
 	}
 )
 
@@ -354,23 +363,23 @@ func (x *NodeList) GetNodes() []*UINode {
 // translation of the JSON-Schema Action; a `oneof` by kind is a possible future
 // refinement (it would churn the ergonomic constructors, so it is deferred).
 type Action struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Kind          ActionKind             `protobuf:"varint,1,opt,name=kind,proto3,enum=mosaic.sdui.v1.ActionKind" json:"kind,omitempty"`
-	Screen        string                 `protobuf:"bytes,2,opt,name=screen,proto3" json:"screen,omitempty"`
-	Params        *structpb.Struct       `protobuf:"bytes,3,opt,name=params,proto3" json:"params,omitempty"`
-	Url           string                 `protobuf:"bytes,4,opt,name=url,proto3" json:"url,omitempty"`
-	Mutation      string                 `protobuf:"bytes,5,opt,name=mutation,proto3" json:"mutation,omitempty"`
-	Input         *structpb.Struct       `protobuf:"bytes,6,opt,name=input,proto3" json:"input,omitempty"`
-	Query         string                 `protobuf:"bytes,7,opt,name=query,proto3" json:"query,omitempty"`
-	Variables     *structpb.Struct       `protobuf:"bytes,8,opt,name=variables,proto3" json:"variables,omitempty"`
-	Into          string                 `protobuf:"bytes,9,opt,name=into,proto3" json:"into,omitempty"`
-	Surface       Surface                `protobuf:"varint,10,opt,name=surface,proto3,enum=mosaic.sdui.v1.Surface" json:"surface,omitempty"`
-	Node          *UINode                `protobuf:"bytes,11,opt,name=node,proto3" json:"node,omitempty"`
-	PartId        string                 `protobuf:"bytes,12,opt,name=part_id,json=partId,proto3" json:"part_id,omitempty"`
-	NodeId        string                 `protobuf:"bytes,13,opt,name=node_id,json=nodeId,proto3" json:"node_id,omitempty"`
-	Message       string                 `protobuf:"bytes,14,opt,name=message,proto3" json:"message,omitempty"`
-	Tone          Tone                   `protobuf:"varint,15,opt,name=tone,proto3,enum=mosaic.sdui.v1.Tone" json:"tone,omitempty"`
-	Actions       []*Action              `protobuf:"bytes,16,rep,name=actions,proto3" json:"actions,omitempty"`
+	state    protoimpl.MessageState `protogen:"open.v1"`
+	Kind     ActionKind             `protobuf:"varint,1,opt,name=kind,proto3,enum=mosaic.sdui.v1.ActionKind" json:"kind,omitempty"`
+	Screen   string                 `protobuf:"bytes,2,opt,name=screen,proto3" json:"screen,omitempty"`
+	Params   *structpb.Struct       `protobuf:"bytes,3,opt,name=params,proto3" json:"params,omitempty"`
+	Url      string                 `protobuf:"bytes,4,opt,name=url,proto3" json:"url,omitempty"`
+	Mutation string                 `protobuf:"bytes,5,opt,name=mutation,proto3" json:"mutation,omitempty"`
+	Input    *structpb.Struct       `protobuf:"bytes,6,opt,name=input,proto3" json:"input,omitempty"`
+	Surface  Surface                `protobuf:"varint,10,opt,name=surface,proto3,enum=mosaic.sdui.v1.Surface" json:"surface,omitempty"`
+	Node     *UINode                `protobuf:"bytes,11,opt,name=node,proto3" json:"node,omitempty"`
+	PartId   string                 `protobuf:"bytes,12,opt,name=part_id,json=partId,proto3" json:"part_id,omitempty"`
+	NodeId   string                 `protobuf:"bytes,13,opt,name=node_id,json=nodeId,proto3" json:"node_id,omitempty"`
+	Message  string                 `protobuf:"bytes,14,opt,name=message,proto3" json:"message,omitempty"`
+	Tone     Tone                   `protobuf:"varint,15,opt,name=tone,proto3,enum=mosaic.sdui.v1.Tone" json:"tone,omitempty"`
+	Actions  []*Action              `protobuf:"bytes,16,rep,name=actions,proto3" json:"actions,omitempty"`
+	// setValue's target and value.
+	Field         string `protobuf:"bytes,17,opt,name=field,proto3" json:"field,omitempty"`
+	Value         string `protobuf:"bytes,18,opt,name=value,proto3" json:"value,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -447,27 +456,6 @@ func (x *Action) GetInput() *structpb.Struct {
 	return nil
 }
 
-func (x *Action) GetQuery() string {
-	if x != nil {
-		return x.Query
-	}
-	return ""
-}
-
-func (x *Action) GetVariables() *structpb.Struct {
-	if x != nil {
-		return x.Variables
-	}
-	return nil
-}
-
-func (x *Action) GetInto() string {
-	if x != nil {
-		return x.Into
-	}
-	return ""
-}
-
 func (x *Action) GetSurface() Surface {
 	if x != nil {
 		return x.Surface
@@ -515,6 +503,20 @@ func (x *Action) GetActions() []*Action {
 		return x.Actions
 	}
 	return nil
+}
+
+func (x *Action) GetField() string {
+	if x != nil {
+		return x.Field
+	}
+	return ""
+}
+
+func (x *Action) GetValue() string {
+	if x != nil {
+		return x.Value
+	}
+	return ""
 }
 
 // ComponentDefinition expresses a component as data: a name, default params, and
@@ -596,17 +598,14 @@ const file_mosaic_sdui_v1_sdui_proto_rawDesc = "" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12.\n" +
 	"\x05value\x18\x02 \x01(\v2\x18.mosaic.sdui.v1.NodeListR\x05value:\x028\x01\"8\n" +
 	"\bNodeList\x12,\n" +
-	"\x05nodes\x18\x01 \x03(\v2\x16.mosaic.sdui.v1.UINodeR\x05nodes\"\xc6\x04\n" +
+	"\x05nodes\x18\x01 \x03(\v2\x16.mosaic.sdui.v1.UINodeR\x05nodes\"\xbb\x04\n" +
 	"\x06Action\x12.\n" +
 	"\x04kind\x18\x01 \x01(\x0e2\x1a.mosaic.sdui.v1.ActionKindR\x04kind\x12\x16\n" +
 	"\x06screen\x18\x02 \x01(\tR\x06screen\x12/\n" +
 	"\x06params\x18\x03 \x01(\v2\x17.google.protobuf.StructR\x06params\x12\x10\n" +
 	"\x03url\x18\x04 \x01(\tR\x03url\x12\x1a\n" +
 	"\bmutation\x18\x05 \x01(\tR\bmutation\x12-\n" +
-	"\x05input\x18\x06 \x01(\v2\x17.google.protobuf.StructR\x05input\x12\x14\n" +
-	"\x05query\x18\a \x01(\tR\x05query\x125\n" +
-	"\tvariables\x18\b \x01(\v2\x17.google.protobuf.StructR\tvariables\x12\x12\n" +
-	"\x04into\x18\t \x01(\tR\x04into\x121\n" +
+	"\x05input\x18\x06 \x01(\v2\x17.google.protobuf.StructR\x05input\x121\n" +
 	"\asurface\x18\n" +
 	" \x01(\x0e2\x17.mosaic.sdui.v1.SurfaceR\asurface\x12*\n" +
 	"\x04node\x18\v \x01(\v2\x16.mosaic.sdui.v1.UINodeR\x04node\x12\x17\n" +
@@ -614,7 +613,10 @@ const file_mosaic_sdui_v1_sdui_proto_rawDesc = "" +
 	"\anode_id\x18\r \x01(\tR\x06nodeId\x12\x18\n" +
 	"\amessage\x18\x0e \x01(\tR\amessage\x12(\n" +
 	"\x04tone\x18\x0f \x01(\x0e2\x14.mosaic.sdui.v1.ToneR\x04tone\x120\n" +
-	"\aactions\x18\x10 \x03(\v2\x16.mosaic.sdui.v1.ActionR\aactions\"\x8e\x01\n" +
+	"\aactions\x18\x10 \x03(\v2\x16.mosaic.sdui.v1.ActionR\aactions\x12\x14\n" +
+	"\x05field\x18\x11 \x01(\tR\x05field\x12\x14\n" +
+	"\x05value\x18\x12 \x01(\tR\x05valueJ\x04\b\a\x10\bJ\x04\b\b\x10\tJ\x04\b\t\x10\n" +
+	"R\x05queryR\tvariablesR\x04into\"\x8e\x01\n" +
 	"\x13ComponentDefinition\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12/\n" +
 	"\x06params\x18\x02 \x01(\v2\x17.google.protobuf.StructR\x06params\x122\n" +
@@ -631,7 +633,7 @@ const file_mosaic_sdui_v1_sdui_proto_rawDesc = "" +
 	"\x13SURFACE_UNSPECIFIED\x10\x00\x12\x11\n" +
 	"\rSURFACE_MODAL\x10\x01\x12\x11\n" +
 	"\rSURFACE_SHEET\x10\x02\x12\x12\n" +
-	"\x0eSURFACE_DRAWER\x10\x03*\xab\x02\n" +
+	"\x0eSURFACE_DRAWER\x10\x03*\xde\x02\n" +
 	"\n" +
 	"ActionKind\x12\x1b\n" +
 	"\x17ACTION_KIND_UNSPECIFIED\x10\x00\x12\x18\n" +
@@ -645,7 +647,9 @@ const file_mosaic_sdui_v1_sdui_proto_rawDesc = "" +
 	"\x15ACTION_KIND_PLAY_PART\x10\b\x12\x15\n" +
 	"\x11ACTION_KIND_TOAST\x10\t\x12\x18\n" +
 	"\x14ACTION_KIND_SEQUENCE\x10\n" +
-	"B=Z;github.com/mosaic-media/contracts/gen/mosaic/sdui/v1;sduiv1b\x06proto3"
+	"\x12\x19\n" +
+	"\x15ACTION_KIND_SET_VALUE\x10\v\x12\x16\n" +
+	"\x12ACTION_KIND_SUBMIT\x10\fB=Z;github.com/mosaic-media/contracts/gen/mosaic/sdui/v1;sduiv1b\x06proto3"
 
 var (
 	file_mosaic_sdui_v1_sdui_proto_rawDescOnce sync.Once
@@ -680,19 +684,18 @@ var file_mosaic_sdui_v1_sdui_proto_depIdxs = []int32{
 	2,  // 4: mosaic.sdui.v1.Action.kind:type_name -> mosaic.sdui.v1.ActionKind
 	8,  // 5: mosaic.sdui.v1.Action.params:type_name -> google.protobuf.Struct
 	8,  // 6: mosaic.sdui.v1.Action.input:type_name -> google.protobuf.Struct
-	8,  // 7: mosaic.sdui.v1.Action.variables:type_name -> google.protobuf.Struct
-	1,  // 8: mosaic.sdui.v1.Action.surface:type_name -> mosaic.sdui.v1.Surface
-	3,  // 9: mosaic.sdui.v1.Action.node:type_name -> mosaic.sdui.v1.UINode
-	0,  // 10: mosaic.sdui.v1.Action.tone:type_name -> mosaic.sdui.v1.Tone
-	5,  // 11: mosaic.sdui.v1.Action.actions:type_name -> mosaic.sdui.v1.Action
-	8,  // 12: mosaic.sdui.v1.ComponentDefinition.params:type_name -> google.protobuf.Struct
-	3,  // 13: mosaic.sdui.v1.ComponentDefinition.template:type_name -> mosaic.sdui.v1.UINode
-	4,  // 14: mosaic.sdui.v1.UINode.SlotsEntry.value:type_name -> mosaic.sdui.v1.NodeList
-	15, // [15:15] is the sub-list for method output_type
-	15, // [15:15] is the sub-list for method input_type
-	15, // [15:15] is the sub-list for extension type_name
-	15, // [15:15] is the sub-list for extension extendee
-	0,  // [0:15] is the sub-list for field type_name
+	1,  // 7: mosaic.sdui.v1.Action.surface:type_name -> mosaic.sdui.v1.Surface
+	3,  // 8: mosaic.sdui.v1.Action.node:type_name -> mosaic.sdui.v1.UINode
+	0,  // 9: mosaic.sdui.v1.Action.tone:type_name -> mosaic.sdui.v1.Tone
+	5,  // 10: mosaic.sdui.v1.Action.actions:type_name -> mosaic.sdui.v1.Action
+	8,  // 11: mosaic.sdui.v1.ComponentDefinition.params:type_name -> google.protobuf.Struct
+	3,  // 12: mosaic.sdui.v1.ComponentDefinition.template:type_name -> mosaic.sdui.v1.UINode
+	4,  // 13: mosaic.sdui.v1.UINode.SlotsEntry.value:type_name -> mosaic.sdui.v1.NodeList
+	14, // [14:14] is the sub-list for method output_type
+	14, // [14:14] is the sub-list for method input_type
+	14, // [14:14] is the sub-list for extension type_name
+	14, // [14:14] is the sub-list for extension extendee
+	0,  // [0:14] is the sub-list for field type_name
 }
 
 func init() { file_mosaic_sdui_v1_sdui_proto_init() }

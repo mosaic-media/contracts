@@ -1,6 +1,6 @@
 {
   "name": "@mosaic-media/sdui",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "description": "Mosaic Server-Driven-UI contract: schema-generated types, the standard component-definition library, design tokens, and the generated protobuf session transport bindings.",
   "license": "Apache-2.0",
   "type": "module",
@@ -9,6 +9,8 @@
     ".": "./ts/contract.gen.ts",
     "./ui": "./ts/ui.ts",
     "./definitions": "./ts/definitions.gen.ts",
+    "./vocabulary": "./ts/vocabulary.gen.ts",
+    "./conformance": "./conformance/vocabulary.json",
     "./session": "./gen-ts/mosaic/session/v1/session_pb.ts",
     "./auth": "./gen-ts/mosaic/auth/v1/auth_pb.ts",
     "./sdui-pb": "./gen-ts/mosaic/sdui/v1/sdui_pb.ts",
@@ -21,8 +23,10 @@
     "ts/contract.gen.ts",
     "ts/ui.ts",
     "ts/definitions.gen.ts",
+    "ts/vocabulary.gen.ts",
     "ts/ui_runtime.ts",
     "gen-ts",
+    "conformance",
     "definitions",
     "tokens",
     "schema",
@@ -33,7 +37,7 @@
   "scripts": {
     "generate": "bash scripts/generate.sh",
     "check:generated": "bash scripts/check-generated.sh",
-    "typecheck": "tsc --noEmit --strict --module esnext --moduleResolution bundler --target es2022 --lib es2022,dom ts/contract.gen.ts ts/ui.ts ts/definitions.gen.ts gen-ts/mosaic/session/v1/session_pb.ts gen-ts/mosaic/sdui/v1/sdui_pb.ts gen-ts/mosaic/auth/v1/auth_pb.ts"
+    "typecheck": "tsc --noEmit --strict --module esnext --moduleResolution bundler --target es2022 --lib es2022,dom ts/contract.gen.ts ts/ui.ts ts/definitions.gen.ts ts/vocabulary.gen.ts gen-ts/mosaic/session/v1/session_pb.ts gen-ts/mosaic/sdui/v1/sdui_pb.ts gen-ts/mosaic/auth/v1/auth_pb.ts"
   },
   "repository": {
     "type": "git",

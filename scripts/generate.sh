@@ -34,9 +34,12 @@ echo "generating TypeScript -> ts/contract.gen.ts"
 sed -i '/^export interface MosaicSDUI {/,/^}/d' ts/contract.gen.ts
 sed -i '1s|^|// Code generated from schema/sdui.schema.json by quicktype. DO NOT EDIT.\n|' ts/contract.gen.ts
 
-# The ui authoring layer (ui/components.gen.go, ts/ui.ts) is generated from
-# ui.spec.json by tools/genui, which also lints the spec against definitions/.
-echo "generating ui layer -> ui/components.gen.go, ts/ui.ts (+ spec lint)"
+# The vocabulary — all three tiers — is generated from ui.spec.json by
+# tools/genui: the authoring layer (ui/components.gen.go, ts/ui.ts), the
+# machine-readable registry (sdui/vocabulary.gen.go, ts/vocabulary.gen.ts) and
+# the client conformance fixture (conformance/vocabulary.json). It also lints
+# the spec against definitions/, the schema and the proto.
+echo "generating vocabulary -> ui/, ts/, sdui/vocabulary.gen.go, conformance/ (+ lint)"
 go run ./tools/genui
 
 # The component library as one importable module, for a JS consumer with no

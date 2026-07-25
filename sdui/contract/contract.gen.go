@@ -9,7 +9,9 @@ package contract
 // A declarative behaviour envelope. Data, never code — the client interprets the kind. Each
 // kind uses a subset of the fields.
 type Action struct {
-	Actions  []Action               `json:"actions,omitempty"`
+	Actions []Action `json:"actions,omitempty"`
+	// setValue: the name of the field written in the enclosing state scope.
+	Field    *string                `json:"field,omitempty"`
 	Input    map[string]interface{} `json:"input,omitempty"`
 	Kind     ActionKind             `json:"kind"`
 	Message  *string                `json:"message,omitempty"`
@@ -22,6 +24,8 @@ type Action struct {
 	Surface  *Surface               `json:"surface,omitempty"`
 	Tone     *Tone                  `json:"tone,omitempty"`
 	URL      *string                `json:"url,omitempty"`
+	// setValue: the value written.
+	Value *string `json:"value,omitempty"`
 }
 
 // One element of a server-driven UI tree. The `type` is an open vocabulary: a client that
@@ -161,6 +165,9 @@ type TextStyle struct {
 	Weight    *FontWeight  `json:"weight,omitempty"`
 }
 
+// The behaviours a client interprets. Kept in step with ui.spec.json and
+// proto/mosaic/sdui/v1/sdui.proto by `go run ./tools/genui -lint`, which fails when the
+// three disagree — they had drifted to ten, nine and four before that gate existed.
 type ActionKind string
 
 const (
@@ -172,7 +179,10 @@ const (
 	OpenOverlay     ActionKind = "openOverlay"
 	OpenURL         ActionKind = "openUrl"
 	PlayPart        ActionKind = "playPart"
+	Query           ActionKind = "query"
 	Sequence        ActionKind = "sequence"
+	SetValue        ActionKind = "setValue"
+	Submit          ActionKind = "submit"
 )
 
 type Surface string

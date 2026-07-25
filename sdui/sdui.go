@@ -51,35 +51,13 @@ type Action struct {
 	NodeID   *string        `json:"nodeId,omitempty"`
 	Message  *string        `json:"message,omitempty"`
 	Tone     *Tone          `json:"tone,omitempty"`
+	Field    *string        `json:"field,omitempty"`
+	Value    *string        `json:"value,omitempty"`
 	Actions  []Action       `json:"actions,omitempty"`
 }
 
-// Action kinds — the JSON discriminator values.
-const (
-	KindNavigate     = "navigate"
-	KindBack         = "back"
-	KindOpenURL      = "openUrl"
-	KindInvoke       = "invoke"
-	KindOpenOverlay  = "openOverlay"
-	KindCloseOverlay = "closeOverlay"
-	KindPlayPart     = "playPart"
-	KindToast        = "toast"
-	KindSequence     = "sequence"
-)
-
-// Tones.
-const (
-	ToneNeutral = "neutral"
-	ToneAccent  = "accent"
-	ToneSuccess = "success"
-	ToneWarning = "warning"
-	ToneDanger  = "danger"
-	ToneInfo    = "info"
-)
-
-// Overlay surfaces.
-const (
-	SurfaceModal  = "modal"
-	SurfaceSheet  = "sheet"
-	SurfaceDrawer = "drawer"
-)
+// The action kind, tone, surface and node-type constants are generated into
+// vocabulary.gen.go from ui.spec.json. They were hand-written here and in a
+// components.go beside it, and both had drifted: the constant list named three
+// primitives as components and omitted every real one, while the kinds it
+// declared were one short of the proto's and three short of the vocabulary's.

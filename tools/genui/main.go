@@ -1,26 +1,46 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-FileCopyrightText: 2026 the Mosaic authors
 
-// Command genui generates the SDUI ui authoring layer — the Go
-// (ui/components.gen.go) and TypeScript (ts/ui.ts) ergonomic constructors — from
-// the single authoring spec ui.spec.json, and lints that spec against the
-// standard component definitions (definitions/*.json).
+// Command genui generates the SDUI vocabulary from the single spec
+// ui.spec.json: the Go (ui/components.gen.go) and TypeScript (ts/ui.ts)
+// ergonomic constructors, the machine-readable vocabulary registry
+// (sdui/vocabulary.gen.go, ts/vocabulary.gen.ts) and the client conformance
+// fixture (conformance/vocabulary.json).
+//
+// The spec has three tiers and one tool emits all three. `primitives` are the
+// native vocabulary a client must implement (growing the set needs a client
+// release — ADR 0024), `components` are definitions delivered as data
+// (definitions/*.json), and `actions` are the behaviours a client interprets.
+// Before this tool knew about primitives that tier existed only as TypeScript
+// in one client, so a second client could not be written from the published
+// contract at all; that is the drift these lint gates exist to keep closed.
 //
 // The ui layer sits on a small hand-written runtime (ui/element.go,
-// ts/ui_runtime.ts); this tool emits only the per-component constructors, the
-// typed sugar, the slot helpers and the action/tone re-exports — the mechanical
-// part — so adding a component is a spec edit, and Go/TS can never drift.
+// ts/ui_runtime.ts); this tool emits only the per-type constructors, the typed
+// sugar, the slot helpers and the action/tone re-exports — the mechanical part —
+// so adding a primitive or a component is a spec edit, and Go/TS can never
+// drift.
 //
 // Usage:
 //
 //	go run ./tools/genui         # regenerate the files, then lint
 //	go run ./tools/genui -check  # verify the files are up to date (CI), then lint
-//	go run ./tools/genui -lint   # lint the spec against definitions only
+//	go run ./tools/genui -lint   # lint the spec, definitions, schema and proto
 //
-// Lint enforces coverage: every definition must have a component in the spec,
-// every prop a definition's template binds must be exposed by some helper, and
-// every Outlet a definition declares must have a slot helper. That is what makes
-// the generator keep up — a new definition that nothing authors fails the build.
+// Lint enforces coverage in both directions:
+//
+//   - every definition has a component in the spec and every component has a
+//     definition file;
+//   - every prop a definition's template binds is exposed by some helper, and
+//     every Outlet it declares has a slot helper;
+//   - every node type a definition's template references exists in the
+//     vocabulary (referenced-type existence);
+//   - no type is both a primitive and a component (tier overlap);
+//   - every primitive carries a `native` justification for why a definition
+//     cannot express it (per-primitive justification);
+//   - the spec's action kinds, tones and surfaces are exactly those in
+//     schema/sdui.schema.json and proto/mosaic/sdui/v1/sdui.proto
+//     (action-kind coverage — the three-vocabulary drift, mechanised).
 package main
 
 import (
@@ -30,16 +50,23 @@ import (
 	"go/format"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 // ── spec model ───────────────────────────────────────────────────────────────
 
 type spec struct {
+	Version    string      `json:"version"`
 	Tones      []tone      `json:"tones"`
+	Surfaces   []surface   `json:"surfaces"`
 	Actions    []action    `json:"actions"`
+	Validators []validator `json:"validators"`
+	Predicates []predicate `json:"predicates"`
+	Primitives []primitive `json:"primitives"`
 	Sugar      []sugar     `json:"sugar"`
 	Slots      []slot      `json:"slots"`
 	Components []component `json:"components"`
@@ -48,7 +75,58 @@ type spec struct {
 type tone struct {
 	Const string `json:"const"`
 	Sdui  string `json:"sdui"`
+	// TS names the member of the generated TypeScript Tone enum. It is stated
+	// rather than derived from Value: the derivation is quicktype's, and a
+	// generator guessing another generator's naming rule is a drift waiting to
+	// happen.
+	TS    string `json:"ts"`
 	Value string `json:"value"`
+}
+
+type surface struct {
+	Const string `json:"const"`
+	Value string `json:"value"`
+}
+
+type validator struct {
+	Name string `json:"name"`
+	Arg  string `json:"arg"`
+	Doc  string `json:"doc"`
+}
+
+type predicate struct {
+	Name string `json:"name"`
+	Doc  string `json:"doc"`
+}
+
+// primitive is one entry of the native tier. Native is load-bearing rather than
+// decorative: it is the justification for why this cannot be a definition, and
+// lint rejects a primitive without one — because the cost of the tier is a
+// client release per addition, and an unjustified addition spends that silently.
+type primitive struct {
+	Func       string `json:"func"`
+	Type       string `json:"type"`
+	Tier       string `json:"tier"`
+	Doc        string `json:"doc"`
+	Native     string `json:"native"`
+	Children   bool   `json:"children"`
+	Positional []arg  `json:"positional"`
+	Props      []prop `json:"props"`
+}
+
+// fn is the exported constructor name — the type name unless the spec overrides
+// it, which it does only to break a collision with a sugar helper.
+func (p primitive) fn() string {
+	if p.Func != "" {
+		return p.Func
+	}
+	return p.Type
+}
+
+type prop struct {
+	Key  string `json:"key"`
+	Type string `json:"type"`
+	Doc  string `json:"doc"`
 }
 
 type arg struct {
@@ -115,20 +193,23 @@ func main() {
 
 	sp := loadSpec(filepath.Join(root, "ui.spec.json"))
 
-	goPath := filepath.Join(root, "ui", "components.gen.go")
-	tsPath := filepath.Join(root, "ts", "ui.ts")
-	goSrc := genGo(sp)
-	tsSrc := genTS(sp)
+	outputs := []struct {
+		path string
+		want []byte
+	}{
+		{filepath.Join(root, "ui", "components.gen.go"), genGo(sp)},
+		{filepath.Join(root, "ts", "ui.ts"), genTS(sp)},
+		{filepath.Join(root, "sdui", "vocabulary.gen.go"), genVocabularyGo(sp)},
+		{filepath.Join(root, "ts", "vocabulary.gen.ts"), genVocabularyTS(sp)},
+		{filepath.Join(root, "conformance", "vocabulary.json"), genFixture(sp)},
+	}
 
 	switch {
 	case lint:
 		// lint only
 	case check:
 		stale := false
-		for _, f := range []struct {
-			path string
-			want []byte
-		}{{goPath, goSrc}, {tsPath, tsSrc}} {
+		for _, f := range outputs {
 			got, err := os.ReadFile(f.path)
 			if err != nil || !bytes.Equal(normalize(got), normalize(f.want)) {
 				fmt.Fprintf(os.Stderr, "stale: %s (run `go run ./tools/genui`)\n", f.path)
@@ -140,12 +221,18 @@ func main() {
 		}
 		fmt.Println("genui: generated files are up to date")
 	default:
-		writeFile(goPath, goSrc)
-		writeFile(tsPath, tsSrc)
-		fmt.Printf("genui: wrote %s and %s\n", goPath, tsPath)
+		names := make([]string, 0, len(outputs))
+		for _, f := range outputs {
+			if err := os.MkdirAll(filepath.Dir(f.path), 0o755); err != nil {
+				fatalf("mkdir %s: %v", filepath.Dir(f.path), err)
+			}
+			writeFile(f.path, f.want)
+			names = append(names, f.path)
+		}
+		fmt.Printf("genui: wrote %s\n", strings.Join(names, ", "))
 	}
 
-	if errs := runLint(sp, filepath.Join(root, "definitions")); len(errs) > 0 {
+	if errs := runLint(sp, root); len(errs) > 0 {
 		for _, e := range errs {
 			fmt.Fprintf(os.Stderr, "lint: %s\n", e)
 		}
@@ -164,6 +251,28 @@ func genGo(sp spec) []byte {
 	b.WriteString("package ui\n\n")
 	if len(sp.Tones) > 0 || len(sp.Actions) > 0 {
 		b.WriteString("import \"github.com/mosaic-media/contracts/sdui\"\n\n")
+	}
+
+	b.WriteString("// ── primitives ─────────────────────────────────────────────────────────────\n")
+	b.WriteString("// The native tier: node types a client implements itself. They are authored\n")
+	b.WriteString("// here rather than through Component(\"Box\", …) because a type spelled as a\n")
+	b.WriteString("// string is a type nothing checks — which is how seven primitives came to be\n")
+	b.WriteString("// emitted by name with no entry in any contract.\n\n")
+	for _, p := range sp.Primitives {
+		if p.Doc != "" {
+			fmt.Fprintf(&b, "// %s %s\n", p.fn(), dropLeadName(p.fn(), p.Doc))
+		}
+		fmt.Fprintf(&b, "// Native: %s\n", p.Native)
+		// Always variadic, including for a leaf: the ...El tail carries props,
+		// ids and slots as well as children, so a leaf that took none could not
+		// be given a prop at all.
+		params := []string{}
+		for _, a := range p.Positional {
+			params = append(params, a.Name+" "+goType(a.Type))
+		}
+		params = append(params, "els ...El")
+		fmt.Fprintf(&b, "func %s(%s) *Element { return compose(%s, %s, els) }\n\n",
+			p.fn(), strings.Join(params, ", "), strconv.Quote(p.Type), goBase(p.Positional))
 	}
 
 	b.WriteString("// ── components ─────────────────────────────────────────────────────────────\n\n")
@@ -252,6 +361,10 @@ func goType(t string) string {
 		return "map[string]any"
 	case "[]props":
 		return "[]any"
+	case "Tone", "Surface":
+		// Both are string aliases in the Go binding (they ride the open props
+		// bag as JSON), so the constants remain assignable.
+		return "string"
 	default:
 		fatalf("unknown Go type %q", t)
 		return ""
@@ -285,12 +398,25 @@ func genTS(sp spec) []byte {
 	b.WriteString("// Code generated by tools/genui from ui.spec.json. DO NOT EDIT.\n")
 	b.WriteString("// SPDX-License-Identifier: Apache-2.0\n")
 	b.WriteString("// SPDX-FileCopyrightText: 2026 the Mosaic authors\n\n")
-	b.WriteString("import { ActionKind, type Action } from \"./contract.gen.js\";\n")
+	b.WriteString("import { ActionKind, Tone, type Action, type Surface } from \"./contract.gen.js\";\n")
 	b.WriteString("import { compose, Prop, Slot, type El, type Elish, type Element, type Props } from \"./ui_runtime.js\";\n\n")
 	b.WriteString("export { Group, ID, Prop, Slot, When, Element } from \"./ui_runtime.js\";\n")
 	b.WriteString("export type { El, Elish, Props } from \"./ui_runtime.js\";\n")
 	b.WriteString("export { ActionKind, Surface, Tone } from \"./contract.gen.js\";\n")
 	b.WriteString("export type { Action, UINode } from \"./contract.gen.js\";\n\n")
+
+	b.WriteString("// ── primitives ─────────────────────────────────────────────────────────────\n")
+	b.WriteString("// The native tier: node types a client implements itself (ADR 0024).\n\n")
+	for _, p := range sp.Primitives {
+		fmt.Fprintf(&b, "/** %s\n *\n *  Native: %s */\n", p.Doc, p.Native)
+		params := []string{}
+		for _, a := range p.Positional {
+			params = append(params, a.Name+": "+tsType(a.Type))
+		}
+		params = append(params, "...els: Elish[]")
+		fmt.Fprintf(&b, "export function %s(%s): Element {\n  return compose(%s, %s, els);\n}\n\n",
+			p.fn(), strings.Join(params, ", "), strconv.Quote(p.Type), tsBase(p.Positional))
+	}
 
 	b.WriteString("// ── components ─────────────────────────────────────────────────────────────\n\n")
 	for _, c := range sp.Components {
@@ -336,9 +462,11 @@ func genTS(sp spec) []byte {
 	}
 
 	if len(sp.Tones) > 0 {
-		b.WriteString("// Tone values (the open-bag string encoding), mirroring the Go Tone constants.\n")
+		b.WriteString("// Tone values, mirroring the Go Tone constants. They are the schema enum's\n")
+		b.WriteString("// members rather than bare strings, so passing one where the contract wants a\n")
+		b.WriteString("// Tone typechecks.\n")
 		for _, t := range sp.Tones {
-			fmt.Fprintf(&b, "export const %s = %s as const;\n", t.Const, strconv.Quote(t.Value))
+			fmt.Fprintf(&b, "export const %s = Tone.%s;\n", t.Const, t.TS)
 		}
 		b.WriteString("\n")
 	}
@@ -389,6 +517,8 @@ func tsType(t string) string {
 		return "Props"
 	case "[]props":
 		return "Props[]"
+	case "Tone", "Surface":
+		return t
 	default:
 		fatalf("unknown TS type %q", t)
 		return ""
@@ -421,10 +551,263 @@ func tsField(key, name string) string {
 	return strconv.Quote(key) + ": " + name
 }
 
+// ── vocabulary registry ──────────────────────────────────────────────────────
+
+// genVocabularyGo emits the machine-readable registry: the node-type constants
+// (which replaced a hand-written list that had drifted into naming three
+// primitives as components and omitting every real one), the action/tone/surface
+// enum values, and the primitive tier as data so a consumer can ask what the
+// contract contains rather than reading a client's source.
+func genVocabularyGo(sp spec) []byte {
+	var b strings.Builder
+	b.WriteString("// Code generated by tools/genui from ui.spec.json. DO NOT EDIT.\n")
+	b.WriteString("// SPDX-License-Identifier: Apache-2.0\n")
+	b.WriteString("// SPDX-FileCopyrightText: 2026 the Mosaic authors\n\n")
+	b.WriteString("package sdui\n\n")
+
+	fmt.Fprintf(&b, "// VocabularyVersion is the version a client declares it implements. Additive\n")
+	fmt.Fprintf(&b, "// growth is a minor bump; removing or changing the meaning of a primitive, a\n")
+	fmt.Fprintf(&b, "// prop or an action is a major one.\n")
+	fmt.Fprintf(&b, "const VocabularyVersion = %s\n\n", strconv.Quote(sp.Version))
+
+	b.WriteString("// Node type names — the primitive tier.\n")
+	b.WriteString("const (\n")
+	for _, p := range sp.Primitives {
+		fmt.Fprintf(&b, "\tType%s = %s\n", p.Type, strconv.Quote(p.Type))
+	}
+	b.WriteString(")\n\n")
+
+	b.WriteString("// Node type names — the component tier (definitions/*.json).\n")
+	b.WriteString("const (\n")
+	for _, c := range sp.Components {
+		if c.Generic || c.Type == "" {
+			continue
+		}
+		fmt.Fprintf(&b, "\tType%s = %s\n", c.Type, strconv.Quote(c.Type))
+	}
+	b.WriteString(")\n\n")
+
+	b.WriteString("// Action kinds — the JSON discriminator values.\n")
+	b.WriteString("const (\n")
+	for _, a := range sp.Actions {
+		fmt.Fprintf(&b, "\tKind%s = %s\n", a.Enum, strconv.Quote(a.Kind))
+	}
+	b.WriteString(")\n\n")
+
+	b.WriteString("// Tones.\n")
+	b.WriteString("const (\n")
+	for _, t := range sp.Tones {
+		fmt.Fprintf(&b, "\t%s = %s\n", t.Const, strconv.Quote(t.Value))
+	}
+	b.WriteString(")\n\n")
+
+	b.WriteString("// Overlay surfaces.\n")
+	b.WriteString("const (\n")
+	for _, s := range sp.Surfaces {
+		fmt.Fprintf(&b, "\t%s = %s\n", s.Const, strconv.Quote(s.Value))
+	}
+	b.WriteString(")\n\n")
+
+	b.WriteString("// Primitives is the native tier as data: what a client must implement, and\n")
+	b.WriteString("// for each one the reason it cannot be a definition.\n")
+	b.WriteString("var Primitives = []PrimitiveSpec{\n")
+	for _, p := range sp.Primitives {
+		fmt.Fprintf(&b, "\t{Type: %s, Tier: %s, Doc: %s, Native: %s, Children: %t, Props: []PropSpec{\n",
+			strconv.Quote(p.Type), strconv.Quote(p.Tier), strconv.Quote(p.Doc), strconv.Quote(p.Native), p.Children)
+		for _, pr := range p.Props {
+			fmt.Fprintf(&b, "\t\t{Key: %s, Type: %s, Doc: %s},\n",
+				strconv.Quote(pr.Key), strconv.Quote(pr.Type), strconv.Quote(pr.Doc))
+		}
+		b.WriteString("\t}},\n")
+	}
+	b.WriteString("}\n\n")
+
+	b.WriteString("// Components is the definition tier: the type names the Platform serves as\n")
+	b.WriteString("// data. A client implements none of them.\n")
+	b.WriteString("var Components = []string{\n")
+	for _, c := range sp.Components {
+		if c.Generic || c.Type == "" {
+			continue
+		}
+		fmt.Fprintf(&b, "\t%s,\n", strconv.Quote(c.Type))
+	}
+	b.WriteString("}\n\n")
+
+	b.WriteString("// ActionKinds is every behaviour a client interprets.\n")
+	b.WriteString("var ActionKinds = []ActionSpec{\n")
+	for _, a := range sp.Actions {
+		fmt.Fprintf(&b, "\t{Kind: %s, Doc: %s},\n", strconv.Quote(a.Kind), strconv.Quote(a.Doc))
+	}
+	b.WriteString("}\n\n")
+
+	b.WriteString("// Validators is the closed field-validation set. Closed on purpose: an open\n")
+	b.WriteString("// set lets the server state a rule the client cannot enforce, which fails open.\n")
+	b.WriteString("var Validators = []ValidatorSpec{\n")
+	for _, v := range sp.Validators {
+		fmt.Fprintf(&b, "\t{Name: %s, Arg: %s, Doc: %s},\n",
+			strconv.Quote(v.Name), strconv.Quote(v.Arg), strconv.Quote(v.Doc))
+	}
+	b.WriteString("}\n\n")
+
+	b.WriteString("// Predicates is the closed conditional set — the deliberate alternative to an\n")
+	b.WriteString("// expression language and the evaluator VM one would need.\n")
+	b.WriteString("var Predicates = []PredicateSpec{\n")
+	for _, p := range sp.Predicates {
+		fmt.Fprintf(&b, "\t{Name: %s, Doc: %s},\n", strconv.Quote(p.Name), strconv.Quote(p.Doc))
+	}
+	b.WriteString("}\n")
+
+	out, err := format.Source([]byte(b.String()))
+	if err != nil {
+		fmt.Fprintln(os.Stderr, b.String())
+		fatalf("gofmt generated vocabulary: %v", err)
+	}
+	return out
+}
+
+// genVocabularyTS emits the same registry for a JavaScript consumer — a client
+// checking what it implements, or the storybook enumerating the vocabulary.
+func genVocabularyTS(sp spec) []byte {
+	var b strings.Builder
+	b.WriteString("// Code generated by tools/genui from ui.spec.json. DO NOT EDIT.\n")
+	b.WriteString("// SPDX-License-Identifier: Apache-2.0\n")
+	b.WriteString("// SPDX-FileCopyrightText: 2026 the Mosaic authors\n\n")
+	b.WriteString("/** One prop a primitive reads. */\n")
+	b.WriteString("export interface PropSpec {\n  key: string;\n  type: string;\n  doc: string;\n}\n\n")
+	b.WriteString("/** One native node type, with the reason it cannot be a definition. */\n")
+	b.WriteString("export interface PrimitiveSpec {\n  type: string;\n  tier: string;\n  doc: string;\n  native: string;\n  children: boolean;\n  props: PropSpec[];\n}\n\n")
+
+	fmt.Fprintf(&b, "/** The vocabulary version a client declares it implements. */\nexport const vocabularyVersion = %s;\n\n", strconv.Quote(sp.Version))
+
+	b.WriteString("/** The native tier — what a client must implement (ADR 0024). */\n")
+	b.WriteString("export const primitives: PrimitiveSpec[] = [\n")
+	for _, p := range sp.Primitives {
+		fmt.Fprintf(&b, "  {\n    type: %s,\n    tier: %s,\n    doc: %s,\n    native: %s,\n    children: %t,\n    props: [\n",
+			strconv.Quote(p.Type), strconv.Quote(p.Tier), strconv.Quote(p.Doc), strconv.Quote(p.Native), p.Children)
+		for _, pr := range p.Props {
+			fmt.Fprintf(&b, "      { key: %s, type: %s, doc: %s },\n",
+				strconv.Quote(pr.Key), strconv.Quote(pr.Type), strconv.Quote(pr.Doc))
+		}
+		b.WriteString("    ],\n  },\n")
+	}
+	b.WriteString("];\n\n")
+
+	b.WriteString("/** The definition tier — served as data, implemented by nobody. */\n")
+	b.WriteString("export const components: string[] = [\n")
+	for _, c := range sp.Components {
+		if c.Generic || c.Type == "" {
+			continue
+		}
+		fmt.Fprintf(&b, "  %s,\n", strconv.Quote(c.Type))
+	}
+	b.WriteString("];\n\n")
+
+	b.WriteString("/** Every behaviour a client interprets. */\n")
+	b.WriteString("export const actionKinds: string[] = [\n")
+	for _, a := range sp.Actions {
+		fmt.Fprintf(&b, "  %s,\n", strconv.Quote(a.Kind))
+	}
+	b.WriteString("];\n\n")
+
+	b.WriteString("/** The closed field-validation set. */\n")
+	b.WriteString("export const validators: string[] = [\n")
+	for _, v := range sp.Validators {
+		fmt.Fprintf(&b, "  %s,\n", strconv.Quote(v.Name))
+	}
+	b.WriteString("];\n\n")
+
+	b.WriteString("/** The closed conditional set — no expression language, on purpose. */\n")
+	b.WriteString("export const predicates: string[] = [\n")
+	for _, p := range sp.Predicates {
+		fmt.Fprintf(&b, "  %s,\n", strconv.Quote(p.Name))
+	}
+	b.WriteString("];\n")
+	return []byte(b.String())
+}
+
+// fixture is the client conformance artefact: the declared vocabulary as plain
+// data, so a client in any language can assert that what it registers is exactly
+// what the contract declares. It is published in the npm package and embedded in
+// the Go module, because the drift it exists to catch is precisely a client that
+// implements a set nobody compared against the contract.
+type fixture struct {
+	Comment    string          `json:"//"`
+	Version    string          `json:"version"`
+	Primitives []fixturePrim   `json:"primitives"`
+	Components []string        `json:"components"`
+	Actions    []string        `json:"actions"`
+	Validators []string        `json:"validators"`
+	Predicates []string        `json:"predicates"`
+	Tones      []string        `json:"tones"`
+	Surfaces   []string        `json:"surfaces"`
+}
+
+type fixturePrim struct {
+	Type     string   `json:"type"`
+	Tier     string   `json:"tier"`
+	Children bool     `json:"children"`
+	Props    []string `json:"props"`
+}
+
+func genFixture(sp spec) []byte {
+	f := fixture{
+		Comment: "Generated by tools/genui from ui.spec.json. DO NOT EDIT. The conformance " +
+			"fixture: the vocabulary a conforming client must implement, as data. A client " +
+			"test asserts that the types it registers and the action kinds it interprets are " +
+			"exactly these — the check that could not exist while the primitive tier lived " +
+			"only as one client's TypeScript.",
+		Version:    sp.Version,
+		Components: []string{},
+		Actions:    []string{},
+		Validators: []string{},
+		Predicates: []string{},
+		Tones:      []string{},
+		Surfaces:   []string{},
+	}
+	for _, p := range sp.Primitives {
+		keys := make([]string, 0, len(p.Props))
+		for _, pr := range p.Props {
+			keys = append(keys, pr.Key)
+		}
+		f.Primitives = append(f.Primitives, fixturePrim{Type: p.Type, Tier: p.Tier, Children: p.Children, Props: keys})
+	}
+	for _, c := range sp.Components {
+		if c.Generic || c.Type == "" {
+			continue
+		}
+		f.Components = append(f.Components, c.Type)
+	}
+	for _, a := range sp.Actions {
+		f.Actions = append(f.Actions, a.Kind)
+	}
+	for _, v := range sp.Validators {
+		f.Validators = append(f.Validators, v.Name)
+	}
+	for _, p := range sp.Predicates {
+		f.Predicates = append(f.Predicates, p.Name)
+	}
+	for _, t := range sp.Tones {
+		f.Tones = append(f.Tones, t.Value)
+	}
+	for _, s := range sp.Surfaces {
+		f.Surfaces = append(f.Surfaces, s.Value)
+	}
+	out, err := json.MarshalIndent(f, "", "  ")
+	if err != nil {
+		fatalf("marshal fixture: %v", err)
+	}
+	return append(out, '\n')
+}
+
 // ── lint ─────────────────────────────────────────────────────────────────────
 
-func runLint(sp spec, defsDir string) []string {
+func runLint(sp spec, root string) []string {
+	defsDir := filepath.Join(root, "definitions")
 	var errs []string
+
+	if sp.Version == "" {
+		errs = append(errs, "the spec declares no version — a client cannot negotiate against an unnamed vocabulary")
+	}
 
 	// Integrity: no duplicate exported names.
 	seen := map[string]string{}
@@ -433,6 +816,9 @@ func runLint(sp spec, defsDir string) []string {
 			errs = append(errs, fmt.Sprintf("duplicate name %q (%s and %s)", name, prev, kind))
 		}
 		seen[name] = kind
+	}
+	for _, p := range sp.Primitives {
+		claim(p.fn(), "primitive")
 	}
 	for _, c := range sp.Components {
 		claim(c.Func, "component")
@@ -467,13 +853,59 @@ func runLint(sp spec, defsDir string) []string {
 	}
 	byType := map[string]bool{}
 	for _, c := range sp.Components {
-		if c.Type != "" {
+		if c.Type != "" && !c.Generic {
 			byType[c.Type] = true
 		}
 	}
+	primType := map[string]bool{}
+	for _, p := range sp.Primitives {
+		primType[p.Type] = true
+	}
+
+	// Per-primitive justification. The tier costs a client release per addition
+	// (ADR 0024), so an entry that does not say why a definition cannot express
+	// it is an addition made without paying attention to what it costs.
+	knownTiers := map[string]bool{
+		"presentational": true, "interactive": true, "field": true,
+		"computed": true, "player": true,
+	}
+	for _, p := range sp.Primitives {
+		if strings.TrimSpace(p.Native) == "" {
+			errs = append(errs, fmt.Sprintf("primitive %q has no `native` justification — say why a definition cannot express it", p.Type))
+		}
+		if !knownTiers[p.Tier] {
+			errs = append(errs, fmt.Sprintf("primitive %q has unknown tier %q", p.Type, p.Tier))
+		}
+	}
+
+	for _, t := range sp.Tones {
+		if t.TS == "" || t.Sdui == "" {
+			errs = append(errs, fmt.Sprintf("tone %q needs both `sdui` and `ts` names — the generated constants alias the two bindings' enums", t.Value))
+		}
+	}
+
+	// Tier overlap. A type in both tiers is ambiguous to every client: it would
+	// have to choose between its own implementation and the served definition,
+	// and nothing says which wins.
+	for _, p := range sp.Primitives {
+		if byType[p.Type] {
+			errs = append(errs, fmt.Sprintf("type %q is both a primitive and a component — a type belongs to exactly one tier", p.Type))
+		}
+	}
+
+	// Action-kind, tone and surface coverage across the three places the
+	// vocabulary is written down. This is the whole three-vocabularies fault
+	// mechanised: the spec, the JSON Schema and the proto must agree.
+	errs = append(errs, lintWireCoverage(sp, root)...)
 
 	files, _ := filepath.Glob(filepath.Join(defsDir, "*.json"))
 	sort.Strings(files)
+
+	// Every component in the spec must have a definition file. The reverse
+	// direction was already checked; without this one a component can be
+	// authorable from Go and render as an Unknown placeholder on every client.
+	defined := map[string]bool{}
+
 	for _, f := range files {
 		raw, err := os.ReadFile(f)
 		if err != nil {
@@ -493,15 +925,25 @@ func runLint(sp spec, defsDir string) []string {
 			errs = append(errs, fmt.Sprintf("%s: definition %q has no component in ui.spec.json — add one (a new component needs an authoring entry)", base, def.Name))
 			continue
 		}
-		binds, aliases, outlets := map[string]bool{}, map[string]bool{}, map[string]bool{}
-		collect(def.Template, binds, aliases, outlets)
+		defined[def.Name] = true
+		binds, aliases, outlets, refs := map[string]bool{}, map[string]bool{}, map[string]bool{}, map[string]bool{}
+		collect(def.Template, binds, aliases, outlets, refs)
+
+		// Referenced-type existence. A template naming a type that is in neither
+		// tier expands into a node every client renders as an Unknown
+		// placeholder — a hole in a screen, reported by nothing.
+		for r := range refs {
+			if !primType[r] && !byType[r] {
+				errs = append(errs, fmt.Sprintf("%s: template references type %q, which is neither a primitive nor a component", base, r))
+			}
+		}
 		for b := range binds {
 			// A $each alias and anything under it ("s", "s.label") is a loop
 			// variable, not a component prop. Matching only the bare alias missed
 			// every dotted path, which is the form a repeated node actually uses —
 			// so any definition with an $each in it could not pass this lint, and
 			// none of them lived here.
-			if root, _, _ := strings.Cut(b, "."); aliases[root] {
+			if head, _, _ := strings.Cut(b, "."); aliases[head] {
 				continue
 			}
 			// Runtime-injected bindings ($childCount, $slots) are supplied by the
@@ -521,13 +963,22 @@ func runLint(sp spec, defsDir string) []string {
 		}
 	}
 
+	for _, c := range sp.Components {
+		if c.Generic || c.Type == "" {
+			continue
+		}
+		if !defined[c.Type] {
+			errs = append(errs, fmt.Sprintf("component %q has no definitions/*.json file — it is authorable from Go and renders as Unknown everywhere", c.Type))
+		}
+	}
+
 	sort.Strings(errs)
 	return errs
 }
 
 // collect walks a definition template gathering $bind prop paths, $as loop
-// aliases, and Outlet slot names.
-func collect(v any, binds, aliases, outlets map[string]bool) {
+// aliases, Outlet slot names and every node type the template references.
+func collect(v any, binds, aliases, outlets, refs map[string]bool) {
 	switch x := v.(type) {
 	case map[string]any:
 		if b, ok := x["$bind"].(string); ok {
@@ -536,21 +987,123 @@ func collect(v any, binds, aliases, outlets map[string]bool) {
 		if a, ok := x["$as"].(string); ok {
 			aliases[a] = true
 		}
-		if t, ok := x["type"].(string); ok && t == "Outlet" {
-			if props, ok := x["props"].(map[string]any); ok {
-				if name, ok := props["name"].(string); ok {
-					outlets[name] = true
+		if t, ok := x["type"].(string); ok {
+			refs[t] = true
+			if t == "Outlet" {
+				if props, ok := x["props"].(map[string]any); ok {
+					if name, ok := props["name"].(string); ok {
+						outlets[name] = true
+					}
 				}
 			}
 		}
 		for _, val := range x {
-			collect(val, binds, aliases, outlets)
+			collect(val, binds, aliases, outlets, refs)
 		}
 	case []any:
 		for _, val := range x {
-			collect(val, binds, aliases, outlets)
+			collect(val, binds, aliases, outlets, refs)
 		}
 	}
+}
+
+// ── wire coverage ────────────────────────────────────────────────────────────
+
+var protoEnumRe = regexp.MustCompile(`(?m)^\s*ACTION_KIND_([A-Z0-9_]+)\s*=\s*\d+;`)
+
+// lintWireCoverage reconciles the spec's enums with the two places the wire
+// writes them down: schema/sdui.schema.json (what a JSON consumer validates
+// against) and proto/mosaic/sdui/v1/sdui.proto (what the transport carries).
+//
+// This gate is the reason the spec exists as one file. Before it, the proto
+// enumerated ten action kinds, the schema nine and the client nine — three
+// numbers, none of them checked against another, and six of the wire kinds were
+// unauthorable from Go. Nothing failed; the sets simply disagreed.
+func lintWireCoverage(sp spec, root string) []string {
+	var errs []string
+
+	specKinds := make([]string, 0, len(sp.Actions))
+	for _, a := range sp.Actions {
+		specKinds = append(specKinds, a.Kind)
+	}
+	specTones := make([]string, 0, len(sp.Tones))
+	for _, t := range sp.Tones {
+		specTones = append(specTones, t.Value)
+	}
+	specSurfaces := make([]string, 0, len(sp.Surfaces))
+	for _, s := range sp.Surfaces {
+		specSurfaces = append(specSurfaces, s.Value)
+	}
+
+	schemaPath := filepath.Join(root, "schema", "sdui.schema.json")
+	raw, err := os.ReadFile(schemaPath)
+	if err != nil {
+		return append(errs, fmt.Sprintf("read %s: %v", schemaPath, err))
+	}
+	var sch struct {
+		Defs map[string]struct {
+			Enum []string `json:"enum"`
+		} `json:"$defs"`
+	}
+	if err := json.Unmarshal(raw, &sch); err != nil {
+		return append(errs, fmt.Sprintf("parse %s: %v", schemaPath, err))
+	}
+	errs = append(errs, diffSet("schema ActionKind", specKinds, sch.Defs["ActionKind"].Enum)...)
+	errs = append(errs, diffSet("schema Tone", specTones, sch.Defs["Tone"].Enum)...)
+	errs = append(errs, diffSet("schema Surface", specSurfaces, sch.Defs["Surface"].Enum)...)
+
+	protoPath := filepath.Join(root, "proto", "mosaic", "sdui", "v1", "sdui.proto")
+	praw, err := os.ReadFile(protoPath)
+	if err != nil {
+		return append(errs, fmt.Sprintf("read %s: %v", protoPath, err))
+	}
+	var protoKinds []string
+	for _, m := range protoEnumRe.FindAllStringSubmatch(string(praw), -1) {
+		if m[1] == "UNSPECIFIED" {
+			continue
+		}
+		protoKinds = append(protoKinds, screamingToCamel(m[1]))
+	}
+	errs = append(errs, diffSet("proto ActionKind", specKinds, protoKinds)...)
+	return errs
+}
+
+// diffSet reports each way the two sets disagree, naming the direction — a kind
+// the spec declares that the wire cannot carry is a different bug from one the
+// wire carries that nothing can author.
+func diffSet(what string, spec, wire []string) []string {
+	var errs []string
+	inWire := map[string]bool{}
+	for _, w := range wire {
+		inWire[w] = true
+	}
+	inSpec := map[string]bool{}
+	for _, s := range spec {
+		inSpec[s] = true
+	}
+	for _, s := range spec {
+		if !inWire[s] {
+			errs = append(errs, fmt.Sprintf("%s is missing %q, which ui.spec.json declares", what, s))
+		}
+	}
+	for _, w := range wire {
+		if !inSpec[w] {
+			errs = append(errs, fmt.Sprintf("%s carries %q, which ui.spec.json does not declare — nothing can author it", what, w))
+		}
+	}
+	return errs
+}
+
+// screamingToCamel turns a proto enum suffix (OPEN_URL) into the JSON
+// discriminator the contract uses (openUrl).
+func screamingToCamel(s string) string {
+	parts := strings.Split(strings.ToLower(s), "_")
+	for i := 1; i < len(parts); i++ {
+		r := []rune(parts[i])
+		r[0] = unicode.ToUpper(r[0])
+		parts[i] = string(r)
+	}
+	return strings.Join(parts, "")
 }
 
 // ── helpers ──────────────────────────────────────────────────────────────────
