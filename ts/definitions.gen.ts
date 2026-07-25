@@ -1659,12 +1659,18 @@ export const DEFINITIONS: ComponentDefinition[] = [
               "direction": "column",
               "align": "end",
               "gap": 2
+            },
+            "$if": {
+              "$bind": "aired"
             }
           },
           "children": [
             {
               "type": "Text",
               "props": {
+                "$if": {
+                  "$bind": "runtime"
+                },
                 "text": {
                   "$bind": "runtime"
                 },
@@ -1673,6 +1679,36 @@ export const DEFINITIONS: ComponentDefinition[] = [
                   "color": "text-muted"
                 }
               }
+            },
+            {
+              "type": "Box",
+              "props": {
+                "$if": {
+                  "$bind": "aired"
+                },
+                "style": {
+                  "px": 2,
+                  "py": 1,
+                  "radius": "pill",
+                  "bg": "surface-overlay",
+                  "glass": true,
+                  "border": true
+                }
+              },
+              "children": [
+                {
+                  "type": "Text",
+                  "props": {
+                    "text": {
+                      "$bind": "aired"
+                    },
+                    "style": {
+                      "variant": "xs",
+                      "color": "text-muted"
+                    }
+                  }
+                }
+              ]
             }
           ]
         }

@@ -1129,6 +1129,12 @@
       "doc": "Runtime is a human-readable duration."
     },
     {
+      "func": "Aired",
+      "key": "aired",
+      "type": "string",
+      "doc": "Aired sets an episode's air or release date as the source words it — display-only text, like Runtime, because sources give a year, an ISO date or neither and the Platform does not parse it."
+    },
+    {
       "func": "Thumbnail",
       "key": "thumbnail",
       "type": "string",

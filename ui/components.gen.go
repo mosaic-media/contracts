@@ -396,6 +396,9 @@ func Index(v int) El { return Prop("index", v) }
 // Runtime is a human-readable duration.
 func Runtime(v string) El { return Prop("runtime", v) }
 
+// Aired sets an episode's air or release date as the source words it — display-only text, like Runtime, because sources give a year, an ISO date or neither and the Platform does not parse it.
+func Aired(v string) El { return Prop("aired", v) }
+
 // Thumbnail sets a row's still image.
 func Thumbnail(v string) El { return Prop("thumbnail", v) }
 
@@ -627,6 +630,9 @@ func BindIndex(path string) El { return Prop("index", sdui.Bind(path)) }
 
 // BindRuntime sets "runtime" from the named path instead of from a value.
 func BindRuntime(path string) El { return Prop("runtime", sdui.Bind(path)) }
+
+// BindAired sets "aired" from the named path instead of from a value.
+func BindAired(path string) El { return Prop("aired", sdui.Bind(path)) }
 
 // BindThumbnail sets "thumbnail" from the named path instead of from a value.
 func BindThumbnail(path string) El { return Prop("thumbnail", sdui.Bind(path)) }

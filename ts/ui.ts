@@ -567,6 +567,11 @@ export function Runtime(v: string): El {
   return Prop("runtime", v);
 }
 
+/** Aired sets an episode's air or release date as the source words it — display-only text, like Runtime, because sources give a year, an ISO date or neither and the Platform does not parse it. */
+export function Aired(v: string): El {
+  return Prop("aired", v);
+}
+
 /** Thumbnail sets a row's still image. */
 export function Thumbnail(v: string): El {
   return Prop("thumbnail", v);
@@ -943,6 +948,11 @@ export function BindIndex(path: string): El {
 /** BindRuntime sets "runtime" from the named path instead of from a value. */
 export function BindRuntime(path: string): El {
   return Prop("runtime", bind(path));
+}
+
+/** BindAired sets "aired" from the named path instead of from a value. */
+export function BindAired(path: string): El {
+  return Prop("aired", bind(path));
 }
 
 /** BindThumbnail sets "thumbnail" from the named path instead of from a value. */
