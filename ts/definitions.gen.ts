@@ -1438,11 +1438,19 @@ export const DEFINITIONS: ComponentDefinition[] = [
           "$bind": "action"
         },
         "style": {
-          "direction": "row",
+          "layout": "grid",
+          "gridColumns": [
+            196,
+            {
+              "fill": 1
+            },
+            "auto"
+          ],
+          "gap": 5,
           "align": "start",
-          "gap": 4,
           "p": 3,
-          "radius": "md"
+          "radius": "md",
+          "hoverGroup": true
         }
       },
       "children": [
@@ -1450,12 +1458,12 @@ export const DEFINITIONS: ComponentDefinition[] = [
           "type": "Box",
           "props": {
             "style": {
-              "width": 148,
+              "position": "relative",
               "aspectRatio": "16 / 9",
               "radius": "sm",
               "overflow": "hidden",
               "bg": "surface-raised",
-              "glass": true
+              "border": true
             }
           },
           "children": [
@@ -1465,12 +1473,95 @@ export const DEFINITIONS: ComponentDefinition[] = [
                 "src": {
                   "$bind": "thumbnail"
                 },
+                "alt": {
+                  "$bind": "title"
+                },
+                "fit": "cover",
                 "placeholder": " ",
                 "style": {
                   "width": "full",
                   "height": "full"
                 }
               }
+            },
+            {
+              "type": "Box",
+              "props": {
+                "style": {
+                  "position": "absolute",
+                  "top": 0,
+                  "right": 0,
+                  "bottom": 0,
+                  "left": 0,
+                  "hoverReveal": true,
+                  "align": "center",
+                  "justify": "center"
+                }
+              },
+              "children": [
+                {
+                  "type": "Box",
+                  "props": {
+                    "style": {
+                      "position": "absolute",
+                      "top": 0,
+                      "right": 0,
+                      "bottom": 0,
+                      "left": 0,
+                      "bg": "bg",
+                      "opacity": 0.5
+                    }
+                  }
+                },
+                {
+                  "type": "Box",
+                  "props": {
+                    "style": {
+                      "position": "relative",
+                      "width": 38,
+                      "height": 38,
+                      "radius": "pill",
+                      "bg": "text",
+                      "align": "center",
+                      "justify": "center"
+                    }
+                  },
+                  "children": [
+                    {
+                      "type": "Icon",
+                      "props": {
+                        "name": "play",
+                        "size": 14,
+                        "color": "bg"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "Box",
+              "props": {
+                "$if": {
+                  "$bind": "progress"
+                },
+                "style": {
+                  "position": "absolute",
+                  "right": 0,
+                  "bottom": 0,
+                  "left": 0
+                }
+              },
+              "children": [
+                {
+                  "type": "ProgressBar",
+                  "props": {
+                    "value": {
+                      "$bind": "progress"
+                    }
+                  }
+                }
+              ]
             }
           ]
         },
@@ -1478,8 +1569,9 @@ export const DEFINITIONS: ComponentDefinition[] = [
           "type": "Box",
           "props": {
             "style": {
-              "grow": true,
-              "gap": 1
+              "direction": "column",
+              "gap": 2,
+              "minWidth": 0
             }
           },
           "children": [
@@ -1488,94 +1580,101 @@ export const DEFINITIONS: ComponentDefinition[] = [
               "props": {
                 "style": {
                   "direction": "row",
-                  "justify": "between",
-                  "align": "baseline",
+                  "align": "center",
                   "gap": 3
                 }
               },
               "children": [
                 {
-                  "type": "Box",
+                  "type": "Text",
                   "props": {
-                    "style": {
-                      "direction": "row",
-                      "align": "baseline",
-                      "gap": 2
-                    }
-                  },
-                  "children": [
-                    {
-                      "type": "Text",
-                      "props": {
-                        "$if": {
-                          "$bind": "index"
-                        },
-                        "text": {
-                          "$bind": "index"
-                        },
-                        "style": {
-                          "color": "text-faint",
-                          "tabular": true
-                        }
-                      }
+                    "text": {
+                      "$bind": "index"
                     },
-                    {
-                      "type": "Text",
-                      "props": {
-                        "text": {
-                          "$bind": "title"
-                        },
-                        "style": {
-                          "weight": "medium"
-                        }
-                      }
+                    "style": {
+                      "variant": "xs",
+                      "color": "text-faint",
+                      "mono": true
                     }
-                  ]
+                  }
                 },
                 {
                   "type": "Text",
                   "props": {
-                    "$if": {
-                      "$bind": "runtime"
-                    },
                     "text": {
-                      "$bind": "runtime"
+                      "$bind": "title"
                     },
                     "style": {
-                      "variant": "sm",
-                      "color": "text-faint"
+                      "variant": "md",
+                      "weight": "medium",
+                      "lineClamp": 1
                     }
+                  }
+                },
+                {
+                  "type": "Icon",
+                  "props": {
+                    "$if": {
+                      "$bind": "watched"
+                    },
+                    "name": "check",
+                    "size": "0.9em",
+                    "color": "success"
                   }
                 }
               ]
             },
             {
-              "type": "Text",
+              "type": "Box",
               "props": {
                 "$if": {
                   "$bind": "overview"
                 },
-                "text": {
-                  "$bind": "overview"
-                },
                 "style": {
-                  "variant": "sm",
-                  "color": "text-muted",
-                  "lineClamp": 2
+                  "maxWidth": 640
                 }
-              }
+              },
+              "children": [
+                {
+                  "type": "Text",
+                  "props": {
+                    "text": {
+                      "$bind": "overview"
+                    },
+                    "style": {
+                      "variant": "sm",
+                      "color": "text-muted",
+                      "lineClamp": 2
+                    }
+                  }
+                }
+              ]
             }
           ]
         },
         {
-          "type": "Icon",
+          "type": "Box",
           "props": {
-            "$if": {
-              "$bind": "watched"
-            },
-            "name": "check",
-            "color": "success"
-          }
+            "style": {
+              "direction": "column",
+              "align": "end",
+              "gap": 2
+            }
+          },
+          "children": [
+            {
+              "type": "Text",
+              "props": {
+                "text": {
+                  "$bind": "runtime"
+                },
+                "style": {
+                  "variant": "xs",
+                  "color": "text-muted"
+                }
+              }
+            }
+          ]
         }
       ]
     }
@@ -3152,12 +3251,12 @@ export const DEFINITIONS: ComponentDefinition[] = [
         "action": {
           "$bind": "action"
         },
+        "lift": true,
         "style": {
-          "direction": "row",
+          "direction": "column",
           "align": "center",
-          "gap": 3,
-          "p": 1,
-          "radius": "md"
+          "gap": 0,
+          "width": 132
         }
       },
       "children": [
@@ -3165,14 +3264,12 @@ export const DEFINITIONS: ComponentDefinition[] = [
           "type": "Box",
           "props": {
             "style": {
-              "width": 42,
-              "height": 42,
+              "width": "full",
+              "aspectRatio": "1 / 1",
               "radius": "pill",
               "overflow": "hidden",
-              "bg": "surface-overlay",
-              "glass": true,
-              "align": "center",
-              "justify": "center"
+              "bg": "surface-raised",
+              "border": true
             }
           },
           "children": [
@@ -3182,6 +3279,10 @@ export const DEFINITIONS: ComponentDefinition[] = [
                 "src": {
                   "$bind": "avatar"
                 },
+                "alt": {
+                  "$bind": "name"
+                },
+                "fit": "cover",
                 "placeholder": {
                   "$bind": "name"
                 },
@@ -3196,6 +3297,12 @@ export const DEFINITIONS: ComponentDefinition[] = [
         },
         {
           "type": "Box",
+          "props": {
+            "style": {
+              "pt": 3,
+              "align": "center"
+            }
+          },
           "children": [
             {
               "type": "Text",
@@ -3205,22 +3312,37 @@ export const DEFINITIONS: ComponentDefinition[] = [
                 },
                 "style": {
                   "variant": "sm",
-                  "weight": "medium"
+                  "weight": "medium",
+                  "align": "center",
+                  "lineClamp": 1
                 }
               }
+            }
+          ]
+        },
+        {
+          "type": "Box",
+          "props": {
+            "$if": {
+              "$bind": "role"
             },
+            "style": {
+              "pt": 1,
+              "align": "center"
+            }
+          },
+          "children": [
             {
               "type": "Text",
               "props": {
-                "$if": {
-                  "$bind": "role"
-                },
                 "text": {
                   "$bind": "role"
                 },
                 "style": {
                   "variant": "xs",
-                  "color": "text-muted"
+                  "color": "text-muted",
+                  "align": "center",
+                  "lineClamp": 1
                 }
               }
             }
@@ -3618,7 +3740,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
               "direction": "column",
               "gap": 8,
               "px": "gutter",
-              "pt": 9,
+              "pt": 8,
               "pb": 9
             }
           },
@@ -3641,8 +3763,9 @@ export const DEFINITIONS: ComponentDefinition[] = [
                       "$bind": "title"
                     },
                     "style": {
-                      "variant": "2xl",
-                      "weight": "bold"
+                      "variant": "xl",
+                      "weight": "medium",
+                      "tracking": "tight"
                     }
                   }
                 },
@@ -3667,7 +3790,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
               "props": {
                 "style": {
                   "direction": "column",
-                  "gap": 6
+                  "gap": 8
                 }
               },
               "children": [

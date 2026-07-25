@@ -31,7 +31,7 @@
             "direction": "column",
             "gap": 8,
             "px": "gutter",
-            "pt": 9,
+            "pt": 8,
             "pb": 9
           }
         },
@@ -54,8 +54,9 @@
                     "$bind": "title"
                   },
                   "style": {
-                    "variant": "2xl",
-                    "weight": "bold"
+                    "variant": "xl",
+                    "weight": "medium",
+                    "tracking": "tight"
                   }
                 }
               },
@@ -80,7 +81,7 @@
             "props": {
               "style": {
                 "direction": "column",
-                "gap": 6
+                "gap": 8
               }
             },
             "children": [

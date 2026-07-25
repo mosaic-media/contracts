@@ -6,12 +6,12 @@
       "action": {
         "$bind": "action"
       },
+      "lift": true,
       "style": {
-        "direction": "row",
+        "direction": "column",
         "align": "center",
-        "gap": 3,
-        "p": 1,
-        "radius": "md"
+        "gap": 0,
+        "width": 132
       }
     },
     "children": [
@@ -19,14 +19,12 @@
         "type": "Box",
         "props": {
           "style": {
-            "width": 42,
-            "height": 42,
+            "width": "full",
+            "aspectRatio": "1 / 1",
             "radius": "pill",
             "overflow": "hidden",
-            "bg": "surface-overlay",
-            "glass": true,
-            "align": "center",
-            "justify": "center"
+            "bg": "surface-raised",
+            "border": true
           }
         },
         "children": [
@@ -36,6 +34,10 @@
               "src": {
                 "$bind": "avatar"
               },
+              "alt": {
+                "$bind": "name"
+              },
+              "fit": "cover",
               "placeholder": {
                 "$bind": "name"
               },
@@ -50,6 +52,12 @@
       },
       {
         "type": "Box",
+        "props": {
+          "style": {
+            "pt": 3,
+            "align": "center"
+          }
+        },
         "children": [
           {
             "type": "Text",
@@ -59,22 +67,37 @@
               },
               "style": {
                 "variant": "sm",
-                "weight": "medium"
+                "weight": "medium",
+                "align": "center",
+                "lineClamp": 1
               }
             }
+          }
+        ]
+      },
+      {
+        "type": "Box",
+        "props": {
+          "$if": {
+            "$bind": "role"
           },
+          "style": {
+            "pt": 1,
+            "align": "center"
+          }
+        },
+        "children": [
           {
             "type": "Text",
             "props": {
-              "$if": {
-                "$bind": "role"
-              },
               "text": {
                 "$bind": "role"
               },
               "style": {
                 "variant": "xs",
-                "color": "text-muted"
+                "color": "text-muted",
+                "align": "center",
+                "lineClamp": 1
               }
             }
           }
