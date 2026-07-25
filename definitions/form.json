@@ -1,0 +1,52 @@
+{
+  "name": "Form",
+  "params": {
+    "submitLabel": "Save",
+    "vars": []
+  },
+  "template": {
+    "type": "State",
+    "props": { "vars": { "$bind": "vars" } },
+    "children": [
+      {
+        "type": "Box",
+        "props": { "style": { "direction": "vertical", "gap": 4 } },
+        "children": [
+          { "type": "Outlet" },
+          {
+            "type": "Text",
+            "props": {
+              "$if": { "$bind": "error" },
+              "text": { "$bind": "error" },
+              "style": { "variant": "sm", "color": "danger" }
+            }
+          },
+          {
+            "type": "Pressable",
+            "props": {
+              "action": { "$bind": "submitAction" },
+              "disabled": { "$bind": "busy" },
+              "label": { "$bind": "submitLabel" },
+              "lift": true,
+              "style": {
+                "direction": "row",
+                "align": "center",
+                "justify": "center",
+                "bg": "accent",
+                "radius": "md",
+                "px": 4,
+                "py": 2
+              }
+            },
+            "children": [
+              {
+                "type": "Text",
+                "props": { "text": { "$bind": "submitLabel" }, "style": { "weight": "bold" } }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

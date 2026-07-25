@@ -84,12 +84,21 @@ func SetValue(field, value string) Action {
 	return Action{Kind: KindSetValue, Field: strp(field), Value: strp(value)}
 }
 
-// Submit validates the enclosing form and, if it passes, emits that form's
-// submit action with the collected field values merged into its input.
+// Submit runs an action with the enclosing State scope's values merged into its
+// input — what a form's button emits.
 //
-// Declared and not yet interpreted, for the same reason as SetValue: the form
-// scope it submits is S5's.
-func Submit() Action { return Action{Kind: KindSubmit} }
+// It carries the action it runs, in the same field a Sequence carries its steps,
+// rather than the enclosing scope carrying a "submitAction" the client has to go
+// looking for. That is what makes a Form composed rather than special-cased: the
+// scope stays a plain State, the button stays a plain Pressable, and the thing
+// that knows about submission is the action, which is data.
+//
+// The merge is into the nested action's input, and the scope's values lose to
+// anything the producer set explicitly there — a server that pinned a field is
+// stating something the form must not overwrite.
+func Submit(action Action) Action {
+	return Action{Kind: KindSubmit, Actions: []Action{action}}
+}
 
 // nodeToMap renders a node to the JSON object form that rides inside an action's
 // open bag (OpenOverlay). Nodes embedded in an action are rare; when absent this

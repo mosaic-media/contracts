@@ -20,7 +20,7 @@ export interface PrimitiveSpec {
 }
 
 /** The vocabulary version a client declares it implements. */
-export const vocabularyVersion = "1.3.0";
+export const vocabularyVersion = "2.0.0";
 
 /** Divides a module's id from its own type name; core types never contain it. */
 export const typeSeparator = ":";
@@ -222,28 +222,13 @@ export const primitives: PrimitiveSpec[] = [
     ],
   },
   {
-    type: "Form",
-    tier: "field",
-    doc: "Form collects the values of the fields in its subtree and submits them as one action.",
-    native: "Aggregates live state across a whole subtree into a single action payload at submit time. No static tree can read its descendants' current values, which is why a multi-field screen was previously impossible to express.",
-    children: true,
-    props: [
-      { key: "submitAction", type: "action", doc: "Action emitted on submit. Collected field values are merged into its input under each field's name." },
-      { key: "submitLabel", type: "string", doc: "Label of the submit control." },
-      { key: "busy", type: "boolean", doc: "Render the in-flight state and refuse repeat submission." },
-      { key: "error", type: "string", doc: "Server-supplied error to display against the form as a whole." },
-      { key: "validators", type: "validators", doc: "Declarative rules the client enforces before submit. Server-side failures arrive as fieldErrors and render in the same slot." },
-      { key: "visibleWhen", type: "predicate", doc: "Structured predicate over sibling field values. Absent means always visible." },
-      { key: "label", type: "string", doc: "Field label." },
-    ],
-  },
-  {
     type: "SubmitField",
     tier: "field",
     doc: "SubmitField is a single text field with its own submit control.",
     native: "Owns its input value and substitutes it into the action at submit time.",
     children: false,
     props: [
+      { key: "name", type: "string", doc: "The field's name in the enclosing State scope. An input with a name writes what it holds there, which is what lets a screen carry more than one of them." },
       { key: "placeholder", type: "string", doc: "Placeholder text." },
       { key: "submitLabel", type: "string", doc: "Label of the submit control." },
       { key: "action", type: "action", doc: "Action emitted on submit, with the literal string \"$value\" replaced by the typed value wherever it appears." },
@@ -259,6 +244,7 @@ export const primitives: PrimitiveSpec[] = [
     native: "The submitted action must carry the live input value, and in a live session the value streams up debounced as it changes.",
     children: false,
     props: [
+      { key: "name", type: "string", doc: "The field's name in the enclosing State scope. An input with a name writes what it holds there, which is what lets a screen carry more than one of them." },
       { key: "placeholder", type: "string", doc: "Placeholder text." },
       { key: "submitScreen", type: "string", doc: "Screen navigated to on submit when there is no live session." },
       { key: "value", type: "string", doc: "Initial term." },
@@ -409,6 +395,7 @@ export const components: string[] = [
   "StatusIndicator",
   "TextField",
   "Toggle",
+  "Form",
 ];
 
 /** Every behaviour a client interprets. */

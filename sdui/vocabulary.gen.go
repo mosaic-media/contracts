@@ -7,7 +7,7 @@ package sdui
 // VocabularyVersion is the version a client declares it implements. Additive
 // growth is a minor bump; removing or changing the meaning of a primitive, a
 // prop or an action is a major one.
-const VocabularyVersion = "1.3.0"
+const VocabularyVersion = "2.0.0"
 
 // TypeSeparator divides a module's id from its own type name. Core types are
 // unprefixed and may never contain it; a module's are moduleId:type. Two
@@ -38,7 +38,6 @@ const (
 	TypeTextInput      = "TextInput"
 	TypeSwitch         = "Switch"
 	TypeSelectInput    = "SelectInput"
-	TypeForm           = "Form"
 	TypeSubmitField    = "SubmitField"
 	TypeSearchBar      = "SearchBar"
 	TypeMenu           = "Menu"
@@ -87,6 +86,7 @@ const (
 	TypeStatusIndicator  = "StatusIndicator"
 	TypeTextField        = "TextField"
 	TypeToggle           = "Toggle"
+	TypeForm             = "Form"
 )
 
 // Action kinds — the JSON discriminator values.
@@ -202,16 +202,8 @@ var Primitives = []PrimitiveSpec{
 		{Key: "visibleWhen", Type: "predicate", Doc: "Structured predicate over sibling field values. Absent means always visible."},
 		{Key: "label", Type: "string", Doc: "Field label."},
 	}},
-	{Type: "Form", Tier: "field", Doc: "Form collects the values of the fields in its subtree and submits them as one action.", Native: "Aggregates live state across a whole subtree into a single action payload at submit time. No static tree can read its descendants' current values, which is why a multi-field screen was previously impossible to express.", Children: true, Props: []PropSpec{
-		{Key: "submitAction", Type: "action", Doc: "Action emitted on submit. Collected field values are merged into its input under each field's name."},
-		{Key: "submitLabel", Type: "string", Doc: "Label of the submit control."},
-		{Key: "busy", Type: "boolean", Doc: "Render the in-flight state and refuse repeat submission."},
-		{Key: "error", Type: "string", Doc: "Server-supplied error to display against the form as a whole."},
-		{Key: "validators", Type: "validators", Doc: "Declarative rules the client enforces before submit. Server-side failures arrive as fieldErrors and render in the same slot."},
-		{Key: "visibleWhen", Type: "predicate", Doc: "Structured predicate over sibling field values. Absent means always visible."},
-		{Key: "label", Type: "string", Doc: "Field label."},
-	}},
 	{Type: "SubmitField", Tier: "field", Doc: "SubmitField is a single text field with its own submit control.", Native: "Owns its input value and substitutes it into the action at submit time.", Children: false, Props: []PropSpec{
+		{Key: "name", Type: "string", Doc: "The field's name in the enclosing State scope. An input with a name writes what it holds there, which is what lets a screen carry more than one of them."},
 		{Key: "placeholder", Type: "string", Doc: "Placeholder text."},
 		{Key: "submitLabel", Type: "string", Doc: "Label of the submit control."},
 		{Key: "action", Type: "action", Doc: "Action emitted on submit, with the literal string \"$value\" replaced by the typed value wherever it appears."},
@@ -220,6 +212,7 @@ var Primitives = []PrimitiveSpec{
 		{Key: "label", Type: "string", Doc: "Field label."},
 	}},
 	{Type: "SearchBar", Tier: "field", Doc: "SearchBar is the frame's persistent search entry.", Native: "The submitted action must carry the live input value, and in a live session the value streams up debounced as it changes.", Children: false, Props: []PropSpec{
+		{Key: "name", Type: "string", Doc: "The field's name in the enclosing State scope. An input with a name writes what it holds there, which is what lets a screen carry more than one of them."},
 		{Key: "placeholder", Type: "string", Doc: "Placeholder text."},
 		{Key: "submitScreen", Type: "string", Doc: "Screen navigated to on submit when there is no live session."},
 		{Key: "value", Type: "string", Doc: "Initial term."},
@@ -314,6 +307,7 @@ var Components = []string{
 	"StatusIndicator",
 	"TextField",
 	"Toggle",
+	"Form",
 }
 
 // ActionKinds is every behaviour a client interprets.
@@ -329,7 +323,7 @@ var ActionKinds = []ActionSpec{
 	{Kind: "toast", Doc: "Toast shows a transient message."},
 	{Kind: "sequence", Doc: "Sequence runs several actions in order, stopping at the first failure."},
 	{Kind: "setValue", Doc: "SetValue writes a value into a named field in the enclosing form scope."},
-	{Kind: "submit", Doc: "Submit validates the enclosing form and, if it passes, emits its submitAction with the collected field values merged into the input."},
+	{Kind: "submit", Doc: "Submit runs an action with the enclosing State scope's values merged into its input — what a form's button emits."},
 }
 
 // Validators is the closed field-validation set. Closed on purpose: an open

@@ -76,10 +76,6 @@ func Switch(els ...El) *Element { return compose("Switch", nil, els) }
 // Native: Owns its selected value.
 func SelectInput(els ...El) *Element { return compose("SelectInput", nil, els) }
 
-// Form collects the values of the fields in its subtree and submits them as one action.
-// Native: Aggregates live state across a whole subtree into a single action payload at submit time. No static tree can read its descendants' current values, which is why a multi-field screen was previously impossible to express.
-func Form(els ...El) *Element { return compose("Form", nil, els) }
-
 // SubmitField is a single text field with its own submit control.
 // Native: Owns its input value and substitutes it into the action at submit time.
 func SubmitField(els ...El) *Element { return compose("SubmitField", nil, els) }
@@ -279,6 +275,9 @@ func TextField(label string, els ...El) *Element {
 func Toggle(label string, els ...El) *Element {
 	return compose("Toggle", map[string]any{"label": label}, els)
 }
+
+// Form is a State scope with a submit control: it declares the fields' variables, hosts them, and emits its submit action with their values merged in. Composed rather than native — it is a State, an Outlet and a button, and nothing about it needs client code.
+func Form(els ...El) *Element { return compose("Form", nil, els) }
 
 // Component is the generic constructor for a type without a helper (a standard component like SeasonSelector, or a module's own).
 func Component(typ string, els ...El) *Element { return compose(typ, nil, els) }
@@ -494,6 +493,21 @@ func Origin(v string) El { return Prop("origin", v) }
 // Vars declares a State scope's variables — each a name, a type ("string", "number" or "boolean") and an initial value. Declared rather than inferred: a client must know a name exists before anything writes to it, and must know what to coerce a written value to.
 func Vars(v []any) El { return Prop("vars", v) }
 
+// Name is a field's name in the enclosing State scope.
+func Name(v string) El { return Prop("name", v) }
+
+// SubmitAction is what a Form emits when it is submitted, with the scope's values merged into its input.
+func SubmitAction(v Action) El { return Prop("submitAction", v) }
+
+// SubmitLabel is the text on a form's submit control.
+func SubmitLabel(v string) El { return Prop("submitLabel", v) }
+
+// Busy marks a form as awaiting its submission's result.
+func Busy(v bool) El { return Prop("busy", v) }
+
+// Error is a form-level failure message, distinct from a field's own.
+func Error(v string) El { return Prop("error", v) }
+
 // ── bound sugar ────────────────────────────────────────────────────────────
 // The same props, set to a binding the client resolves where the node renders
 // rather than to a value decided now. One per helper, generated, because a
@@ -671,6 +685,21 @@ func BindOrigin(path string) El { return Prop("origin", sdui.Bind(path)) }
 
 // BindVars sets "vars" from the named path instead of from a value.
 func BindVars(path string) El { return Prop("vars", sdui.Bind(path)) }
+
+// BindName sets "name" from the named path instead of from a value.
+func BindName(path string) El { return Prop("name", sdui.Bind(path)) }
+
+// BindSubmitAction sets "submitAction" from the named path instead of from a value.
+func BindSubmitAction(path string) El { return Prop("submitAction", sdui.Bind(path)) }
+
+// BindSubmitLabel sets "submitLabel" from the named path instead of from a value.
+func BindSubmitLabel(path string) El { return Prop("submitLabel", sdui.Bind(path)) }
+
+// BindBusy sets "busy" from the named path instead of from a value.
+func BindBusy(path string) El { return Prop("busy", sdui.Bind(path)) }
+
+// BindError sets "error" from the named path instead of from a value.
+func BindError(path string) El { return Prop("error", sdui.Bind(path)) }
 
 // Tone values (the open-bag string encoding), re-exported from the producer binding.
 const (

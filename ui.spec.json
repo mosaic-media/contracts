@@ -1,6 +1,6 @@
 {
   "//": "The Mosaic SDUI vocabulary — the single source of truth for what a client renders and what the emit-side may author. It has three tiers and they are generated, never hand-written: `primitives` are the native vocabulary every client must implement (growing this set needs a client release — ADR 0024); `components` are definitions, authored as data in definitions/*.json and delivered by the Platform at runtime (free); `actions` are the behaviours a client interprets. Run `go run ./tools/genui` to regenerate the authoring builders and the vocabulary registry; do not hand-edit the generated files. `go run ./tools/genui -lint` fails when any tier drifts from another — that check is the whole reason this file is one file.",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "//typeSeparator": "The separator between a module's id and its own type name. Core types — every primitive and every component in this file — are unprefixed and may not contain it; a module's types are `moduleId:type`. One character, chosen because it cannot appear in a module id and reads as a namespace in every client language.",
   "typeSeparator": ":",
   "//bindingMarker": "The single key that makes a prop value a binding rather than a literal. An object is a binding only when it has exactly one key and that key is this one — the same closed-set discipline the action-kind check uses, so a prop that happens to carry a field of this name is never silently reinterpreted. It is spelled the same as a definition template's binding because it means the same thing: resolve a path against a scope. Making it one concept rather than two that share a spelling is the point.",
@@ -241,7 +241,7 @@
       "sdui": "Submit",
       "kind": "submit",
       "enum": "Submit",
-      "doc": "Submit validates the enclosing form and, if it passes, emits its submitAction with the collected field values merged into the input.",
+      "doc": "Submit runs an action with the enclosing State scope's values merged into its input — what a form's button emits.",
       "args": [],
       "optional": []
     }
@@ -683,50 +683,6 @@
       ]
     },
     {
-      "type": "Form",
-      "tier": "field",
-      "doc": "Form collects the values of the fields in its subtree and submits them as one action.",
-      "native": "Aggregates live state across a whole subtree into a single action payload at submit time. No static tree can read its descendants' current values, which is why a multi-field screen was previously impossible to express.",
-      "children": true,
-      "props": [
-        {
-          "key": "submitAction",
-          "type": "action",
-          "doc": "Action emitted on submit. Collected field values are merged into its input under each field's name."
-        },
-        {
-          "key": "submitLabel",
-          "type": "string",
-          "doc": "Label of the submit control."
-        },
-        {
-          "key": "busy",
-          "type": "boolean",
-          "doc": "Render the in-flight state and refuse repeat submission."
-        },
-        {
-          "key": "error",
-          "type": "string",
-          "doc": "Server-supplied error to display against the form as a whole."
-        },
-        {
-          "key": "validators",
-          "type": "validators",
-          "doc": "Declarative rules the client enforces before submit. Server-side failures arrive as fieldErrors and render in the same slot."
-        },
-        {
-          "key": "visibleWhen",
-          "type": "predicate",
-          "doc": "Structured predicate over sibling field values. Absent means always visible."
-        },
-        {
-          "key": "label",
-          "type": "string",
-          "doc": "Field label."
-        }
-      ]
-    },
-    {
       "type": "SubmitField",
       "tier": "field",
       "doc": "SubmitField is a single text field with its own submit control.",
@@ -734,6 +690,11 @@
       "deprecated": "Superseded by Form, which expresses the same thing with a named field and no string substitution. Retained because ADR 0038 module settings screens emit it; remove once those move to Form.",
       "children": false,
       "props": [
+        {
+          "key": "name",
+          "type": "string",
+          "doc": "The field's name in the enclosing State scope. An input with a name writes what it holds there, which is what lets a screen carry more than one of them."
+        },
         {
           "key": "placeholder",
           "type": "string",
@@ -773,6 +734,11 @@
       "native": "The submitted action must carry the live input value, and in a live session the value streams up debounced as it changes.",
       "children": false,
       "props": [
+        {
+          "key": "name",
+          "type": "string",
+          "doc": "The field's name in the enclosing State scope. An input with a name writes what it holds there, which is what lets a screen carry more than one of them."
+        },
         {
           "key": "placeholder",
           "type": "string",
@@ -1387,6 +1353,36 @@
       "key": "vars",
       "type": "[]props",
       "doc": "Vars declares a State scope's variables — each a name, a type (\"string\", \"number\" or \"boolean\") and an initial value. Declared rather than inferred: a client must know a name exists before anything writes to it, and must know what to coerce a written value to."
+    },
+    {
+      "func": "Name",
+      "key": "name",
+      "type": "string",
+      "doc": "Name is a field's name in the enclosing State scope."
+    },
+    {
+      "func": "SubmitAction",
+      "key": "submitAction",
+      "type": "Action",
+      "doc": "SubmitAction is what a Form emits when it is submitted, with the scope's values merged into its input."
+    },
+    {
+      "func": "SubmitLabel",
+      "key": "submitLabel",
+      "type": "string",
+      "doc": "SubmitLabel is the text on a form's submit control."
+    },
+    {
+      "func": "Busy",
+      "key": "busy",
+      "type": "bool",
+      "doc": "Busy marks a form as awaiting its submission's result."
+    },
+    {
+      "func": "Error",
+      "key": "error",
+      "type": "string",
+      "doc": "Error is a form-level failure message, distinct from a field's own."
     }
   ],
   "slots": [
@@ -1861,6 +1857,12 @@
           "type": "string"
         }
       ]
+    },
+    {
+      "func": "Form",
+      "type": "Form",
+      "doc": "Form is a State scope with a submit control: it declares the fields' variables, hosts them, and emits its submit action with their values merged in. Composed rather than native — it is a State, an Outlet and a button, and nothing about it needs client code.",
+      "positional": []
     },
     {
       "func": "Component",

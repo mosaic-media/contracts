@@ -128,13 +128,6 @@ export function SelectInput(...els: Elish[]): Element {
   return compose("SelectInput", undefined, els);
 }
 
-/** Form collects the values of the fields in its subtree and submits them as one action.
- *
- *  Native: Aggregates live state across a whole subtree into a single action payload at submit time. No static tree can read its descendants' current values, which is why a multi-field screen was previously impossible to express. */
-export function Form(...els: Elish[]): Element {
-  return compose("Form", undefined, els);
-}
-
 /** SubmitField is a single text field with its own submit control.
  *
  *  Native: Owns its input value and substitutes it into the action at submit time. */
@@ -375,6 +368,11 @@ export function TextField(label: string, ...els: Elish[]): Element {
 /** Toggle is a switch with a label. It carries the value it moves TO — the client reports the flip, the server decides what it means. */
 export function Toggle(label: string, ...els: Elish[]): Element {
   return compose("Toggle", { label }, els);
+}
+
+/** Form is a State scope with a submit control: it declares the fields' variables, hosts them, and emits its submit action with their values merged in. Composed rather than native — it is a State, an Outlet and a button, and nothing about it needs client code. */
+export function Form(...els: Elish[]): Element {
+  return compose("Form", undefined, els);
 }
 
 /** Component is the generic constructor for a type without a helper (a standard component like SeasonSelector, or a module's own). */
@@ -731,6 +729,31 @@ export function Vars(v: Props[]): El {
   return Prop("vars", v);
 }
 
+/** Name is a field's name in the enclosing State scope. */
+export function Name(v: string): El {
+  return Prop("name", v);
+}
+
+/** SubmitAction is what a Form emits when it is submitted, with the scope's values merged into its input. */
+export function SubmitAction(v: Action): El {
+  return Prop("submitAction", v);
+}
+
+/** SubmitLabel is the text on a form's submit control. */
+export function SubmitLabel(v: string): El {
+  return Prop("submitLabel", v);
+}
+
+/** Busy marks a form as awaiting its submission's result. */
+export function Busy(v: boolean): El {
+  return Prop("busy", v);
+}
+
+/** Error is a form-level failure message, distinct from a field's own. */
+export function Error(v: string): El {
+  return Prop("error", v);
+}
+
 // ── bound sugar ────────────────────────────────────────────────────────────
 // The same props, set to a binding the client resolves where the node renders.
 
@@ -1019,6 +1042,31 @@ export function BindVars(path: string): El {
   return Prop("vars", bind(path));
 }
 
+/** BindName sets "name" from the named path instead of from a value. */
+export function BindName(path: string): El {
+  return Prop("name", bind(path));
+}
+
+/** BindSubmitAction sets "submitAction" from the named path instead of from a value. */
+export function BindSubmitAction(path: string): El {
+  return Prop("submitAction", bind(path));
+}
+
+/** BindSubmitLabel sets "submitLabel" from the named path instead of from a value. */
+export function BindSubmitLabel(path: string): El {
+  return Prop("submitLabel", bind(path));
+}
+
+/** BindBusy sets "busy" from the named path instead of from a value. */
+export function BindBusy(path: string): El {
+  return Prop("busy", bind(path));
+}
+
+/** BindError sets "error" from the named path instead of from a value. */
+export function BindError(path: string): El {
+  return Prop("error", bind(path));
+}
+
 // Tone values, mirroring the Go Tone constants. They are the schema enum's
 // members rather than bare strings, so passing one where the contract wants a
 // Tone typechecks.
@@ -1088,7 +1136,7 @@ export function SetValue(field: string, value: string): Action {
   return { kind: ActionKind.SetValue, field, value };
 }
 
-/** Submit validates the enclosing form and, if it passes, emits its submitAction with the collected field values merged into the input. */
+/** Submit runs an action with the enclosing State scope's values merged into its input — what a form's button emits. */
 export function Submit(): Action {
   return { kind: ActionKind.Submit };
 }
