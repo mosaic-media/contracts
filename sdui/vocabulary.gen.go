@@ -7,7 +7,7 @@ package sdui
 // VocabularyVersion is the version a client declares it implements. Additive
 // growth is a minor bump; removing or changing the meaning of a primitive, a
 // prop or an action is a major one.
-const VocabularyVersion = "2.3.0"
+const VocabularyVersion = "2.4.0"
 
 // TypeSeparator divides a module's id from its own type name. Core types are
 // unprefixed and may never contain it; a module's are moduleId:type. Two

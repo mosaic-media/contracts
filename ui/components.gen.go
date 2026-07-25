@@ -535,6 +535,12 @@ func InitialFocus(v bool) El { return Prop("initialFocus", v) }
 // NextFocus overrides where focus goes from here, per direction — {up,down,left,right} to node ids. It is an override, not the mechanism: a client works out the rest geometrically, and this is for the cases geometry gets wrong.
 func NextFocus(v map[string]any) El { return Prop("nextFocus", v) }
 
+// HasMore says this list is a page of something longer. It is the server's statement, not the client's inference: a page that happens to be full is not evidence there is another one, and a client guessing from the count asks for a page that does not exist.
+func HasMore(v bool) El { return Prop("hasMore", v) }
+
+// LoadMore is what fetches the next page. It carries whatever cursor the server needs, because only the server knows what 'next' means for this list — a skip count here, a token elsewhere.
+func LoadMore(v Action) El { return Prop("loadMore", v) }
+
 // ── bound sugar ────────────────────────────────────────────────────────────
 // The same props, set to a binding the client resolves where the node renders
 // rather than to a value decided now. One per helper, generated, because a
@@ -754,6 +760,12 @@ func BindInitialFocus(path string) El { return Prop("initialFocus", sdui.Bind(pa
 
 // BindNextFocus sets "nextFocus" from the named path instead of from a value.
 func BindNextFocus(path string) El { return Prop("nextFocus", sdui.Bind(path)) }
+
+// BindHasMore sets "hasMore" from the named path instead of from a value.
+func BindHasMore(path string) El { return Prop("hasMore", sdui.Bind(path)) }
+
+// BindLoadMore sets "loadMore" from the named path instead of from a value.
+func BindLoadMore(path string) El { return Prop("loadMore", sdui.Bind(path)) }
 
 // Tone values (the open-bag string encoding), re-exported from the producer binding.
 const (

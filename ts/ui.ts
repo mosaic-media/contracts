@@ -799,6 +799,16 @@ export function NextFocus(v: Props): El {
   return Prop("nextFocus", v);
 }
 
+/** HasMore says this list is a page of something longer. It is the server's statement, not the client's inference: a page that happens to be full is not evidence there is another one, and a client guessing from the count asks for a page that does not exist. */
+export function HasMore(v: boolean): El {
+  return Prop("hasMore", v);
+}
+
+/** LoadMore is what fetches the next page. It carries whatever cursor the server needs, because only the server knows what 'next' means for this list — a skip count here, a token elsewhere. */
+export function LoadMore(v: Action): El {
+  return Prop("loadMore", v);
+}
+
 // ── bound sugar ────────────────────────────────────────────────────────────
 // The same props, set to a binding the client resolves where the node renders.
 
@@ -1155,6 +1165,16 @@ export function BindInitialFocus(path: string): El {
 /** BindNextFocus sets "nextFocus" from the named path instead of from a value. */
 export function BindNextFocus(path: string): El {
   return Prop("nextFocus", bind(path));
+}
+
+/** BindHasMore sets "hasMore" from the named path instead of from a value. */
+export function BindHasMore(path: string): El {
+  return Prop("hasMore", bind(path));
+}
+
+/** BindLoadMore sets "loadMore" from the named path instead of from a value. */
+export function BindLoadMore(path: string): El {
+  return Prop("loadMore", bind(path));
 }
 
 // Tone values, mirroring the Go Tone constants. They are the schema enum's
