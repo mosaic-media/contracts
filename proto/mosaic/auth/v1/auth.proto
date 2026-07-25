@@ -21,12 +21,27 @@ syntax = "proto3";
 package mosaic.auth.v1;
 
 import "google/protobuf/timestamp.proto";
+import "mosaic/sdui/v1/sdui.proto";
 
 option go_package = "github.com/mosaic-media/contracts/gen/mosaic/auth/v1;authv1";
 
-// AuthService mints and revokes sessions. Both calls are unary: there is
+// AuthService mints and revokes sessions, and serves the one screen that is
+// drawn before there is a session to draw it on. Every call is unary: there is
 // nothing to push before a client has a session to push to.
 service AuthService {
+  // SignInScreen returns the sign-in tree (ADR 0097). It is here rather than on
+  // SessionService because that service's every request begins with a session
+  // ref, and this is the screen you see when you have none.
+  //
+  // The tree carries exactly one action a client must interpret itself: an
+  // `invoke` whose mutation is `signIn`. There is no session to dispatch it on,
+  // so the client calls SignIn below with the form scope's values. Any other
+  // action on this tree is a mistake and should be ignored.
+  //
+  // It discloses nothing about the install — no profiles, no library counts, no
+  // server name. An unauthenticated caller learns that this is a Mosaic server
+  // and is asked for a username and a password.
+  rpc SignInScreen(SignInScreenRequest) returns (SignInScreenResponse);
   // SignIn authenticates a local user with a password and issues a session.
   // The returned session id is the opaque ref (ADR 0017) the client presents on
   // every SessionService call.
@@ -35,6 +50,18 @@ service AuthService {
   // passes the same value for both fields; revoking another device's session is
   // an authorised act, which is why the caller is named separately.
   rpc SignOut(SignOutRequest) returns (SignOutResponse);
+}
+
+// SignInScreenRequest carries an optional message to render on the screen — the
+// reason a previous attempt failed, handed back so the refusal is stated by the
+// same surface that asked. Empty on a first load.
+message SignInScreenRequest {
+  string error = 1;
+}
+
+// SignInScreenResponse carries the tree to render.
+message SignInScreenResponse {
+  mosaic.sdui.v1.UINode screen = 1;
 }
 
 // SignInRequest is a local username/password authentication from a named

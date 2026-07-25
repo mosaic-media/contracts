@@ -295,6 +295,7 @@
     "RelatedRail",
     "Select",
     "SettingsFrame",
+    "SignInPanel",
     "SettingsRow",
     "SettingsNavGroup",
     "SettingsNavItem",

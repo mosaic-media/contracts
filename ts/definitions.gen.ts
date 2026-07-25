@@ -4722,6 +4722,173 @@ export const DEFINITIONS: ComponentDefinition[] = [
     }
   },
   {
+    "name": "SignInPanel",
+    "params": {
+      "brand": "Mosaic"
+    },
+    "template": {
+      "type": "Box",
+      "props": {
+        "style": {
+          "position": "relative",
+          "width": "full",
+          "minHeight": "screen",
+          "overflow": "hidden",
+          "bg": "bg"
+        }
+      },
+      "children": [
+        {
+          "type": "Box",
+          "props": {
+            "style": {
+              "position": "absolute",
+              "top": 0,
+              "right": 0,
+              "bottom": 0,
+              "left": 0,
+              "glow": "ambient"
+            }
+          }
+        },
+        {
+          "type": "Box",
+          "props": {
+            "style": {
+              "position": "absolute",
+              "top": 0,
+              "right": 0,
+              "bottom": 0,
+              "left": 0,
+              "scrim": "cinematic"
+            }
+          }
+        },
+        {
+          "type": "Box",
+          "props": {
+            "style": {
+              "position": "absolute",
+              "top": 0,
+              "right": 0,
+              "bottom": 0,
+              "left": 0,
+              "grain": true
+            }
+          }
+        },
+        {
+          "type": "Box",
+          "props": {
+            "style": {
+              "position": "relative",
+              "direction": "row",
+              "align": "center",
+              "gap": 3,
+              "pt": 6,
+              "px": "gutter"
+            }
+          },
+          "children": [
+            {
+              "type": "Text",
+              "props": {
+                "text": {
+                  "$bind": "brand"
+                },
+                "style": {
+                  "variant": "lg",
+                  "weight": "bold",
+                  "tracking": "wide",
+                  "transform": "uppercase"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "Box",
+          "props": {
+            "style": {
+              "position": "relative",
+              "direction": "row",
+              "align": "center",
+              "px": "gutter",
+              "pt": 7,
+              "pb": 9
+            }
+          },
+          "children": [
+            {
+              "type": "Box",
+              "props": {
+                "style": {
+                  "direction": "column",
+                  "gap": 5,
+                  "width": 462,
+                  "maxWidth": "full",
+                  "p": 7,
+                  "radius": "xl",
+                  "bg": "surface-overlay",
+                  "glass": true,
+                  "border": true,
+                  "shadow": "2"
+                }
+              },
+              "children": [
+                {
+                  "type": "Box",
+                  "props": {
+                    "style": {
+                      "direction": "column",
+                      "gap": 2
+                    }
+                  },
+                  "children": [
+                    {
+                      "type": "Text",
+                      "props": {
+                        "text": {
+                          "$bind": "title"
+                        },
+                        "style": {
+                          "variant": "3xl",
+                          "weight": "bold",
+                          "tracking": "tight"
+                        }
+                      }
+                    },
+                    {
+                      "type": "Text",
+                      "props": {
+                        "$if": {
+                          "$bind": "lead"
+                        },
+                        "text": {
+                          "$bind": "lead"
+                        },
+                        "style": {
+                          "variant": "sm",
+                          "color": "text-muted"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "Outlet",
+                  "props": {
+                    "name": "form"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
     "name": "SourcePicker",
     "template": {
       "type": "Box",

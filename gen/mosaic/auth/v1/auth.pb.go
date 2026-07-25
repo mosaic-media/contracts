@@ -26,6 +26,7 @@
 package authv1
 
 import (
+	v1 "github.com/mosaic-media/contracts/gen/mosaic/sdui/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -41,6 +42,98 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// SignInScreenRequest carries an optional message to render on the screen — the
+// reason a previous attempt failed, handed back so the refusal is stated by the
+// same surface that asked. Empty on a first load.
+type SignInScreenRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Error         string                 `protobuf:"bytes,1,opt,name=error,proto3" json:"error,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SignInScreenRequest) Reset() {
+	*x = SignInScreenRequest{}
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SignInScreenRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SignInScreenRequest) ProtoMessage() {}
+
+func (x *SignInScreenRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SignInScreenRequest.ProtoReflect.Descriptor instead.
+func (*SignInScreenRequest) Descriptor() ([]byte, []int) {
+	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *SignInScreenRequest) GetError() string {
+	if x != nil {
+		return x.Error
+	}
+	return ""
+}
+
+// SignInScreenResponse carries the tree to render.
+type SignInScreenResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Screen        *v1.UINode             `protobuf:"bytes,1,opt,name=screen,proto3" json:"screen,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SignInScreenResponse) Reset() {
+	*x = SignInScreenResponse{}
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SignInScreenResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SignInScreenResponse) ProtoMessage() {}
+
+func (x *SignInScreenResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SignInScreenResponse.ProtoReflect.Descriptor instead.
+func (*SignInScreenResponse) Descriptor() ([]byte, []int) {
+	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *SignInScreenResponse) GetScreen() *v1.UINode {
+	if x != nil {
+		return x.Screen
+	}
+	return nil
+}
+
 // SignInRequest is a local username/password authentication from a named
 // device. device_id is required: a session belongs to a device, so the Platform
 // can revoke one client without ending the others.
@@ -55,7 +148,7 @@ type SignInRequest struct {
 
 func (x *SignInRequest) Reset() {
 	*x = SignInRequest{}
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[0]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -67,7 +160,7 @@ func (x *SignInRequest) String() string {
 func (*SignInRequest) ProtoMessage() {}
 
 func (x *SignInRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[0]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -80,7 +173,7 @@ func (x *SignInRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SignInRequest.ProtoReflect.Descriptor instead.
 func (*SignInRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{0}
+	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *SignInRequest) GetUsername() string {
@@ -114,7 +207,7 @@ type SignInResponse struct {
 
 func (x *SignInResponse) Reset() {
 	*x = SignInResponse{}
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[1]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -126,7 +219,7 @@ func (x *SignInResponse) String() string {
 func (*SignInResponse) ProtoMessage() {}
 
 func (x *SignInResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[1]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -139,7 +232,7 @@ func (x *SignInResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SignInResponse.ProtoReflect.Descriptor instead.
 func (*SignInResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{1}
+	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *SignInResponse) GetSession() *Session {
@@ -160,7 +253,7 @@ type SignOutRequest struct {
 
 func (x *SignOutRequest) Reset() {
 	*x = SignOutRequest{}
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[2]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -172,7 +265,7 @@ func (x *SignOutRequest) String() string {
 func (*SignOutRequest) ProtoMessage() {}
 
 func (x *SignOutRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[2]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -185,7 +278,7 @@ func (x *SignOutRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SignOutRequest.ProtoReflect.Descriptor instead.
 func (*SignOutRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{2}
+	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *SignOutRequest) GetCallerSession() string {
@@ -212,7 +305,7 @@ type SignOutResponse struct {
 
 func (x *SignOutResponse) Reset() {
 	*x = SignOutResponse{}
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[3]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -224,7 +317,7 @@ func (x *SignOutResponse) String() string {
 func (*SignOutResponse) ProtoMessage() {}
 
 func (x *SignOutResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[3]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -237,7 +330,7 @@ func (x *SignOutResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SignOutResponse.ProtoReflect.Descriptor instead.
 func (*SignOutResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{3}
+	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *SignOutResponse) GetSession() string {
@@ -273,7 +366,7 @@ type Session struct {
 
 func (x *Session) Reset() {
 	*x = Session{}
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[4]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -285,7 +378,7 @@ func (x *Session) String() string {
 func (*Session) ProtoMessage() {}
 
 func (x *Session) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[4]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -298,7 +391,7 @@ func (x *Session) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Session.ProtoReflect.Descriptor instead.
 func (*Session) Descriptor() ([]byte, []int) {
-	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{4}
+	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *Session) GetId() string {
@@ -354,7 +447,11 @@ var File_mosaic_auth_v1_auth_proto protoreflect.FileDescriptor
 
 const file_mosaic_auth_v1_auth_proto_rawDesc = "" +
 	"\n" +
-	"\x19mosaic/auth/v1/auth.proto\x12\x0emosaic.auth.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"d\n" +
+	"\x19mosaic/auth/v1/auth.proto\x12\x0emosaic.auth.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x19mosaic/sdui/v1/sdui.proto\"+\n" +
+	"\x13SignInScreenRequest\x12\x14\n" +
+	"\x05error\x18\x01 \x01(\tR\x05error\"F\n" +
+	"\x14SignInScreenResponse\x12.\n" +
+	"\x06screen\x18\x01 \x01(\v2\x16.mosaic.sdui.v1.UINodeR\x06screen\"d\n" +
 	"\rSignInRequest\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\x12\x1b\n" +
@@ -375,8 +472,9 @@ const file_mosaic_auth_v1_auth_proto_rawDesc = "" +
 	"lastSeenAt\x129\n" +
 	"\n" +
 	"expires_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\texpiresAt\x12#\n" +
-	"\rauth_strength\x18\a \x01(\tR\fauthStrength2\xa2\x01\n" +
-	"\vAuthService\x12G\n" +
+	"\rauth_strength\x18\a \x01(\tR\fauthStrength2\xfd\x01\n" +
+	"\vAuthService\x12Y\n" +
+	"\fSignInScreen\x12#.mosaic.auth.v1.SignInScreenRequest\x1a$.mosaic.auth.v1.SignInScreenResponse\x12G\n" +
 	"\x06SignIn\x12\x1d.mosaic.auth.v1.SignInRequest\x1a\x1e.mosaic.auth.v1.SignInResponse\x12J\n" +
 	"\aSignOut\x12\x1e.mosaic.auth.v1.SignOutRequest\x1a\x1f.mosaic.auth.v1.SignOutResponseB=Z;github.com/mosaic-media/contracts/gen/mosaic/auth/v1;authv1b\x06proto3"
 
@@ -392,29 +490,35 @@ func file_mosaic_auth_v1_auth_proto_rawDescGZIP() []byte {
 	return file_mosaic_auth_v1_auth_proto_rawDescData
 }
 
-var file_mosaic_auth_v1_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_mosaic_auth_v1_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_mosaic_auth_v1_auth_proto_goTypes = []any{
-	(*SignInRequest)(nil),         // 0: mosaic.auth.v1.SignInRequest
-	(*SignInResponse)(nil),        // 1: mosaic.auth.v1.SignInResponse
-	(*SignOutRequest)(nil),        // 2: mosaic.auth.v1.SignOutRequest
-	(*SignOutResponse)(nil),       // 3: mosaic.auth.v1.SignOutResponse
-	(*Session)(nil),               // 4: mosaic.auth.v1.Session
-	(*timestamppb.Timestamp)(nil), // 5: google.protobuf.Timestamp
+	(*SignInScreenRequest)(nil),   // 0: mosaic.auth.v1.SignInScreenRequest
+	(*SignInScreenResponse)(nil),  // 1: mosaic.auth.v1.SignInScreenResponse
+	(*SignInRequest)(nil),         // 2: mosaic.auth.v1.SignInRequest
+	(*SignInResponse)(nil),        // 3: mosaic.auth.v1.SignInResponse
+	(*SignOutRequest)(nil),        // 4: mosaic.auth.v1.SignOutRequest
+	(*SignOutResponse)(nil),       // 5: mosaic.auth.v1.SignOutResponse
+	(*Session)(nil),               // 6: mosaic.auth.v1.Session
+	(*v1.UINode)(nil),             // 7: mosaic.sdui.v1.UINode
+	(*timestamppb.Timestamp)(nil), // 8: google.protobuf.Timestamp
 }
 var file_mosaic_auth_v1_auth_proto_depIdxs = []int32{
-	4, // 0: mosaic.auth.v1.SignInResponse.session:type_name -> mosaic.auth.v1.Session
-	5, // 1: mosaic.auth.v1.Session.issued_at:type_name -> google.protobuf.Timestamp
-	5, // 2: mosaic.auth.v1.Session.last_seen_at:type_name -> google.protobuf.Timestamp
-	5, // 3: mosaic.auth.v1.Session.expires_at:type_name -> google.protobuf.Timestamp
-	0, // 4: mosaic.auth.v1.AuthService.SignIn:input_type -> mosaic.auth.v1.SignInRequest
-	2, // 5: mosaic.auth.v1.AuthService.SignOut:input_type -> mosaic.auth.v1.SignOutRequest
-	1, // 6: mosaic.auth.v1.AuthService.SignIn:output_type -> mosaic.auth.v1.SignInResponse
-	3, // 7: mosaic.auth.v1.AuthService.SignOut:output_type -> mosaic.auth.v1.SignOutResponse
-	6, // [6:8] is the sub-list for method output_type
-	4, // [4:6] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	7, // 0: mosaic.auth.v1.SignInScreenResponse.screen:type_name -> mosaic.sdui.v1.UINode
+	6, // 1: mosaic.auth.v1.SignInResponse.session:type_name -> mosaic.auth.v1.Session
+	8, // 2: mosaic.auth.v1.Session.issued_at:type_name -> google.protobuf.Timestamp
+	8, // 3: mosaic.auth.v1.Session.last_seen_at:type_name -> google.protobuf.Timestamp
+	8, // 4: mosaic.auth.v1.Session.expires_at:type_name -> google.protobuf.Timestamp
+	0, // 5: mosaic.auth.v1.AuthService.SignInScreen:input_type -> mosaic.auth.v1.SignInScreenRequest
+	2, // 6: mosaic.auth.v1.AuthService.SignIn:input_type -> mosaic.auth.v1.SignInRequest
+	4, // 7: mosaic.auth.v1.AuthService.SignOut:input_type -> mosaic.auth.v1.SignOutRequest
+	1, // 8: mosaic.auth.v1.AuthService.SignInScreen:output_type -> mosaic.auth.v1.SignInScreenResponse
+	3, // 9: mosaic.auth.v1.AuthService.SignIn:output_type -> mosaic.auth.v1.SignInResponse
+	5, // 10: mosaic.auth.v1.AuthService.SignOut:output_type -> mosaic.auth.v1.SignOutResponse
+	8, // [8:11] is the sub-list for method output_type
+	5, // [5:8] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_mosaic_auth_v1_auth_proto_init() }
@@ -428,7 +532,7 @@ func file_mosaic_auth_v1_auth_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_mosaic_auth_v1_auth_proto_rawDesc), len(file_mosaic_auth_v1_auth_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

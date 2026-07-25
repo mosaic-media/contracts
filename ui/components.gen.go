@@ -249,6 +249,11 @@ func SettingsFrame(title string, els ...El) *Element {
 	return compose("SettingsFrame", map[string]any{"title": title}, els)
 }
 
+// SignInPanel is the screen drawn before there is a session (ADR 0097) — the brand, a welcome, and a form on a lit card. It is a component like any other because a Platform that is refusing to authenticate you is still answering; the client's own hand-written UI is for the states where it cannot.
+func SignInPanel(title string, els ...El) *Element {
+	return compose("SignInPanel", map[string]any{"title": title}, els)
+}
+
 // SettingsRow is one line of a settings panel — a label, an optional explanation of what it does, and a control or a value on the right. It is the workhorse of every panel in the design, which is why it is a component rather than a Stack assembled per screen: a panel that builds its own rows is a panel that drifts from the others.
 func SettingsRow(label string, els ...El) *Element {
 	return compose("SettingsRow", map[string]any{"label": label}, els)
@@ -313,6 +318,9 @@ func Tags(els ...El) El { return Slot("tags", els...) }
 
 // Nav fills a frame's "nav" slot.
 func Nav(els ...El) El { return Slot("nav", els...) }
+
+// FormSlot fills the "form" slot (a sign-in panel's fields and its submit).
+func FormSlot(els ...El) El { return Slot("form", els...) }
 
 // Footer fills a frame's "footer" slot (level controls, not sections).
 func Footer(els ...El) El { return Slot("footer", els...) }
@@ -492,6 +500,9 @@ func Chrome(v string) El { return Prop("chrome", v) }
 
 // Breadcrumb is the trail after the brand in the admin chrome — "/ Settings". It says where you are on a side of the app that has no hero to say it for you.
 func Breadcrumb(v string) El { return Prop("breadcrumb", v) }
+
+// Brand is the install's name for itself, drawn where a screen has no chrome to carry it.
+func Brand(v string) El { return Prop("brand", v) }
 
 // Lead is the sentence under a panel's heading saying what the panel is for. Distinct from Summary, which explains one row.
 func Lead(v string) El { return Prop("lead", v) }
@@ -748,6 +759,9 @@ func BindChrome(path string) El { return Prop("chrome", sdui.Bind(path)) }
 
 // BindBreadcrumb sets "breadcrumb" from the named path instead of from a value.
 func BindBreadcrumb(path string) El { return Prop("breadcrumb", sdui.Bind(path)) }
+
+// BindBrand sets "brand" from the named path instead of from a value.
+func BindBrand(path string) El { return Prop("brand", sdui.Bind(path)) }
 
 // BindLead sets "lead" from the named path instead of from a value.
 func BindLead(path string) El { return Prop("lead", sdui.Bind(path)) }
