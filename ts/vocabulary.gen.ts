@@ -20,7 +20,7 @@ export interface PrimitiveSpec {
 }
 
 /** The vocabulary version a client declares it implements. */
-export const vocabularyVersion = "1.2.0";
+export const vocabularyVersion = "1.3.0";
 
 /** Divides a module's id from its own type name; core types never contain it. */
 export const typeSeparator = ":";
@@ -163,6 +163,16 @@ export const primitives: PrimitiveSpec[] = [
     children: true,
     props: [
       { key: "interval", type: "number", doc: "Dwell time per slide in milliseconds." },
+    ],
+  },
+  {
+    type: "State",
+    tier: "interactive",
+    doc: "State declares named variables and scopes them to its subtree. Children bind to them by name, and a setValue action writes them.",
+    native: "It holds values across renders. A tree is a description of one moment; something has to remember what was typed between two of them, and no arrangement of static nodes can. It is also the scope boundary itself — which of two enclosing States a name resolves to is a question only the renderer, walking its own tree, can answer.",
+    children: true,
+    props: [
+      { key: "vars", type: "array:stateVar", doc: "The variables this scope declares: each a name, a type (string, number or boolean) and an initial value. Declared rather than inferred so a client knows a name exists before anything writes to it, and knows what to coerce a written value to." },
     ],
   },
   {

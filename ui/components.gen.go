@@ -60,6 +60,10 @@ func Tabs(els ...El) *Element { return compose("Tabs", nil, els) }
 // Native: Owns a timer and derives the active index from it, and republishes the active slide's palette to the acrylic surfaces.
 func Rotator(els ...El) *Element { return compose("Rotator", nil, els) }
 
+// State declares named variables and scopes them to its subtree. Children bind to them by name, and a setValue action writes them.
+// Native: It holds values across renders. A tree is a description of one moment; something has to remember what was typed between two of them, and no arrangement of static nodes can. It is also the scope boundary itself — which of two enclosing States a name resolves to is a question only the renderer, walking its own tree, can answer.
+func State(els ...El) *Element { return compose("State", nil, els) }
+
 // TextInput is a bare text entry field.
 // Native: Owns its input value between keystroke and submission.
 func TextInput(els ...El) *Element { return compose("TextInput", nil, els) }
@@ -487,6 +491,9 @@ func On(v bool) El { return Prop("on", v) }
 // Origin is where a thing came from — an extension's id, version and repository. Distinct from Meta, which is a hero's variadic meta line: the same key cannot be a string in one component and a list in another.
 func Origin(v string) El { return Prop("origin", v) }
 
+// Vars declares a State scope's variables — each a name, a type ("string", "number" or "boolean") and an initial value. Declared rather than inferred: a client must know a name exists before anything writes to it, and must know what to coerce a written value to.
+func Vars(v []any) El { return Prop("vars", v) }
+
 // ── bound sugar ────────────────────────────────────────────────────────────
 // The same props, set to a binding the client resolves where the node renders
 // rather than to a value decided now. One per helper, generated, because a
@@ -661,6 +668,9 @@ func BindOn(path string) El { return Prop("on", sdui.Bind(path)) }
 
 // BindOrigin sets "origin" from the named path instead of from a value.
 func BindOrigin(path string) El { return Prop("origin", sdui.Bind(path)) }
+
+// BindVars sets "vars" from the named path instead of from a value.
+func BindVars(path string) El { return Prop("vars", sdui.Bind(path)) }
 
 // Tone values (the open-bag string encoding), re-exported from the producer binding.
 const (

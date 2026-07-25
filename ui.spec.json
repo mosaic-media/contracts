@@ -1,6 +1,6 @@
 {
   "//": "The Mosaic SDUI vocabulary — the single source of truth for what a client renders and what the emit-side may author. It has three tiers and they are generated, never hand-written: `primitives` are the native vocabulary every client must implement (growing this set needs a client release — ADR 0024); `components` are definitions, authored as data in definitions/*.json and delivered by the Platform at runtime (free); `actions` are the behaviours a client interprets. Run `go run ./tools/genui` to regenerate the authoring builders and the vocabulary registry; do not hand-edit the generated files. `go run ./tools/genui -lint` fails when any tier drifts from another — that check is the whole reason this file is one file.",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "//typeSeparator": "The separator between a module's id and its own type name. Core types — every primitive and every component in this file — are unprefixed and may not contain it; a module's types are `moduleId:type`. One character, chosen because it cannot appear in a module id and reads as a namespace in every client language.",
   "typeSeparator": ":",
   "//bindingMarker": "The single key that makes a prop value a binding rather than a literal. An object is a binding only when it has exactly one key and that key is this one — the same closed-set discipline the action-kind check uses, so a prop that happens to carry a field of this name is never silently reinterpreted. It is spelled the same as a definition template's binding because it means the same thing: resolve a path against a scope. Making it one concept rather than two that share a spelling is the point.",
@@ -543,6 +543,20 @@
           "key": "interval",
           "type": "number",
           "doc": "Dwell time per slide in milliseconds."
+        }
+      ]
+    },
+    {
+      "type": "State",
+      "tier": "interactive",
+      "doc": "State declares named variables and scopes them to its subtree. Children bind to them by name, and a setValue action writes them.",
+      "native": "It holds values across renders. A tree is a description of one moment; something has to remember what was typed between two of them, and no arrangement of static nodes can. It is also the scope boundary itself — which of two enclosing States a name resolves to is a question only the renderer, walking its own tree, can answer.",
+      "children": true,
+      "props": [
+        {
+          "key": "vars",
+          "type": "array:stateVar",
+          "doc": "The variables this scope declares: each a name, a type (string, number or boolean) and an initial value. Declared rather than inferred so a client knows a name exists before anything writes to it, and knows what to coerce a written value to."
         }
       ]
     },
@@ -1367,6 +1381,12 @@
       "key": "origin",
       "type": "string",
       "doc": "Origin is where a thing came from — an extension's id, version and repository. Distinct from Meta, which is a hero's variadic meta line: the same key cannot be a string in one component and a list in another."
+    },
+    {
+      "func": "Vars",
+      "key": "vars",
+      "type": "[]props",
+      "doc": "Vars declares a State scope's variables — each a name, a type (\"string\", \"number\" or \"boolean\") and an initial value. Declared rather than inferred: a client must know a name exists before anything writes to it, and must know what to coerce a written value to."
     }
   ],
   "slots": [

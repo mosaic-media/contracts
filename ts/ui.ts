@@ -100,6 +100,13 @@ export function Rotator(...els: Elish[]): Element {
   return compose("Rotator", undefined, els);
 }
 
+/** State declares named variables and scopes them to its subtree. Children bind to them by name, and a setValue action writes them.
+ *
+ *  Native: It holds values across renders. A tree is a description of one moment; something has to remember what was typed between two of them, and no arrangement of static nodes can. It is also the scope boundary itself — which of two enclosing States a name resolves to is a question only the renderer, walking its own tree, can answer. */
+export function State(...els: Elish[]): Element {
+  return compose("State", undefined, els);
+}
+
 /** TextInput is a bare text entry field.
  *
  *  Native: Owns its input value between keystroke and submission. */
@@ -719,6 +726,11 @@ export function Origin(v: string): El {
   return Prop("origin", v);
 }
 
+/** Vars declares a State scope's variables — each a name, a type ("string", "number" or "boolean") and an initial value. Declared rather than inferred: a client must know a name exists before anything writes to it, and must know what to coerce a written value to. */
+export function Vars(v: Props[]): El {
+  return Prop("vars", v);
+}
+
 // ── bound sugar ────────────────────────────────────────────────────────────
 // The same props, set to a binding the client resolves where the node renders.
 
@@ -1000,6 +1012,11 @@ export function BindOn(path: string): El {
 /** BindOrigin sets "origin" from the named path instead of from a value. */
 export function BindOrigin(path: string): El {
   return Prop("origin", bind(path));
+}
+
+/** BindVars sets "vars" from the named path instead of from a value. */
+export function BindVars(path: string): El {
+  return Prop("vars", bind(path));
 }
 
 // Tone values, mirroring the Go Tone constants. They are the schema enum's

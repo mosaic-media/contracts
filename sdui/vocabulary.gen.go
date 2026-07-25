@@ -7,7 +7,7 @@ package sdui
 // VocabularyVersion is the version a client declares it implements. Additive
 // growth is a minor bump; removing or changing the meaning of a primitive, a
 // prop or an action is a major one.
-const VocabularyVersion = "1.2.0"
+const VocabularyVersion = "1.3.0"
 
 // TypeSeparator divides a module's id from its own type name. Core types are
 // unprefixed and may never contain it; a module's are moduleId:type. Two
@@ -34,6 +34,7 @@ const (
 	TypeNavBar         = "NavBar"
 	TypeTabs           = "Tabs"
 	TypeRotator        = "Rotator"
+	TypeState          = "State"
 	TypeTextInput      = "TextInput"
 	TypeSwitch         = "Switch"
 	TypeSelectInput    = "SelectInput"
@@ -172,6 +173,9 @@ var Primitives = []PrimitiveSpec{
 	}},
 	{Type: "Rotator", Tier: "interactive", Doc: "Rotator cross-fades through its children on a timer.", Native: "Owns a timer and derives the active index from it, and republishes the active slide's palette to the acrylic surfaces.", Children: true, Props: []PropSpec{
 		{Key: "interval", Type: "number", Doc: "Dwell time per slide in milliseconds."},
+	}},
+	{Type: "State", Tier: "interactive", Doc: "State declares named variables and scopes them to its subtree. Children bind to them by name, and a setValue action writes them.", Native: "It holds values across renders. A tree is a description of one moment; something has to remember what was typed between two of them, and no arrangement of static nodes can. It is also the scope boundary itself — which of two enclosing States a name resolves to is a question only the renderer, walking its own tree, can answer.", Children: true, Props: []PropSpec{
+		{Key: "vars", Type: "array:stateVar", Doc: "The variables this scope declares: each a name, a type (string, number or boolean) and an initial value. Declared rather than inferred so a client knows a name exists before anything writes to it, and knows what to coerce a written value to."},
 	}},
 	{Type: "TextInput", Tier: "field", Doc: "TextInput is a bare text entry field.", Native: "Owns its input value between keystroke and submission.", Children: false, Props: []PropSpec{
 		{Key: "name", Type: "string", Doc: "Field name under which an enclosing Form collects this value."},
