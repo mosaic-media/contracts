@@ -1093,6 +1093,12 @@
       "doc": "ItemWidth fixes a carousel's track width in px."
     },
     {
+      "func": "Gap",
+      "key": "gap",
+      "type": "int",
+      "doc": "Gap sets the space token between a container's children. Stack takes it positionally; a Grid that wants something other than its default says so with this."
+    },
+    {
       "func": "MinColumnWidth",
       "key": "minColumnWidth",
       "type": "int",
@@ -1119,20 +1125,14 @@
     {
       "func": "Index",
       "key": "index",
-      "type": "int",
-      "doc": "Index is an episode's number within its season."
+      "type": "string",
+      "doc": "Index is an episode's place in its series as the design writes it — \"S2 E7\". A string rather than the episode number, because the season is half the answer and a row that says only \"7\" is ambiguous the moment a season control sits above it."
     },
     {
       "func": "Runtime",
       "key": "runtime",
       "type": "string",
       "doc": "Runtime is a human-readable duration."
-    },
-    {
-      "func": "Aired",
-      "key": "aired",
-      "type": "string",
-      "doc": "Aired sets an episode's air or release date as the source words it — display-only text, like Runtime, because sources give a year, an ISO date or neither and the Platform does not parse it."
     },
     {
       "func": "Thumbnail",
@@ -1149,8 +1149,26 @@
     {
       "func": "Credits",
       "key": "credits",
+      "type": "string",
+      "doc": "Credits sets a hero's crew line — \"Created by X · Directed by Y\". One string rather than a list, because it is one sentence with the source's own separators in it; a list would make the joiner a client decision and the client has no way to know whether \"and\" or \"·\" is right."
+    },
+    {
+      "func": "Quality",
+      "key": "quality",
+      "type": "string",
+      "doc": "Quality is a release's resolution and dynamic range as one phrase — \"4K HDR\", \"1080p\". Display-only: it names what a viewer would recognise, not what a decision engine ranks on."
+    },
+    {
+      "func": "Lines",
+      "key": "lines",
       "type": "[]string",
-      "doc": "Credits sets a hero's cast/crew line."
+      "doc": "Lines are a fact card's body, one short statement per line. Separate from Meta because Meta's entries are pills on one row and these are stacked sentences."
+    },
+    {
+      "func": "PinAction",
+      "key": "pinAction",
+      "type": "bool",
+      "doc": "PinAction keeps a Section's onward link visible instead of revealing it on hover. A rail whose heading is the only way into a catalog cannot hide that link behind a pointer, which no remote control has."
     },
     {
       "func": "Kicker",
@@ -1759,7 +1777,19 @@
     {
       "func": "InfoPanel",
       "type": "InfoPanel",
-      "doc": "InfoPanel is a docked facts panel — a rating and a run of label/value rows."
+      "doc": "InfoPanel is a docked facts panel — a rating and a run of label/value rows. The mockups draw a control under it (\"Change device\"); it is not here because Mosaic has no device registry to change between, and a panel is the wrong place to learn that."
+    },
+    {
+      "func": "FactCard",
+      "type": "FactCard",
+      "doc": "FactCard is one labelled card in a row of technical facts — what a release is, how it will be delivered, where its metadata came from. Distinct from InfoPanel because the shape is different and so is the job: a panel answers about the title in label/value pairs, a card states three short facts about one aspect of it and sits in a grid of siblings.",
+      "positional": [
+        {
+          "name": "label",
+          "key": "label",
+          "type": "string"
+        }
+      ]
     },
     {
       "func": "MediaTile",

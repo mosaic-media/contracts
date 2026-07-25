@@ -368,6 +368,7 @@ export const components: string[] = [
   "ExtensionCard",
   "IconButton",
   "InfoPanel",
+  "FactCard",
   "MediaTile",
   "Pagination",
   "PlaybackBar",

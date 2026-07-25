@@ -298,9 +298,14 @@ export function IconButton(icon: string, label: string, variant: string, ...els:
   return compose("IconButton", { icon, label, variant }, els);
 }
 
-/** InfoPanel is a docked facts panel — a rating and a run of label/value rows. */
+/** InfoPanel is a docked facts panel — a rating and a run of label/value rows. The mockups draw a control under it ("Change device"); it is not here because Mosaic has no device registry to change between, and a panel is the wrong place to learn that. */
 export function InfoPanel(...els: Elish[]): Element {
   return compose("InfoPanel", undefined, els);
+}
+
+/** FactCard is one labelled card in a row of technical facts — what a release is, how it will be delivered, where its metadata came from. Distinct from InfoPanel because the shape is different and so is the job: a panel answers about the title in label/value pairs, a card states three short facts about one aspect of it and sits in a grid of siblings. */
+export function FactCard(label: string, ...els: Elish[]): Element {
+  return compose("FactCard", { label }, els);
 }
 
 /** MediaTile is a landscape card for episodes and continue-watching. */
@@ -537,6 +542,11 @@ export function ItemWidth(v: number): El {
   return Prop("itemWidth", v);
 }
 
+/** Gap sets the space token between a container's children. Stack takes it positionally; a Grid that wants something other than its default says so with this. */
+export function Gap(v: number): El {
+  return Prop("gap", v);
+}
+
 /** MinColumnWidth is a grid's smallest column before it reflows, in px. */
 export function MinColumnWidth(v: number): El {
   return Prop("minColumnWidth", v);
@@ -557,19 +567,14 @@ export function Year(v: string): El {
   return Prop("year", v);
 }
 
-/** Index is an episode's number within its season. */
-export function Index(v: number): El {
+/** Index is an episode's place in its series as the design writes it — "S2 E7". A string rather than the episode number, because the season is half the answer and a row that says only "7" is ambiguous the moment a season control sits above it. */
+export function Index(v: string): El {
   return Prop("index", v);
 }
 
 /** Runtime is a human-readable duration. */
 export function Runtime(v: string): El {
   return Prop("runtime", v);
-}
-
-/** Aired sets an episode's air or release date as the source words it — display-only text, like Runtime, because sources give a year, an ISO date or neither and the Platform does not parse it. */
-export function Aired(v: string): El {
-  return Prop("aired", v);
 }
 
 /** Thumbnail sets a row's still image. */
@@ -582,9 +587,24 @@ export function Watched(v: boolean): El {
   return Prop("watched", v);
 }
 
-/** Credits sets a hero's cast/crew line. */
-export function Credits(...v: string[]): El {
+/** Credits sets a hero's crew line — "Created by X · Directed by Y". One string rather than a list, because it is one sentence with the source's own separators in it; a list would make the joiner a client decision and the client has no way to know whether "and" or "·" is right. */
+export function Credits(v: string): El {
   return Prop("credits", v);
+}
+
+/** Quality is a release's resolution and dynamic range as one phrase — "4K HDR", "1080p". Display-only: it names what a viewer would recognise, not what a decision engine ranks on. */
+export function Quality(v: string): El {
+  return Prop("quality", v);
+}
+
+/** Lines are a fact card's body, one short statement per line. Separate from Meta because Meta's entries are pills on one row and these are stacked sentences. */
+export function Lines(...v: string[]): El {
+  return Prop("lines", v);
+}
+
+/** PinAction keeps a Section's onward link visible instead of revealing it on hover. A rail whose heading is the only way into a catalog cannot hide that link behind a pointer, which no remote control has. */
+export function PinAction(v: boolean): El {
+  return Prop("pinAction", v);
 }
 
 /** Kicker is the eyebrow line above a hero's title. */
@@ -920,6 +940,11 @@ export function BindItemWidth(path: string): El {
   return Prop("itemWidth", bind(path));
 }
 
+/** BindGap sets "gap" from the named path instead of from a value. */
+export function BindGap(path: string): El {
+  return Prop("gap", bind(path));
+}
+
 /** BindMinColumnWidth sets "minColumnWidth" from the named path instead of from a value. */
 export function BindMinColumnWidth(path: string): El {
   return Prop("minColumnWidth", bind(path));
@@ -950,11 +975,6 @@ export function BindRuntime(path: string): El {
   return Prop("runtime", bind(path));
 }
 
-/** BindAired sets "aired" from the named path instead of from a value. */
-export function BindAired(path: string): El {
-  return Prop("aired", bind(path));
-}
-
 /** BindThumbnail sets "thumbnail" from the named path instead of from a value. */
 export function BindThumbnail(path: string): El {
   return Prop("thumbnail", bind(path));
@@ -968,6 +988,21 @@ export function BindWatched(path: string): El {
 /** BindCredits sets "credits" from the named path instead of from a value. */
 export function BindCredits(path: string): El {
   return Prop("credits", bind(path));
+}
+
+/** BindQuality sets "quality" from the named path instead of from a value. */
+export function BindQuality(path: string): El {
+  return Prop("quality", bind(path));
+}
+
+/** BindLines sets "lines" from the named path instead of from a value. */
+export function BindLines(path: string): El {
+  return Prop("lines", bind(path));
+}
+
+/** BindPinAction sets "pinAction" from the named path instead of from a value. */
+export function BindPinAction(path: string): El {
+  return Prop("pinAction", bind(path));
 }
 
 /** BindKicker sets "kicker" from the named path instead of from a value. */

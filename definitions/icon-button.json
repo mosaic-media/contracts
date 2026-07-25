@@ -36,6 +36,18 @@
               "align": "center",
               "justify": "center",
               "color": "text-muted"
+            },
+            "pill": {
+              "width": 52,
+              "height": 52,
+              "radius": "pill",
+              "align": "center",
+              "justify": "center",
+              "glass": true,
+              "bg": "surface-raised",
+              "color": "text",
+              "border": true,
+              "borderColor": "border-strong"
             }
           },
           "default": {

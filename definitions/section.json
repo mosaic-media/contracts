@@ -7,7 +7,7 @@
     "type": "Box",
     "props": {
       "style": {
-        "gap": 4,
+        "gap": 5,
         "hoverGroup": true
       }
     },
@@ -67,7 +67,17 @@
                 "align": "center",
                 "gap": 1,
                 "color": "text-faint",
-                "hoverReveal": true
+                "hoverReveal": {
+                  "$match": {
+                    "on": {
+                      "$bind": "pinAction"
+                    },
+                    "cases": {
+                      "true": false
+                    },
+                    "default": true
+                  }
+                }
               }
             },
             "children": [

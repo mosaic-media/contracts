@@ -73,6 +73,7 @@ const (
 	TypeExtensionCard    = "ExtensionCard"
 	TypeIconButton       = "IconButton"
 	TypeInfoPanel        = "InfoPanel"
+	TypeFactCard         = "FactCard"
 	TypeMediaTile        = "MediaTile"
 	TypePagination       = "Pagination"
 	TypePlaybackBar      = "PlaybackBar"
@@ -322,6 +323,7 @@ var Components = []string{
 	"ExtensionCard",
 	"IconButton",
 	"InfoPanel",
+	"FactCard",
 	"MediaTile",
 	"Pagination",
 	"PlaybackBar",

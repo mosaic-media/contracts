@@ -213,8 +213,13 @@ func IconButton(icon string, label string, variant string, els ...El) *Element {
 	return compose("IconButton", map[string]any{"icon": icon, "label": label, "variant": variant}, els)
 }
 
-// InfoPanel is a docked facts panel — a rating and a run of label/value rows.
+// InfoPanel is a docked facts panel — a rating and a run of label/value rows. The mockups draw a control under it ("Change device"); it is not here because Mosaic has no device registry to change between, and a panel is the wrong place to learn that.
 func InfoPanel(els ...El) *Element { return compose("InfoPanel", nil, els) }
+
+// FactCard is one labelled card in a row of technical facts — what a release is, how it will be delivered, where its metadata came from. Distinct from InfoPanel because the shape is different and so is the job: a panel answers about the title in label/value pairs, a card states three short facts about one aspect of it and sits in a grid of siblings.
+func FactCard(label string, els ...El) *Element {
+	return compose("FactCard", map[string]any{"label": label}, els)
+}
 
 // MediaTile is a landscape card for episodes and continue-watching.
 func MediaTile(title string, els ...El) *Element {
@@ -378,6 +383,9 @@ func IconName(v string) El { return Prop("icon", v) }
 // ItemWidth fixes a carousel's track width in px.
 func ItemWidth(v int) El { return Prop("itemWidth", v) }
 
+// Gap sets the space token between a container's children. Stack takes it positionally; a Grid that wants something other than its default says so with this.
+func Gap(v int) El { return Prop("gap", v) }
+
 // MinColumnWidth is a grid's smallest column before it reflows, in px.
 func MinColumnWidth(v int) El { return Prop("minColumnWidth", v) }
 
@@ -390,14 +398,11 @@ func RatingLabel(v string) El { return Prop("ratingLabel", v) }
 // Year sets a release year.
 func Year(v string) El { return Prop("year", v) }
 
-// Index is an episode's number within its season.
-func Index(v int) El { return Prop("index", v) }
+// Index is an episode's place in its series as the design writes it — "S2 E7". A string rather than the episode number, because the season is half the answer and a row that says only "7" is ambiguous the moment a season control sits above it.
+func Index(v string) El { return Prop("index", v) }
 
 // Runtime is a human-readable duration.
 func Runtime(v string) El { return Prop("runtime", v) }
-
-// Aired sets an episode's air or release date as the source words it — display-only text, like Runtime, because sources give a year, an ISO date or neither and the Platform does not parse it.
-func Aired(v string) El { return Prop("aired", v) }
 
 // Thumbnail sets a row's still image.
 func Thumbnail(v string) El { return Prop("thumbnail", v) }
@@ -405,8 +410,17 @@ func Thumbnail(v string) El { return Prop("thumbnail", v) }
 // Watched marks an episode as already seen.
 func Watched(v bool) El { return Prop("watched", v) }
 
-// Credits sets a hero's cast/crew line.
-func Credits(v ...string) El { return Prop("credits", v) }
+// Credits sets a hero's crew line — "Created by X · Directed by Y". One string rather than a list, because it is one sentence with the source's own separators in it; a list would make the joiner a client decision and the client has no way to know whether "and" or "·" is right.
+func Credits(v string) El { return Prop("credits", v) }
+
+// Quality is a release's resolution and dynamic range as one phrase — "4K HDR", "1080p". Display-only: it names what a viewer would recognise, not what a decision engine ranks on.
+func Quality(v string) El { return Prop("quality", v) }
+
+// Lines are a fact card's body, one short statement per line. Separate from Meta because Meta's entries are pills on one row and these are stacked sentences.
+func Lines(v ...string) El { return Prop("lines", v) }
+
+// PinAction keeps a Section's onward link visible instead of revealing it on hover. A rail whose heading is the only way into a catalog cannot hide that link behind a pointer, which no remote control has.
+func PinAction(v bool) El { return Prop("pinAction", v) }
 
 // Kicker is the eyebrow line above a hero's title.
 func Kicker(v string) El { return Prop("kicker", v) }
@@ -613,6 +627,9 @@ func BindIconName(path string) El { return Prop("icon", sdui.Bind(path)) }
 // BindItemWidth sets "itemWidth" from the named path instead of from a value.
 func BindItemWidth(path string) El { return Prop("itemWidth", sdui.Bind(path)) }
 
+// BindGap sets "gap" from the named path instead of from a value.
+func BindGap(path string) El { return Prop("gap", sdui.Bind(path)) }
+
 // BindMinColumnWidth sets "minColumnWidth" from the named path instead of from a value.
 func BindMinColumnWidth(path string) El { return Prop("minColumnWidth", sdui.Bind(path)) }
 
@@ -631,9 +648,6 @@ func BindIndex(path string) El { return Prop("index", sdui.Bind(path)) }
 // BindRuntime sets "runtime" from the named path instead of from a value.
 func BindRuntime(path string) El { return Prop("runtime", sdui.Bind(path)) }
 
-// BindAired sets "aired" from the named path instead of from a value.
-func BindAired(path string) El { return Prop("aired", sdui.Bind(path)) }
-
 // BindThumbnail sets "thumbnail" from the named path instead of from a value.
 func BindThumbnail(path string) El { return Prop("thumbnail", sdui.Bind(path)) }
 
@@ -642,6 +656,15 @@ func BindWatched(path string) El { return Prop("watched", sdui.Bind(path)) }
 
 // BindCredits sets "credits" from the named path instead of from a value.
 func BindCredits(path string) El { return Prop("credits", sdui.Bind(path)) }
+
+// BindQuality sets "quality" from the named path instead of from a value.
+func BindQuality(path string) El { return Prop("quality", sdui.Bind(path)) }
+
+// BindLines sets "lines" from the named path instead of from a value.
+func BindLines(path string) El { return Prop("lines", sdui.Bind(path)) }
+
+// BindPinAction sets "pinAction" from the named path instead of from a value.
+func BindPinAction(path string) El { return Prop("pinAction", sdui.Bind(path)) }
 
 // BindKicker sets "kicker" from the named path instead of from a value.
 func BindKicker(path string) El { return Prop("kicker", sdui.Bind(path)) }

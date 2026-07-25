@@ -1,0 +1,59 @@
+{
+  "name": "FactCard",
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "glass": true,
+        "radius": "md",
+        "border": true,
+        "p": 4,
+        "gap": 3,
+        "width": "full"
+      }
+    },
+    "children": [
+      {
+        "type": "Text",
+        "props": {
+          "text": {
+            "$bind": "label"
+          },
+          "style": {
+            "variant": "xs",
+            "color": "text-faint",
+            "transform": "uppercase",
+            "tracking": "wide"
+          }
+        }
+      },
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "direction": "column",
+            "gap": 0
+          }
+        },
+        "children": [
+          {
+            "type": "Text",
+            "props": {
+              "$each": {
+                "$bind": "lines"
+              },
+              "$as": "l",
+              "text": {
+                "$bind": "l"
+              },
+              "style": {
+                "variant": "sm",
+                "color": "text-muted"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

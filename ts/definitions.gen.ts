@@ -845,7 +845,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
           "direction": "row",
           "align": "end",
           "width": "full",
-          "minHeight": "screen",
+          "minHeight": "88%",
           "overflow": "hidden"
         }
       },
@@ -1659,9 +1659,6 @@ export const DEFINITIONS: ComponentDefinition[] = [
               "direction": "column",
               "align": "end",
               "gap": 2
-            },
-            "$if": {
-              "$bind": "aired"
             }
           },
           "children": [
@@ -1684,7 +1681,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
               "type": "Box",
               "props": {
                 "$if": {
-                  "$bind": "aired"
+                  "$bind": "quality"
                 },
                 "style": {
                   "px": 2,
@@ -1700,7 +1697,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
                   "type": "Text",
                   "props": {
                     "text": {
-                      "$bind": "aired"
+                      "$bind": "quality"
                     },
                     "style": {
                       "variant": "xs",
@@ -2000,6 +1997,65 @@ export const DEFINITIONS: ComponentDefinition[] = [
     }
   },
   {
+    "name": "FactCard",
+    "template": {
+      "type": "Box",
+      "props": {
+        "style": {
+          "glass": true,
+          "radius": "md",
+          "border": true,
+          "p": 4,
+          "gap": 3,
+          "width": "full"
+        }
+      },
+      "children": [
+        {
+          "type": "Text",
+          "props": {
+            "text": {
+              "$bind": "label"
+            },
+            "style": {
+              "variant": "xs",
+              "color": "text-faint",
+              "transform": "uppercase",
+              "tracking": "wide"
+            }
+          }
+        },
+        {
+          "type": "Box",
+          "props": {
+            "style": {
+              "direction": "column",
+              "gap": 0
+            }
+          },
+          "children": [
+            {
+              "type": "Text",
+              "props": {
+                "$each": {
+                  "$bind": "lines"
+                },
+                "$as": "l",
+                "text": {
+                  "$bind": "l"
+                },
+                "style": {
+                  "variant": "sm",
+                  "color": "text-muted"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
     "name": "Form",
     "params": {
       "submitLabel": "Save",
@@ -2158,7 +2214,8 @@ export const DEFINITIONS: ComponentDefinition[] = [
   {
     "name": "Grid",
     "params": {
-      "minColumnWidth": 186
+      "minColumnWidth": 186,
+      "gap": 5
     },
     "template": {
       "type": "Box",
@@ -2168,7 +2225,9 @@ export const DEFINITIONS: ComponentDefinition[] = [
           "gridMin": {
             "$bind": "minColumnWidth"
           },
-          "gap": 5
+          "gap": {
+            "$bind": "gap"
+          }
         }
       },
       "children": [
@@ -2752,6 +2811,18 @@ export const DEFINITIONS: ComponentDefinition[] = [
                 "align": "center",
                 "justify": "center",
                 "color": "text-muted"
+              },
+              "pill": {
+                "width": 52,
+                "height": 52,
+                "radius": "pill",
+                "align": "center",
+                "justify": "center",
+                "glass": true,
+                "bg": "surface-raised",
+                "color": "text",
+                "border": true,
+                "borderColor": "border-strong"
               }
             },
             "default": {
@@ -3849,7 +3920,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
       "type": "Box",
       "props": {
         "style": {
-          "gap": 4,
+          "gap": 5,
           "hoverGroup": true
         }
       },
@@ -3909,7 +3980,17 @@ export const DEFINITIONS: ComponentDefinition[] = [
                   "align": "center",
                   "gap": 1,
                   "color": "text-faint",
-                  "hoverReveal": true
+                  "hoverReveal": {
+                    "$match": {
+                      "on": {
+                        "$bind": "pinAction"
+                      },
+                      "cases": {
+                        "true": false
+                      },
+                      "default": true
+                    }
+                  }
                 }
               },
               "children": [

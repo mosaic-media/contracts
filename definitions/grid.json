@@ -1,7 +1,8 @@
 {
   "name": "Grid",
   "params": {
-    "minColumnWidth": 186
+    "minColumnWidth": 186,
+    "gap": 5
   },
   "template": {
     "type": "Box",
@@ -11,7 +12,9 @@
         "gridMin": {
           "$bind": "minColumnWidth"
         },
-        "gap": 5
+        "gap": {
+          "$bind": "gap"
+        }
       }
     },
     "children": [

@@ -12,7 +12,7 @@ Three tiers, and the difference between them is what a change costs:
 | Tier | What it is | Cost of adding one |
 |---|---|---|
 | **Primitives** (25) | Native code every client implements | A client release, on every platform |
-| **Components** (35) | Definitions the Platform serves as data | Nothing — a file in `definitions/` |
+| **Components** (36) | Definitions the Platform serves as data | Nothing — a file in `definitions/` |
 | **Actions** (12) | Behaviours a client interprets | A client release |
 
 ## Type names
@@ -417,7 +417,8 @@ expands whatever it is sent.
 - **`ErrorState`** — ErrorState renders a Platform error category as something a person can act on.
 - **`ExtensionCard`** — ExtensionCard is one extension module — what it is, what it can do, and where its bytes come from (ADR 0081).
 - **`IconButton`** — IconButton is a Button reduced to its icon; the label stays for assistive tech.
-- **`InfoPanel`** — InfoPanel is a docked facts panel — a rating and a run of label/value rows.
+- **`InfoPanel`** — InfoPanel is a docked facts panel — a rating and a run of label/value rows. The mockups draw a control under it ("Change device"); it is not here because Mosaic has no device registry to change between, and a panel is the wrong place to learn that.
+- **`FactCard`** — FactCard is one labelled card in a row of technical facts — what a release is, how it will be delivered, where its metadata came from. Distinct from InfoPanel because the shape is different and so is the job: a panel answers about the title in label/value pairs, a card states three short facts about one aspect of it and sits in a grid of siblings.
 - **`MediaTile`** — MediaTile is a landscape card for episodes and continue-watching.
 - **`Pagination`** — Pagination is a prev/next pair. The server supplies both targets; the client does no arithmetic.
 - **`PlaybackBar`** — PlaybackBar is the resume strip for something already started.
