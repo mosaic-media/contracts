@@ -7,7 +7,7 @@ package sdui
 // VocabularyVersion is the version a client declares it implements. Additive
 // growth is a minor bump; removing or changing the meaning of a primitive, a
 // prop or an action is a major one.
-const VocabularyVersion = "2.2.0"
+const VocabularyVersion = "2.3.0"
 
 // TypeSeparator divides a module's id from its own type name. Core types are
 // unprefixed and may never contain it; a module's are moduleId:type. Two
@@ -146,6 +146,16 @@ var Roles = []string{
 	"tab",
 	"tablist",
 	"tabpanel",
+}
+
+// FocusDirections is the closed set a nextFocus override may name. A direction
+// a client cannot resolve leaves a remote control pointing at nothing, and
+// "focus went nowhere when I pressed right" is the least reportable bug there is.
+var FocusDirections = []string{
+	"up",
+	"down",
+	"left",
+	"right",
 }
 
 // Primitives is the native tier as data: what a client must implement, and

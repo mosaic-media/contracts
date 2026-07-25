@@ -523,6 +523,18 @@ func HeadingLevel(v int) El { return Prop("headingLevel", v) }
 // Live marks a region whose changes should be announced: "polite" waits for a pause, "assertive" interrupts. Anything else is not announced.
 func Live(v string) El { return Prop("live", v) }
 
+// Focusable marks a node that can take focus. Stated rather than inferred from interactivity: a card that navigates is focusable, and so is a heading a TV viewer needs to land on to read, and only the emit-side knows which.
+func Focusable(v bool) El { return Prop("focusable", v) }
+
+// FocusGroup makes this node's focusable descendants one stop in the tab order, moved between with the arrow keys — the roving pattern. A rail of forty cards is one stop, not forty.
+func FocusGroup(v bool) El { return Prop("focusGroup", v) }
+
+// InitialFocus asks for focus when this node first appears. At most one per region wins; a screen naming two is stating a preference it does not have.
+func InitialFocus(v bool) El { return Prop("initialFocus", v) }
+
+// NextFocus overrides where focus goes from here, per direction — {up,down,left,right} to node ids. It is an override, not the mechanism: a client works out the rest geometrically, and this is for the cases geometry gets wrong.
+func NextFocus(v map[string]any) El { return Prop("nextFocus", v) }
+
 // ── bound sugar ────────────────────────────────────────────────────────────
 // The same props, set to a binding the client resolves where the node renders
 // rather than to a value decided now. One per helper, generated, because a
@@ -730,6 +742,18 @@ func BindHeadingLevel(path string) El { return Prop("headingLevel", sdui.Bind(pa
 
 // BindLive sets "live" from the named path instead of from a value.
 func BindLive(path string) El { return Prop("live", sdui.Bind(path)) }
+
+// BindFocusable sets "focusable" from the named path instead of from a value.
+func BindFocusable(path string) El { return Prop("focusable", sdui.Bind(path)) }
+
+// BindFocusGroup sets "focusGroup" from the named path instead of from a value.
+func BindFocusGroup(path string) El { return Prop("focusGroup", sdui.Bind(path)) }
+
+// BindInitialFocus sets "initialFocus" from the named path instead of from a value.
+func BindInitialFocus(path string) El { return Prop("initialFocus", sdui.Bind(path)) }
+
+// BindNextFocus sets "nextFocus" from the named path instead of from a value.
+func BindNextFocus(path string) El { return Prop("nextFocus", sdui.Bind(path)) }
 
 // Tone values (the open-bag string encoding), re-exported from the producer binding.
 const (

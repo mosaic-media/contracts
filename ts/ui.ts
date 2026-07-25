@@ -779,6 +779,26 @@ export function Live(v: string): El {
   return Prop("live", v);
 }
 
+/** Focusable marks a node that can take focus. Stated rather than inferred from interactivity: a card that navigates is focusable, and so is a heading a TV viewer needs to land on to read, and only the emit-side knows which. */
+export function Focusable(v: boolean): El {
+  return Prop("focusable", v);
+}
+
+/** FocusGroup makes this node's focusable descendants one stop in the tab order, moved between with the arrow keys — the roving pattern. A rail of forty cards is one stop, not forty. */
+export function FocusGroup(v: boolean): El {
+  return Prop("focusGroup", v);
+}
+
+/** InitialFocus asks for focus when this node first appears. At most one per region wins; a screen naming two is stating a preference it does not have. */
+export function InitialFocus(v: boolean): El {
+  return Prop("initialFocus", v);
+}
+
+/** NextFocus overrides where focus goes from here, per direction — {up,down,left,right} to node ids. It is an override, not the mechanism: a client works out the rest geometrically, and this is for the cases geometry gets wrong. */
+export function NextFocus(v: Props): El {
+  return Prop("nextFocus", v);
+}
+
 // ── bound sugar ────────────────────────────────────────────────────────────
 // The same props, set to a binding the client resolves where the node renders.
 
@@ -1115,6 +1135,26 @@ export function BindHeadingLevel(path: string): El {
 /** BindLive sets "live" from the named path instead of from a value. */
 export function BindLive(path: string): El {
   return Prop("live", bind(path));
+}
+
+/** BindFocusable sets "focusable" from the named path instead of from a value. */
+export function BindFocusable(path: string): El {
+  return Prop("focusable", bind(path));
+}
+
+/** BindFocusGroup sets "focusGroup" from the named path instead of from a value. */
+export function BindFocusGroup(path: string): El {
+  return Prop("focusGroup", bind(path));
+}
+
+/** BindInitialFocus sets "initialFocus" from the named path instead of from a value. */
+export function BindInitialFocus(path: string): El {
+  return Prop("initialFocus", bind(path));
+}
+
+/** BindNextFocus sets "nextFocus" from the named path instead of from a value. */
+export function BindNextFocus(path: string): El {
+  return Prop("nextFocus", bind(path));
 }
 
 // Tone values, mirroring the Go Tone constants. They are the schema enum's

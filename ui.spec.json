@@ -1,6 +1,6 @@
 {
   "//": "The Mosaic SDUI vocabulary — the single source of truth for what a client renders and what the emit-side may author. It has three tiers and they are generated, never hand-written: `primitives` are the native vocabulary every client must implement (growing this set needs a client release — ADR 0024); `components` are definitions, authored as data in definitions/*.json and delivered by the Platform at runtime (free); `actions` are the behaviours a client interprets. Run `go run ./tools/genui` to regenerate the authoring builders and the vocabulary registry; do not hand-edit the generated files. `go run ./tools/genui -lint` fails when any tier drifts from another — that check is the whole reason this file is one file.",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "//typeSeparator": "The separator between a module's id and its own type name. Core types — every primitive and every component in this file — are unprefixed and may not contain it; a module's types are `moduleId:type`. One character, chosen because it cannot appear in a module id and reads as a namespace in every client language.",
   "typeSeparator": ":",
   "//bindingMarker": "The single key that makes a prop value a binding rather than a literal. An object is a binding only when it has exactly one key and that key is this one — the same closed-set discipline the action-kind check uses, so a prop that happens to carry a field of this name is never silently reinterpreted. It is spelled the same as a definition template's binding because it means the same thing: resolve a path against a scope. Making it one concept rather than two that share a spelling is the point.",
@@ -1413,6 +1413,30 @@
       "key": "live",
       "type": "string",
       "doc": "Live marks a region whose changes should be announced: \"polite\" waits for a pause, \"assertive\" interrupts. Anything else is not announced."
+    },
+    {
+      "func": "Focusable",
+      "key": "focusable",
+      "type": "bool",
+      "doc": "Focusable marks a node that can take focus. Stated rather than inferred from interactivity: a card that navigates is focusable, and so is a heading a TV viewer needs to land on to read, and only the emit-side knows which."
+    },
+    {
+      "func": "FocusGroup",
+      "key": "focusGroup",
+      "type": "bool",
+      "doc": "FocusGroup makes this node's focusable descendants one stop in the tab order, moved between with the arrow keys — the roving pattern. A rail of forty cards is one stop, not forty."
+    },
+    {
+      "func": "InitialFocus",
+      "key": "initialFocus",
+      "type": "bool",
+      "doc": "InitialFocus asks for focus when this node first appears. At most one per region wins; a screen naming two is stating a preference it does not have."
+    },
+    {
+      "func": "NextFocus",
+      "key": "nextFocus",
+      "type": "props",
+      "doc": "NextFocus overrides where focus goes from here, per direction — {up,down,left,right} to node ids. It is an override, not the mechanism: a client works out the rest geometrically, and this is for the cases geometry gets wrong."
     }
   ],
   "slots": [
@@ -1922,5 +1946,12 @@
     "tab",
     "tablist",
     "tabpanel"
+  ],
+  "//focusDirections": "The directions a nextFocus override may name. Four, and closed: a direction a client cannot resolve leaves a remote control pointing at nothing, and 'the focus went nowhere when I pressed right' is the least reportable bug there is. Diagonals are absent deliberately — no remote has them, and inventing them would make every client implement a geometry nobody presses.",
+  "focusDirections": [
+    "up",
+    "down",
+    "left",
+    "right"
   ]
 }

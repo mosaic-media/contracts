@@ -64,6 +64,7 @@ type spec struct {
 	TypeSeparator string      `json:"typeSeparator"`
 	BindingMarker string      `json:"bindingMarker"`
 	Roles         []string    `json:"roles"`
+	FocusDirs     []string    `json:"focusDirections"`
 	Tones         []tone      `json:"tones"`
 	Surfaces      []surface   `json:"surfaces"`
 	Actions       []action    `json:"actions"`
@@ -665,6 +666,15 @@ func genVocabularyGo(sp spec) []byte {
 	}
 	b.WriteString("}\n\n")
 
+	b.WriteString("// FocusDirections is the closed set a nextFocus override may name. A direction\n")
+	b.WriteString("// a client cannot resolve leaves a remote control pointing at nothing, and\n")
+	b.WriteString("// \"focus went nowhere when I pressed right\" is the least reportable bug there is.\n")
+	b.WriteString("var FocusDirections = []string{\n")
+	for _, d := range sp.FocusDirs {
+		fmt.Fprintf(&b, "\t%s,\n", strconv.Quote(d))
+	}
+	b.WriteString("}\n\n")
+
 	b.WriteString("// Primitives is the native tier as data: what a client must implement, and\n")
 	b.WriteString("// for each one the reason it cannot be a definition.\n")
 	b.WriteString("var Primitives = []PrimitiveSpec{\n")
@@ -776,6 +786,12 @@ func genVocabularyTS(sp spec) []byte {
 	}
 	b.WriteString("];\n\n")
 
+	b.WriteString("/** The closed set of directions a nextFocus override may name. */\nexport const focusDirections: string[] = [\n")
+	for _, d := range sp.FocusDirs {
+		fmt.Fprintf(&b, "  %s,\n", strconv.Quote(d))
+	}
+	b.WriteString("];\n\n")
+
 	b.WriteString("/** The closed field-validation set. */\n")
 	b.WriteString("export const validators: string[] = [\n")
 	for _, v := range sp.Validators {
@@ -808,6 +824,7 @@ type fixture struct {
 	Validators    []string      `json:"validators"`
 	Predicates    []string      `json:"predicates"`
 	Roles         []string      `json:"roles"`
+	FocusDirs     []string      `json:"focusDirections"`
 	Tones         []string      `json:"tones"`
 	Surfaces      []string      `json:"surfaces"`
 }
@@ -859,6 +876,7 @@ func genFixture(sp spec) []byte {
 		f.Predicates = append(f.Predicates, p.Name)
 	}
 	f.Roles = append(f.Roles, sp.Roles...)
+	f.FocusDirs = append(f.FocusDirs, sp.FocusDirs...)
 	for _, t := range sp.Tones {
 		f.Tones = append(f.Tones, t.Value)
 	}
@@ -882,6 +900,9 @@ func lintSpecSanity(sp spec) []string {
 	var errs []string
 	if sp.Version == "" {
 		errs = append(errs, "the spec declares no version — a client cannot negotiate against an unnamed vocabulary")
+	}
+	if len(sp.FocusDirs) == 0 {
+		errs = append(errs, "the spec declares no focusDirections — a nextFocus override could then name a direction no client resolves, which leaves a remote pointing at nothing")
 	}
 	if len(sp.Roles) == 0 {
 		errs = append(errs, "the spec declares no roles — an accessible role a client cannot map is a control invisible to a screen reader and correct-looking to everyone else")

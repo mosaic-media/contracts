@@ -20,7 +20,7 @@ export interface PrimitiveSpec {
 }
 
 /** The vocabulary version a client declares it implements. */
-export const vocabularyVersion = "2.2.0";
+export const vocabularyVersion = "2.3.0";
 
 /** Divides a module's id from its own type name; core types never contain it. */
 export const typeSeparator = ":";
@@ -435,6 +435,14 @@ export const roles: string[] = [
   "tab",
   "tablist",
   "tabpanel",
+];
+
+/** The closed set of directions a nextFocus override may name. */
+export const focusDirections: string[] = [
+  "up",
+  "down",
+  "left",
+  "right",
 ];
 
 /** The closed field-validation set. */
