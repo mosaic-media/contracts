@@ -67,3 +67,33 @@ func TestTheVarTypeSetIsThree(t *testing.T) {
 		t.Error("a VarType constant does not match its wire spelling")
 	}
 }
+
+// Submit's destination is where the scope's values land in the action's input.
+// Without one they could only ever land at the top level, which is why `$value`
+// — a literal substituted anywhere in the action — outlived every attempt to
+// replace it: a module's configureModule takes a whole settings document, and
+// the field that was typed belongs inside it.
+func TestSubmitCarriesItsDestination(t *testing.T) {
+	a := sdui.Submit(sdui.Invoke("configureModule", map[string]any{"moduleId": "tmdb"}), "settings")
+	if a.Kind != sdui.KindSubmit || len(a.Actions) != 1 {
+		t.Fatalf("Submit = %+v", a)
+	}
+	if a.Field == nil || *a.Field != "settings" {
+		t.Errorf("destination = %v", a.Field)
+	}
+	// An empty destination is absent rather than an empty string, so a client
+	// reading it cannot mistake "the top level" for "a field called nothing".
+	if b := sdui.Submit(sdui.Back(), ""); b.Field != nil {
+		t.Errorf("an empty destination became a field: %v", b.Field)
+	}
+}
+
+// SubmitField is gone. It existed only to carry `$value`, and a primitive that
+// exists for a mechanism outlives the mechanism only by accident.
+func TestSubmitFieldIsNoLongerAPrimitive(t *testing.T) {
+	for _, p := range sdui.Primitives {
+		if p.Type == "SubmitField" {
+			t.Error("SubmitField is still declared; it exists only for the $value substitution")
+		}
+	}
+}

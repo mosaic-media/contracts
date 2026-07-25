@@ -2,7 +2,7 @@
 
 # The Mosaic SDUI vocabulary
 
-**Version 2.4.0.** This is the whole of what a client must implement and what a
+**Version 3.0.0.** This is the whole of what a client must implement and what a
 producer may emit. It is generated from `ui.spec.json`, so it cannot disagree
 with the bindings, the conformance fixture or the corpus — all four come from
 that one file.
@@ -11,7 +11,7 @@ Three tiers, and the difference between them is what a change costs:
 
 | Tier | What it is | Cost of adding one |
 |---|---|---|
-| **Primitives** (26) | Native code every client implements | A client release, on every platform |
+| **Primitives** (25) | Native code every client implements | A client release, on every platform |
 | **Components** (35) | Definitions the Platform serves as data | Nothing — a file in `definitions/` |
 | **Actions** (12) | Behaviours a client interprets | A client release |
 
@@ -252,24 +252,6 @@ SelectInput is a bare dropdown.
 | `visibleWhen` | `predicate` | Structured predicate over sibling field values. Absent means always visible. |
 | `label` | `string` | Field label. |
 
-### `SubmitField`
-
-SubmitField is a single text field with its own submit control.
-
-*Native because:* Owns its input value and substitutes it into the action at submit time.
-
-*Tier:* field · *Renders children:* false
-
-| Prop | Type | Meaning |
-|---|---|---|
-| `name` | `string` | The field's name in the enclosing State scope. An input with a name writes what it holds there, which is what lets a screen carry more than one of them. |
-| `placeholder` | `string` | Placeholder text. |
-| `submitLabel` | `string` | Label of the submit control. |
-| `action` | `action` | Action emitted on submit, with the literal string "$value" replaced by the typed value wherever it appears. |
-| `validators` | `validators` | Declarative rules the client enforces before submit. Server-side failures arrive as fieldErrors and render in the same slot. |
-| `visibleWhen` | `predicate` | Structured predicate over sibling field values. Absent means always visible. |
-| `label` | `string` | Field label. |
-
 ### `SearchBar`
 
 SearchBar is the frame's persistent search entry.
@@ -464,7 +446,7 @@ expands whatever it is sent.
 | `toast` | Toast shows a transient message. |
 | `sequence` | Sequence runs several actions in order, stopping at the first failure. |
 | `setValue` | SetValue writes a value into a named field in the enclosing form scope. |
-| `submit` | Submit runs an action with the enclosing State scope's values merged into its input — what a form's button emits. |
+| `submit` | Submit runs an action with the enclosing State scope's values merged into its input. `field` names where they merge — a path into the input, or empty for its top level. |
 
 ## Closed sets
 

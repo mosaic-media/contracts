@@ -10,7 +10,8 @@ package contract
 // kind uses a subset of the fields.
 type Action struct {
 	Actions []Action `json:"actions,omitempty"`
-	// setValue: the name of the field written in the enclosing state scope.
+	// setValue: the name of the field written in the enclosing state scope. submit: where in
+	// the action input the collected values merge — a path into it, or absent for its top level.
 	Field    *string                `json:"field,omitempty"`
 	Input    map[string]interface{} `json:"input,omitempty"`
 	Kind     ActionKind             `json:"kind"`

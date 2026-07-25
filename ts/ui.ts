@@ -128,13 +128,6 @@ export function SelectInput(...els: Elish[]): Element {
   return compose("SelectInput", undefined, els);
 }
 
-/** SubmitField is a single text field with its own submit control.
- *
- *  Native: Owns its input value and substitutes it into the action at submit time. */
-export function SubmitField(...els: Elish[]): Element {
-  return compose("SubmitField", undefined, els);
-}
-
 /** SearchBar is the frame's persistent search entry.
  *
  *  Native: The submitted action must carry the live input value, and in a live session the value streams up debounced as it changes. */
@@ -1246,7 +1239,7 @@ export function SetValue(field: string, value: string): Action {
   return { kind: ActionKind.SetValue, field, value };
 }
 
-/** Submit runs an action with the enclosing State scope's values merged into its input — what a form's button emits. */
+/** Submit runs an action with the enclosing State scope's values merged into its input. `field` names where they merge — a path into the input, or empty for its top level. */
 export function Submit(): Action {
   return { kind: ActionKind.Submit };
 }

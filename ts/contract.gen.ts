@@ -13,7 +13,8 @@
 export interface Action {
     actions?: Action[];
     /**
-     * setValue: the name of the field written in the enclosing state scope.
+     * setValue: the name of the field written in the enclosing state scope. submit: where in
+     * the action input the collected values merge — a path into it, or absent for its top level.
      */
     field?:    string;
     input?:    { [key: string]: any };

@@ -76,10 +76,6 @@ func Switch(els ...El) *Element { return compose("Switch", nil, els) }
 // Native: Owns its selected value.
 func SelectInput(els ...El) *Element { return compose("SelectInput", nil, els) }
 
-// SubmitField is a single text field with its own submit control.
-// Native: Owns its input value and substitutes it into the action at submit time.
-func SubmitField(els ...El) *Element { return compose("SubmitField", nil, els) }
-
 // SearchBar is the frame's persistent search entry.
 // Native: The submitted action must carry the live input value, and in a live session the value streams up debounced as it changes.
 func SearchBar(els ...El) *Element { return compose("SearchBar", nil, els) }

@@ -1,6 +1,6 @@
 {
   "//": "The Mosaic SDUI vocabulary — the single source of truth for what a client renders and what the emit-side may author. It has three tiers and they are generated, never hand-written: `primitives` are the native vocabulary every client must implement (growing this set needs a client release — ADR 0024); `components` are definitions, authored as data in definitions/*.json and delivered by the Platform at runtime (free); `actions` are the behaviours a client interprets. Run `go run ./tools/genui` to regenerate the authoring builders and the vocabulary registry; do not hand-edit the generated files. `go run ./tools/genui -lint` fails when any tier drifts from another — that check is the whole reason this file is one file.",
-  "version": "2.4.0",
+  "version": "3.0.0",
   "//typeSeparator": "The separator between a module's id and its own type name. Core types — every primitive and every component in this file — are unprefixed and may not contain it; a module's types are `moduleId:type`. One character, chosen because it cannot appear in a module id and reads as a namespace in every client language.",
   "typeSeparator": ":",
   "//bindingMarker": "The single key that makes a prop value a binding rather than a literal. An object is a binding only when it has exactly one key and that key is this one — the same closed-set discipline the action-kind check uses, so a prop that happens to carry a field of this name is never silently reinterpreted. It is spelled the same as a definition template's binding because it means the same thing: resolve a path against a scope. Making it one concept rather than two that share a spelling is the point.",
@@ -241,7 +241,7 @@
       "sdui": "Submit",
       "kind": "submit",
       "enum": "Submit",
-      "doc": "Submit runs an action with the enclosing State scope's values merged into its input — what a form's button emits.",
+      "doc": "Submit runs an action with the enclosing State scope's values merged into its input. `field` names where they merge — a path into the input, or empty for its top level.",
       "args": [],
       "optional": []
     }
@@ -664,51 +664,6 @@
           "key": "value",
           "type": "string",
           "doc": "Initially selected value."
-        },
-        {
-          "key": "validators",
-          "type": "validators",
-          "doc": "Declarative rules the client enforces before submit. Server-side failures arrive as fieldErrors and render in the same slot."
-        },
-        {
-          "key": "visibleWhen",
-          "type": "predicate",
-          "doc": "Structured predicate over sibling field values. Absent means always visible."
-        },
-        {
-          "key": "label",
-          "type": "string",
-          "doc": "Field label."
-        }
-      ]
-    },
-    {
-      "type": "SubmitField",
-      "tier": "field",
-      "doc": "SubmitField is a single text field with its own submit control.",
-      "native": "Owns its input value and substitutes it into the action at submit time.",
-      "deprecated": "Superseded by Form, which expresses the same thing with a named field and no string substitution. Retained because ADR 0038 module settings screens emit it; remove once those move to Form.",
-      "children": false,
-      "props": [
-        {
-          "key": "name",
-          "type": "string",
-          "doc": "The field's name in the enclosing State scope. An input with a name writes what it holds there, which is what lets a screen carry more than one of them."
-        },
-        {
-          "key": "placeholder",
-          "type": "string",
-          "doc": "Placeholder text."
-        },
-        {
-          "key": "submitLabel",
-          "type": "string",
-          "doc": "Label of the submit control."
-        },
-        {
-          "key": "action",
-          "type": "action",
-          "doc": "Action emitted on submit, with the literal string \"$value\" replaced by the typed value wherever it appears."
         },
         {
           "key": "validators",

@@ -96,8 +96,23 @@ func SetValue(field, value string) Action {
 // The merge is into the nested action's input, and the scope's values lose to
 // anything the producer set explicitly there — a server that pinned a field is
 // stating something the form must not overwrite.
-func Submit(action Action) Action {
-	return Action{Kind: KindSubmit, Actions: []Action{action}}
+//
+// `into` names where in the action's input the values land — "settings" puts
+// them at input.settings, and "" puts them at the top level. It exists because
+// an input is rarely flat: a module's configureModule takes a whole settings
+// document, and the field that was typed belongs inside it. Without a
+// destination the collected values could only ever land at the top, which is
+// why `$value` — a literal string substituted anywhere in the action — survived
+// as long as it did.
+//
+// One path segment, not an expression. It is stated by the producer, resolved
+// by no one, and the client does exactly one thing with it.
+func Submit(action Action, into string) Action {
+	a := Action{Kind: KindSubmit, Actions: []Action{action}}
+	if into != "" {
+		a.Field = strp(into)
+	}
+	return a
 }
 
 // nodeToMap renders a node to the JSON object form that rides inside an action's

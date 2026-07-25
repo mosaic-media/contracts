@@ -20,7 +20,7 @@ export interface PrimitiveSpec {
 }
 
 /** The vocabulary version a client declares it implements. */
-export const vocabularyVersion = "2.4.0";
+export const vocabularyVersion = "3.0.0";
 
 /** Divides a module's id from its own type name; core types never contain it. */
 export const typeSeparator = ":";
@@ -216,22 +216,6 @@ export const primitives: PrimitiveSpec[] = [
       { key: "name", type: "string", doc: "Field name under which an enclosing Form collects this value." },
       { key: "options", type: "array:option", doc: "Selectable options, each a value and a label." },
       { key: "value", type: "string", doc: "Initially selected value." },
-      { key: "validators", type: "validators", doc: "Declarative rules the client enforces before submit. Server-side failures arrive as fieldErrors and render in the same slot." },
-      { key: "visibleWhen", type: "predicate", doc: "Structured predicate over sibling field values. Absent means always visible." },
-      { key: "label", type: "string", doc: "Field label." },
-    ],
-  },
-  {
-    type: "SubmitField",
-    tier: "field",
-    doc: "SubmitField is a single text field with its own submit control.",
-    native: "Owns its input value and substitutes it into the action at submit time.",
-    children: false,
-    props: [
-      { key: "name", type: "string", doc: "The field's name in the enclosing State scope. An input with a name writes what it holds there, which is what lets a screen carry more than one of them." },
-      { key: "placeholder", type: "string", doc: "Placeholder text." },
-      { key: "submitLabel", type: "string", doc: "Label of the submit control." },
-      { key: "action", type: "action", doc: "Action emitted on submit, with the literal string \"$value\" replaced by the typed value wherever it appears." },
       { key: "validators", type: "validators", doc: "Declarative rules the client enforces before submit. Server-side failures arrive as fieldErrors and render in the same slot." },
       { key: "visibleWhen", type: "predicate", doc: "Structured predicate over sibling field values. Absent means always visible." },
       { key: "label", type: "string", doc: "Field label." },
