@@ -514,6 +514,15 @@ func OnAppear(v Action) El { return Prop("onAppear", v) }
 // OnDisappear is emitted when this node leaves the screen, having been visible.
 func OnDisappear(v Action) El { return Prop("onDisappear", v) }
 
+// A11yLabel is the accessible name, for when the visible content is not one — an icon-only control, an image that carries meaning. It is deliberately not `label`: a visible label and an accessible name are different things, and one key meaning both is how a control ends up announced as its own caption.
+func A11yLabel(v string) El { return Prop("a11yLabel", v) }
+
+// HeadingLevel is 1-6, the depth of a heading in the screen's outline. Stated rather than inferred from text size, because size is a design decision and outline depth is a structural one — and a screen reader navigates the second.
+func HeadingLevel(v int) El { return Prop("headingLevel", v) }
+
+// Live marks a region whose changes should be announced: "polite" waits for a pause, "assertive" interrupts. Anything else is not announced.
+func Live(v string) El { return Prop("live", v) }
+
 // ── bound sugar ────────────────────────────────────────────────────────────
 // The same props, set to a binding the client resolves where the node renders
 // rather than to a value decided now. One per helper, generated, because a
@@ -712,6 +721,15 @@ func BindOnAppear(path string) El { return Prop("onAppear", sdui.Bind(path)) }
 
 // BindOnDisappear sets "onDisappear" from the named path instead of from a value.
 func BindOnDisappear(path string) El { return Prop("onDisappear", sdui.Bind(path)) }
+
+// BindA11yLabel sets "a11yLabel" from the named path instead of from a value.
+func BindA11yLabel(path string) El { return Prop("a11yLabel", sdui.Bind(path)) }
+
+// BindHeadingLevel sets "headingLevel" from the named path instead of from a value.
+func BindHeadingLevel(path string) El { return Prop("headingLevel", sdui.Bind(path)) }
+
+// BindLive sets "live" from the named path instead of from a value.
+func BindLive(path string) El { return Prop("live", sdui.Bind(path)) }
 
 // Tone values (the open-bag string encoding), re-exported from the producer binding.
 const (

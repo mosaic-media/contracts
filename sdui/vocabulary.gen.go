@@ -7,7 +7,7 @@ package sdui
 // VocabularyVersion is the version a client declares it implements. Additive
 // growth is a minor bump; removing or changing the meaning of a primitive, a
 // prop or an action is a major one.
-const VocabularyVersion = "2.1.0"
+const VocabularyVersion = "2.2.0"
 
 // TypeSeparator divides a module's id from its own type name. Core types are
 // unprefixed and may never contain it; a module's are moduleId:type. Two
@@ -121,6 +121,32 @@ const (
 	SurfaceSheet  = "sheet"
 	SurfaceDrawer = "drawer"
 )
+
+// Roles is the closed accessible-role set. Closed because a role is a
+// statement the client must map — to ARIA on the web, to a semantics property
+// elsewhere — and one a client maps to nothing is a control invisible to a
+// screen reader while looking correct to everyone else.
+var Roles = []string{
+	"alert",
+	"button",
+	"dialog",
+	"group",
+	"heading",
+	"img",
+	"link",
+	"list",
+	"listitem",
+	"main",
+	"navigation",
+	"none",
+	"progressbar",
+	"region",
+	"search",
+	"status",
+	"tab",
+	"tablist",
+	"tabpanel",
+}
 
 // Primitives is the native tier as data: what a client must implement, and
 // for each one the reason it cannot be a definition.

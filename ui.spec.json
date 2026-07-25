@@ -1,6 +1,6 @@
 {
   "//": "The Mosaic SDUI vocabulary — the single source of truth for what a client renders and what the emit-side may author. It has three tiers and they are generated, never hand-written: `primitives` are the native vocabulary every client must implement (growing this set needs a client release — ADR 0024); `components` are definitions, authored as data in definitions/*.json and delivered by the Platform at runtime (free); `actions` are the behaviours a client interprets. Run `go run ./tools/genui` to regenerate the authoring builders and the vocabulary registry; do not hand-edit the generated files. `go run ./tools/genui -lint` fails when any tier drifts from another — that check is the whole reason this file is one file.",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "//typeSeparator": "The separator between a module's id and its own type name. Core types — every primitive and every component in this file — are unprefixed and may not contain it; a module's types are `moduleId:type`. One character, chosen because it cannot appear in a module id and reads as a namespace in every client language.",
   "typeSeparator": ":",
   "//bindingMarker": "The single key that makes a prop value a binding rather than a literal. An object is a binding only when it has exactly one key and that key is this one — the same closed-set discipline the action-kind check uses, so a prop that happens to carry a field of this name is never silently reinterpreted. It is spelled the same as a definition template's binding because it means the same thing: resolve a path against a scope. Making it one concept rather than two that share a spelling is the point.",
@@ -1395,6 +1395,24 @@
       "key": "onDisappear",
       "type": "Action",
       "doc": "OnDisappear is emitted when this node leaves the screen, having been visible."
+    },
+    {
+      "func": "A11yLabel",
+      "key": "a11yLabel",
+      "type": "string",
+      "doc": "A11yLabel is the accessible name, for when the visible content is not one — an icon-only control, an image that carries meaning. It is deliberately not `label`: a visible label and an accessible name are different things, and one key meaning both is how a control ends up announced as its own caption."
+    },
+    {
+      "func": "HeadingLevel",
+      "key": "headingLevel",
+      "type": "int",
+      "doc": "HeadingLevel is 1-6, the depth of a heading in the screen's outline. Stated rather than inferred from text size, because size is a design decision and outline depth is a structural one — and a screen reader navigates the second."
+    },
+    {
+      "func": "Live",
+      "key": "live",
+      "type": "string",
+      "doc": "Live marks a region whose changes should be announced: \"polite\" waits for a pause, \"assertive\" interrupts. Anything else is not announced."
     }
   ],
   "slots": [
@@ -1882,5 +1900,27 @@
       "generic": true,
       "doc": "Component is the generic constructor for a type without a helper (a standard component like SeasonSelector, or a module's own)."
     }
+  ],
+  "//roles": "The accessible roles a node may declare. Closed, like the validator and predicate sets and for the same reason: a role is a statement the client must *map* — to an ARIA attribute on the web, to a Compose semantics property, to a UIAccessibilityTrait — and one the server can name that a client maps to nothing produces a control that is invisible to a screen reader while looking correct to everyone else. Chosen for what this vocabulary actually contains rather than transcribed from the ARIA specification, which would be a list nobody could implement completely.",
+  "roles": [
+    "alert",
+    "button",
+    "dialog",
+    "group",
+    "heading",
+    "img",
+    "link",
+    "list",
+    "listitem",
+    "main",
+    "navigation",
+    "none",
+    "progressbar",
+    "region",
+    "search",
+    "status",
+    "tab",
+    "tablist",
+    "tabpanel"
   ]
 }

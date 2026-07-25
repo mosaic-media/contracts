@@ -20,7 +20,7 @@ export interface PrimitiveSpec {
 }
 
 /** The vocabulary version a client declares it implements. */
-export const vocabularyVersion = "2.1.0";
+export const vocabularyVersion = "2.2.0";
 
 /** Divides a module's id from its own type name; core types never contain it. */
 export const typeSeparator = ":";
@@ -412,6 +412,29 @@ export const actionKinds: string[] = [
   "sequence",
   "setValue",
   "submit",
+];
+
+/** The closed accessible-role set. */
+export const roles: string[] = [
+  "alert",
+  "button",
+  "dialog",
+  "group",
+  "heading",
+  "img",
+  "link",
+  "list",
+  "listitem",
+  "main",
+  "navigation",
+  "none",
+  "progressbar",
+  "region",
+  "search",
+  "status",
+  "tab",
+  "tablist",
+  "tabpanel",
 ];
 
 /** The closed field-validation set. */

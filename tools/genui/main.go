@@ -63,6 +63,7 @@ type spec struct {
 	Version       string      `json:"version"`
 	TypeSeparator string      `json:"typeSeparator"`
 	BindingMarker string      `json:"bindingMarker"`
+	Roles         []string    `json:"roles"`
 	Tones         []tone      `json:"tones"`
 	Surfaces      []surface   `json:"surfaces"`
 	Actions       []action    `json:"actions"`
@@ -654,6 +655,16 @@ func genVocabularyGo(sp spec) []byte {
 	}
 	b.WriteString(")\n\n")
 
+	b.WriteString("// Roles is the closed accessible-role set. Closed because a role is a\n")
+	b.WriteString("// statement the client must map — to ARIA on the web, to a semantics property\n")
+	b.WriteString("// elsewhere — and one a client maps to nothing is a control invisible to a\n")
+	b.WriteString("// screen reader while looking correct to everyone else.\n")
+	b.WriteString("var Roles = []string{\n")
+	for _, r := range sp.Roles {
+		fmt.Fprintf(&b, "\t%s,\n", strconv.Quote(r))
+	}
+	b.WriteString("}\n\n")
+
 	b.WriteString("// Primitives is the native tier as data: what a client must implement, and\n")
 	b.WriteString("// for each one the reason it cannot be a definition.\n")
 	b.WriteString("var Primitives = []PrimitiveSpec{\n")
@@ -759,6 +770,12 @@ func genVocabularyTS(sp spec) []byte {
 	}
 	b.WriteString("];\n\n")
 
+	b.WriteString("/** The closed accessible-role set. */\nexport const roles: string[] = [\n")
+	for _, r := range sp.Roles {
+		fmt.Fprintf(&b, "  %s,\n", strconv.Quote(r))
+	}
+	b.WriteString("];\n\n")
+
 	b.WriteString("/** The closed field-validation set. */\n")
 	b.WriteString("export const validators: string[] = [\n")
 	for _, v := range sp.Validators {
@@ -790,6 +807,7 @@ type fixture struct {
 	Actions       []string      `json:"actions"`
 	Validators    []string      `json:"validators"`
 	Predicates    []string      `json:"predicates"`
+	Roles         []string      `json:"roles"`
 	Tones         []string      `json:"tones"`
 	Surfaces      []string      `json:"surfaces"`
 }
@@ -840,6 +858,7 @@ func genFixture(sp spec) []byte {
 	for _, p := range sp.Predicates {
 		f.Predicates = append(f.Predicates, p.Name)
 	}
+	f.Roles = append(f.Roles, sp.Roles...)
 	for _, t := range sp.Tones {
 		f.Tones = append(f.Tones, t.Value)
 	}
@@ -863,6 +882,16 @@ func lintSpecSanity(sp spec) []string {
 	var errs []string
 	if sp.Version == "" {
 		errs = append(errs, "the spec declares no version — a client cannot negotiate against an unnamed vocabulary")
+	}
+	if len(sp.Roles) == 0 {
+		errs = append(errs, "the spec declares no roles — an accessible role a client cannot map is a control invisible to a screen reader and correct-looking to everyone else")
+	}
+	seenRole := map[string]bool{}
+	for _, r := range sp.Roles {
+		if seenRole[r] {
+			errs = append(errs, fmt.Sprintf("role %q is declared twice", r))
+		}
+		seenRole[r] = true
 	}
 	if sp.BindingMarker == "" {
 		errs = append(errs, "the spec declares no bindingMarker — nothing then distinguishes a bound prop from a literal object")

@@ -764,6 +764,21 @@ export function OnDisappear(v: Action): El {
   return Prop("onDisappear", v);
 }
 
+/** A11yLabel is the accessible name, for when the visible content is not one — an icon-only control, an image that carries meaning. It is deliberately not `label`: a visible label and an accessible name are different things, and one key meaning both is how a control ends up announced as its own caption. */
+export function A11yLabel(v: string): El {
+  return Prop("a11yLabel", v);
+}
+
+/** HeadingLevel is 1-6, the depth of a heading in the screen's outline. Stated rather than inferred from text size, because size is a design decision and outline depth is a structural one — and a screen reader navigates the second. */
+export function HeadingLevel(v: number): El {
+  return Prop("headingLevel", v);
+}
+
+/** Live marks a region whose changes should be announced: "polite" waits for a pause, "assertive" interrupts. Anything else is not announced. */
+export function Live(v: string): El {
+  return Prop("live", v);
+}
+
 // ── bound sugar ────────────────────────────────────────────────────────────
 // The same props, set to a binding the client resolves where the node renders.
 
@@ -1085,6 +1100,21 @@ export function BindOnAppear(path: string): El {
 /** BindOnDisappear sets "onDisappear" from the named path instead of from a value. */
 export function BindOnDisappear(path: string): El {
   return Prop("onDisappear", bind(path));
+}
+
+/** BindA11yLabel sets "a11yLabel" from the named path instead of from a value. */
+export function BindA11yLabel(path: string): El {
+  return Prop("a11yLabel", bind(path));
+}
+
+/** BindHeadingLevel sets "headingLevel" from the named path instead of from a value. */
+export function BindHeadingLevel(path: string): El {
+  return Prop("headingLevel", bind(path));
+}
+
+/** BindLive sets "live" from the named path instead of from a value. */
+export function BindLive(path: string): El {
+  return Prop("live", bind(path));
 }
 
 // Tone values, mirroring the Go Tone constants. They are the schema enum's
