@@ -375,8 +375,6 @@ export const components: string[] = [
   "RelatedRail",
   "Select",
   "SettingsFrame",
-  "SetupFrame",
-  "SignInPanel",
   "SettingsRow",
   "SettingsNavGroup",
   "SettingsNavItem",

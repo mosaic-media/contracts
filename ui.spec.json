@@ -1303,24 +1303,6 @@
       "doc": "Breadcrumb is the trail after the brand in the admin chrome — \"/ Settings\". It says where you are on a side of the app that has no hero to say it for you."
     },
     {
-      "func": "Brand",
-      "key": "brand",
-      "type": "string",
-      "doc": "Brand is the install's name for itself, drawn where a screen has no chrome to carry it."
-    },
-    {
-      "func": "Step",
-      "key": "step",
-      "type": "string",
-      "doc": "Step is where you are in a sequence — \"Step 1 of 6\"."
-    },
-    {
-      "func": "Footnote",
-      "key": "footnote",
-      "type": "string",
-      "doc": "Footnote is the quiet line at the foot of a rail, saying what a screen does not oblige you to decide now."
-    },
-    {
       "func": "Lead",
       "key": "lead",
       "type": "string",
@@ -1529,11 +1511,6 @@
       "func": "Nav",
       "name": "nav",
       "doc": "Nav fills a frame's \"nav\" slot."
-    },
-    {
-      "func": "FormSlot",
-      "name": "form",
-      "doc": "FormSlot fills the \"form\" slot (a sign-in panel's fields and its submit)."
     },
     {
       "func": "Footer",
@@ -1895,30 +1872,6 @@
       "func": "SettingsFrame",
       "type": "SettingsFrame",
       "doc": "SettingsFrame is the Platform-owned settings chrome (ADR 0038): a nav beside the panel the open section fills.",
-      "positional": [
-        {
-          "name": "title",
-          "key": "title",
-          "type": "string"
-        }
-      ]
-    },
-    {
-      "func": "SetupFrame",
-      "type": "SetupFrame",
-      "doc": "SetupFrame is the first-boot wizard's frame (ADR 0098) — a step rail beside the step being filled in. It is a frame rather than a one-off panel because the design has six steps and Mosaic can answer one; the shape is right for the others as the capability behind them arrives.",
-      "positional": [
-        {
-          "name": "title",
-          "key": "title",
-          "type": "string"
-        }
-      ]
-    },
-    {
-      "func": "SignInPanel",
-      "type": "SignInPanel",
-      "doc": "SignInPanel is the screen drawn before there is a session (ADR 0097) — the brand, a welcome, and a form on a lit card. It is a component like any other because a Platform that is refusing to authenticate you is still answering; the client's own hand-written UI is for the states where it cannot.",
       "positional": [
         {
           "name": "title",

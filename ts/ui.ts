@@ -338,16 +338,6 @@ export function SettingsFrame(title: string, ...els: Elish[]): Element {
   return compose("SettingsFrame", { title }, els);
 }
 
-/** SetupFrame is the first-boot wizard's frame (ADR 0098) — a step rail beside the step being filled in. It is a frame rather than a one-off panel because the design has six steps and Mosaic can answer one; the shape is right for the others as the capability behind them arrives. */
-export function SetupFrame(title: string, ...els: Elish[]): Element {
-  return compose("SetupFrame", { title }, els);
-}
-
-/** SignInPanel is the screen drawn before there is a session (ADR 0097) — the brand, a welcome, and a form on a lit card. It is a component like any other because a Platform that is refusing to authenticate you is still answering; the client's own hand-written UI is for the states where it cannot. */
-export function SignInPanel(title: string, ...els: Elish[]): Element {
-  return compose("SignInPanel", { title }, els);
-}
-
 /** SettingsRow is one line of a settings panel — a label, an optional explanation of what it does, and a control or a value on the right. It is the workhorse of every panel in the design, which is why it is a component rather than a Stack assembled per screen: a panel that builds its own rows is a panel that drifts from the others. */
 export function SettingsRow(label: string, ...els: Elish[]): Element {
   return compose("SettingsRow", { label }, els);
@@ -433,11 +423,6 @@ export function Tags(...els: Elish[]): El {
 /** Nav fills a frame's "nav" slot. */
 export function Nav(...els: Elish[]): El {
   return Slot("nav", ...els);
-}
-
-/** FormSlot fills the "form" slot (a sign-in panel's fields and its submit). */
-export function FormSlot(...els: Elish[]): El {
-  return Slot("form", ...els);
 }
 
 /** Footer fills a frame's "footer" slot (level controls, not sections). */
@@ -735,21 +720,6 @@ export function Chrome(v: string): El {
 /** Breadcrumb is the trail after the brand in the admin chrome — "/ Settings". It says where you are on a side of the app that has no hero to say it for you. */
 export function Breadcrumb(v: string): El {
   return Prop("breadcrumb", v);
-}
-
-/** Brand is the install's name for itself, drawn where a screen has no chrome to carry it. */
-export function Brand(v: string): El {
-  return Prop("brand", v);
-}
-
-/** Step is where you are in a sequence — "Step 1 of 6". */
-export function Step(v: string): El {
-  return Prop("step", v);
-}
-
-/** Footnote is the quiet line at the foot of a rail, saying what a screen does not oblige you to decide now. */
-export function Footnote(v: string): El {
-  return Prop("footnote", v);
 }
 
 /** Lead is the sentence under a panel's heading saying what the panel is for. Distinct from Summary, which explains one row. */
@@ -1168,21 +1138,6 @@ export function BindChrome(path: string): El {
 /** BindBreadcrumb sets "breadcrumb" from the named path instead of from a value. */
 export function BindBreadcrumb(path: string): El {
   return Prop("breadcrumb", bind(path));
-}
-
-/** BindBrand sets "brand" from the named path instead of from a value. */
-export function BindBrand(path: string): El {
-  return Prop("brand", bind(path));
-}
-
-/** BindStep sets "step" from the named path instead of from a value. */
-export function BindStep(path: string): El {
-  return Prop("step", bind(path));
-}
-
-/** BindFootnote sets "footnote" from the named path instead of from a value. */
-export function BindFootnote(path: string): El {
-  return Prop("footnote", bind(path));
 }
 
 /** BindLead sets "lead" from the named path instead of from a value. */
