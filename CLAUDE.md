@@ -49,16 +49,32 @@ the workaround silently.
   exists.
 - **`ui.spec.json` is the vocabulary and all three tiers are generated from it**
   (ADR 0083). Primitives, components, actions, tones, surfaces, validators and
-  predicates are declared there once; `go run ./tools/genui` emits the Go and TS
-  constructors, the registry (`sdui/vocabulary.gen.go`, `ts/vocabulary.gen.ts`)
-  and the client conformance fixture (`conformance/vocabulary.json`). **A
-  primitive is added here, not in a client** — that tier drifted for the whole
+  predicates, roles and focus directions are declared there once; `go run
+  ./tools/genui` emits **six** artefacts — the Go and TS constructors, the
+  registry in each language, the client conformance fixture
+  (`conformance/vocabulary.json`) and the published `REFERENCE.md`. All six are
+  drift-guarded; none is hand-edited. **A primitive is added here, not in a
+  client** — that tier drifted for the whole
   life of the project because ADR 0082's rule only ever covered components, and
   the lint gates exist to keep it from happening again. Every primitive states
   why it cannot be a definition, and lint refuses one that does not.
 - **The spec, `schema/sdui.schema.json` and `proto/mosaic/sdui/v1/sdui.proto`
   must agree**, and `genui -lint` fails when they do not. Adding an action kind
   means adding it in all three; that is the point.
+- **A change to behaviour is a change to `conformance/cases/*.json`** (ADR 0094).
+  The corpus is golden inputs and outputs for the validators, the predicates,
+  binding resolution and definition expansion, and it is run by *two*
+  implementations — `go test ./conformance/...` here, and the client's own
+  `scripts/check-conformance.mjs`. Changing what a validator says, what an
+  unreadable predicate answers or how a template expands without touching the
+  corpus means one implementation has quietly moved. Add the case in the same
+  change; a corpus only one implementation executes is a test.
+- **The closed sets are closed, and each is closed in the same direction**: the
+  server may name only what every client can interpret. Validators, predicates,
+  roles and focus directions. Widening one lets the server state something a
+  client silently ignores, which fails open — the failure the whole vocabulary
+  is arranged to prevent. Growing one is a decision with an ADR, not a spec
+  edit.
 - **Do not add a component because one screen wants it.** The Platform's
   emit-side is a consumer of this contract, not its owner.
 - **`definitions/*.json` is the only place a component is authored. This is a
