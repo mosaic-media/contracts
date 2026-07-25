@@ -915,6 +915,7 @@ func runLint(sp spec, root string) []string {
 		var def struct {
 			Name     string `json:"name"`
 			Template any    `json:"template"`
+			Fallback any    `json:"fallback"`
 		}
 		if err := json.Unmarshal(raw, &def); err != nil {
 			errs = append(errs, fmt.Sprintf("%s: %v", f, err))
@@ -928,6 +929,35 @@ func runLint(sp spec, root string) []string {
 		defined[def.Name] = true
 		binds, aliases, outlets, refs := map[string]bool{}, map[string]bool{}, map[string]bool{}, map[string]bool{}
 		collect(def.Template, binds, aliases, outlets, refs)
+
+		// A fallback is held to the template's rules — it is a template, and the
+		// client cannot tell which one it was sent — plus one of its own: it must
+		// need strictly fewer primitives. A fallback that needs the same set
+		// degrades nothing and would be served to a client that still cannot
+		// draw it, which is worse than having none, because it reads as handled.
+		if def.Fallback != nil {
+			fbRefs := map[string]bool{}
+			collect(def.Fallback, binds, aliases, outlets, fbRefs)
+			tmplPrims := primitivesIn(refs, primType)
+			fbPrims := primitivesIn(fbRefs, primType)
+			for r := range fbRefs {
+				refs[r] = true // held to the same referenced-type check below
+			}
+			fewer := false
+			for p := range fbPrims {
+				if !tmplPrims[p] {
+					errs = append(errs, fmt.Sprintf("%s: fallback needs primitive %q that the template does not — a fallback may only use fewer", base, p))
+				}
+			}
+			for p := range tmplPrims {
+				if !fbPrims[p] {
+					fewer = true
+				}
+			}
+			if !fewer {
+				errs = append(errs, fmt.Sprintf("%s: fallback needs the same primitives as the template, so it degrades nothing — remove it or simplify it", base))
+			}
+		}
 
 		// Referenced-type existence. A template naming a type that is in neither
 		// tier expands into a node every client renders as an Unknown
@@ -974,6 +1004,19 @@ func runLint(sp spec, root string) []string {
 
 	sort.Strings(errs)
 	return errs
+}
+
+// primitivesIn narrows a set of referenced types to the primitive tier — the
+// only tier a client can fail to draw, and therefore the only one a fallback is
+// about.
+func primitivesIn(refs, primType map[string]bool) map[string]bool {
+	out := map[string]bool{}
+	for r := range refs {
+		if primType[r] {
+			out[r] = true
+		}
+	}
+	return out
 }
 
 // collect walks a definition template gathering $bind prop paths, $as loop

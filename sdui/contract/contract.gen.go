@@ -30,6 +30,10 @@ type Action struct {
 
 // One element of a server-driven UI tree. The `type` is an open vocabulary: a client that
 // does not recognise a type renders a placeholder rather than failing.
+//
+// An alternative template for a client whose declared vocabulary lacks a primitive the main
+// template needs. The server picks per session and sends one; the client never sees both.
+// Optional — a definition without one is served unchanged to everyone.
 type UINode struct {
 	Children []UINode `json:"children,omitempty"`
 	ID       *string  `json:"id,omitempty"`
@@ -141,6 +145,10 @@ type BgGradient struct {
 // ({"$bind":"path"} / {"$match":{…}}) and control keys ($if / $ifNot / $each / $as); a node
 // of type "Outlet" renders the caller's children or a named slot.
 type ComponentDefinition struct {
+	// An alternative template for a client whose declared vocabulary lacks a primitive the main
+	// template needs. The server picks per session and sends one; the client never sees both.
+	// Optional — a definition without one is served unchanged to everyone.
+	Fallback *UINode `json:"fallback,omitempty"`
 	// The node type this definition provides.
 	Name string `json:"name"`
 	// Default param values, overridden by the caller's props.

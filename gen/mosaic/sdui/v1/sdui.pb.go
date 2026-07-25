@@ -523,10 +523,23 @@ func (x *Action) GetValue() string {
 // a template of primitives. Clients register definitions and expand them — how a
 // module contributes a component without shipping client code (ADR 0024).
 type ComponentDefinition struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Params        *structpb.Struct       `protobuf:"bytes,2,opt,name=params,proto3" json:"params,omitempty"`
-	Template      *UINode                `protobuf:"bytes,3,opt,name=template,proto3" json:"template,omitempty"`
+	state    protoimpl.MessageState `protogen:"open.v1"`
+	Name     string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Params   *structpb.Struct       `protobuf:"bytes,2,opt,name=params,proto3" json:"params,omitempty"`
+	Template *UINode                `protobuf:"bytes,3,opt,name=template,proto3" json:"template,omitempty"`
+	// An alternative template for a client whose declared vocabulary is missing a
+	// primitive the main one needs. The server picks between them per session and
+	// sends one; the client never sees both, and never has to choose.
+	//
+	// It exists because degradation at the *node* level cannot reach inside a
+	// template: the server emits a component by name and the client expands it, so
+	// a template reaching for a primitive the client lacks produces a hole the
+	// server has no way to see. Declaring the simpler arrangement here is how a
+	// component says what it becomes on a client that cannot draw it in full.
+	//
+	// Optional. A definition with no fallback is served as-is to everyone, which
+	// is the behaviour every definition had before this field existed.
+	Fallback      *UINode `protobuf:"bytes,4,opt,name=fallback,proto3" json:"fallback,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -582,6 +595,13 @@ func (x *ComponentDefinition) GetTemplate() *UINode {
 	return nil
 }
 
+func (x *ComponentDefinition) GetFallback() *UINode {
+	if x != nil {
+		return x.Fallback
+	}
+	return nil
+}
+
 var File_mosaic_sdui_v1_sdui_proto protoreflect.FileDescriptor
 
 const file_mosaic_sdui_v1_sdui_proto_rawDesc = "" +
@@ -616,11 +636,12 @@ const file_mosaic_sdui_v1_sdui_proto_rawDesc = "" +
 	"\aactions\x18\x10 \x03(\v2\x16.mosaic.sdui.v1.ActionR\aactions\x12\x14\n" +
 	"\x05field\x18\x11 \x01(\tR\x05field\x12\x14\n" +
 	"\x05value\x18\x12 \x01(\tR\x05valueJ\x04\b\a\x10\bJ\x04\b\b\x10\tJ\x04\b\t\x10\n" +
-	"R\x05queryR\tvariablesR\x04into\"\x8e\x01\n" +
+	"R\x05queryR\tvariablesR\x04into\"\xc2\x01\n" +
 	"\x13ComponentDefinition\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12/\n" +
 	"\x06params\x18\x02 \x01(\v2\x17.google.protobuf.StructR\x06params\x122\n" +
-	"\btemplate\x18\x03 \x01(\v2\x16.mosaic.sdui.v1.UINodeR\btemplate*\x83\x01\n" +
+	"\btemplate\x18\x03 \x01(\v2\x16.mosaic.sdui.v1.UINodeR\btemplate\x122\n" +
+	"\bfallback\x18\x04 \x01(\v2\x16.mosaic.sdui.v1.UINodeR\bfallback*\x83\x01\n" +
 	"\x04Tone\x12\x14\n" +
 	"\x10TONE_UNSPECIFIED\x10\x00\x12\x10\n" +
 	"\fTONE_NEUTRAL\x10\x01\x12\x0f\n" +
@@ -690,12 +711,13 @@ var file_mosaic_sdui_v1_sdui_proto_depIdxs = []int32{
 	5,  // 10: mosaic.sdui.v1.Action.actions:type_name -> mosaic.sdui.v1.Action
 	8,  // 11: mosaic.sdui.v1.ComponentDefinition.params:type_name -> google.protobuf.Struct
 	3,  // 12: mosaic.sdui.v1.ComponentDefinition.template:type_name -> mosaic.sdui.v1.UINode
-	4,  // 13: mosaic.sdui.v1.UINode.SlotsEntry.value:type_name -> mosaic.sdui.v1.NodeList
-	14, // [14:14] is the sub-list for method output_type
-	14, // [14:14] is the sub-list for method input_type
-	14, // [14:14] is the sub-list for extension type_name
-	14, // [14:14] is the sub-list for extension extendee
-	0,  // [0:14] is the sub-list for field type_name
+	3,  // 13: mosaic.sdui.v1.ComponentDefinition.fallback:type_name -> mosaic.sdui.v1.UINode
+	4,  // 14: mosaic.sdui.v1.UINode.SlotsEntry.value:type_name -> mosaic.sdui.v1.NodeList
+	15, // [15:15] is the sub-list for method output_type
+	15, // [15:15] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_mosaic_sdui_v1_sdui_proto_init() }

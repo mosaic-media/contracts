@@ -181,6 +181,10 @@
         },
         "template": {
           "$ref": "#/$defs/UINode"
+        },
+        "fallback": {
+          "$ref": "#/$defs/UINode",
+          "description": "An alternative template for a client whose declared vocabulary lacks a primitive the main template needs. The server picks per session and sends one; the client never sees both. Optional — a definition without one is served unchanged to everyone."
         }
       },
       "additionalProperties": false

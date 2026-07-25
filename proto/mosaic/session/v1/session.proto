@@ -71,6 +71,46 @@ message AttachRequest {
   // declares nothing gets whatever the server assumes, which is what every
   // client got before this field existed.
   ClientProfile profile = 4;
+  // What this client can *render* — the other half of the same question
+  // `profile` answers about decoding. Optional, and an absent one is not an
+  // error: a client built against an older contract is assumed to implement the
+  // whole vocabulary, which is exactly what every client was assumed to do
+  // before this field existed.
+  VocabularyProfile vocabulary = 5;
+}
+
+// VocabularyProfile is the SDUI vocabulary a client implements, declared once
+// per connection.
+//
+// It exists because the server was emitting into the dark. The vocabulary is
+// versioned and grows, clients are released on their own schedules, and until
+// this field existed nothing carried the answer to "can the thing I am about to
+// send actually be drawn?" — so an unsupported node became a placeholder on the
+// client and nothing anywhere recorded it. That is the same failure as a prop
+// nobody reads: visible only if someone happens to be looking at that screen.
+//
+// The client is the only thing that knows, and it knows mechanically: the
+// primitives are the types it registers and the actions are the kinds its
+// dispatcher interprets. Both are published as data in
+// conformance/vocabulary.json, so a client can state its answer against the
+// contract rather than against a list somebody maintains.
+//
+// Components are deliberately absent. They are definitions the server delivers
+// (ADR 0040), so a client renders whatever it is sent; what it can fail to draw
+// is a *primitive* inside a definition's template, which is what
+// ComponentDefinition.fallback answers.
+message VocabularyProfile {
+  // The vocabulary version this client implements, e.g. "1.0.0". Empty when the
+  // client does not know its own version, which is treated as an undeclared
+  // vocabulary rather than as version zero.
+  string version = 1;
+  // Native node types it renders. A type the server would emit that is not here
+  // is not sent.
+  repeated string primitives = 2;
+  // Action kinds its dispatcher interprets. An action of any other kind is
+  // stripped before the node is sent, because a control wired to a kind the
+  // client ignores is a control that does nothing when pressed.
+  repeated string actions = 3;
 }
 
 // ClientProfile is what a client can decode, declared once per connection.

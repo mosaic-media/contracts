@@ -39,7 +39,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file mosaic/session/v1/session.proto.
  */
 export const file_mosaic_session_v1_session: GenFile = /*@__PURE__*/
-  fileDesc("Ch9tb3NhaWMvc2Vzc2lvbi92MS9zZXNzaW9uLnByb3RvEhFtb3NhaWMuc2Vzc2lvbi52MSIFCgNBY2sicwoNQXR0YWNoUmVxdWVzdBIPCgdzZXNzaW9uGAEgASgJEg4KBnNjcmVlbhgCIAEoCRIOCgZwYXJhbXMYAyABKAwSMQoHcHJvZmlsZRgEIAEoCzIgLm1vc2FpYy5zZXNzaW9uLnYxLkNsaWVudFByb2ZpbGUicAoNQ2xpZW50UHJvZmlsZRISCgpjb250YWluZXJzGAEgAygJEhQKDHZpZGVvX2NvZGVjcxgCIAMoCRIUCgxhdWRpb19jb2RlY3MYAyADKAkSCwoDaGRyGAQgASgIEhIKCm1heF9oZWlnaHQYBSABKAUiQgoPTmF2aWdhdGVSZXF1ZXN0Eg8KB3Nlc3Npb24YASABKAkSDgoGc2NyZWVuGAIgASgJEg4KBnBhcmFtcxgDIAEoDCI/Cg1JbnZva2VSZXF1ZXN0Eg8KB3Nlc3Npb24YASABKAkSDgoGYWN0aW9uGAIgASgJEg0KBWlucHV0GAMgASgMIi4KDElucHV0UmVxdWVzdBIPCgdzZXNzaW9uGAEgASgJEg0KBXZhbHVlGAIgASgJIjoKEFN1YnNjcmliZVJlcXVlc3QSDwoHc2Vzc2lvbhgBIAEoCRIVCg1yZXN1bWVfY3Vyc29yGAIgASgEIt4BCg1TZXJ2ZXJNZXNzYWdlEgsKA3NlcRgBIAEoBBIxCgZyZWdpb24YAiABKAsyHy5tb3NhaWMuc2Vzc2lvbi52MS5SZWdpb25VcGRhdGVIABIvCgVzaGVsbBgDIAEoCzIeLm1vc2FpYy5zZXNzaW9uLnYxLlNoZWxsVXBkYXRlSAASKQoFdG9hc3QYBCABKAsyGC5tb3NhaWMuc2Vzc2lvbi52MS5Ub2FzdEgAEikKBWV2ZW50GAUgASgLMhgubW9zYWljLnNlc3Npb24udjEuRXZlbnRIAEIGCgRib2R5IroBCgxSZWdpb25VcGRhdGUSDgoGcmVnaW9uGAEgASgJEi4KAm9wGAIgASgOMiIubW9zYWljLnNlc3Npb24udjEuUmVnaW9uVXBkYXRlLk9wEicKB3VpX25vZGUYAyABKAsyFi5tb3NhaWMuc2R1aS52MS5VSU5vZGUiQQoCT3ASCwoHUkVQTEFDRRAAEgoKBkFQUEVORBABEgsKB1BSRVBFTkQQAhIKCgZSRU1PVkUQAxIJCgVQQVRDSBAEIjYKC1NoZWxsVXBkYXRlEicKB3VpX25vZGUYASABKAsyFi5tb3NhaWMuc2R1aS52MS5VSU5vZGUiJgoFVG9hc3QSDwoHbWVzc2FnZRgBIAEoCRIMCgR0b25lGAIgASgJIiYKBUV2ZW50EgwKBHR5cGUYASABKAkSDwoHcGF5bG9hZBgCIAEoDDL+AgoOU2Vzc2lvblNlcnZpY2USQgoGQXR0YWNoEiAubW9zYWljLnNlc3Npb24udjEuQXR0YWNoUmVxdWVzdBoWLm1vc2FpYy5zZXNzaW9uLnYxLkFjaxJGCghOYXZpZ2F0ZRIiLm1vc2FpYy5zZXNzaW9uLnYxLk5hdmlnYXRlUmVxdWVzdBoWLm1vc2FpYy5zZXNzaW9uLnYxLkFjaxJCCgZJbnZva2USIC5tb3NhaWMuc2Vzc2lvbi52MS5JbnZva2VSZXF1ZXN0GhYubW9zYWljLnNlc3Npb24udjEuQWNrEkYKC1N1Ym1pdElucHV0Eh8ubW9zYWljLnNlc3Npb24udjEuSW5wdXRSZXF1ZXN0GhYubW9zYWljLnNlc3Npb24udjEuQWNrElQKCVN1YnNjcmliZRIjLm1vc2FpYy5zZXNzaW9uLnYxLlN1YnNjcmliZVJlcXVlc3QaIC5tb3NhaWMuc2Vzc2lvbi52MS5TZXJ2ZXJNZXNzYWdlMAFCQ1pBZ2l0aHViLmNvbS9tb3NhaWMtbWVkaWEvY29udHJhY3RzL2dlbi9tb3NhaWMvc2Vzc2lvbi92MTtzZXNzaW9udjFiBnByb3RvMw", [file_mosaic_sdui_v1_sdui]);
+  fileDesc("Ch9tb3NhaWMvc2Vzc2lvbi92MS9zZXNzaW9uLnByb3RvEhFtb3NhaWMuc2Vzc2lvbi52MSIFCgNBY2sirQEKDUF0dGFjaFJlcXVlc3QSDwoHc2Vzc2lvbhgBIAEoCRIOCgZzY3JlZW4YAiABKAkSDgoGcGFyYW1zGAMgASgMEjEKB3Byb2ZpbGUYBCABKAsyIC5tb3NhaWMuc2Vzc2lvbi52MS5DbGllbnRQcm9maWxlEjgKCnZvY2FidWxhcnkYBSABKAsyJC5tb3NhaWMuc2Vzc2lvbi52MS5Wb2NhYnVsYXJ5UHJvZmlsZSJJChFWb2NhYnVsYXJ5UHJvZmlsZRIPCgd2ZXJzaW9uGAEgASgJEhIKCnByaW1pdGl2ZXMYAiADKAkSDwoHYWN0aW9ucxgDIAMoCSJwCg1DbGllbnRQcm9maWxlEhIKCmNvbnRhaW5lcnMYASADKAkSFAoMdmlkZW9fY29kZWNzGAIgAygJEhQKDGF1ZGlvX2NvZGVjcxgDIAMoCRILCgNoZHIYBCABKAgSEgoKbWF4X2hlaWdodBgFIAEoBSJCCg9OYXZpZ2F0ZVJlcXVlc3QSDwoHc2Vzc2lvbhgBIAEoCRIOCgZzY3JlZW4YAiABKAkSDgoGcGFyYW1zGAMgASgMIj8KDUludm9rZVJlcXVlc3QSDwoHc2Vzc2lvbhgBIAEoCRIOCgZhY3Rpb24YAiABKAkSDQoFaW5wdXQYAyABKAwiLgoMSW5wdXRSZXF1ZXN0Eg8KB3Nlc3Npb24YASABKAkSDQoFdmFsdWUYAiABKAkiOgoQU3Vic2NyaWJlUmVxdWVzdBIPCgdzZXNzaW9uGAEgASgJEhUKDXJlc3VtZV9jdXJzb3IYAiABKAQi3gEKDVNlcnZlck1lc3NhZ2USCwoDc2VxGAEgASgEEjEKBnJlZ2lvbhgCIAEoCzIfLm1vc2FpYy5zZXNzaW9uLnYxLlJlZ2lvblVwZGF0ZUgAEi8KBXNoZWxsGAMgASgLMh4ubW9zYWljLnNlc3Npb24udjEuU2hlbGxVcGRhdGVIABIpCgV0b2FzdBgEIAEoCzIYLm1vc2FpYy5zZXNzaW9uLnYxLlRvYXN0SAASKQoFZXZlbnQYBSABKAsyGC5tb3NhaWMuc2Vzc2lvbi52MS5FdmVudEgAQgYKBGJvZHkiugEKDFJlZ2lvblVwZGF0ZRIOCgZyZWdpb24YASABKAkSLgoCb3AYAiABKA4yIi5tb3NhaWMuc2Vzc2lvbi52MS5SZWdpb25VcGRhdGUuT3ASJwoHdWlfbm9kZRgDIAEoCzIWLm1vc2FpYy5zZHVpLnYxLlVJTm9kZSJBCgJPcBILCgdSRVBMQUNFEAASCgoGQVBQRU5EEAESCwoHUFJFUEVORBACEgoKBlJFTU9WRRADEgkKBVBBVENIEAQiNgoLU2hlbGxVcGRhdGUSJwoHdWlfbm9kZRgBIAEoCzIWLm1vc2FpYy5zZHVpLnYxLlVJTm9kZSImCgVUb2FzdBIPCgdtZXNzYWdlGAEgASgJEgwKBHRvbmUYAiABKAkiJgoFRXZlbnQSDAoEdHlwZRgBIAEoCRIPCgdwYXlsb2FkGAIgASgMMv4CCg5TZXNzaW9uU2VydmljZRJCCgZBdHRhY2gSIC5tb3NhaWMuc2Vzc2lvbi52MS5BdHRhY2hSZXF1ZXN0GhYubW9zYWljLnNlc3Npb24udjEuQWNrEkYKCE5hdmlnYXRlEiIubW9zYWljLnNlc3Npb24udjEuTmF2aWdhdGVSZXF1ZXN0GhYubW9zYWljLnNlc3Npb24udjEuQWNrEkIKBkludm9rZRIgLm1vc2FpYy5zZXNzaW9uLnYxLkludm9rZVJlcXVlc3QaFi5tb3NhaWMuc2Vzc2lvbi52MS5BY2sSRgoLU3VibWl0SW5wdXQSHy5tb3NhaWMuc2Vzc2lvbi52MS5JbnB1dFJlcXVlc3QaFi5tb3NhaWMuc2Vzc2lvbi52MS5BY2sSVAoJU3Vic2NyaWJlEiMubW9zYWljLnNlc3Npb24udjEuU3Vic2NyaWJlUmVxdWVzdBogLm1vc2FpYy5zZXNzaW9uLnYxLlNlcnZlck1lc3NhZ2UwAUJDWkFnaXRodWIuY29tL21vc2FpYy1tZWRpYS9jb250cmFjdHMvZ2VuL21vc2FpYy9zZXNzaW9uL3YxO3Nlc3Npb252MWIGcHJvdG8z", [file_mosaic_sdui_v1_sdui]);
 
 /**
  * Ack is the empty reply to an intent. An intent either succeeds (Ack) or fails
@@ -93,6 +93,17 @@ export type AttachRequest = Message<"mosaic.session.v1.AttachRequest"> & {
    * @generated from field: mosaic.session.v1.ClientProfile profile = 4;
    */
   profile?: ClientProfile | undefined;
+
+  /**
+   * What this client can *render* — the other half of the same question
+   * `profile` answers about decoding. Optional, and an absent one is not an
+   * error: a client built against an older contract is assumed to implement the
+   * whole vocabulary, which is exactly what every client was assumed to do
+   * before this field existed.
+   *
+   * @generated from field: mosaic.session.v1.VocabularyProfile vocabulary = 5;
+   */
+  vocabulary?: VocabularyProfile | undefined;
 };
 
 /**
@@ -101,6 +112,65 @@ export type AttachRequest = Message<"mosaic.session.v1.AttachRequest"> & {
  */
 export const AttachRequestSchema: GenMessage<AttachRequest> = /*@__PURE__*/
   messageDesc(file_mosaic_session_v1_session, 1);
+
+/**
+ * VocabularyProfile is the SDUI vocabulary a client implements, declared once
+ * per connection.
+ *
+ * It exists because the server was emitting into the dark. The vocabulary is
+ * versioned and grows, clients are released on their own schedules, and until
+ * this field existed nothing carried the answer to "can the thing I am about to
+ * send actually be drawn?" — so an unsupported node became a placeholder on the
+ * client and nothing anywhere recorded it. That is the same failure as a prop
+ * nobody reads: visible only if someone happens to be looking at that screen.
+ *
+ * The client is the only thing that knows, and it knows mechanically: the
+ * primitives are the types it registers and the actions are the kinds its
+ * dispatcher interprets. Both are published as data in
+ * conformance/vocabulary.json, so a client can state its answer against the
+ * contract rather than against a list somebody maintains.
+ *
+ * Components are deliberately absent. They are definitions the server delivers
+ * (ADR 0040), so a client renders whatever it is sent; what it can fail to draw
+ * is a *primitive* inside a definition's template, which is what
+ * ComponentDefinition.fallback answers.
+ *
+ * @generated from message mosaic.session.v1.VocabularyProfile
+ */
+export type VocabularyProfile = Message<"mosaic.session.v1.VocabularyProfile"> & {
+  /**
+   * The vocabulary version this client implements, e.g. "1.0.0". Empty when the
+   * client does not know its own version, which is treated as an undeclared
+   * vocabulary rather than as version zero.
+   *
+   * @generated from field: string version = 1;
+   */
+  version: string;
+
+  /**
+   * Native node types it renders. A type the server would emit that is not here
+   * is not sent.
+   *
+   * @generated from field: repeated string primitives = 2;
+   */
+  primitives: string[];
+
+  /**
+   * Action kinds its dispatcher interprets. An action of any other kind is
+   * stripped before the node is sent, because a control wired to a kind the
+   * client ignores is a control that does nothing when pressed.
+   *
+   * @generated from field: repeated string actions = 3;
+   */
+  actions: string[];
+};
+
+/**
+ * Describes the message mosaic.session.v1.VocabularyProfile.
+ * Use `create(VocabularyProfileSchema)` to create a new message.
+ */
+export const VocabularyProfileSchema: GenMessage<VocabularyProfile> = /*@__PURE__*/
+  messageDesc(file_mosaic_session_v1_session, 2);
 
 /**
  * ClientProfile is what a client can decode, declared once per connection.
@@ -164,7 +234,7 @@ export type ClientProfile = Message<"mosaic.session.v1.ClientProfile"> & {
  * Use `create(ClientProfileSchema)` to create a new message.
  */
 export const ClientProfileSchema: GenMessage<ClientProfile> = /*@__PURE__*/
-  messageDesc(file_mosaic_session_v1_session, 2);
+  messageDesc(file_mosaic_session_v1_session, 3);
 
 /**
  * NavigateRequest opens a screen.
@@ -195,7 +265,7 @@ export type NavigateRequest = Message<"mosaic.session.v1.NavigateRequest"> & {
  * Use `create(NavigateRequestSchema)` to create a new message.
  */
 export const NavigateRequestSchema: GenMessage<NavigateRequest> = /*@__PURE__*/
-  messageDesc(file_mosaic_session_v1_session, 3);
+  messageDesc(file_mosaic_session_v1_session, 4);
 
 /**
  * InvokeRequest runs a named action. input is the action's argument envelope in
@@ -230,7 +300,7 @@ export type InvokeRequest = Message<"mosaic.session.v1.InvokeRequest"> & {
  * Use `create(InvokeRequestSchema)` to create a new message.
  */
 export const InvokeRequestSchema: GenMessage<InvokeRequest> = /*@__PURE__*/
-  messageDesc(file_mosaic_session_v1_session, 4);
+  messageDesc(file_mosaic_session_v1_session, 5);
 
 /**
  * InputRequest carries one search-as-you-type value.
@@ -254,7 +324,7 @@ export type InputRequest = Message<"mosaic.session.v1.InputRequest"> & {
  * Use `create(InputRequestSchema)` to create a new message.
  */
 export const InputRequestSchema: GenMessage<InputRequest> = /*@__PURE__*/
-  messageDesc(file_mosaic_session_v1_session, 5);
+  messageDesc(file_mosaic_session_v1_session, 6);
 
 /**
  * SubscribeRequest opens the push lane. resume_cursor is the last
@@ -279,7 +349,7 @@ export type SubscribeRequest = Message<"mosaic.session.v1.SubscribeRequest"> & {
  * Use `create(SubscribeRequestSchema)` to create a new message.
  */
 export const SubscribeRequestSchema: GenMessage<SubscribeRequest> = /*@__PURE__*/
-  messageDesc(file_mosaic_session_v1_session, 6);
+  messageDesc(file_mosaic_session_v1_session, 7);
 
 /**
  * ServerMessage is one push. seq is monotonic per session and is the resume
@@ -342,7 +412,7 @@ export type ServerMessage = Message<"mosaic.session.v1.ServerMessage"> & {
  * Use `create(ServerMessageSchema)` to create a new message.
  */
 export const ServerMessageSchema: GenMessage<ServerMessage> = /*@__PURE__*/
-  messageDesc(file_mosaic_session_v1_session, 7);
+  messageDesc(file_mosaic_session_v1_session, 8);
 
 /**
  * RegionUpdate applies one operation to a named region (ADR 0029 / 0031). The
@@ -377,7 +447,7 @@ export type RegionUpdate = Message<"mosaic.session.v1.RegionUpdate"> & {
  * Use `create(RegionUpdateSchema)` to create a new message.
  */
 export const RegionUpdateSchema: GenMessage<RegionUpdate> = /*@__PURE__*/
-  messageDesc(file_mosaic_session_v1_session, 8);
+  messageDesc(file_mosaic_session_v1_session, 9);
 
 /**
  * Op is the region operation. REPLACE is the whole-region default; the
@@ -416,7 +486,7 @@ export enum RegionUpdate_Op {
  * Describes the enum mosaic.session.v1.RegionUpdate.Op.
  */
 export const RegionUpdate_OpSchema: GenEnum<RegionUpdate_Op> = /*@__PURE__*/
-  enumDesc(file_mosaic_session_v1_session, 8, 0);
+  enumDesc(file_mosaic_session_v1_session, 9, 0);
 
 /**
  * ShellUpdate carries the app shell UINode tree (ADR 0031). It is sent once on
@@ -438,7 +508,7 @@ export type ShellUpdate = Message<"mosaic.session.v1.ShellUpdate"> & {
  * Use `create(ShellUpdateSchema)` to create a new message.
  */
 export const ShellUpdateSchema: GenMessage<ShellUpdate> = /*@__PURE__*/
-  messageDesc(file_mosaic_session_v1_session, 9);
+  messageDesc(file_mosaic_session_v1_session, 10);
 
 /**
  * Toast is a transient notice — the confirmation an Invoke pushes.
@@ -464,7 +534,7 @@ export type Toast = Message<"mosaic.session.v1.Toast"> & {
  * Use `create(ToastSchema)` to create a new message.
  */
 export const ToastSchema: GenMessage<Toast> = /*@__PURE__*/
-  messageDesc(file_mosaic_session_v1_session, 10);
+  messageDesc(file_mosaic_session_v1_session, 11);
 
 /**
  * Event is an unsolicited domain event: an import finished, a config changed, a
@@ -494,7 +564,7 @@ export type Event = Message<"mosaic.session.v1.Event"> & {
  * Use `create(EventSchema)` to create a new message.
  */
 export const EventSchema: GenMessage<Event> = /*@__PURE__*/
-  messageDesc(file_mosaic_session_v1_session, 11);
+  messageDesc(file_mosaic_session_v1_session, 12);
 
 /**
  * SessionService is the live client session. Intents are unary; push is one

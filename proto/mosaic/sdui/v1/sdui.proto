@@ -114,4 +114,17 @@ message ComponentDefinition {
   string name = 1;
   google.protobuf.Struct params = 2;
   UINode template = 3;
+  // An alternative template for a client whose declared vocabulary is missing a
+  // primitive the main one needs. The server picks between them per session and
+  // sends one; the client never sees both, and never has to choose.
+  //
+  // It exists because degradation at the *node* level cannot reach inside a
+  // template: the server emits a component by name and the client expands it, so
+  // a template reaching for a primitive the client lacks produces a hole the
+  // server has no way to see. Declaring the simpler arrangement here is how a
+  // component says what it becomes on a client that cannot draw it in full.
+  //
+  // Optional. A definition with no fallback is served as-is to everyone, which
+  // is the behaviour every definition had before this field existed.
+  UINode fallback = 4;
 }

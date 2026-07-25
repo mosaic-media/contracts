@@ -147,6 +147,7 @@ func TestDefinitionTemplatesReferenceKnownTypes(t *testing.T) {
 		var def struct {
 			Name     string `json:"name"`
 			Template any    `json:"template"`
+			Fallback any    `json:"fallback"`
 		}
 		if err := json.Unmarshal(data, &def); err != nil {
 			t.Fatalf("parse %s: %v", f, err)
@@ -154,6 +155,13 @@ func TestDefinitionTemplatesReferenceKnownTypes(t *testing.T) {
 		for _, typ := range referencedTypes(def.Template) {
 			if !known[typ] {
 				t.Errorf("%s: template references unknown type %q", filepath.Base(f), typ)
+			}
+		}
+		// A fallback is a template too — the client cannot tell which one it was
+		// served, so it is held to the same rule.
+		for _, typ := range referencedTypes(def.Fallback) {
+			if !known[typ] {
+				t.Errorf("%s: fallback references unknown type %q", filepath.Base(f), typ)
 			}
 		}
 	}

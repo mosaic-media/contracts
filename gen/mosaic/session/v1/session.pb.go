@@ -103,7 +103,7 @@ func (x RegionUpdate_Op) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use RegionUpdate_Op.Descriptor instead.
 func (RegionUpdate_Op) EnumDescriptor() ([]byte, []int) {
-	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{8, 0}
+	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{9, 0}
 }
 
 // Ack is the empty reply to an intent. An intent either succeeds (Ack) or fails
@@ -154,7 +154,13 @@ type AttachRequest struct {
 	// What this client can actually play (ADR 0047). Optional: a client that
 	// declares nothing gets whatever the server assumes, which is what every
 	// client got before this field existed.
-	Profile       *ClientProfile `protobuf:"bytes,4,opt,name=profile,proto3" json:"profile,omitempty"`
+	Profile *ClientProfile `protobuf:"bytes,4,opt,name=profile,proto3" json:"profile,omitempty"`
+	// What this client can *render* — the other half of the same question
+	// `profile` answers about decoding. Optional, and an absent one is not an
+	// error: a client built against an older contract is assumed to implement the
+	// whole vocabulary, which is exactly what every client was assumed to do
+	// before this field existed.
+	Vocabulary    *VocabularyProfile `protobuf:"bytes,5,opt,name=vocabulary,proto3" json:"vocabulary,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -217,6 +223,101 @@ func (x *AttachRequest) GetProfile() *ClientProfile {
 	return nil
 }
 
+func (x *AttachRequest) GetVocabulary() *VocabularyProfile {
+	if x != nil {
+		return x.Vocabulary
+	}
+	return nil
+}
+
+// VocabularyProfile is the SDUI vocabulary a client implements, declared once
+// per connection.
+//
+// It exists because the server was emitting into the dark. The vocabulary is
+// versioned and grows, clients are released on their own schedules, and until
+// this field existed nothing carried the answer to "can the thing I am about to
+// send actually be drawn?" — so an unsupported node became a placeholder on the
+// client and nothing anywhere recorded it. That is the same failure as a prop
+// nobody reads: visible only if someone happens to be looking at that screen.
+//
+// The client is the only thing that knows, and it knows mechanically: the
+// primitives are the types it registers and the actions are the kinds its
+// dispatcher interprets. Both are published as data in
+// conformance/vocabulary.json, so a client can state its answer against the
+// contract rather than against a list somebody maintains.
+//
+// Components are deliberately absent. They are definitions the server delivers
+// (ADR 0040), so a client renders whatever it is sent; what it can fail to draw
+// is a *primitive* inside a definition's template, which is what
+// ComponentDefinition.fallback answers.
+type VocabularyProfile struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The vocabulary version this client implements, e.g. "1.0.0". Empty when the
+	// client does not know its own version, which is treated as an undeclared
+	// vocabulary rather than as version zero.
+	Version string `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"`
+	// Native node types it renders. A type the server would emit that is not here
+	// is not sent.
+	Primitives []string `protobuf:"bytes,2,rep,name=primitives,proto3" json:"primitives,omitempty"`
+	// Action kinds its dispatcher interprets. An action of any other kind is
+	// stripped before the node is sent, because a control wired to a kind the
+	// client ignores is a control that does nothing when pressed.
+	Actions       []string `protobuf:"bytes,3,rep,name=actions,proto3" json:"actions,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *VocabularyProfile) Reset() {
+	*x = VocabularyProfile{}
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VocabularyProfile) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VocabularyProfile) ProtoMessage() {}
+
+func (x *VocabularyProfile) ProtoReflect() protoreflect.Message {
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VocabularyProfile.ProtoReflect.Descriptor instead.
+func (*VocabularyProfile) Descriptor() ([]byte, []int) {
+	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *VocabularyProfile) GetVersion() string {
+	if x != nil {
+		return x.Version
+	}
+	return ""
+}
+
+func (x *VocabularyProfile) GetPrimitives() []string {
+	if x != nil {
+		return x.Primitives
+	}
+	return nil
+}
+
+func (x *VocabularyProfile) GetActions() []string {
+	if x != nil {
+		return x.Actions
+	}
+	return nil
+}
+
 // ClientProfile is what a client can decode, declared once per connection.
 //
 // It exists because the server was guessing. Stream selection (ADR 0048) ranks a
@@ -253,7 +354,7 @@ type ClientProfile struct {
 
 func (x *ClientProfile) Reset() {
 	*x = ClientProfile{}
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[2]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -265,7 +366,7 @@ func (x *ClientProfile) String() string {
 func (*ClientProfile) ProtoMessage() {}
 
 func (x *ClientProfile) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[2]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -278,7 +379,7 @@ func (x *ClientProfile) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ClientProfile.ProtoReflect.Descriptor instead.
 func (*ClientProfile) Descriptor() ([]byte, []int) {
-	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{2}
+	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *ClientProfile) GetContainers() []string {
@@ -328,7 +429,7 @@ type NavigateRequest struct {
 
 func (x *NavigateRequest) Reset() {
 	*x = NavigateRequest{}
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[3]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -340,7 +441,7 @@ func (x *NavigateRequest) String() string {
 func (*NavigateRequest) ProtoMessage() {}
 
 func (x *NavigateRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[3]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -353,7 +454,7 @@ func (x *NavigateRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NavigateRequest.ProtoReflect.Descriptor instead.
 func (*NavigateRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{3}
+	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *NavigateRequest) GetSession() string {
@@ -391,7 +492,7 @@ type InvokeRequest struct {
 
 func (x *InvokeRequest) Reset() {
 	*x = InvokeRequest{}
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[4]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -403,7 +504,7 @@ func (x *InvokeRequest) String() string {
 func (*InvokeRequest) ProtoMessage() {}
 
 func (x *InvokeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[4]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -416,7 +517,7 @@ func (x *InvokeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InvokeRequest.ProtoReflect.Descriptor instead.
 func (*InvokeRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{4}
+	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *InvokeRequest) GetSession() string {
@@ -451,7 +552,7 @@ type InputRequest struct {
 
 func (x *InputRequest) Reset() {
 	*x = InputRequest{}
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[5]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -463,7 +564,7 @@ func (x *InputRequest) String() string {
 func (*InputRequest) ProtoMessage() {}
 
 func (x *InputRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[5]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -476,7 +577,7 @@ func (x *InputRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InputRequest.ProtoReflect.Descriptor instead.
 func (*InputRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{5}
+	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *InputRequest) GetSession() string {
@@ -505,7 +606,7 @@ type SubscribeRequest struct {
 
 func (x *SubscribeRequest) Reset() {
 	*x = SubscribeRequest{}
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[6]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -517,7 +618,7 @@ func (x *SubscribeRequest) String() string {
 func (*SubscribeRequest) ProtoMessage() {}
 
 func (x *SubscribeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[6]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -530,7 +631,7 @@ func (x *SubscribeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SubscribeRequest.ProtoReflect.Descriptor instead.
 func (*SubscribeRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{6}
+	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *SubscribeRequest) GetSession() string {
@@ -571,7 +672,7 @@ type ServerMessage struct {
 
 func (x *ServerMessage) Reset() {
 	*x = ServerMessage{}
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[7]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -583,7 +684,7 @@ func (x *ServerMessage) String() string {
 func (*ServerMessage) ProtoMessage() {}
 
 func (x *ServerMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[7]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -596,7 +697,7 @@ func (x *ServerMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ServerMessage.ProtoReflect.Descriptor instead.
 func (*ServerMessage) Descriptor() ([]byte, []int) {
-	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{7}
+	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *ServerMessage) GetSeq() uint64 {
@@ -691,7 +792,7 @@ type RegionUpdate struct {
 
 func (x *RegionUpdate) Reset() {
 	*x = RegionUpdate{}
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[8]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -703,7 +804,7 @@ func (x *RegionUpdate) String() string {
 func (*RegionUpdate) ProtoMessage() {}
 
 func (x *RegionUpdate) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[8]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -716,7 +817,7 @@ func (x *RegionUpdate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegionUpdate.ProtoReflect.Descriptor instead.
 func (*RegionUpdate) Descriptor() ([]byte, []int) {
-	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{8}
+	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *RegionUpdate) GetRegion() string {
@@ -751,7 +852,7 @@ type ShellUpdate struct {
 
 func (x *ShellUpdate) Reset() {
 	*x = ShellUpdate{}
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[9]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -763,7 +864,7 @@ func (x *ShellUpdate) String() string {
 func (*ShellUpdate) ProtoMessage() {}
 
 func (x *ShellUpdate) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[9]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -776,7 +877,7 @@ func (x *ShellUpdate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ShellUpdate.ProtoReflect.Descriptor instead.
 func (*ShellUpdate) Descriptor() ([]byte, []int) {
-	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{9}
+	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *ShellUpdate) GetUiNode() *v1.UINode {
@@ -797,7 +898,7 @@ type Toast struct {
 
 func (x *Toast) Reset() {
 	*x = Toast{}
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[10]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -809,7 +910,7 @@ func (x *Toast) String() string {
 func (*Toast) ProtoMessage() {}
 
 func (x *Toast) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[10]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -822,7 +923,7 @@ func (x *Toast) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Toast.ProtoReflect.Descriptor instead.
 func (*Toast) Descriptor() ([]byte, []int) {
-	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{10}
+	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *Toast) GetMessage() string {
@@ -852,7 +953,7 @@ type Event struct {
 
 func (x *Event) Reset() {
 	*x = Event{}
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[11]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -864,7 +965,7 @@ func (x *Event) String() string {
 func (*Event) ProtoMessage() {}
 
 func (x *Event) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[11]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -877,7 +978,7 @@ func (x *Event) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Event.ProtoReflect.Descriptor instead.
 func (*Event) Descriptor() ([]byte, []int) {
-	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{11}
+	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *Event) GetType() string {
@@ -899,12 +1000,21 @@ var File_mosaic_session_v1_session_proto protoreflect.FileDescriptor
 const file_mosaic_session_v1_session_proto_rawDesc = "" +
 	"\n" +
 	"\x1fmosaic/session/v1/session.proto\x12\x11mosaic.session.v1\x1a\x19mosaic/sdui/v1/sdui.proto\"\x05\n" +
-	"\x03Ack\"\x95\x01\n" +
+	"\x03Ack\"\xdb\x01\n" +
 	"\rAttachRequest\x12\x18\n" +
 	"\asession\x18\x01 \x01(\tR\asession\x12\x16\n" +
 	"\x06screen\x18\x02 \x01(\tR\x06screen\x12\x16\n" +
 	"\x06params\x18\x03 \x01(\fR\x06params\x12:\n" +
-	"\aprofile\x18\x04 \x01(\v2 .mosaic.session.v1.ClientProfileR\aprofile\"\xa6\x01\n" +
+	"\aprofile\x18\x04 \x01(\v2 .mosaic.session.v1.ClientProfileR\aprofile\x12D\n" +
+	"\n" +
+	"vocabulary\x18\x05 \x01(\v2$.mosaic.session.v1.VocabularyProfileR\n" +
+	"vocabulary\"g\n" +
+	"\x11VocabularyProfile\x12\x18\n" +
+	"\aversion\x18\x01 \x01(\tR\aversion\x12\x1e\n" +
+	"\n" +
+	"primitives\x18\x02 \x03(\tR\n" +
+	"primitives\x12\x18\n" +
+	"\aactions\x18\x03 \x03(\tR\aactions\"\xa6\x01\n" +
 	"\rClientProfile\x12\x1e\n" +
 	"\n" +
 	"containers\x18\x01 \x03(\tR\n" +
@@ -975,47 +1085,49 @@ func file_mosaic_session_v1_session_proto_rawDescGZIP() []byte {
 }
 
 var file_mosaic_session_v1_session_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_mosaic_session_v1_session_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_mosaic_session_v1_session_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_mosaic_session_v1_session_proto_goTypes = []any{
-	(RegionUpdate_Op)(0),     // 0: mosaic.session.v1.RegionUpdate.Op
-	(*Ack)(nil),              // 1: mosaic.session.v1.Ack
-	(*AttachRequest)(nil),    // 2: mosaic.session.v1.AttachRequest
-	(*ClientProfile)(nil),    // 3: mosaic.session.v1.ClientProfile
-	(*NavigateRequest)(nil),  // 4: mosaic.session.v1.NavigateRequest
-	(*InvokeRequest)(nil),    // 5: mosaic.session.v1.InvokeRequest
-	(*InputRequest)(nil),     // 6: mosaic.session.v1.InputRequest
-	(*SubscribeRequest)(nil), // 7: mosaic.session.v1.SubscribeRequest
-	(*ServerMessage)(nil),    // 8: mosaic.session.v1.ServerMessage
-	(*RegionUpdate)(nil),     // 9: mosaic.session.v1.RegionUpdate
-	(*ShellUpdate)(nil),      // 10: mosaic.session.v1.ShellUpdate
-	(*Toast)(nil),            // 11: mosaic.session.v1.Toast
-	(*Event)(nil),            // 12: mosaic.session.v1.Event
-	(*v1.UINode)(nil),        // 13: mosaic.sdui.v1.UINode
+	(RegionUpdate_Op)(0),      // 0: mosaic.session.v1.RegionUpdate.Op
+	(*Ack)(nil),               // 1: mosaic.session.v1.Ack
+	(*AttachRequest)(nil),     // 2: mosaic.session.v1.AttachRequest
+	(*VocabularyProfile)(nil), // 3: mosaic.session.v1.VocabularyProfile
+	(*ClientProfile)(nil),     // 4: mosaic.session.v1.ClientProfile
+	(*NavigateRequest)(nil),   // 5: mosaic.session.v1.NavigateRequest
+	(*InvokeRequest)(nil),     // 6: mosaic.session.v1.InvokeRequest
+	(*InputRequest)(nil),      // 7: mosaic.session.v1.InputRequest
+	(*SubscribeRequest)(nil),  // 8: mosaic.session.v1.SubscribeRequest
+	(*ServerMessage)(nil),     // 9: mosaic.session.v1.ServerMessage
+	(*RegionUpdate)(nil),      // 10: mosaic.session.v1.RegionUpdate
+	(*ShellUpdate)(nil),       // 11: mosaic.session.v1.ShellUpdate
+	(*Toast)(nil),             // 12: mosaic.session.v1.Toast
+	(*Event)(nil),             // 13: mosaic.session.v1.Event
+	(*v1.UINode)(nil),         // 14: mosaic.sdui.v1.UINode
 }
 var file_mosaic_session_v1_session_proto_depIdxs = []int32{
-	3,  // 0: mosaic.session.v1.AttachRequest.profile:type_name -> mosaic.session.v1.ClientProfile
-	9,  // 1: mosaic.session.v1.ServerMessage.region:type_name -> mosaic.session.v1.RegionUpdate
-	10, // 2: mosaic.session.v1.ServerMessage.shell:type_name -> mosaic.session.v1.ShellUpdate
-	11, // 3: mosaic.session.v1.ServerMessage.toast:type_name -> mosaic.session.v1.Toast
-	12, // 4: mosaic.session.v1.ServerMessage.event:type_name -> mosaic.session.v1.Event
-	0,  // 5: mosaic.session.v1.RegionUpdate.op:type_name -> mosaic.session.v1.RegionUpdate.Op
-	13, // 6: mosaic.session.v1.RegionUpdate.ui_node:type_name -> mosaic.sdui.v1.UINode
-	13, // 7: mosaic.session.v1.ShellUpdate.ui_node:type_name -> mosaic.sdui.v1.UINode
-	2,  // 8: mosaic.session.v1.SessionService.Attach:input_type -> mosaic.session.v1.AttachRequest
-	4,  // 9: mosaic.session.v1.SessionService.Navigate:input_type -> mosaic.session.v1.NavigateRequest
-	5,  // 10: mosaic.session.v1.SessionService.Invoke:input_type -> mosaic.session.v1.InvokeRequest
-	6,  // 11: mosaic.session.v1.SessionService.SubmitInput:input_type -> mosaic.session.v1.InputRequest
-	7,  // 12: mosaic.session.v1.SessionService.Subscribe:input_type -> mosaic.session.v1.SubscribeRequest
-	1,  // 13: mosaic.session.v1.SessionService.Attach:output_type -> mosaic.session.v1.Ack
-	1,  // 14: mosaic.session.v1.SessionService.Navigate:output_type -> mosaic.session.v1.Ack
-	1,  // 15: mosaic.session.v1.SessionService.Invoke:output_type -> mosaic.session.v1.Ack
-	1,  // 16: mosaic.session.v1.SessionService.SubmitInput:output_type -> mosaic.session.v1.Ack
-	8,  // 17: mosaic.session.v1.SessionService.Subscribe:output_type -> mosaic.session.v1.ServerMessage
-	13, // [13:18] is the sub-list for method output_type
-	8,  // [8:13] is the sub-list for method input_type
-	8,  // [8:8] is the sub-list for extension type_name
-	8,  // [8:8] is the sub-list for extension extendee
-	0,  // [0:8] is the sub-list for field type_name
+	4,  // 0: mosaic.session.v1.AttachRequest.profile:type_name -> mosaic.session.v1.ClientProfile
+	3,  // 1: mosaic.session.v1.AttachRequest.vocabulary:type_name -> mosaic.session.v1.VocabularyProfile
+	10, // 2: mosaic.session.v1.ServerMessage.region:type_name -> mosaic.session.v1.RegionUpdate
+	11, // 3: mosaic.session.v1.ServerMessage.shell:type_name -> mosaic.session.v1.ShellUpdate
+	12, // 4: mosaic.session.v1.ServerMessage.toast:type_name -> mosaic.session.v1.Toast
+	13, // 5: mosaic.session.v1.ServerMessage.event:type_name -> mosaic.session.v1.Event
+	0,  // 6: mosaic.session.v1.RegionUpdate.op:type_name -> mosaic.session.v1.RegionUpdate.Op
+	14, // 7: mosaic.session.v1.RegionUpdate.ui_node:type_name -> mosaic.sdui.v1.UINode
+	14, // 8: mosaic.session.v1.ShellUpdate.ui_node:type_name -> mosaic.sdui.v1.UINode
+	2,  // 9: mosaic.session.v1.SessionService.Attach:input_type -> mosaic.session.v1.AttachRequest
+	5,  // 10: mosaic.session.v1.SessionService.Navigate:input_type -> mosaic.session.v1.NavigateRequest
+	6,  // 11: mosaic.session.v1.SessionService.Invoke:input_type -> mosaic.session.v1.InvokeRequest
+	7,  // 12: mosaic.session.v1.SessionService.SubmitInput:input_type -> mosaic.session.v1.InputRequest
+	8,  // 13: mosaic.session.v1.SessionService.Subscribe:input_type -> mosaic.session.v1.SubscribeRequest
+	1,  // 14: mosaic.session.v1.SessionService.Attach:output_type -> mosaic.session.v1.Ack
+	1,  // 15: mosaic.session.v1.SessionService.Navigate:output_type -> mosaic.session.v1.Ack
+	1,  // 16: mosaic.session.v1.SessionService.Invoke:output_type -> mosaic.session.v1.Ack
+	1,  // 17: mosaic.session.v1.SessionService.SubmitInput:output_type -> mosaic.session.v1.Ack
+	9,  // 18: mosaic.session.v1.SessionService.Subscribe:output_type -> mosaic.session.v1.ServerMessage
+	14, // [14:19] is the sub-list for method output_type
+	9,  // [9:14] is the sub-list for method input_type
+	9,  // [9:9] is the sub-list for extension type_name
+	9,  // [9:9] is the sub-list for extension extendee
+	0,  // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_mosaic_session_v1_session_proto_init() }
@@ -1023,7 +1135,7 @@ func file_mosaic_session_v1_session_proto_init() {
 	if File_mosaic_session_v1_session_proto != nil {
 		return
 	}
-	file_mosaic_session_v1_session_proto_msgTypes[7].OneofWrappers = []any{
+	file_mosaic_session_v1_session_proto_msgTypes[8].OneofWrappers = []any{
 		(*ServerMessage_Region)(nil),
 		(*ServerMessage_Shell)(nil),
 		(*ServerMessage_Toast)(nil),
@@ -1035,7 +1147,7 @@ func file_mosaic_session_v1_session_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_mosaic_session_v1_session_proto_rawDesc), len(file_mosaic_session_v1_session_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   12,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
