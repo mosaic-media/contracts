@@ -9,10 +9,10 @@
       "style": {
         "direction": "row",
         "align": "start",
-        "gap": 8,
-        "px": "gutter",
-        "pt": 9,
-        "pb": 9,
+        "gap": 0,
+        "px": 0,
+        "pt": 8,
+        "pb": 0,
         "responsive": {
           "below": 720,
           "style": {
@@ -81,10 +81,10 @@
           "style": {
             "direction": "column",
             "gap": 5,
-            "width": 248,
-            "minWidth": 248,
+            "width": 252,
+            "minWidth": 252,
             "position": "sticky",
-            "top": 9,
+            "top": 0,
             "responsive": {
               "$match": {
                 "on": {
@@ -109,26 +109,12 @@
                   }
                 }
               }
-            }
+            },
+            "px": 3,
+            "py": 4
           }
         },
         "children": [
-          {
-            "type": "Text",
-            "props": {
-              "$if": {
-                "$bind": "title"
-              },
-              "text": {
-                "$bind": "title"
-              },
-              "style": {
-                "variant": "2xl",
-                "weight": "bold",
-                "tracking": "tight"
-              }
-            }
-          },
           {
             "type": "Outlet",
             "props": {
@@ -150,8 +136,8 @@
             "direction": "column",
             "gap": 6,
             "grow": true,
-            "minWidth": 320,
-            "maxWidth": 720,
+            "minWidth": 0,
+            "maxWidth": 888,
             "responsive": {
               "$match": {
                 "on": {
@@ -173,7 +159,10 @@
                   }
                 }
               }
-            }
+            },
+            "pt": 7,
+            "px": 8,
+            "pb": 9
           }
         },
         "children": [
@@ -187,9 +176,25 @@
                 "$bind": "heading"
               },
               "style": {
-                "variant": "2xl",
-                "weight": "bold",
+                "variant": "xl",
+                "weight": "medium",
                 "tracking": "tight"
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "$if": {
+                "$bind": "lead"
+              },
+              "text": {
+                "$bind": "lead"
+              },
+              "style": {
+                "variant": "sm",
+                "color": "text-muted",
+                "maxWidth": 520
               }
             }
           },

@@ -338,6 +338,11 @@ export function SettingsFrame(title: string, ...els: Elish[]): Element {
   return compose("SettingsFrame", { title }, els);
 }
 
+/** SettingsRow is one line of a settings panel — a label, an optional explanation of what it does, and a control or a value on the right. It is the workhorse of every panel in the design, which is why it is a component rather than a Stack assembled per screen: a panel that builds its own rows is a panel that drifts from the others. */
+export function SettingsRow(label: string, ...els: Elish[]): Element {
+  return compose("SettingsRow", { label }, els);
+}
+
 /** SettingsNavGroup is one labelled run of settings nav rows. */
 export function SettingsNavGroup(label: string, ...els: Elish[]): Element {
   return compose("SettingsNavGroup", { label }, els);
@@ -707,6 +712,11 @@ export function InputType(v: string): El {
   return Prop("inputType", v);
 }
 
+/** Lead is the sentence under a panel's heading saying what the panel is for. Distinct from Summary, which explains one row. */
+export function Lead(v: string): El {
+  return Prop("lead", v);
+}
+
 /** Heading titles a frame's panel. */
 export function Heading(v: string): El {
   return Prop("heading", v);
@@ -715,6 +725,11 @@ export function Heading(v: string): El {
 /** Selected says a section was asked for rather than defaulted to — what lets one payload drill down on a phone and show two panes on a desktop. */
 export function Selected(v: boolean): El {
   return Prop("selected", v);
+}
+
+/** Indent nests a nav row under the one above it — an installed extension beneath the store it came from. One list that reads as a hierarchy rather than two lists. */
+export function Indent(v: boolean): El {
+  return Prop("indent", v);
 }
 
 /** Active marks the open nav row. */
@@ -1105,6 +1120,11 @@ export function BindInputType(path: string): El {
   return Prop("inputType", bind(path));
 }
 
+/** BindLead sets "lead" from the named path instead of from a value. */
+export function BindLead(path: string): El {
+  return Prop("lead", bind(path));
+}
+
 /** BindHeading sets "heading" from the named path instead of from a value. */
 export function BindHeading(path: string): El {
   return Prop("heading", bind(path));
@@ -1113,6 +1133,11 @@ export function BindHeading(path: string): El {
 /** BindSelected sets "selected" from the named path instead of from a value. */
 export function BindSelected(path: string): El {
   return Prop("selected", bind(path));
+}
+
+/** BindIndent sets "indent" from the named path instead of from a value. */
+export function BindIndent(path: string): El {
+  return Prop("indent", bind(path));
 }
 
 /** BindActive sets "active" from the named path instead of from a value. */

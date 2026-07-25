@@ -20,7 +20,7 @@
           },
           "style": {
             "variant": "xs",
-            "weight": "bold",
+            "weight": "regular",
             "color": "text-faint",
             "transform": "uppercase",
             "tracking": "wide"

@@ -249,6 +249,11 @@ func SettingsFrame(title string, els ...El) *Element {
 	return compose("SettingsFrame", map[string]any{"title": title}, els)
 }
 
+// SettingsRow is one line of a settings panel — a label, an optional explanation of what it does, and a control or a value on the right. It is the workhorse of every panel in the design, which is why it is a component rather than a Stack assembled per screen: a panel that builds its own rows is a panel that drifts from the others.
+func SettingsRow(label string, els ...El) *Element {
+	return compose("SettingsRow", map[string]any{"label": label}, els)
+}
+
 // SettingsNavGroup is one labelled run of settings nav rows.
 func SettingsNavGroup(label string, els ...El) *Element {
 	return compose("SettingsNavGroup", map[string]any{"label": label}, els)
@@ -482,11 +487,17 @@ func Help(v string) El { return Prop("help", v) }
 // InputType selects the keyboard/validation a field asks for.
 func InputType(v string) El { return Prop("inputType", v) }
 
+// Lead is the sentence under a panel's heading saying what the panel is for. Distinct from Summary, which explains one row.
+func Lead(v string) El { return Prop("lead", v) }
+
 // Heading titles a frame's panel.
 func Heading(v string) El { return Prop("heading", v) }
 
 // Selected says a section was asked for rather than defaulted to — what lets one payload drill down on a phone and show two panes on a desktop.
 func Selected(v bool) El { return Prop("selected", v) }
+
+// Indent nests a nav row under the one above it — an installed extension beneath the store it came from. One list that reads as a hierarchy rather than two lists.
+func Indent(v bool) El { return Prop("indent", v) }
 
 // Active marks the open nav row.
 func Active(v bool) El { return Prop("active", v) }
@@ -726,11 +737,17 @@ func BindHelp(path string) El { return Prop("help", sdui.Bind(path)) }
 // BindInputType sets "inputType" from the named path instead of from a value.
 func BindInputType(path string) El { return Prop("inputType", sdui.Bind(path)) }
 
+// BindLead sets "lead" from the named path instead of from a value.
+func BindLead(path string) El { return Prop("lead", sdui.Bind(path)) }
+
 // BindHeading sets "heading" from the named path instead of from a value.
 func BindHeading(path string) El { return Prop("heading", sdui.Bind(path)) }
 
 // BindSelected sets "selected" from the named path instead of from a value.
 func BindSelected(path string) El { return Prop("selected", sdui.Bind(path)) }
+
+// BindIndent sets "indent" from the named path instead of from a value.
+func BindIndent(path string) El { return Prop("indent", sdui.Bind(path)) }
 
 // BindActive sets "active" from the named path instead of from a value.
 func BindActive(path string) El { return Prop("active", sdui.Bind(path)) }

@@ -295,6 +295,7 @@
     "RelatedRail",
     "Select",
     "SettingsFrame",
+    "SettingsRow",
     "SettingsNavGroup",
     "SettingsNavItem",
     "SourcePicker",

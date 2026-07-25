@@ -19,7 +19,7 @@
         "gap": 3,
         "px": 4,
         "py": 3,
-        "radius": "md",
+        "radius": "pill",
         "bg": {
           "$match": {
             "on": {
@@ -48,6 +48,17 @@
             "px": 3,
             "bg": null,
             "color": "text"
+          }
+        },
+        "pl": {
+          "$match": {
+            "on": {
+              "$bind": "indent"
+            },
+            "cases": {
+              "true": 6
+            },
+            "default": 4
           }
         }
       }
@@ -90,23 +101,51 @@
         "type": "Box",
         "props": {
           "style": {
-            "hidden": true,
-            "color": "text-faint",
-            "responsive": {
-              "below": 720,
-              "style": {
-                "hidden": false
-              }
-            }
+            "direction": "row",
+            "align": "center",
+            "gap": 2
           }
         },
         "children": [
           {
-            "type": "Icon",
+            "type": "Text",
             "props": {
-              "name": "chevron-right",
-              "size": "1.1em"
+              "$if": {
+                "$bind": "badge"
+              },
+              "text": {
+                "$bind": "badge"
+              },
+              "style": {
+                "variant": "xs",
+                "weight": "medium",
+                "color": "accent"
+              }
             }
+          },
+          {
+            "type": "Box",
+            "props": {
+              "style": {
+                "hidden": true,
+                "color": "text-faint",
+                "responsive": {
+                  "below": 720,
+                  "style": {
+                    "hidden": false
+                  }
+                }
+              }
+            },
+            "children": [
+              {
+                "type": "Icon",
+                "props": {
+                  "name": "chevron-right",
+                  "size": "1.1em"
+                }
+              }
+            ]
           }
         ]
       }

@@ -12,7 +12,7 @@ Three tiers, and the difference between them is what a change costs:
 | Tier | What it is | Cost of adding one |
 |---|---|---|
 | **Primitives** (25) | Native code every client implements | A client release, on every platform |
-| **Components** (36) | Definitions the Platform serves as data | Nothing — a file in `definitions/` |
+| **Components** (37) | Definitions the Platform serves as data | Nothing — a file in `definitions/` |
 | **Actions** (12) | Behaviours a client interprets | A client release |
 
 ## Type names
@@ -425,6 +425,7 @@ expands whatever it is sent.
 - **`RelatedRail`** — RelatedRail is a titled rail that says so when it is empty.
 - **`Select`** — Select is a labelled dropdown over server-supplied options.
 - **`SettingsFrame`** — SettingsFrame is the Platform-owned settings chrome (ADR 0038): a nav beside the panel the open section fills.
+- **`SettingsRow`** — SettingsRow is one line of a settings panel — a label, an optional explanation of what it does, and a control or a value on the right. It is the workhorse of every panel in the design, which is why it is a component rather than a Stack assembled per screen: a panel that builds its own rows is a panel that drifts from the others.
 - **`SettingsNavGroup`** — SettingsNavGroup is one labelled run of settings nav rows.
 - **`SettingsNavItem`** — SettingsNavItem is one settings nav row. The server marks the active one — it is the side that knows the params (ADR 0039).
 - **`SourcePicker`** — SourcePicker lists the resolved sources for a Part.

@@ -1,0 +1,98 @@
+{
+  "name": "SettingsRow",
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "direction": "row",
+        "align": "center",
+        "justify": "between",
+        "gap": 5,
+        "py": 4,
+        "borderSide": "top",
+        "borderColor": "border",
+        "responsive": {
+          "below": 720,
+          "style": {
+            "direction": "column",
+            "align": "start",
+            "gap": 3
+          }
+        },
+        "border": true
+      }
+    },
+    "children": [
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "direction": "column",
+            "gap": 1,
+            "minWidth": 0
+          }
+        },
+        "children": [
+          {
+            "type": "Text",
+            "props": {
+              "text": {
+                "$bind": "label"
+              },
+              "style": {
+                "variant": "sm",
+                "weight": "medium"
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "$if": {
+                "$bind": "summary"
+              },
+              "text": {
+                "$bind": "summary"
+              },
+              "style": {
+                "variant": "xs",
+                "color": "text-muted"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "direction": "row",
+            "align": "center",
+            "gap": 3
+          }
+        },
+        "children": [
+          {
+            "type": "Text",
+            "props": {
+              "$if": {
+                "$bind": "value"
+              },
+              "text": {
+                "$bind": "value"
+              },
+              "style": {
+                "variant": "sm",
+                "color": "text-muted",
+                "align": "end"
+              }
+            }
+          },
+          {
+            "type": "Outlet"
+          }
+        ]
+      }
+    ]
+  }
+}

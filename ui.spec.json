@@ -1291,6 +1291,12 @@
       "doc": "InputType selects the keyboard/validation a field asks for."
     },
     {
+      "func": "Lead",
+      "key": "lead",
+      "type": "string",
+      "doc": "Lead is the sentence under a panel's heading saying what the panel is for. Distinct from Summary, which explains one row."
+    },
+    {
       "func": "Heading",
       "key": "heading",
       "type": "string",
@@ -1301,6 +1307,12 @@
       "key": "selected",
       "type": "bool",
       "doc": "Selected says a section was asked for rather than defaulted to — what lets one payload drill down on a phone and show two panes on a desktop."
+    },
+    {
+      "func": "Indent",
+      "key": "indent",
+      "type": "bool",
+      "doc": "Indent nests a nav row under the one above it — an installed extension beneath the store it came from. One list that reads as a hierarchy rather than two lists."
     },
     {
       "func": "Active",
@@ -1852,6 +1864,18 @@
         {
           "name": "title",
           "key": "title",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "func": "SettingsRow",
+      "type": "SettingsRow",
+      "doc": "SettingsRow is one line of a settings panel — a label, an optional explanation of what it does, and a control or a value on the right. It is the workhorse of every panel in the design, which is why it is a component rather than a Stack assembled per screen: a panel that builds its own rows is a panel that drifts from the others.",
+      "positional": [
+        {
+          "name": "label",
+          "key": "label",
           "type": "string"
         }
       ]

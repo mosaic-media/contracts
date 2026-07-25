@@ -4079,10 +4079,10 @@ export const DEFINITIONS: ComponentDefinition[] = [
         "style": {
           "direction": "row",
           "align": "start",
-          "gap": 8,
-          "px": "gutter",
-          "pt": 9,
-          "pb": 9,
+          "gap": 0,
+          "px": 0,
+          "pt": 8,
+          "pb": 0,
           "responsive": {
             "below": 720,
             "style": {
@@ -4151,10 +4151,10 @@ export const DEFINITIONS: ComponentDefinition[] = [
             "style": {
               "direction": "column",
               "gap": 5,
-              "width": 248,
-              "minWidth": 248,
+              "width": 252,
+              "minWidth": 252,
               "position": "sticky",
-              "top": 9,
+              "top": 0,
               "responsive": {
                 "$match": {
                   "on": {
@@ -4179,26 +4179,12 @@ export const DEFINITIONS: ComponentDefinition[] = [
                     }
                   }
                 }
-              }
+              },
+              "px": 3,
+              "py": 4
             }
           },
           "children": [
-            {
-              "type": "Text",
-              "props": {
-                "$if": {
-                  "$bind": "title"
-                },
-                "text": {
-                  "$bind": "title"
-                },
-                "style": {
-                  "variant": "2xl",
-                  "weight": "bold",
-                  "tracking": "tight"
-                }
-              }
-            },
             {
               "type": "Outlet",
               "props": {
@@ -4220,8 +4206,8 @@ export const DEFINITIONS: ComponentDefinition[] = [
               "direction": "column",
               "gap": 6,
               "grow": true,
-              "minWidth": 320,
-              "maxWidth": 720,
+              "minWidth": 0,
+              "maxWidth": 888,
               "responsive": {
                 "$match": {
                   "on": {
@@ -4243,7 +4229,10 @@ export const DEFINITIONS: ComponentDefinition[] = [
                     }
                   }
                 }
-              }
+              },
+              "pt": 7,
+              "px": 8,
+              "pb": 9
             }
           },
           "children": [
@@ -4257,9 +4246,25 @@ export const DEFINITIONS: ComponentDefinition[] = [
                   "$bind": "heading"
                 },
                 "style": {
-                  "variant": "2xl",
-                  "weight": "bold",
+                  "variant": "xl",
+                  "weight": "medium",
                   "tracking": "tight"
+                }
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "$if": {
+                  "$bind": "lead"
+                },
+                "text": {
+                  "$bind": "lead"
+                },
+                "style": {
+                  "variant": "sm",
+                  "color": "text-muted",
+                  "maxWidth": 520
                 }
               }
             },
@@ -4293,7 +4298,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
             },
             "style": {
               "variant": "xs",
-              "weight": "bold",
+              "weight": "regular",
               "color": "text-faint",
               "transform": "uppercase",
               "tracking": "wide"
@@ -4338,7 +4343,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
           "gap": 3,
           "px": 4,
           "py": 3,
-          "radius": "md",
+          "radius": "pill",
           "bg": {
             "$match": {
               "on": {
@@ -4367,6 +4372,17 @@ export const DEFINITIONS: ComponentDefinition[] = [
               "px": 3,
               "bg": null,
               "color": "text"
+            }
+          },
+          "pl": {
+            "$match": {
+              "on": {
+                "$bind": "indent"
+              },
+              "cases": {
+                "true": 6
+              },
+              "default": 4
             }
           }
         }
@@ -4409,23 +4425,149 @@ export const DEFINITIONS: ComponentDefinition[] = [
           "type": "Box",
           "props": {
             "style": {
-              "hidden": true,
-              "color": "text-faint",
-              "responsive": {
-                "below": 720,
-                "style": {
-                  "hidden": false
-                }
-              }
+              "direction": "row",
+              "align": "center",
+              "gap": 2
             }
           },
           "children": [
             {
-              "type": "Icon",
+              "type": "Text",
               "props": {
-                "name": "chevron-right",
-                "size": "1.1em"
+                "$if": {
+                  "$bind": "badge"
+                },
+                "text": {
+                  "$bind": "badge"
+                },
+                "style": {
+                  "variant": "xs",
+                  "weight": "medium",
+                  "color": "accent"
+                }
               }
+            },
+            {
+              "type": "Box",
+              "props": {
+                "style": {
+                  "hidden": true,
+                  "color": "text-faint",
+                  "responsive": {
+                    "below": 720,
+                    "style": {
+                      "hidden": false
+                    }
+                  }
+                }
+              },
+              "children": [
+                {
+                  "type": "Icon",
+                  "props": {
+                    "name": "chevron-right",
+                    "size": "1.1em"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "SettingsRow",
+    "template": {
+      "type": "Box",
+      "props": {
+        "style": {
+          "direction": "row",
+          "align": "center",
+          "justify": "between",
+          "gap": 5,
+          "py": 4,
+          "borderSide": "top",
+          "borderColor": "border",
+          "responsive": {
+            "below": 720,
+            "style": {
+              "direction": "column",
+              "align": "start",
+              "gap": 3
+            }
+          },
+          "border": true
+        }
+      },
+      "children": [
+        {
+          "type": "Box",
+          "props": {
+            "style": {
+              "direction": "column",
+              "gap": 1,
+              "minWidth": 0
+            }
+          },
+          "children": [
+            {
+              "type": "Text",
+              "props": {
+                "text": {
+                  "$bind": "label"
+                },
+                "style": {
+                  "variant": "sm",
+                  "weight": "medium"
+                }
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "$if": {
+                  "$bind": "summary"
+                },
+                "text": {
+                  "$bind": "summary"
+                },
+                "style": {
+                  "variant": "xs",
+                  "color": "text-muted"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "Box",
+          "props": {
+            "style": {
+              "direction": "row",
+              "align": "center",
+              "gap": 3
+            }
+          },
+          "children": [
+            {
+              "type": "Text",
+              "props": {
+                "$if": {
+                  "$bind": "value"
+                },
+                "text": {
+                  "$bind": "value"
+                },
+                "style": {
+                  "variant": "sm",
+                  "color": "text-muted",
+                  "align": "end"
+                }
+              }
+            },
+            {
+              "type": "Outlet"
             }
           ]
         }

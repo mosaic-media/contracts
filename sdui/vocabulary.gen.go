@@ -80,6 +80,7 @@ const (
 	TypeRelatedRail      = "RelatedRail"
 	TypeSelect           = "Select"
 	TypeSettingsFrame    = "SettingsFrame"
+	TypeSettingsRow      = "SettingsRow"
 	TypeSettingsNavGroup = "SettingsNavGroup"
 	TypeSettingsNavItem  = "SettingsNavItem"
 	TypeSourcePicker     = "SourcePicker"
@@ -330,6 +331,7 @@ var Components = []string{
 	"RelatedRail",
 	"Select",
 	"SettingsFrame",
+	"SettingsRow",
 	"SettingsNavGroup",
 	"SettingsNavItem",
 	"SourcePicker",
