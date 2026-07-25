@@ -1,0 +1,24 @@
+{
+  "//": "Golden cases for the six validators (ADR 0094). Every client runs these and must produce the same message for the same input — not merely the same pass/fail, because a message is what a person reads and two clients disagreeing about wording is two products. `values` is the rest of the scope, which only `matches` reads.",
+  "cases": [
+    {"name": "required rejects an empty string", "rules": {"required": true}, "value": "", "expect": "Required"},
+    {"name": "required rejects whitespace only", "rules": {"required": true}, "value": "   ", "expect": "Required"},
+    {"name": "required accepts a value", "rules": {"required": true}, "value": "a", "expect": ""},
+    {"name": "required false accepts an empty string", "rules": {"required": false}, "value": "", "expect": ""},
+    {"name": "minLength counts characters not bytes", "rules": {"minLength": 3}, "value": "héllo", "expect": ""},
+    {"name": "minLength rejects a short value", "rules": {"minLength": 3}, "value": "ab", "expect": "Must be at least 3 characters"},
+    {"name": "minLength accepts an exact length", "rules": {"minLength": 3}, "value": "abc", "expect": ""},
+    {"name": "maxLength rejects a long value", "rules": {"maxLength": 2}, "value": "abc", "expect": "Must be at most 2 characters"},
+    {"name": "maxLength accepts an exact length", "rules": {"maxLength": 3}, "value": "abc", "expect": ""},
+    {"name": "pattern rejects a non-match", "rules": {"pattern": "^[a-z]+$"}, "value": "Ab1", "expect": "Not in the expected format"},
+    {"name": "pattern accepts a match", "rules": {"pattern": "^[a-z]+$"}, "value": "abc", "expect": ""},
+    {"name": "pattern ignores an empty value, which is required's business", "rules": {"pattern": "^[a-z]+$"}, "value": "", "expect": ""},
+    {"name": "an uncompilable pattern does not blame the user", "rules": {"pattern": "([a-z"}, "value": "abc", "expect": ""},
+    {"name": "matches rejects a mismatch", "rules": {"matches": "password"}, "value": "b", "values": {"password": "a"}, "expect": "Does not match password"},
+    {"name": "matches accepts equality", "rules": {"matches": "password"}, "value": "a", "values": {"password": "a"}, "expect": ""},
+    {"name": "oneOf rejects an outsider", "rules": {"oneOf": ["a", "b"]}, "value": "c", "expect": "Not an allowed value"},
+    {"name": "oneOf accepts a member", "rules": {"oneOf": ["a", "b"]}, "value": "b", "expect": ""},
+    {"name": "required beats minLength, because it is the message a person can act on", "rules": {"required": true, "minLength": 5}, "value": "", "expect": "Required"},
+    {"name": "minLength beats pattern, in declared order", "rules": {"minLength": 5, "pattern": "^x"}, "value": "ab", "expect": "Must be at least 5 characters"}
+  ]
+}

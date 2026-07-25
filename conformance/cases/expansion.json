@@ -1,0 +1,77 @@
+{
+  "//": "Golden cases for definition expansion (ADR 0094). A definition is data and every client expands it with the same rules, so these are the rules written down as inputs and outputs rather than as prose in one client's source. Executed by whichever client implements an expander; the contracts repository has none, which is stated rather than hidden.",
+  "cases": [
+    {
+      "name": "a param binds into the template",
+      "definition": {"name": "T", "template": {"type": "Text", "props": {"text": {"$bind": "label"}}}},
+      "node": {"type": "T", "props": {"label": "hello"}},
+      "expect": {"type": "Text", "props": {"text": "hello"}}
+    },
+    {
+      "name": "a default param is used when the caller sets none",
+      "definition": {"name": "T", "params": {"label": "fallback"}, "template": {"type": "Text", "props": {"text": {"$bind": "label"}}}},
+      "node": {"type": "T"},
+      "expect": {"type": "Text", "props": {"text": "fallback"}}
+    },
+    {
+      "name": "the caller's prop overrides the default",
+      "definition": {"name": "T", "params": {"label": "fallback"}, "template": {"type": "Text", "props": {"text": {"$bind": "label"}}}},
+      "node": {"type": "T", "props": {"label": "given"}},
+      "expect": {"type": "Text", "props": {"text": "given"}}
+    },
+    {
+      "name": "an Outlet renders the caller's children",
+      "definition": {"name": "T", "template": {"type": "Box", "children": [{"type": "Outlet"}]}},
+      "node": {"type": "T", "children": [{"type": "Text", "props": {"text": "child"}}]},
+      "expect": {"type": "Box", "children": [{"type": "Text", "props": {"text": "child"}}]}
+    },
+    {
+      "name": "a named Outlet renders that slot",
+      "definition": {"name": "T", "template": {"type": "Box", "children": [{"type": "Outlet", "props": {"name": "aside"}}]}},
+      "node": {"type": "T", "slots": {"aside": [{"type": "Text", "props": {"text": "in the slot"}}]}},
+      "expect": {"type": "Box", "children": [{"type": "Text", "props": {"text": "in the slot"}}]}
+    },
+    {
+      "name": "an empty named Outlet renders nothing",
+      "definition": {"name": "T", "template": {"type": "Box", "children": [{"type": "Outlet", "props": {"name": "aside"}}]}},
+      "node": {"type": "T"},
+      "expect": {"type": "Box"}
+    },
+    {
+      "name": "$if drops the node when falsy",
+      "definition": {"name": "T", "template": {"type": "Box", "children": [{"type": "Text", "props": {"$if": {"$bind": "show"}, "text": "maybe"}}]}},
+      "node": {"type": "T", "props": {"show": false}},
+      "expect": {"type": "Box"}
+    },
+    {
+      "name": "$if keeps the node when truthy",
+      "definition": {"name": "T", "template": {"type": "Box", "children": [{"type": "Text", "props": {"$if": {"$bind": "show"}, "text": "maybe"}}]}},
+      "node": {"type": "T", "props": {"show": true}},
+      "expect": {"type": "Box", "children": [{"type": "Text", "props": {"text": "maybe"}}]}
+    },
+    {
+      "name": "$each repeats the node per item, exposing the alias",
+      "definition": {"name": "T", "template": {"type": "Box", "children": [{"type": "Text", "props": {"$each": {"$bind": "rows"}, "$as": "r", "text": {"$bind": "r.label"}}}]}},
+      "node": {"type": "T", "props": {"rows": [{"label": "one"}, {"label": "two"}]}},
+      "expect": {"type": "Box", "children": [{"type": "Text", "props": {"text": "one"}}, {"type": "Text", "props": {"text": "two"}}]}
+    },
+    {
+      "name": "$each over nothing repeats nothing",
+      "definition": {"name": "T", "template": {"type": "Box", "children": [{"type": "Text", "props": {"$each": {"$bind": "rows"}, "$as": "r", "text": {"$bind": "r.label"}}}]}},
+      "node": {"type": "T"},
+      "expect": {"type": "Box"}
+    },
+    {
+      "name": "$match picks by value",
+      "definition": {"name": "T", "template": {"type": "Text", "props": {"text": {"$match": {"on": {"$bind": "kind"}, "cases": {"movie": "Film", "series": "Show"}, "default": "Other"}}}}},
+      "node": {"type": "T", "props": {"kind": "series"}},
+      "expect": {"type": "Text", "props": {"text": "Show"}}
+    },
+    {
+      "name": "$match falls back to its default",
+      "definition": {"name": "T", "template": {"type": "Text", "props": {"text": {"$match": {"on": {"$bind": "kind"}, "cases": {"movie": "Film"}, "default": "Other"}}}}},
+      "node": {"type": "T", "props": {"kind": "book"}},
+      "expect": {"type": "Text", "props": {"text": "Other"}}
+    }
+  ]
+}

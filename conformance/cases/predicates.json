@@ -1,0 +1,30 @@
+{
+  "//": "Golden cases for the six predicates (ADR 0094). The unreadable ones matter most: an unrecognised shape must be FALSE on every client, because visibleWhen showing a control it could not reason about is what puts an admin-only affordance on somebody's screen.",
+  "values": {"kind": "series", "name": "", "season": 2, "flag": true},
+  "cases": [
+    {"name": "equals", "predicate": {"field": "kind", "equals": "series"}, "expect": true},
+    {"name": "equals is false for a different value", "predicate": {"field": "kind", "equals": "movie"}, "expect": false},
+    {"name": "equals compares across types by text", "predicate": {"field": "season", "equals": "2"}, "expect": true},
+    {"name": "equals against a boolean", "predicate": {"field": "flag", "equals": "true"}, "expect": true},
+    {"name": "notEmpty on a blank field", "predicate": {"field": "name", "notEmpty": true}, "expect": false},
+    {"name": "notEmpty inverted", "predicate": {"field": "name", "notEmpty": false}, "expect": true},
+    {"name": "notEmpty on a set field", "predicate": {"field": "kind", "notEmpty": true}, "expect": true},
+    {"name": "oneOf", "predicate": {"field": "kind", "oneOf": ["movie", "series"]}, "expect": true},
+    {"name": "oneOf excludes", "predicate": {"field": "kind", "oneOf": ["movie"]}, "expect": false},
+    {"name": "not", "predicate": {"not": {"field": "kind", "equals": "movie"}}, "expect": true},
+    {"name": "all", "predicate": {"all": [{"field": "kind", "equals": "series"}, {"field": "season", "equals": "2"}]}, "expect": true},
+    {"name": "all with one false", "predicate": {"all": [{"field": "kind", "equals": "series"}, {"field": "name", "notEmpty": true}]}, "expect": false},
+    {"name": "any", "predicate": {"any": [{"field": "name", "notEmpty": true}, {"field": "kind", "equals": "series"}]}, "expect": true},
+    {"name": "any with none true", "predicate": {"any": [{"field": "name", "notEmpty": true}]}, "expect": false},
+    {"name": "a conjunction of nothing is true", "predicate": {"all": []}, "expect": true},
+    {"name": "a disjunction of nothing is false", "predicate": {"any": []}, "expect": false},
+    {"name": "an empty predicate reveals nothing", "predicate": {}, "expect": false},
+    {"name": "a field with no test reveals nothing", "predicate": {"field": "kind"}, "expect": false},
+    {"name": "an unnamed field reveals nothing", "predicate": {"field": "", "equals": "x"}, "expect": false},
+    {"name": "an operator outside the six reveals nothing", "predicate": {"gt": 3}, "expect": false},
+    {"name": "a validator's name is not a predicate's", "predicate": {"field": "kind", "matches": "^series$"}, "expect": false},
+    {"name": "a malformed all reveals nothing", "predicate": {"all": "not a list"}, "expect": false},
+    {"name": "a malformed not reveals nothing", "predicate": {"not": "not a predicate"}, "expect": false},
+    {"name": "an absent field is empty rather than missing", "predicate": {"field": "nope", "notEmpty": false}, "expect": true}
+  ]
+}

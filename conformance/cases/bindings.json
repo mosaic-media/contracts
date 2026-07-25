@@ -1,0 +1,17 @@
+{
+  "//": "Golden cases for binding resolution (ADR 0094). The near-misses are the point: an object carrying the marker beside anything else is a literal object, and reinterpreting it would silently replace a producer's own data with a lookup.",
+  "scope": {"ref": "tt0087544", "title": "Nausicaä", "year": 1984, "nested": {"deep": "found"}, "flag": true},
+  "cases": [
+    {"name": "a bare literal is untouched", "props": {"title": "literal"}, "expect": {"title": "literal"}},
+    {"name": "a binding resolves", "props": {"title": {"$bind": "title"}}, "expect": {"title": "Nausicaä"}},
+    {"name": "a binding resolves a non-string", "props": {"year": {"$bind": "year"}}, "expect": {"year": 1984}},
+    {"name": "a dotted path walks objects", "props": {"x": {"$bind": "nested.deep"}}, "expect": {"x": "found"}},
+    {"name": "an unresolved binding removes the prop rather than emptying it", "props": {"title": {"$bind": "absent"}}, "expect": {}},
+    {"name": "the marker beside another key is a literal object", "props": {"filter": {"$bind": "title", "and": "more"}}, "expect": {"filter": {"$bind": "title", "and": "more"}}},
+    {"name": "a near-miss spelling is a literal object", "props": {"filter": {"bind": "title"}}, "expect": {"filter": {"bind": "title"}}},
+    {"name": "a binding nested in an array resolves", "props": {"meta": [{"$bind": "year"}, "literal"]}, "expect": {"meta": [1984, "literal"]}},
+    {"name": "a binding nested in an object resolves", "props": {"action": {"kind": "navigate", "params": {"ref": {"$bind": "ref"}}}}, "expect": {"action": {"kind": "navigate", "params": {"ref": "tt0087544"}}}},
+    {"name": "a boolean resolves as itself", "props": {"on": {"$bind": "flag"}}, "expect": {"on": true}},
+    {"name": "several props resolve independently", "props": {"a": {"$bind": "title"}, "b": "kept", "c": {"$bind": "absent"}}, "expect": {"a": "Nausicaä", "b": "kept"}}
+  ]
+}

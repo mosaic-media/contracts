@@ -3,7 +3,10 @@
 
 package sdui
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // Bindable props: a prop value may be a literal, or a binding naming a path the
 // client resolves against the scopes in force where the node renders.
@@ -118,4 +121,70 @@ func validateBindingValue(v any) error {
 		}
 	}
 	return nil
+}
+
+// ResolveProps resolves every binding in a props bag against a scope, returning
+// a new bag. It exists so the conformance corpus can be run against a Go
+// implementation as well as a client's — a corpus only one implementation
+// executes is a test, not a corpus.
+//
+// An unresolved binding removes the prop rather than emptying it, which is the
+// rule a client follows for the same reason: the component then falls back
+// exactly as if the server had not set it, and "" would make "no value" and
+// "the empty value" indistinguishable.
+func ResolveProps(props map[string]any, scope map[string]any) map[string]any {
+	out := make(map[string]any, len(props))
+	for key, val := range props {
+		resolved, ok := resolveValue(val, scope)
+		if !ok {
+			continue
+		}
+		out[key] = resolved
+	}
+	return out
+}
+
+// resolveValue resolves one value. ok is false when a binding found nothing, so
+// the caller can drop the key rather than store a nil.
+func resolveValue(v any, scope map[string]any) (any, bool) {
+	if path, isBinding := BindingPath(v); isBinding {
+		found, ok := lookupPath(scope, path)
+		return found, ok
+	}
+	switch x := v.(type) {
+	case map[string]any:
+		out := make(map[string]any, len(x))
+		for k, val := range x {
+			if resolved, ok := resolveValue(val, scope); ok {
+				out[k] = resolved
+			}
+		}
+		return out, true
+	case []any:
+		out := make([]any, 0, len(x))
+		for _, val := range x {
+			if resolved, ok := resolveValue(val, scope); ok {
+				out = append(out, resolved)
+			}
+		}
+		return out, true
+	default:
+		return v, true
+	}
+}
+
+// lookupPath walks a dotted path through the scope.
+func lookupPath(scope map[string]any, path string) (any, bool) {
+	var cur any = scope
+	for _, part := range strings.Split(path, ".") {
+		m, ok := cur.(map[string]any)
+		if !ok {
+			return nil, false
+		}
+		cur, ok = m[part]
+		if !ok {
+			return nil, false
+		}
+	}
+	return cur, true
 }
