@@ -944,7 +944,8 @@ export const DEFINITIONS: ComponentDefinition[] = [
                     "style": {
                       "hidden": true
                     }
-                  }
+                  },
+                  "minWidth": 236
                 }
               },
               "children": [
@@ -1166,7 +1167,8 @@ export const DEFINITIONS: ComponentDefinition[] = [
                     "style": {
                       "variant": "md",
                       "color": "text-muted",
-                      "lineClamp": 4
+                      "lineClamp": 4,
+                      "pt": 1
                     }
                   }
                 },
@@ -1178,7 +1180,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
                       "align": "center",
                       "wrap": true,
                       "gap": 3,
-                      "pt": 1
+                      "pt": 2
                     }
                   },
                   "children": [
@@ -1201,7 +1203,8 @@ export const DEFINITIONS: ComponentDefinition[] = [
                     },
                     "style": {
                       "variant": "sm",
-                      "color": "text-faint"
+                      "color": "text-faint",
+                      "pt": 1
                     }
                   }
                 }
@@ -1215,9 +1218,11 @@ export const DEFINITIONS: ComponentDefinition[] = [
                   "responsive": {
                     "below": 1100,
                     "style": {
-                      "width": "full"
+                      "width": "full",
+                      "minWidth": 0
                     }
-                  }
+                  },
+                  "minWidth": 312
                 }
               },
               "children": [
