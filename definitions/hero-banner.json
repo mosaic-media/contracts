@@ -492,10 +492,29 @@
             }
           },
           {
-            "type": "Outlet",
+            "type": "Box",
             "props": {
-              "name": "rail"
-            }
+              "style": {
+                "direction": "row",
+                "justify": "end",
+                "align": "end",
+                "gap": 3,
+                "responsive": {
+                  "below": 900,
+                  "style": {
+                    "hidden": true
+                  }
+                }
+              }
+            },
+            "children": [
+              {
+                "type": "Outlet",
+                "props": {
+                  "name": "rail"
+                }
+              }
+            ]
           }
         ]
       },

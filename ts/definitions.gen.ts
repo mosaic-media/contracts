@@ -586,7 +586,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
   {
     "name": "Carousel",
     "params": {
-      "itemWidth": 210
+      "itemWidth": 196
     },
     "template": {
       "type": "Box",
@@ -597,10 +597,11 @@ export const DEFINITIONS: ComponentDefinition[] = [
           "gridAutoColumns": {
             "$bind": "itemWidth"
           },
-          "gap": 6,
+          "gap": 4,
           "overflowX": "auto",
           "snap": "x",
-          "py": 2
+          "py": 2,
+          "snapAlign": "start"
         }
       },
       "children": [
@@ -1888,7 +1889,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
   {
     "name": "Grid",
     "params": {
-      "minColumnWidth": 172
+      "minColumnWidth": 186
     },
     "template": {
       "type": "Box",
@@ -1898,7 +1899,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
           "gridMin": {
             "$bind": "minColumnWidth"
           },
-          "gap": 4
+          "gap": 5
         }
       },
       "children": [
@@ -2402,10 +2403,29 @@ export const DEFINITIONS: ComponentDefinition[] = [
               }
             },
             {
-              "type": "Outlet",
+              "type": "Box",
               "props": {
-                "name": "rail"
-              }
+                "style": {
+                  "direction": "row",
+                  "justify": "end",
+                  "align": "end",
+                  "gap": 3,
+                  "responsive": {
+                    "below": 900,
+                    "style": {
+                      "hidden": true
+                    }
+                  }
+                }
+              },
+              "children": [
+                {
+                  "type": "Outlet",
+                  "props": {
+                    "name": "rail"
+                  }
+                }
+              ]
             }
           ]
         },
