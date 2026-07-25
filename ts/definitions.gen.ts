@@ -2633,7 +2633,8 @@ export const DEFINITIONS: ComponentDefinition[] = [
   {
     "name": "MediaTile",
     "params": {
-      "title": "Untitled"
+      "title": "Untitled",
+      "overlayTitle": false
     },
     "template": {
       "type": "Pressable",
@@ -2796,6 +2797,56 @@ export const DEFINITIONS: ComponentDefinition[] = [
                   }
                 }
               ]
+            },
+            {
+              "type": "Box",
+              "props": {
+                "$if": {
+                  "$bind": "overlayTitle"
+                },
+                "style": {
+                  "position": "absolute",
+                  "right": 0,
+                  "bottom": 0,
+                  "left": 0,
+                  "scrim": "bottom",
+                  "direction": "column",
+                  "gap": 0,
+                  "p": 3
+                }
+              },
+              "children": [
+                {
+                  "type": "Text",
+                  "props": {
+                    "text": {
+                      "$bind": "title"
+                    },
+                    "style": {
+                      "variant": "sm",
+                      "weight": "medium",
+                      "shadow": true,
+                      "lineClamp": 1
+                    }
+                  }
+                },
+                {
+                  "type": "Text",
+                  "props": {
+                    "$if": {
+                      "$bind": "subtitle"
+                    },
+                    "text": {
+                      "$bind": "subtitle"
+                    },
+                    "style": {
+                      "variant": "xs",
+                      "color": "text-muted",
+                      "shadow": true
+                    }
+                  }
+                }
+              ]
             }
           ]
         },
@@ -2804,6 +2855,9 @@ export const DEFINITIONS: ComponentDefinition[] = [
           "props": {
             "style": {
               "gap": 0
+            },
+            "$ifNot": {
+              "$bind": "overlayTitle"
             }
           },
           "children": [

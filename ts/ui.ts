@@ -602,6 +602,11 @@ export function ShowTags(v: boolean): El {
   return Prop("showTags", v);
 }
 
+/** OverlayTitle lays a tile's title over its artwork instead of beneath it, for a card that is mostly image — the hero's up-next dock. Off by default, because a title on the picture is only legible when the tile is large enough to carry a scrim under it. */
+export function OverlayTitle(v: boolean): El {
+  return Prop("overlayTitle", v);
+}
+
 /** Avatar sets a person's portrait. */
 export function Avatar(v: string): El {
   return Prop("avatar", v);
@@ -973,6 +978,11 @@ export function BindProgressLabel(path: string): El {
 /** BindShowTags sets "showTags" from the named path instead of from a value. */
 export function BindShowTags(path: string): El {
   return Prop("showTags", bind(path));
+}
+
+/** BindOverlayTitle sets "overlayTitle" from the named path instead of from a value. */
+export function BindOverlayTitle(path: string): El {
+  return Prop("overlayTitle", bind(path));
 }
 
 /** BindAvatar sets "avatar" from the named path instead of from a value. */

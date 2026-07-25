@@ -417,6 +417,9 @@ func ProgressLabel(v string) El { return Prop("progressLabel", v) }
 // ShowTags reveals a hero's tag row.
 func ShowTags(v bool) El { return Prop("showTags", v) }
 
+// OverlayTitle lays a tile's title over its artwork instead of beneath it, for a card that is mostly image — the hero's up-next dock. Off by default, because a title on the picture is only legible when the tile is large enough to carry a scrim under it.
+func OverlayTitle(v bool) El { return Prop("overlayTitle", v) }
+
 // Avatar sets a person's portrait.
 func Avatar(v string) El { return Prop("avatar", v) }
 
@@ -645,6 +648,9 @@ func BindProgressLabel(path string) El { return Prop("progressLabel", sdui.Bind(
 
 // BindShowTags sets "showTags" from the named path instead of from a value.
 func BindShowTags(path string) El { return Prop("showTags", sdui.Bind(path)) }
+
+// BindOverlayTitle sets "overlayTitle" from the named path instead of from a value.
+func BindOverlayTitle(path string) El { return Prop("overlayTitle", sdui.Bind(path)) }
 
 // BindAvatar sets "avatar" from the named path instead of from a value.
 func BindAvatar(path string) El { return Prop("avatar", sdui.Bind(path)) }

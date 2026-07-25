@@ -1171,6 +1171,12 @@
       "doc": "ShowTags reveals a hero's tag row."
     },
     {
+      "func": "OverlayTitle",
+      "key": "overlayTitle",
+      "type": "bool",
+      "doc": "OverlayTitle lays a tile's title over its artwork instead of beneath it, for a card that is mostly image — the hero's up-next dock. Off by default, because a title on the picture is only legible when the tile is large enough to carry a scrim under it."
+    },
+    {
       "func": "Avatar",
       "key": "avatar",
       "type": "string",
