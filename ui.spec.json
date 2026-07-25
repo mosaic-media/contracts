@@ -1015,6 +1015,12 @@
       "doc": "Overview sets a synopsis/overview string."
     },
     {
+      "func": "Message",
+      "key": "message",
+      "type": "string",
+      "doc": "Message sets the explanation beneath an empty or error state's title. Banner takes its message positionally; every other component that carries one needs this, and without it the emit-side sets the key by string — which is how a prop nothing renders gets shipped."
+    },
+    {
       "func": "Progress",
       "key": "progress",
       "type": "number",
@@ -1649,8 +1655,7 @@
     {
       "func": "EmptyState",
       "type": "EmptyState",
-      "doc": "EmptyState is a titled empty placeholder.",
-      "variadic": false,
+      "doc": "EmptyState is a titled empty placeholder, with an optional explanation beneath it and a call to action.",
       "positional": [
         {
           "name": "icon",

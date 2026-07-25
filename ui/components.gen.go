@@ -180,9 +180,9 @@ func GenreTag(label string, els ...El) *Element {
 	return compose("GenreTag", map[string]any{"label": label}, els)
 }
 
-// EmptyState is a titled empty placeholder.
-func EmptyState(icon string, title string) *Element {
-	return compose("EmptyState", map[string]any{"icon": icon, "title": title}, nil)
+// EmptyState is a titled empty placeholder, with an optional explanation beneath it and a call to action.
+func EmptyState(icon string, title string, els ...El) *Element {
+	return compose("EmptyState", map[string]any{"icon": icon, "title": title}, els)
 }
 
 // AppShell is the application frame (ADR 0031): the brand bar, the nav and the region the current screen renders into.
@@ -338,6 +338,9 @@ func Logo(v string) El { return Prop("logo", v) }
 
 // Overview sets a synopsis/overview string.
 func Overview(v string) El { return Prop("overview", v) }
+
+// Message sets the explanation beneath an empty or error state's title. Banner takes its message positionally; every other component that carries one needs this, and without it the emit-side sets the key by string — which is how a prop nothing renders gets shipped.
+func Message(v string) El { return Prop("message", v) }
 
 // Progress sets a 0..1 watched fraction.
 func Progress(v float64) El { return Prop("progress", v) }
@@ -564,6 +567,9 @@ func BindLogo(path string) El { return Prop("logo", sdui.Bind(path)) }
 
 // BindOverview sets "overview" from the named path instead of from a value.
 func BindOverview(path string) El { return Prop("overview", sdui.Bind(path)) }
+
+// BindMessage sets "message" from the named path instead of from a value.
+func BindMessage(path string) El { return Prop("message", sdui.Bind(path)) }
 
 // BindProgress sets "progress" from the named path instead of from a value.
 func BindProgress(path string) El { return Prop("progress", sdui.Bind(path)) }

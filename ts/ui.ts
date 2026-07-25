@@ -263,9 +263,9 @@ export function GenreTag(label: string, ...els: Elish[]): Element {
   return compose("GenreTag", { label }, els);
 }
 
-/** EmptyState is a titled empty placeholder. */
-export function EmptyState(icon: string, title: string): Element {
-  return compose("EmptyState", { icon, title }, []);
+/** EmptyState is a titled empty placeholder, with an optional explanation beneath it and a call to action. */
+export function EmptyState(icon: string, title: string, ...els: Elish[]): Element {
+  return compose("EmptyState", { icon, title }, els);
 }
 
 /** AppShell is the application frame (ADR 0031): the brand bar, the nav and the region the current screen renders into. */
@@ -470,6 +470,11 @@ export function Logo(v: string): El {
 /** Overview sets a synopsis/overview string. */
 export function Overview(v: string): El {
   return Prop("overview", v);
+}
+
+/** Message sets the explanation beneath an empty or error state's title. Banner takes its message positionally; every other component that carries one needs this, and without it the emit-side sets the key by string — which is how a prop nothing renders gets shipped. */
+export function Message(v: string): El {
+  return Prop("message", v);
 }
 
 /** Progress sets a 0..1 watched fraction. */
@@ -838,6 +843,11 @@ export function BindLogo(path: string): El {
 /** BindOverview sets "overview" from the named path instead of from a value. */
 export function BindOverview(path: string): El {
   return Prop("overview", bind(path));
+}
+
+/** BindMessage sets "message" from the named path instead of from a value. */
+export function BindMessage(path: string): El {
+  return Prop("message", bind(path));
 }
 
 /** BindProgress sets "progress" from the named path instead of from a value. */

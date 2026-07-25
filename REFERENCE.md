@@ -410,7 +410,7 @@ expands whatever it is sent.
 - **`EpisodeRow`** — EpisodeRow renders one episode under a season.
 - **`PersonChip`** — PersonChip is a cast/crew chip.
 - **`GenreTag`** — GenreTag is a genre chip.
-- **`EmptyState`** — EmptyState is a titled empty placeholder.
+- **`EmptyState`** — EmptyState is a titled empty placeholder, with an optional explanation beneath it and a call to action.
 - **`AppShell`** — AppShell is the application frame (ADR 0031): the brand bar, the nav and the region the current screen renders into.
 - **`DetailHero`** — DetailHero is a title's cinematic header — backdrop, logo and the actions docked over it.
 - **`Divider`** — Divider is a rule, optionally labelled.
