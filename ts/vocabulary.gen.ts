@@ -20,7 +20,7 @@ export interface PrimitiveSpec {
 }
 
 /** The vocabulary version a client declares it implements. */
-export const vocabularyVersion = "2.4.0";
+export const vocabularyVersion = "9.9.9";
 
 /** Divides a module's id from its own type name; core types never contain it. */
 export const typeSeparator = ":";
