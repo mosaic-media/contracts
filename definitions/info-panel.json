@@ -5,16 +5,32 @@
     "props": {
       "style": {
         "glass": true,
-        "radius": "xl",
+        "radius": "lg",
         "border": true,
         "p": 5,
         "gap": 4,
-        "minWidth": 232,
-        "maxWidth": 320,
-        "grow": true
+        "shadow": "2",
+        "width": "full"
       }
     },
     "children": [
+      {
+        "type": "Text",
+        "props": {
+          "$if": {
+            "$bind": "heading"
+          },
+          "text": {
+            "$bind": "heading"
+          },
+          "style": {
+            "variant": "xs",
+            "color": "text-faint",
+            "transform": "uppercase",
+            "tracking": "wide"
+          }
+        }
+      },
       {
         "type": "Box",
         "props": {

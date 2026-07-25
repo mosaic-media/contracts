@@ -842,9 +842,11 @@ export const DEFINITIONS: ComponentDefinition[] = [
       "props": {
         "style": {
           "position": "relative",
-          "overflow": "hidden",
-          "minHeight": 660,
-          "justify": "end"
+          "direction": "row",
+          "align": "end",
+          "width": "full",
+          "minHeight": 720,
+          "overflow": "hidden"
         }
       },
       "children": [
@@ -854,8 +856,13 @@ export const DEFINITIONS: ComponentDefinition[] = [
             "src": {
               "$bind": "backdrop"
             },
+            "alt": {
+              "$bind": "title"
+            },
+            "fit": "cover",
             "placeholder": " ",
             "artLight": "ambient",
+            "motion": "drift",
             "style": {
               "position": "absolute",
               "top": 0,
@@ -876,11 +883,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
               "right": 0,
               "bottom": 0,
               "left": 0,
-              "bgGradient": {
-                "from": "bg",
-                "to": "transparent",
-                "angle": 70
-              }
+              "glow": "art"
             }
           }
         },
@@ -893,11 +896,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
               "right": 0,
               "bottom": 0,
               "left": 0,
-              "bgGradient": {
-                "from": "bg",
-                "to": "transparent",
-                "angle": 0
-              }
+              "scrim": "cinematic"
             }
           }
         },
@@ -908,12 +907,20 @@ export const DEFINITIONS: ComponentDefinition[] = [
               "position": "relative",
               "direction": "row",
               "align": "end",
-              "gap": 5,
+              "gap": 7,
+              "width": "full",
               "px": "gutter",
-              "pt": 8,
+              "pt": 9,
               "pb": 7,
-              "wrap": true,
-              "kind": "detail-panels"
+              "responsive": {
+                "below": 1100,
+                "style": {
+                  "direction": "column",
+                  "align": "start",
+                  "gap": 5,
+                  "pt": 8
+                }
+              }
             }
           },
           "children": [
@@ -924,12 +931,13 @@ export const DEFINITIONS: ComponentDefinition[] = [
                   "$bind": "poster"
                 },
                 "style": {
-                  "width": 196,
+                  "width": 236,
                   "aspectRatio": "2 / 3",
-                  "radius": "md",
+                  "radius": "lg",
                   "overflow": "hidden",
                   "bg": "surface-raised",
                   "border": true,
+                  "borderColor": "border-strong",
                   "shadow": "2",
                   "responsive": {
                     "below": 900,
@@ -963,15 +971,12 @@ export const DEFINITIONS: ComponentDefinition[] = [
               "type": "Box",
               "props": {
                 "style": {
-                  "glass": true,
-                  "radius": "xl",
-                  "border": true,
-                  "p": 6,
+                  "direction": "column",
+                  "align": "start",
                   "gap": 4,
                   "grow": true,
-                  "maxWidth": 640,
-                  "minWidth": 280,
-                  "justify": "end"
+                  "minWidth": 0,
+                  "maxWidth": 760
                 }
               },
               "children": [
@@ -982,7 +987,15 @@ export const DEFINITIONS: ComponentDefinition[] = [
                       "$bind": "kicker"
                     },
                     "style": {
-                      "direction": "row"
+                      "direction": "row",
+                      "align": "center",
+                      "gap": 2,
+                      "px": 3,
+                      "py": 1,
+                      "radius": "pill",
+                      "bg": "surface-overlay",
+                      "glass": true,
+                      "border": true
                     }
                   },
                   "children": [
@@ -990,74 +1003,56 @@ export const DEFINITIONS: ComponentDefinition[] = [
                       "type": "Box",
                       "props": {
                         "style": {
-                          "direction": "row",
-                          "align": "center",
-                          "gap": 2,
-                          "px": 3,
-                          "py": 1,
+                          "width": 6,
+                          "height": 6,
                           "radius": "pill",
-                          "bg": "surface-overlay",
-                          "glass": true,
-                          "border": true
+                          "bg": "accent"
                         }
-                      },
-                      "children": [
-                        {
-                          "type": "Box",
-                          "props": {
-                            "style": {
-                              "width": 6,
-                              "height": 6,
-                              "radius": "pill",
-                              "bg": "accent"
-                            }
-                          }
-                        },
-                        {
-                          "type": "Text",
-                          "props": {
-                            "text": {
-                              "$bind": "kicker"
-                            },
-                            "style": {
-                              "variant": "xs",
-                              "weight": "medium",
-                              "transform": "uppercase",
-                              "tracking": "wide"
-                            }
-                          }
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "Box",
-                  "props": {
-                    "$if": {
-                      "$bind": "logo"
+                      }
                     },
-                    "style": {
-                      "height": 84,
-                      "maxWidth": 400
-                    }
-                  },
-                  "children": [
                     {
-                      "type": "Image",
+                      "type": "Text",
                       "props": {
-                        "src": {
-                          "$bind": "logo"
+                        "text": {
+                          "$bind": "kicker"
                         },
-                        "fit": "contain",
-                        "placeholder": " ",
                         "style": {
-                          "width": "full",
-                          "height": "full"
+                          "variant": "xs",
+                          "weight": "medium",
+                          "color": "text-muted",
+                          "transform": "uppercase",
+                          "tracking": "wide"
                         }
                       }
                     }
                   ]
+                },
+                {
+                  "type": "Image",
+                  "props": {
+                    "$if": {
+                      "$bind": "logo"
+                    },
+                    "src": {
+                      "$bind": "logo"
+                    },
+                    "alt": {
+                      "$bind": "title"
+                    },
+                    "fit": "contain",
+                    "style": {
+                      "width": 440,
+                      "maxWidth": "full",
+                      "height": 120,
+                      "responsive": {
+                        "below": 900,
+                        "style": {
+                          "width": 260,
+                          "height": 80
+                        }
+                      }
+                    }
+                  }
                 },
                 {
                   "type": "Text",
@@ -1071,7 +1066,23 @@ export const DEFINITIONS: ComponentDefinition[] = [
                     "style": {
                       "variant": "4xl",
                       "weight": "bold",
-                      "tracking": "tight"
+                      "tracking": "tight",
+                      "lineClamp": 2
+                    }
+                  }
+                },
+                {
+                  "type": "Text",
+                  "props": {
+                    "$if": {
+                      "$bind": "nativeTitle"
+                    },
+                    "text": {
+                      "$bind": "nativeTitle"
+                    },
+                    "style": {
+                      "variant": "md",
+                      "color": "text-muted"
                     }
                   }
                 },
@@ -1083,9 +1094,9 @@ export const DEFINITIONS: ComponentDefinition[] = [
                     },
                     "style": {
                       "direction": "row",
-                      "gap": 2,
                       "wrap": true,
-                      "align": "center"
+                      "align": "center",
+                      "gap": 2
                     }
                   },
                   "children": [
@@ -1097,12 +1108,12 @@ export const DEFINITIONS: ComponentDefinition[] = [
                         },
                         "$as": "m",
                         "style": {
+                          "px": 3,
+                          "py": 1,
+                          "radius": "pill",
                           "bg": "surface-overlay",
                           "glass": true,
-                          "border": true,
-                          "radius": "pill",
-                          "px": 3,
-                          "py": 1
+                          "border": true
                         }
                       },
                       "children": [
@@ -1153,6 +1164,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
                       "$bind": "overview"
                     },
                     "style": {
+                      "variant": "md",
                       "color": "text-muted",
                       "lineClamp": 4
                     }
@@ -1163,9 +1175,10 @@ export const DEFINITIONS: ComponentDefinition[] = [
                   "props": {
                     "style": {
                       "direction": "row",
-                      "gap": 3,
+                      "align": "center",
                       "wrap": true,
-                      "pt": 2
+                      "gap": 3,
+                      "pt": 1
                     }
                   },
                   "children": [
@@ -1176,16 +1189,60 @@ export const DEFINITIONS: ComponentDefinition[] = [
                       }
                     }
                   ]
+                },
+                {
+                  "type": "Text",
+                  "props": {
+                    "$if": {
+                      "$bind": "credits"
+                    },
+                    "text": {
+                      "$bind": "credits"
+                    },
+                    "style": {
+                      "variant": "sm",
+                      "color": "text-faint"
+                    }
+                  }
                 }
               ]
             },
             {
-              "type": "Outlet",
+              "type": "Box",
               "props": {
-                "name": "aside"
-              }
+                "style": {
+                  "width": 312,
+                  "responsive": {
+                    "below": 1100,
+                    "style": {
+                      "width": "full"
+                    }
+                  }
+                }
+              },
+              "children": [
+                {
+                  "type": "Outlet",
+                  "props": {
+                    "name": "aside"
+                  }
+                }
+              ]
             }
           ]
+        },
+        {
+          "type": "Box",
+          "props": {
+            "style": {
+              "position": "absolute",
+              "top": 0,
+              "right": 0,
+              "bottom": 0,
+              "left": 0,
+              "grain": true
+            }
+          }
         }
       ]
     }
@@ -2557,16 +2614,32 @@ export const DEFINITIONS: ComponentDefinition[] = [
       "props": {
         "style": {
           "glass": true,
-          "radius": "xl",
+          "radius": "lg",
           "border": true,
           "p": 5,
           "gap": 4,
-          "minWidth": 232,
-          "maxWidth": 320,
-          "grow": true
+          "shadow": "2",
+          "width": "full"
         }
       },
       "children": [
+        {
+          "type": "Text",
+          "props": {
+            "$if": {
+              "$bind": "heading"
+            },
+            "text": {
+              "$bind": "heading"
+            },
+            "style": {
+              "variant": "xs",
+              "color": "text-faint",
+              "transform": "uppercase",
+              "tracking": "wide"
+            }
+          }
+        },
         {
           "type": "Box",
           "props": {
