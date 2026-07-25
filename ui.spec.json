@@ -1291,6 +1291,18 @@
       "doc": "InputType selects the keyboard/validation a field asks for."
     },
     {
+      "func": "Chrome",
+      "key": "chrome",
+      "type": "string",
+      "doc": "Chrome selects which frame the app shell draws: \"media\" — the floating pills over a full-bleed hero — or \"admin\", the solid bar the settings side of the app wears. Named rather than a boolean because the two are different rooms in the same building, and a third (a player, a setup wizard) is a case rather than a second flag."
+    },
+    {
+      "func": "Breadcrumb",
+      "key": "breadcrumb",
+      "type": "string",
+      "doc": "Breadcrumb is the trail after the brand in the admin chrome — \"/ Settings\". It says where you are on a side of the app that has no hero to say it for you."
+    },
+    {
       "func": "Lead",
       "key": "lead",
       "type": "string",

@@ -12,7 +12,8 @@ export const DEFINITIONS: ComponentDefinition[] = [
   {
     "name": "AppShell",
     "params": {
-      "title": "Mosaic"
+      "title": "Mosaic",
+      "chrome": "media"
     },
     "template": {
       "type": "Box",
@@ -61,6 +62,17 @@ export const DEFINITIONS: ComponentDefinition[] = [
                   "top": 2,
                   "gap": 2
                 }
+              }
+            },
+            "$ifNot": {
+              "$match": {
+                "on": {
+                  "$bind": "chrome"
+                },
+                "cases": {
+                  "admin": true
+                },
+                "default": false
               }
             }
           },
@@ -281,6 +293,141 @@ export const DEFINITIONS: ComponentDefinition[] = [
                   }
                 }
               ]
+            }
+          ]
+        },
+        {
+          "type": "Box",
+          "props": {
+            "style": {
+              "position": "fixed",
+              "top": 0,
+              "left": 0,
+              "right": 0,
+              "z": "overlay",
+              "direction": "row",
+              "align": "center",
+              "gap": 4,
+              "height": 66,
+              "px": "gutter",
+              "bg": "surface-overlay",
+              "glass": true,
+              "border": true,
+              "borderSide": "bottom",
+              "borderColor": "border"
+            },
+            "$if": {
+              "$match": {
+                "on": {
+                  "$bind": "chrome"
+                },
+                "cases": {
+                  "admin": true
+                },
+                "default": false
+              }
+            }
+          },
+          "children": [
+            {
+              "type": "Pressable",
+              "props": {
+                "action": {
+                  "kind": "back"
+                },
+                "label": "Back",
+                "style": {
+                  "direction": "row",
+                  "align": "center",
+                  "gap": 2,
+                  "color": "text-muted",
+                  "pr": 4,
+                  "borderSide": "right",
+                  "border": true,
+                  "borderColor": "border"
+                }
+              },
+              "children": [
+                {
+                  "type": "Icon",
+                  "props": {
+                    "name": "arrow-left",
+                    "size": "1.1em"
+                  }
+                },
+                {
+                  "type": "Text",
+                  "props": {
+                    "text": "Back",
+                    "style": {
+                      "variant": "sm",
+                      "weight": "medium"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "Pressable",
+              "props": {
+                "action": {
+                  "kind": "navigate",
+                  "screen": "home"
+                },
+                "label": {
+                  "$bind": "title"
+                },
+                "style": {
+                  "direction": "row",
+                  "align": "center",
+                  "gap": 3
+                }
+              },
+              "children": [
+                {
+                  "type": "Text",
+                  "props": {
+                    "text": {
+                      "$bind": "title"
+                    },
+                    "style": {
+                      "variant": "sm",
+                      "weight": "bold",
+                      "tracking": "wide",
+                      "transform": "uppercase"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "Text",
+              "props": {
+                "$if": {
+                  "$bind": "breadcrumb"
+                },
+                "text": {
+                  "$bind": "breadcrumb"
+                },
+                "style": {
+                  "variant": "sm",
+                  "color": "text-faint"
+                }
+              }
+            },
+            {
+              "type": "Box",
+              "props": {
+                "style": {
+                  "grow": true
+                }
+              }
+            },
+            {
+              "type": "Outlet",
+              "props": {
+                "name": "account"
+              }
             }
           ]
         }

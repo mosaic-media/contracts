@@ -712,6 +712,16 @@ export function InputType(v: string): El {
   return Prop("inputType", v);
 }
 
+/** Chrome selects which frame the app shell draws: "media" — the floating pills over a full-bleed hero — or "admin", the solid bar the settings side of the app wears. Named rather than a boolean because the two are different rooms in the same building, and a third (a player, a setup wizard) is a case rather than a second flag. */
+export function Chrome(v: string): El {
+  return Prop("chrome", v);
+}
+
+/** Breadcrumb is the trail after the brand in the admin chrome — "/ Settings". It says where you are on a side of the app that has no hero to say it for you. */
+export function Breadcrumb(v: string): El {
+  return Prop("breadcrumb", v);
+}
+
 /** Lead is the sentence under a panel's heading saying what the panel is for. Distinct from Summary, which explains one row. */
 export function Lead(v: string): El {
   return Prop("lead", v);
@@ -1118,6 +1128,16 @@ export function BindHelp(path: string): El {
 /** BindInputType sets "inputType" from the named path instead of from a value. */
 export function BindInputType(path: string): El {
   return Prop("inputType", bind(path));
+}
+
+/** BindChrome sets "chrome" from the named path instead of from a value. */
+export function BindChrome(path: string): El {
+  return Prop("chrome", bind(path));
+}
+
+/** BindBreadcrumb sets "breadcrumb" from the named path instead of from a value. */
+export function BindBreadcrumb(path: string): El {
+  return Prop("breadcrumb", bind(path));
 }
 
 /** BindLead sets "lead" from the named path instead of from a value. */
