@@ -845,7 +845,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
           "direction": "row",
           "align": "end",
           "width": "full",
-          "minHeight": "88%",
+          "minHeight": "88% screen",
           "overflow": "hidden"
         }
       },
@@ -3933,7 +3933,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
             },
             "style": {
               "direction": "row",
-              "align": "baseline",
+              "align": "center",
               "gap": 4
             }
           },
@@ -3949,6 +3949,12 @@ export const DEFINITIONS: ComponentDefinition[] = [
                   "weight": "medium",
                   "tracking": "tight"
                 }
+              }
+            },
+            {
+              "type": "Outlet",
+              "props": {
+                "name": "header"
               }
             },
             {

@@ -569,8 +569,12 @@ type GridColumnElement struct {
 }
 
 // A size: a number of pixels, "full" (100% of the parent), "screen" (the viewport in that
-// axis — the one non-parent-relative size, for full-bleed surfaces and the app frame),
-// "auto", or a percentage string.
+// axis — the one non-parent-relative size, for full-bleed surfaces and the app frame), "NN%
+// screen" (a fraction of that same viewport axis), "auto", or a plain percentage string (of
+// the parent). The viewport fraction is spelled out rather than left to a plain percentage
+// because the two resolve against different things and the difference is invisible until it
+// is catastrophic: a hero asking for 88% of a parent whose height is the page's own content
+// grows to 88% of the whole scroll length.
 type Dimension struct {
 	Double *float64
 	String *string

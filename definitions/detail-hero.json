@@ -8,7 +8,7 @@
         "direction": "row",
         "align": "end",
         "width": "full",
-        "minHeight": "88%",
+        "minHeight": "88% screen",
         "overflow": "hidden"
       }
     },

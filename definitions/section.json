@@ -20,7 +20,7 @@
           },
           "style": {
             "direction": "row",
-            "align": "baseline",
+            "align": "center",
             "gap": 4
           }
         },
@@ -36,6 +36,12 @@
                 "weight": "medium",
                 "tracking": "tight"
               }
+            }
+          },
+          {
+            "type": "Outlet",
+            "props": {
+              "name": "header"
             }
           },
           {
