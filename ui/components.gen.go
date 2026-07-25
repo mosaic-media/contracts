@@ -249,6 +249,11 @@ func SettingsFrame(title string, els ...El) *Element {
 	return compose("SettingsFrame", map[string]any{"title": title}, els)
 }
 
+// SetupFrame is the first-boot wizard's frame (ADR 0098) — a step rail beside the step being filled in. It is a frame rather than a one-off panel because the design has six steps and Mosaic can answer one; the shape is right for the others as the capability behind them arrives.
+func SetupFrame(title string, els ...El) *Element {
+	return compose("SetupFrame", map[string]any{"title": title}, els)
+}
+
 // SignInPanel is the screen drawn before there is a session (ADR 0097) — the brand, a welcome, and a form on a lit card. It is a component like any other because a Platform that is refusing to authenticate you is still answering; the client's own hand-written UI is for the states where it cannot.
 func SignInPanel(title string, els ...El) *Element {
 	return compose("SignInPanel", map[string]any{"title": title}, els)
@@ -503,6 +508,12 @@ func Breadcrumb(v string) El { return Prop("breadcrumb", v) }
 
 // Brand is the install's name for itself, drawn where a screen has no chrome to carry it.
 func Brand(v string) El { return Prop("brand", v) }
+
+// Step is where you are in a sequence — "Step 1 of 6".
+func Step(v string) El { return Prop("step", v) }
+
+// Footnote is the quiet line at the foot of a rail, saying what a screen does not oblige you to decide now.
+func Footnote(v string) El { return Prop("footnote", v) }
 
 // Lead is the sentence under a panel's heading saying what the panel is for. Distinct from Summary, which explains one row.
 func Lead(v string) El { return Prop("lead", v) }
@@ -762,6 +773,12 @@ func BindBreadcrumb(path string) El { return Prop("breadcrumb", sdui.Bind(path))
 
 // BindBrand sets "brand" from the named path instead of from a value.
 func BindBrand(path string) El { return Prop("brand", sdui.Bind(path)) }
+
+// BindStep sets "step" from the named path instead of from a value.
+func BindStep(path string) El { return Prop("step", sdui.Bind(path)) }
+
+// BindFootnote sets "footnote" from the named path instead of from a value.
+func BindFootnote(path string) El { return Prop("footnote", sdui.Bind(path)) }
 
 // BindLead sets "lead" from the named path instead of from a value.
 func BindLead(path string) El { return Prop("lead", sdui.Bind(path)) }

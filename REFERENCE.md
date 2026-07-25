@@ -12,7 +12,7 @@ Three tiers, and the difference between them is what a change costs:
 | Tier | What it is | Cost of adding one |
 |---|---|---|
 | **Primitives** (25) | Native code every client implements | A client release, on every platform |
-| **Components** (38) | Definitions the Platform serves as data | Nothing — a file in `definitions/` |
+| **Components** (39) | Definitions the Platform serves as data | Nothing — a file in `definitions/` |
 | **Actions** (12) | Behaviours a client interprets | A client release |
 
 ## Type names
@@ -425,6 +425,7 @@ expands whatever it is sent.
 - **`RelatedRail`** — RelatedRail is a titled rail that says so when it is empty.
 - **`Select`** — Select is a labelled dropdown over server-supplied options.
 - **`SettingsFrame`** — SettingsFrame is the Platform-owned settings chrome (ADR 0038): a nav beside the panel the open section fills.
+- **`SetupFrame`** — SetupFrame is the first-boot wizard's frame (ADR 0098) — a step rail beside the step being filled in. It is a frame rather than a one-off panel because the design has six steps and Mosaic can answer one; the shape is right for the others as the capability behind them arrives.
 - **`SignInPanel`** — SignInPanel is the screen drawn before there is a session (ADR 0097) — the brand, a welcome, and a form on a lit card. It is a component like any other because a Platform that is refusing to authenticate you is still answering; the client's own hand-written UI is for the states where it cannot.
 - **`SettingsRow`** — SettingsRow is one line of a settings panel — a label, an optional explanation of what it does, and a control or a value on the right. It is the workhorse of every panel in the design, which is why it is a component rather than a Stack assembled per screen: a panel that builds its own rows is a panel that drifts from the others.
 - **`SettingsNavGroup`** — SettingsNavGroup is one labelled run of settings nav rows.

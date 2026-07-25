@@ -33,7 +33,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file mosaic/auth/v1/auth.proto.
  */
 export const file_mosaic_auth_v1_auth: GenFile = /*@__PURE__*/
-  fileDesc("Chltb3NhaWMvYXV0aC92MS9hdXRoLnByb3RvEg5tb3NhaWMuYXV0aC52MSIkChNTaWduSW5TY3JlZW5SZXF1ZXN0Eg0KBWVycm9yGAEgASgJIj4KFFNpZ25JblNjcmVlblJlc3BvbnNlEiYKBnNjcmVlbhgBIAEoCzIWLm1vc2FpYy5zZHVpLnYxLlVJTm9kZSJGCg1TaWduSW5SZXF1ZXN0EhAKCHVzZXJuYW1lGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJEhEKCWRldmljZV9pZBgDIAEoCSI6Cg5TaWduSW5SZXNwb25zZRIoCgdzZXNzaW9uGAEgASgLMhcubW9zYWljLmF1dGgudjEuU2Vzc2lvbiJACg5TaWduT3V0UmVxdWVzdBIWCg5jYWxsZXJfc2Vzc2lvbhgBIAEoCRIWCg50YXJnZXRfc2Vzc2lvbhgCIAEoCSIiCg9TaWduT3V0UmVzcG9uc2USDwoHc2Vzc2lvbhgBIAEoCSLhAQoHU2Vzc2lvbhIKCgJpZBgBIAEoCRIPCgd1c2VyX2lkGAIgASgJEhEKCWRldmljZV9pZBgDIAEoCRItCglpc3N1ZWRfYXQYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEjAKDGxhc3Rfc2Vlbl9hdBgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKZXhwaXJlc19hdBgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASFQoNYXV0aF9zdHJlbmd0aBgHIAEoCTL9AQoLQXV0aFNlcnZpY2USWQoMU2lnbkluU2NyZWVuEiMubW9zYWljLmF1dGgudjEuU2lnbkluU2NyZWVuUmVxdWVzdBokLm1vc2FpYy5hdXRoLnYxLlNpZ25JblNjcmVlblJlc3BvbnNlEkcKBlNpZ25JbhIdLm1vc2FpYy5hdXRoLnYxLlNpZ25JblJlcXVlc3QaHi5tb3NhaWMuYXV0aC52MS5TaWduSW5SZXNwb25zZRJKCgdTaWduT3V0Eh4ubW9zYWljLmF1dGgudjEuU2lnbk91dFJlcXVlc3QaHy5tb3NhaWMuYXV0aC52MS5TaWduT3V0UmVzcG9uc2VCPVo7Z2l0aHViLmNvbS9tb3NhaWMtbWVkaWEvY29udHJhY3RzL2dlbi9tb3NhaWMvYXV0aC92MTthdXRodjFiBnByb3RvMw", [file_google_protobuf_timestamp, file_mosaic_sdui_v1_sdui]);
+  fileDesc("Chltb3NhaWMvYXV0aC92MS9hdXRoLnByb3RvEg5tb3NhaWMuYXV0aC52MSIkChNTaWduSW5TY3JlZW5SZXF1ZXN0Eg0KBWVycm9yGAEgASgJIj4KFFNpZ25JblNjcmVlblJlc3BvbnNlEiYKBnNjcmVlbhgBIAEoCzIWLm1vc2FpYy5zZHVpLnYxLlVJTm9kZSJwChJDbGFpbVNlcnZlclJlcXVlc3QSEAoIdXNlcm5hbWUYASABKAkSEAoIcGFzc3dvcmQYAiABKAkSFAoMZGlzcGxheV9uYW1lGAMgASgJEg0KBWVtYWlsGAQgASgJEhEKCWRldmljZV9pZBgFIAEoCSI/ChNDbGFpbVNlcnZlclJlc3BvbnNlEigKB3Nlc3Npb24YASABKAsyFy5tb3NhaWMuYXV0aC52MS5TZXNzaW9uIkYKDVNpZ25JblJlcXVlc3QSEAoIdXNlcm5hbWUYASABKAkSEAoIcGFzc3dvcmQYAiABKAkSEQoJZGV2aWNlX2lkGAMgASgJIjoKDlNpZ25JblJlc3BvbnNlEigKB3Nlc3Npb24YASABKAsyFy5tb3NhaWMuYXV0aC52MS5TZXNzaW9uIkAKDlNpZ25PdXRSZXF1ZXN0EhYKDmNhbGxlcl9zZXNzaW9uGAEgASgJEhYKDnRhcmdldF9zZXNzaW9uGAIgASgJIiIKD1NpZ25PdXRSZXNwb25zZRIPCgdzZXNzaW9uGAEgASgJIuEBCgdTZXNzaW9uEgoKAmlkGAEgASgJEg8KB3VzZXJfaWQYAiABKAkSEQoJZGV2aWNlX2lkGAMgASgJEi0KCWlzc3VlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASMAoMbGFzdF9zZWVuX2F0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgpleHBpcmVzX2F0GAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIVCg1hdXRoX3N0cmVuZ3RoGAcgASgJMtUCCgtBdXRoU2VydmljZRJZCgxTaWduSW5TY3JlZW4SIy5tb3NhaWMuYXV0aC52MS5TaWduSW5TY3JlZW5SZXF1ZXN0GiQubW9zYWljLmF1dGgudjEuU2lnbkluU2NyZWVuUmVzcG9uc2USVgoLQ2xhaW1TZXJ2ZXISIi5tb3NhaWMuYXV0aC52MS5DbGFpbVNlcnZlclJlcXVlc3QaIy5tb3NhaWMuYXV0aC52MS5DbGFpbVNlcnZlclJlc3BvbnNlEkcKBlNpZ25JbhIdLm1vc2FpYy5hdXRoLnYxLlNpZ25JblJlcXVlc3QaHi5tb3NhaWMuYXV0aC52MS5TaWduSW5SZXNwb25zZRJKCgdTaWduT3V0Eh4ubW9zYWljLmF1dGgudjEuU2lnbk91dFJlcXVlc3QaHy5tb3NhaWMuYXV0aC52MS5TaWduT3V0UmVzcG9uc2VCPVo7Z2l0aHViLmNvbS9tb3NhaWMtbWVkaWEvY29udHJhY3RzL2dlbi9tb3NhaWMvYXV0aC92MTthdXRodjFiBnByb3RvMw", [file_google_protobuf_timestamp, file_mosaic_sdui_v1_sdui]);
 
 /**
  * SignInScreenRequest carries an optional message to render on the screen — the
@@ -76,6 +76,67 @@ export const SignInScreenResponseSchema: GenMessage<SignInScreenResponse> = /*@_
   messageDesc(file_mosaic_auth_v1_auth, 1);
 
 /**
+ * ClaimServerRequest is the owner an unclaimed server is being given. Display
+ * name and email are optional: a name to show and an address to recover a
+ * password from are both refinements on being able to sign in at all.
+ *
+ * @generated from message mosaic.auth.v1.ClaimServerRequest
+ */
+export type ClaimServerRequest = Message<"mosaic.auth.v1.ClaimServerRequest"> & {
+  /**
+   * @generated from field: string username = 1;
+   */
+  username: string;
+
+  /**
+   * @generated from field: string password = 2;
+   */
+  password: string;
+
+  /**
+   * @generated from field: string display_name = 3;
+   */
+  displayName: string;
+
+  /**
+   * @generated from field: string email = 4;
+   */
+  email: string;
+
+  /**
+   * @generated from field: string device_id = 5;
+   */
+  deviceId: string;
+};
+
+/**
+ * Describes the message mosaic.auth.v1.ClaimServerRequest.
+ * Use `create(ClaimServerRequestSchema)` to create a new message.
+ */
+export const ClaimServerRequestSchema: GenMessage<ClaimServerRequest> = /*@__PURE__*/
+  messageDesc(file_mosaic_auth_v1_auth, 2);
+
+/**
+ * ClaimServerResponse carries the session the new owner is signed in with, so
+ * claiming a server does not then ask for the password set moments earlier.
+ *
+ * @generated from message mosaic.auth.v1.ClaimServerResponse
+ */
+export type ClaimServerResponse = Message<"mosaic.auth.v1.ClaimServerResponse"> & {
+  /**
+   * @generated from field: mosaic.auth.v1.Session session = 1;
+   */
+  session?: Session | undefined;
+};
+
+/**
+ * Describes the message mosaic.auth.v1.ClaimServerResponse.
+ * Use `create(ClaimServerResponseSchema)` to create a new message.
+ */
+export const ClaimServerResponseSchema: GenMessage<ClaimServerResponse> = /*@__PURE__*/
+  messageDesc(file_mosaic_auth_v1_auth, 3);
+
+/**
  * SignInRequest is a local username/password authentication from a named
  * device. device_id is required: a session belongs to a device, so the Platform
  * can revoke one client without ending the others.
@@ -104,7 +165,7 @@ export type SignInRequest = Message<"mosaic.auth.v1.SignInRequest"> & {
  * Use `create(SignInRequestSchema)` to create a new message.
  */
 export const SignInRequestSchema: GenMessage<SignInRequest> = /*@__PURE__*/
-  messageDesc(file_mosaic_auth_v1_auth, 2);
+  messageDesc(file_mosaic_auth_v1_auth, 4);
 
 /**
  * SignInResponse carries the issued session.
@@ -123,7 +184,7 @@ export type SignInResponse = Message<"mosaic.auth.v1.SignInResponse"> & {
  * Use `create(SignInResponseSchema)` to create a new message.
  */
 export const SignInResponseSchema: GenMessage<SignInResponse> = /*@__PURE__*/
-  messageDesc(file_mosaic_auth_v1_auth, 3);
+  messageDesc(file_mosaic_auth_v1_auth, 5);
 
 /**
  * SignOutRequest revokes target_session on behalf of caller_session.
@@ -147,7 +208,7 @@ export type SignOutRequest = Message<"mosaic.auth.v1.SignOutRequest"> & {
  * Use `create(SignOutRequestSchema)` to create a new message.
  */
 export const SignOutRequestSchema: GenMessage<SignOutRequest> = /*@__PURE__*/
-  messageDesc(file_mosaic_auth_v1_auth, 4);
+  messageDesc(file_mosaic_auth_v1_auth, 6);
 
 /**
  * SignOutResponse echoes the session that was revoked.
@@ -166,7 +227,7 @@ export type SignOutResponse = Message<"mosaic.auth.v1.SignOutResponse"> & {
  * Use `create(SignOutResponseSchema)` to create a new message.
  */
 export const SignOutResponseSchema: GenMessage<SignOutResponse> = /*@__PURE__*/
-  messageDesc(file_mosaic_auth_v1_auth, 5);
+  messageDesc(file_mosaic_auth_v1_auth, 7);
 
 /**
  * Session is the projection of an issued session a client is allowed to see.
@@ -225,7 +286,7 @@ export type Session = Message<"mosaic.auth.v1.Session"> & {
  * Use `create(SessionSchema)` to create a new message.
  */
 export const SessionSchema: GenMessage<Session> = /*@__PURE__*/
-  messageDesc(file_mosaic_auth_v1_auth, 6);
+  messageDesc(file_mosaic_auth_v1_auth, 8);
 
 /**
  * AuthService mints and revokes sessions, and serves the one screen that is
@@ -255,6 +316,26 @@ export const AuthService: GenService<{
     methodKind: "unary";
     input: typeof SignInScreenRequestSchema;
     output: typeof SignInScreenResponseSchema;
+  },
+  /**
+   * ClaimServer creates the first administrator of a server that has none, and
+   * signs them in (ADR 0098).
+   *
+   * It is unauthenticated because it has to be: every command that could grant
+   * the first authority is itself policy-gated, so a server with no users has
+   * no in-band way to acquire one. It refuses once any user exists — a second
+   * call is ALREADY_EXISTS, not a second owner — and the check and the create
+   * share a transaction, so two clients racing cannot both win.
+   *
+   * The threat this accepts is that whoever reaches an unclaimed server first
+   * owns it. ADR 0098 states it rather than burying it.
+   *
+   * @generated from rpc mosaic.auth.v1.AuthService.ClaimServer
+   */
+  claimServer: {
+    methodKind: "unary";
+    input: typeof ClaimServerRequestSchema;
+    output: typeof ClaimServerResponseSchema;
   },
   /**
    * SignIn authenticates a local user with a password and issues a session.

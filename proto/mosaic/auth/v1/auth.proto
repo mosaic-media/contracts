@@ -42,6 +42,18 @@ service AuthService {
   // server name. An unauthenticated caller learns that this is a Mosaic server
   // and is asked for a username and a password.
   rpc SignInScreen(SignInScreenRequest) returns (SignInScreenResponse);
+  // ClaimServer creates the first administrator of a server that has none, and
+  // signs them in (ADR 0098).
+  //
+  // It is unauthenticated because it has to be: every command that could grant
+  // the first authority is itself policy-gated, so a server with no users has
+  // no in-band way to acquire one. It refuses once any user exists — a second
+  // call is ALREADY_EXISTS, not a second owner — and the check and the create
+  // share a transaction, so two clients racing cannot both win.
+  //
+  // The threat this accepts is that whoever reaches an unclaimed server first
+  // owns it. ADR 0098 states it rather than burying it.
+  rpc ClaimServer(ClaimServerRequest) returns (ClaimServerResponse);
   // SignIn authenticates a local user with a password and issues a session.
   // The returned session id is the opaque ref (ADR 0017) the client presents on
   // every SessionService call.
@@ -62,6 +74,23 @@ message SignInScreenRequest {
 // SignInScreenResponse carries the tree to render.
 message SignInScreenResponse {
   mosaic.sdui.v1.UINode screen = 1;
+}
+
+// ClaimServerRequest is the owner an unclaimed server is being given. Display
+// name and email are optional: a name to show and an address to recover a
+// password from are both refinements on being able to sign in at all.
+message ClaimServerRequest {
+  string username = 1;
+  string password = 2;
+  string display_name = 3;
+  string email = 4;
+  string device_id = 5;
+}
+
+// ClaimServerResponse carries the session the new owner is signed in with, so
+// claiming a server does not then ask for the password set moments earlier.
+message ClaimServerResponse {
+  Session session = 1;
 }
 
 // SignInRequest is a local username/password authentication from a named

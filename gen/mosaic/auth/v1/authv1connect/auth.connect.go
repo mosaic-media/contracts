@@ -55,6 +55,8 @@ const (
 	// AuthServiceSignInScreenProcedure is the fully-qualified name of the AuthService's SignInScreen
 	// RPC.
 	AuthServiceSignInScreenProcedure = "/mosaic.auth.v1.AuthService/SignInScreen"
+	// AuthServiceClaimServerProcedure is the fully-qualified name of the AuthService's ClaimServer RPC.
+	AuthServiceClaimServerProcedure = "/mosaic.auth.v1.AuthService/ClaimServer"
 	// AuthServiceSignInProcedure is the fully-qualified name of the AuthService's SignIn RPC.
 	AuthServiceSignInProcedure = "/mosaic.auth.v1.AuthService/SignIn"
 	// AuthServiceSignOutProcedure is the fully-qualified name of the AuthService's SignOut RPC.
@@ -76,6 +78,18 @@ type AuthServiceClient interface {
 	// server name. An unauthenticated caller learns that this is a Mosaic server
 	// and is asked for a username and a password.
 	SignInScreen(context.Context, *connect.Request[v1.SignInScreenRequest]) (*connect.Response[v1.SignInScreenResponse], error)
+	// ClaimServer creates the first administrator of a server that has none, and
+	// signs them in (ADR 0098).
+	//
+	// It is unauthenticated because it has to be: every command that could grant
+	// the first authority is itself policy-gated, so a server with no users has
+	// no in-band way to acquire one. It refuses once any user exists — a second
+	// call is ALREADY_EXISTS, not a second owner — and the check and the create
+	// share a transaction, so two clients racing cannot both win.
+	//
+	// The threat this accepts is that whoever reaches an unclaimed server first
+	// owns it. ADR 0098 states it rather than burying it.
+	ClaimServer(context.Context, *connect.Request[v1.ClaimServerRequest]) (*connect.Response[v1.ClaimServerResponse], error)
 	// SignIn authenticates a local user with a password and issues a session.
 	// The returned session id is the opaque ref (ADR 0017) the client presents on
 	// every SessionService call.
@@ -103,6 +117,12 @@ func NewAuthServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(authServiceMethods.ByName("SignInScreen")),
 			connect.WithClientOptions(opts...),
 		),
+		claimServer: connect.NewClient[v1.ClaimServerRequest, v1.ClaimServerResponse](
+			httpClient,
+			baseURL+AuthServiceClaimServerProcedure,
+			connect.WithSchema(authServiceMethods.ByName("ClaimServer")),
+			connect.WithClientOptions(opts...),
+		),
 		signIn: connect.NewClient[v1.SignInRequest, v1.SignInResponse](
 			httpClient,
 			baseURL+AuthServiceSignInProcedure,
@@ -121,6 +141,7 @@ func NewAuthServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 // authServiceClient implements AuthServiceClient.
 type authServiceClient struct {
 	signInScreen *connect.Client[v1.SignInScreenRequest, v1.SignInScreenResponse]
+	claimServer  *connect.Client[v1.ClaimServerRequest, v1.ClaimServerResponse]
 	signIn       *connect.Client[v1.SignInRequest, v1.SignInResponse]
 	signOut      *connect.Client[v1.SignOutRequest, v1.SignOutResponse]
 }
@@ -128,6 +149,11 @@ type authServiceClient struct {
 // SignInScreen calls mosaic.auth.v1.AuthService.SignInScreen.
 func (c *authServiceClient) SignInScreen(ctx context.Context, req *connect.Request[v1.SignInScreenRequest]) (*connect.Response[v1.SignInScreenResponse], error) {
 	return c.signInScreen.CallUnary(ctx, req)
+}
+
+// ClaimServer calls mosaic.auth.v1.AuthService.ClaimServer.
+func (c *authServiceClient) ClaimServer(ctx context.Context, req *connect.Request[v1.ClaimServerRequest]) (*connect.Response[v1.ClaimServerResponse], error) {
+	return c.claimServer.CallUnary(ctx, req)
 }
 
 // SignIn calls mosaic.auth.v1.AuthService.SignIn.
@@ -155,6 +181,18 @@ type AuthServiceHandler interface {
 	// server name. An unauthenticated caller learns that this is a Mosaic server
 	// and is asked for a username and a password.
 	SignInScreen(context.Context, *connect.Request[v1.SignInScreenRequest]) (*connect.Response[v1.SignInScreenResponse], error)
+	// ClaimServer creates the first administrator of a server that has none, and
+	// signs them in (ADR 0098).
+	//
+	// It is unauthenticated because it has to be: every command that could grant
+	// the first authority is itself policy-gated, so a server with no users has
+	// no in-band way to acquire one. It refuses once any user exists — a second
+	// call is ALREADY_EXISTS, not a second owner — and the check and the create
+	// share a transaction, so two clients racing cannot both win.
+	//
+	// The threat this accepts is that whoever reaches an unclaimed server first
+	// owns it. ADR 0098 states it rather than burying it.
+	ClaimServer(context.Context, *connect.Request[v1.ClaimServerRequest]) (*connect.Response[v1.ClaimServerResponse], error)
 	// SignIn authenticates a local user with a password and issues a session.
 	// The returned session id is the opaque ref (ADR 0017) the client presents on
 	// every SessionService call.
@@ -178,6 +216,12 @@ func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(authServiceMethods.ByName("SignInScreen")),
 		connect.WithHandlerOptions(opts...),
 	)
+	authServiceClaimServerHandler := connect.NewUnaryHandler(
+		AuthServiceClaimServerProcedure,
+		svc.ClaimServer,
+		connect.WithSchema(authServiceMethods.ByName("ClaimServer")),
+		connect.WithHandlerOptions(opts...),
+	)
 	authServiceSignInHandler := connect.NewUnaryHandler(
 		AuthServiceSignInProcedure,
 		svc.SignIn,
@@ -194,6 +238,8 @@ func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption
 		switch r.URL.Path {
 		case AuthServiceSignInScreenProcedure:
 			authServiceSignInScreenHandler.ServeHTTP(w, r)
+		case AuthServiceClaimServerProcedure:
+			authServiceClaimServerHandler.ServeHTTP(w, r)
 		case AuthServiceSignInProcedure:
 			authServiceSignInHandler.ServeHTTP(w, r)
 		case AuthServiceSignOutProcedure:
@@ -209,6 +255,10 @@ type UnimplementedAuthServiceHandler struct{}
 
 func (UnimplementedAuthServiceHandler) SignInScreen(context.Context, *connect.Request[v1.SignInScreenRequest]) (*connect.Response[v1.SignInScreenResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("mosaic.auth.v1.AuthService.SignInScreen is not implemented"))
+}
+
+func (UnimplementedAuthServiceHandler) ClaimServer(context.Context, *connect.Request[v1.ClaimServerRequest]) (*connect.Response[v1.ClaimServerResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("mosaic.auth.v1.AuthService.ClaimServer is not implemented"))
 }
 
 func (UnimplementedAuthServiceHandler) SignIn(context.Context, *connect.Request[v1.SignInRequest]) (*connect.Response[v1.SignInResponse], error) {

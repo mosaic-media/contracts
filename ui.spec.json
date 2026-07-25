@@ -1309,6 +1309,18 @@
       "doc": "Brand is the install's name for itself, drawn where a screen has no chrome to carry it."
     },
     {
+      "func": "Step",
+      "key": "step",
+      "type": "string",
+      "doc": "Step is where you are in a sequence — \"Step 1 of 6\"."
+    },
+    {
+      "func": "Footnote",
+      "key": "footnote",
+      "type": "string",
+      "doc": "Footnote is the quiet line at the foot of a rail, saying what a screen does not oblige you to decide now."
+    },
+    {
       "func": "Lead",
       "key": "lead",
       "type": "string",
@@ -1883,6 +1895,18 @@
       "func": "SettingsFrame",
       "type": "SettingsFrame",
       "doc": "SettingsFrame is the Platform-owned settings chrome (ADR 0038): a nav beside the panel the open section fills.",
+      "positional": [
+        {
+          "name": "title",
+          "key": "title",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "func": "SetupFrame",
+      "type": "SetupFrame",
+      "doc": "SetupFrame is the first-boot wizard's frame (ADR 0098) — a step rail beside the step being filled in. It is a frame rather than a one-off panel because the design has six steps and Mosaic can answer one; the shape is right for the others as the capability behind them arrives.",
       "positional": [
         {
           "name": "title",

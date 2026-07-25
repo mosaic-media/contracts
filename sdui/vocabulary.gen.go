@@ -80,6 +80,7 @@ const (
 	TypeRelatedRail      = "RelatedRail"
 	TypeSelect           = "Select"
 	TypeSettingsFrame    = "SettingsFrame"
+	TypeSetupFrame       = "SetupFrame"
 	TypeSignInPanel      = "SignInPanel"
 	TypeSettingsRow      = "SettingsRow"
 	TypeSettingsNavGroup = "SettingsNavGroup"
@@ -332,6 +333,7 @@ var Components = []string{
 	"RelatedRail",
 	"Select",
 	"SettingsFrame",
+	"SetupFrame",
 	"SignInPanel",
 	"SettingsRow",
 	"SettingsNavGroup",
