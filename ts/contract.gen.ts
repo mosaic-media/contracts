@@ -71,7 +71,11 @@ export interface UINode {
     props?: { [key: string]: any };
     slots?: { [key: string]: UINode[] };
     /**
-     * Component discriminator, e.g. "PosterCard".
+     * Component discriminator, e.g. "PosterCard". Namespaced: a core type — every primitive and
+     * every component in the published vocabulary — is unprefixed and never contains the type
+     * separator; a module's own type is "moduleId:Type". Open and flat is not the same as open:
+     * without the namespace two modules could both contribute a StatChip, and one could
+     * contribute a PosterCard and take the core component's place in every client's registry.
      */
     type: string;
 }

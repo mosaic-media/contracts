@@ -60,16 +60,17 @@ import (
 // ── spec model ───────────────────────────────────────────────────────────────
 
 type spec struct {
-	Version    string      `json:"version"`
-	Tones      []tone      `json:"tones"`
-	Surfaces   []surface   `json:"surfaces"`
-	Actions    []action    `json:"actions"`
-	Validators []validator `json:"validators"`
-	Predicates []predicate `json:"predicates"`
-	Primitives []primitive `json:"primitives"`
-	Sugar      []sugar     `json:"sugar"`
-	Slots      []slot      `json:"slots"`
-	Components []component `json:"components"`
+	Version       string      `json:"version"`
+	TypeSeparator string      `json:"typeSeparator"`
+	Tones         []tone      `json:"tones"`
+	Surfaces      []surface   `json:"surfaces"`
+	Actions       []action    `json:"actions"`
+	Validators    []validator `json:"validators"`
+	Predicates    []predicate `json:"predicates"`
+	Primitives    []primitive `json:"primitives"`
+	Sugar         []sugar     `json:"sugar"`
+	Slots         []slot      `json:"slots"`
+	Components    []component `json:"components"`
 }
 
 type tone struct {
@@ -192,6 +193,18 @@ func main() {
 	}
 
 	sp := loadSpec(filepath.Join(root, "ui.spec.json"))
+
+	// The checks generation itself depends on, run before it. A type name is a
+	// Go and TypeScript function name, so a malformed one does not reach the
+	// lint at the end — it fails gofmt first and dumps the whole generated file
+	// to stderr, which reads as a generator bug rather than as the spec error it
+	// is.
+	if errs := lintSpecSanity(sp); len(errs) > 0 {
+		for _, e := range errs {
+			fmt.Fprintf(os.Stderr, "lint: %s\n", e)
+		}
+		os.Exit(1)
+	}
 
 	outputs := []struct {
 		path string
@@ -570,6 +583,12 @@ func genVocabularyGo(sp spec) []byte {
 	fmt.Fprintf(&b, "// prop or an action is a major one.\n")
 	fmt.Fprintf(&b, "const VocabularyVersion = %s\n\n", strconv.Quote(sp.Version))
 
+	b.WriteString("// TypeSeparator divides a module's id from its own type name. Core types are\n")
+	b.WriteString("// unprefixed and may never contain it; a module's are moduleId:type. Two\n")
+	b.WriteString("// modules could otherwise both call a component StatChip, and one could call\n")
+	b.WriteString("// it PosterCard and take the core component's place.\n")
+	fmt.Fprintf(&b, "const TypeSeparator = %s\n\n", strconv.Quote(sp.TypeSeparator))
+
 	b.WriteString("// Node type names — the primitive tier.\n")
 	b.WriteString("const (\n")
 	for _, p := range sp.Primitives {
@@ -679,6 +698,8 @@ func genVocabularyTS(sp spec) []byte {
 
 	fmt.Fprintf(&b, "/** The vocabulary version a client declares it implements. */\nexport const vocabularyVersion = %s;\n\n", strconv.Quote(sp.Version))
 
+	fmt.Fprintf(&b, "/** Divides a module's id from its own type name; core types never contain it. */\nexport const typeSeparator = %s;\n\n", strconv.Quote(sp.TypeSeparator))
+
 	b.WriteString("/** The native tier — what a client must implement (ADR 0024). */\n")
 	b.WriteString("export const primitives: PrimitiveSpec[] = [\n")
 	for _, p := range sp.Primitives {
@@ -731,15 +752,16 @@ func genVocabularyTS(sp spec) []byte {
 // the Go module, because the drift it exists to catch is precisely a client that
 // implements a set nobody compared against the contract.
 type fixture struct {
-	Comment    string          `json:"//"`
-	Version    string          `json:"version"`
-	Primitives []fixturePrim   `json:"primitives"`
-	Components []string        `json:"components"`
-	Actions    []string        `json:"actions"`
-	Validators []string        `json:"validators"`
-	Predicates []string        `json:"predicates"`
-	Tones      []string        `json:"tones"`
-	Surfaces   []string        `json:"surfaces"`
+	Comment       string        `json:"//"`
+	Version       string        `json:"version"`
+	TypeSeparator string        `json:"typeSeparator"`
+	Primitives    []fixturePrim `json:"primitives"`
+	Components    []string      `json:"components"`
+	Actions       []string      `json:"actions"`
+	Validators    []string      `json:"validators"`
+	Predicates    []string      `json:"predicates"`
+	Tones         []string      `json:"tones"`
+	Surfaces      []string      `json:"surfaces"`
 }
 
 type fixturePrim struct {
@@ -756,13 +778,14 @@ func genFixture(sp spec) []byte {
 			"test asserts that the types it registers and the action kinds it interprets are " +
 			"exactly these — the check that could not exist while the primitive tier lived " +
 			"only as one client's TypeScript.",
-		Version:    sp.Version,
-		Components: []string{},
-		Actions:    []string{},
-		Validators: []string{},
-		Predicates: []string{},
-		Tones:      []string{},
-		Surfaces:   []string{},
+		Version:       sp.Version,
+		TypeSeparator: sp.TypeSeparator,
+		Components:    []string{},
+		Actions:       []string{},
+		Validators:    []string{},
+		Predicates:    []string{},
+		Tones:         []string{},
+		Surfaces:      []string{},
 	}
 	for _, p := range sp.Primitives {
 		keys := make([]string, 0, len(p.Props))
@@ -801,13 +824,40 @@ func genFixture(sp spec) []byte {
 
 // ── lint ─────────────────────────────────────────────────────────────────────
 
+// lintSpecSanity is the part of lint that needs nothing but the spec, and that
+// generation itself depends on being true. It runs twice — once before
+// generating, once as part of the full lint — because running it only at the end
+// means a spec error surfaces as a generator crash.
+func lintSpecSanity(sp spec) []string {
+	var errs []string
+	if sp.Version == "" {
+		errs = append(errs, "the spec declares no version — a client cannot negotiate against an unnamed vocabulary")
+	}
+	if sp.TypeSeparator == "" {
+		errs = append(errs, "the spec declares no typeSeparator — nothing then distinguishes a module's type from a core one")
+		return errs
+	}
+	// The separator belongs to modules. A core type carrying it would be
+	// indistinguishable from a module's own, so one `Foo:Bar` in the core
+	// vocabulary makes every namespaced type ambiguous rather than just itself.
+	for _, p := range sp.Primitives {
+		if strings.Contains(p.Type, sp.TypeSeparator) {
+			errs = append(errs, fmt.Sprintf("primitive %q contains the type separator %q, which is reserved for module namespacing", p.Type, sp.TypeSeparator))
+		}
+	}
+	for _, c := range sp.Components {
+		if c.Type != "" && strings.Contains(c.Type, sp.TypeSeparator) {
+			errs = append(errs, fmt.Sprintf("component %q contains the type separator %q, which is reserved for module namespacing", c.Type, sp.TypeSeparator))
+		}
+	}
+	return errs
+}
+
 func runLint(sp spec, root string) []string {
 	defsDir := filepath.Join(root, "definitions")
 	var errs []string
 
-	if sp.Version == "" {
-		errs = append(errs, "the spec declares no version — a client cannot negotiate against an unnamed vocabulary")
-	}
+	errs = append(errs, lintSpecSanity(sp)...)
 
 	// Integrity: no duplicate exported names.
 	seen := map[string]string{}
