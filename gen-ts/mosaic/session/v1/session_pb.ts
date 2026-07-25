@@ -39,7 +39,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file mosaic/session/v1/session.proto.
  */
 export const file_mosaic_session_v1_session: GenFile = /*@__PURE__*/
-  fileDesc("Ch9tb3NhaWMvc2Vzc2lvbi92MS9zZXNzaW9uLnByb3RvEhFtb3NhaWMuc2Vzc2lvbi52MSIFCgNBY2sirQEKDUF0dGFjaFJlcXVlc3QSDwoHc2Vzc2lvbhgBIAEoCRIOCgZzY3JlZW4YAiABKAkSDgoGcGFyYW1zGAMgASgMEjEKB3Byb2ZpbGUYBCABKAsyIC5tb3NhaWMuc2Vzc2lvbi52MS5DbGllbnRQcm9maWxlEjgKCnZvY2FidWxhcnkYBSABKAsyJC5tb3NhaWMuc2Vzc2lvbi52MS5Wb2NhYnVsYXJ5UHJvZmlsZSJJChFWb2NhYnVsYXJ5UHJvZmlsZRIPCgd2ZXJzaW9uGAEgASgJEhIKCnByaW1pdGl2ZXMYAiADKAkSDwoHYWN0aW9ucxgDIAMoCSJwCg1DbGllbnRQcm9maWxlEhIKCmNvbnRhaW5lcnMYASADKAkSFAoMdmlkZW9fY29kZWNzGAIgAygJEhQKDGF1ZGlvX2NvZGVjcxgDIAMoCRILCgNoZHIYBCABKAgSEgoKbWF4X2hlaWdodBgFIAEoBSJCCg9OYXZpZ2F0ZVJlcXVlc3QSDwoHc2Vzc2lvbhgBIAEoCRIOCgZzY3JlZW4YAiABKAkSDgoGcGFyYW1zGAMgASgMIj8KDUludm9rZVJlcXVlc3QSDwoHc2Vzc2lvbhgBIAEoCRIOCgZhY3Rpb24YAiABKAkSDQoFaW5wdXQYAyABKAwiLgoMSW5wdXRSZXF1ZXN0Eg8KB3Nlc3Npb24YASABKAkSDQoFdmFsdWUYAiABKAkiOgoQU3Vic2NyaWJlUmVxdWVzdBIPCgdzZXNzaW9uGAEgASgJEhUKDXJlc3VtZV9jdXJzb3IYAiABKAQi3gEKDVNlcnZlck1lc3NhZ2USCwoDc2VxGAEgASgEEjEKBnJlZ2lvbhgCIAEoCzIfLm1vc2FpYy5zZXNzaW9uLnYxLlJlZ2lvblVwZGF0ZUgAEi8KBXNoZWxsGAMgASgLMh4ubW9zYWljLnNlc3Npb24udjEuU2hlbGxVcGRhdGVIABIpCgV0b2FzdBgEIAEoCzIYLm1vc2FpYy5zZXNzaW9uLnYxLlRvYXN0SAASKQoFZXZlbnQYBSABKAsyGC5tb3NhaWMuc2Vzc2lvbi52MS5FdmVudEgAQgYKBGJvZHkiugEKDFJlZ2lvblVwZGF0ZRIOCgZyZWdpb24YASABKAkSLgoCb3AYAiABKA4yIi5tb3NhaWMuc2Vzc2lvbi52MS5SZWdpb25VcGRhdGUuT3ASJwoHdWlfbm9kZRgDIAEoCzIWLm1vc2FpYy5zZHVpLnYxLlVJTm9kZSJBCgJPcBILCgdSRVBMQUNFEAASCgoGQVBQRU5EEAESCwoHUFJFUEVORBACEgoKBlJFTU9WRRADEgkKBVBBVENIEAQiNgoLU2hlbGxVcGRhdGUSJwoHdWlfbm9kZRgBIAEoCzIWLm1vc2FpYy5zZHVpLnYxLlVJTm9kZSImCgVUb2FzdBIPCgdtZXNzYWdlGAEgASgJEgwKBHRvbmUYAiABKAkiJgoFRXZlbnQSDAoEdHlwZRgBIAEoCRIPCgdwYXlsb2FkGAIgASgMMv4CCg5TZXNzaW9uU2VydmljZRJCCgZBdHRhY2gSIC5tb3NhaWMuc2Vzc2lvbi52MS5BdHRhY2hSZXF1ZXN0GhYubW9zYWljLnNlc3Npb24udjEuQWNrEkYKCE5hdmlnYXRlEiIubW9zYWljLnNlc3Npb24udjEuTmF2aWdhdGVSZXF1ZXN0GhYubW9zYWljLnNlc3Npb24udjEuQWNrEkIKBkludm9rZRIgLm1vc2FpYy5zZXNzaW9uLnYxLkludm9rZVJlcXVlc3QaFi5tb3NhaWMuc2Vzc2lvbi52MS5BY2sSRgoLU3VibWl0SW5wdXQSHy5tb3NhaWMuc2Vzc2lvbi52MS5JbnB1dFJlcXVlc3QaFi5tb3NhaWMuc2Vzc2lvbi52MS5BY2sSVAoJU3Vic2NyaWJlEiMubW9zYWljLnNlc3Npb24udjEuU3Vic2NyaWJlUmVxdWVzdBogLm1vc2FpYy5zZXNzaW9uLnYxLlNlcnZlck1lc3NhZ2UwAUJDWkFnaXRodWIuY29tL21vc2FpYy1tZWRpYS9jb250cmFjdHMvZ2VuL21vc2FpYy9zZXNzaW9uL3YxO3Nlc3Npb252MWIGcHJvdG8z", [file_mosaic_sdui_v1_sdui]);
+  fileDesc("Ch9tb3NhaWMvc2Vzc2lvbi92MS9zZXNzaW9uLnByb3RvEhFtb3NhaWMuc2Vzc2lvbi52MSIFCgNBY2sirQEKDUF0dGFjaFJlcXVlc3QSDwoHc2Vzc2lvbhgBIAEoCRIOCgZzY3JlZW4YAiABKAkSDgoGcGFyYW1zGAMgASgMEjEKB3Byb2ZpbGUYBCABKAsyIC5tb3NhaWMuc2Vzc2lvbi52MS5DbGllbnRQcm9maWxlEjgKCnZvY2FidWxhcnkYBSABKAsyJC5tb3NhaWMuc2Vzc2lvbi52MS5Wb2NhYnVsYXJ5UHJvZmlsZSJJChFWb2NhYnVsYXJ5UHJvZmlsZRIPCgd2ZXJzaW9uGAEgASgJEhIKCnByaW1pdGl2ZXMYAiADKAkSDwoHYWN0aW9ucxgDIAMoCSJwCg1DbGllbnRQcm9maWxlEhIKCmNvbnRhaW5lcnMYASADKAkSFAoMdmlkZW9fY29kZWNzGAIgAygJEhQKDGF1ZGlvX2NvZGVjcxgDIAMoCRILCgNoZHIYBCABKAgSEgoKbWF4X2hlaWdodBgFIAEoBSJCCg9OYXZpZ2F0ZVJlcXVlc3QSDwoHc2Vzc2lvbhgBIAEoCRIOCgZzY3JlZW4YAiABKAkSDgoGcGFyYW1zGAMgASgMIj8KDUludm9rZVJlcXVlc3QSDwoHc2Vzc2lvbhgBIAEoCRIOCgZhY3Rpb24YAiABKAkSDQoFaW5wdXQYAyABKAwiLgoMSW5wdXRSZXF1ZXN0Eg8KB3Nlc3Npb24YASABKAkSDQoFdmFsdWUYAiABKAkiOgoQU3Vic2NyaWJlUmVxdWVzdBIPCgdzZXNzaW9uGAEgASgJEhUKDXJlc3VtZV9jdXJzb3IYAiABKAQilgIKDVNlcnZlck1lc3NhZ2USCwoDc2VxGAEgASgEEjEKBnJlZ2lvbhgCIAEoCzIfLm1vc2FpYy5zZXNzaW9uLnYxLlJlZ2lvblVwZGF0ZUgAEi8KBXNoZWxsGAMgASgLMh4ubW9zYWljLnNlc3Npb24udjEuU2hlbGxVcGRhdGVIABIpCgV0b2FzdBgEIAEoCzIYLm1vc2FpYy5zZXNzaW9uLnYxLlRvYXN0SAASKQoFZXZlbnQYBSABKAsyGC5tb3NhaWMuc2Vzc2lvbi52MS5FdmVudEgAEjYKDGZpZWxkX2Vycm9ycxgGIAEoCzIeLm1vc2FpYy5zZXNzaW9uLnYxLkZpZWxkRXJyb3JzSABCBgoEYm9keSJQCgtGaWVsZEVycm9ycxItCgZlcnJvcnMYASADKAsyHS5tb3NhaWMuc2Vzc2lvbi52MS5GaWVsZEVycm9yEhIKCmZvcm1fZXJyb3IYAiABKAkiLAoKRmllbGRFcnJvchINCgVmaWVsZBgBIAEoCRIPCgdtZXNzYWdlGAIgASgJIroBCgxSZWdpb25VcGRhdGUSDgoGcmVnaW9uGAEgASgJEi4KAm9wGAIgASgOMiIubW9zYWljLnNlc3Npb24udjEuUmVnaW9uVXBkYXRlLk9wEicKB3VpX25vZGUYAyABKAsyFi5tb3NhaWMuc2R1aS52MS5VSU5vZGUiQQoCT3ASCwoHUkVQTEFDRRAAEgoKBkFQUEVORBABEgsKB1BSRVBFTkQQAhIKCgZSRU1PVkUQAxIJCgVQQVRDSBAEIjYKC1NoZWxsVXBkYXRlEicKB3VpX25vZGUYASABKAsyFi5tb3NhaWMuc2R1aS52MS5VSU5vZGUiJgoFVG9hc3QSDwoHbWVzc2FnZRgBIAEoCRIMCgR0b25lGAIgASgJIiYKBUV2ZW50EgwKBHR5cGUYASABKAkSDwoHcGF5bG9hZBgCIAEoDDL+AgoOU2Vzc2lvblNlcnZpY2USQgoGQXR0YWNoEiAubW9zYWljLnNlc3Npb24udjEuQXR0YWNoUmVxdWVzdBoWLm1vc2FpYy5zZXNzaW9uLnYxLkFjaxJGCghOYXZpZ2F0ZRIiLm1vc2FpYy5zZXNzaW9uLnYxLk5hdmlnYXRlUmVxdWVzdBoWLm1vc2FpYy5zZXNzaW9uLnYxLkFjaxJCCgZJbnZva2USIC5tb3NhaWMuc2Vzc2lvbi52MS5JbnZva2VSZXF1ZXN0GhYubW9zYWljLnNlc3Npb24udjEuQWNrEkYKC1N1Ym1pdElucHV0Eh8ubW9zYWljLnNlc3Npb24udjEuSW5wdXRSZXF1ZXN0GhYubW9zYWljLnNlc3Npb24udjEuQWNrElQKCVN1YnNjcmliZRIjLm1vc2FpYy5zZXNzaW9uLnYxLlN1YnNjcmliZVJlcXVlc3QaIC5tb3NhaWMuc2Vzc2lvbi52MS5TZXJ2ZXJNZXNzYWdlMAFCQ1pBZ2l0aHViLmNvbS9tb3NhaWMtbWVkaWEvY29udHJhY3RzL2dlbi9tb3NhaWMvc2Vzc2lvbi92MTtzZXNzaW9udjFiBnByb3RvMw", [file_mosaic_sdui_v1_sdui]);
 
 /**
  * Ack is the empty reply to an intent. An intent either succeeds (Ack) or fails
@@ -404,6 +404,14 @@ export type ServerMessage = Message<"mosaic.session.v1.ServerMessage"> & {
      */
     value: Event;
     case: "event";
+  } | {
+    /**
+     * a submission was rejected, per field.
+     *
+     * @generated from field: mosaic.session.v1.FieldErrors field_errors = 6;
+     */
+    value: FieldErrors;
+    case: "fieldErrors";
   } | { case: undefined; value?: undefined };
 };
 
@@ -413,6 +421,74 @@ export type ServerMessage = Message<"mosaic.session.v1.ServerMessage"> & {
  */
 export const ServerMessageSchema: GenMessage<ServerMessage> = /*@__PURE__*/
   messageDesc(file_mosaic_session_v1_session, 8);
+
+/**
+ * FieldErrors carries a rejected submission back to the fields that caused it.
+ *
+ * It exists because client-side validation and server-side rejection are the
+ * same statement made twice, and only one of them had anywhere to land. A client
+ * enforces the six validators the contract declares; a server enforces
+ * everything a client cannot know — that a username is taken, that a key is
+ * invalid — and until now the only way it could say so was a toast, which is a
+ * sentence about a form floating next to it rather than a mark on the field that
+ * is wrong.
+ *
+ * Symmetric on purpose: this is the shape a client already produces locally, so
+ * a rejection from either side renders identically and a screen cannot tell you
+ * where the problem is in two different ways.
+ *
+ * @generated from message mosaic.session.v1.FieldErrors
+ */
+export type FieldErrors = Message<"mosaic.session.v1.FieldErrors"> & {
+  /**
+   * @generated from field: repeated mosaic.session.v1.FieldError errors = 1;
+   */
+  errors: FieldError[];
+
+  /**
+   * A failure that belongs to the submission rather than to any one field — a
+   * conflict between two of them, or a service that was unavailable.
+   *
+   * @generated from field: string form_error = 2;
+   */
+  formError: string;
+};
+
+/**
+ * Describes the message mosaic.session.v1.FieldErrors.
+ * Use `create(FieldErrorsSchema)` to create a new message.
+ */
+export const FieldErrorsSchema: GenMessage<FieldErrors> = /*@__PURE__*/
+  messageDesc(file_mosaic_session_v1_session, 9);
+
+/**
+ * FieldError names the field and what is wrong with it.
+ *
+ * @generated from message mosaic.session.v1.FieldError
+ */
+export type FieldError = Message<"mosaic.session.v1.FieldError"> & {
+  /**
+   * The field's name in the enclosing State scope, which is what the input that
+   * wrote it declares. A name matching no field renders as a form-level error
+   * rather than being dropped: a rejection nobody can see is worse than one in
+   * the wrong place.
+   *
+   * @generated from field: string field = 1;
+   */
+  field: string;
+
+  /**
+   * @generated from field: string message = 2;
+   */
+  message: string;
+};
+
+/**
+ * Describes the message mosaic.session.v1.FieldError.
+ * Use `create(FieldErrorSchema)` to create a new message.
+ */
+export const FieldErrorSchema: GenMessage<FieldError> = /*@__PURE__*/
+  messageDesc(file_mosaic_session_v1_session, 10);
 
 /**
  * RegionUpdate applies one operation to a named region (ADR 0029 / 0031). The
@@ -447,7 +523,7 @@ export type RegionUpdate = Message<"mosaic.session.v1.RegionUpdate"> & {
  * Use `create(RegionUpdateSchema)` to create a new message.
  */
 export const RegionUpdateSchema: GenMessage<RegionUpdate> = /*@__PURE__*/
-  messageDesc(file_mosaic_session_v1_session, 9);
+  messageDesc(file_mosaic_session_v1_session, 11);
 
 /**
  * Op is the region operation. REPLACE is the whole-region default; the
@@ -486,7 +562,7 @@ export enum RegionUpdate_Op {
  * Describes the enum mosaic.session.v1.RegionUpdate.Op.
  */
 export const RegionUpdate_OpSchema: GenEnum<RegionUpdate_Op> = /*@__PURE__*/
-  enumDesc(file_mosaic_session_v1_session, 9, 0);
+  enumDesc(file_mosaic_session_v1_session, 11, 0);
 
 /**
  * ShellUpdate carries the app shell UINode tree (ADR 0031). It is sent once on
@@ -508,7 +584,7 @@ export type ShellUpdate = Message<"mosaic.session.v1.ShellUpdate"> & {
  * Use `create(ShellUpdateSchema)` to create a new message.
  */
 export const ShellUpdateSchema: GenMessage<ShellUpdate> = /*@__PURE__*/
-  messageDesc(file_mosaic_session_v1_session, 10);
+  messageDesc(file_mosaic_session_v1_session, 12);
 
 /**
  * Toast is a transient notice — the confirmation an Invoke pushes.
@@ -534,7 +610,7 @@ export type Toast = Message<"mosaic.session.v1.Toast"> & {
  * Use `create(ToastSchema)` to create a new message.
  */
 export const ToastSchema: GenMessage<Toast> = /*@__PURE__*/
-  messageDesc(file_mosaic_session_v1_session, 11);
+  messageDesc(file_mosaic_session_v1_session, 13);
 
 /**
  * Event is an unsolicited domain event: an import finished, a config changed, a
@@ -564,7 +640,7 @@ export type Event = Message<"mosaic.session.v1.Event"> & {
  * Use `create(EventSchema)` to create a new message.
  */
 export const EventSchema: GenMessage<Event> = /*@__PURE__*/
-  messageDesc(file_mosaic_session_v1_session, 12);
+  messageDesc(file_mosaic_session_v1_session, 14);
 
 /**
  * SessionService is the live client session. Intents are unary; push is one

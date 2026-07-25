@@ -188,7 +188,38 @@ message ServerMessage {
     ShellUpdate shell = 3;   // the app shell (re)rendered.
     Toast toast = 4;         // a transient notice.
     Event event = 5;         // an unsolicited domain event.
+    FieldErrors field_errors = 6; // a submission was rejected, per field.
   }
+}
+
+// FieldErrors carries a rejected submission back to the fields that caused it.
+//
+// It exists because client-side validation and server-side rejection are the
+// same statement made twice, and only one of them had anywhere to land. A client
+// enforces the six validators the contract declares; a server enforces
+// everything a client cannot know — that a username is taken, that a key is
+// invalid — and until now the only way it could say so was a toast, which is a
+// sentence about a form floating next to it rather than a mark on the field that
+// is wrong.
+//
+// Symmetric on purpose: this is the shape a client already produces locally, so
+// a rejection from either side renders identically and a screen cannot tell you
+// where the problem is in two different ways.
+message FieldErrors {
+  repeated FieldError errors = 1;
+  // A failure that belongs to the submission rather than to any one field — a
+  // conflict between two of them, or a service that was unavailable.
+  string form_error = 2;
+}
+
+// FieldError names the field and what is wrong with it.
+message FieldError {
+  // The field's name in the enclosing State scope, which is what the input that
+  // wrote it declares. A name matching no field renders as a form-level error
+  // rather than being dropped: a rejection nobody can see is worse than one in
+  // the wrong place.
+  string field = 1;
+  string message = 2;
 }
 
 // RegionUpdate applies one operation to a named region (ADR 0029 / 0031). The

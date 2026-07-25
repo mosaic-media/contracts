@@ -103,7 +103,7 @@ func (x RegionUpdate_Op) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use RegionUpdate_Op.Descriptor instead.
 func (RegionUpdate_Op) EnumDescriptor() ([]byte, []int) {
-	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{9, 0}
+	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{11, 0}
 }
 
 // Ack is the empty reply to an intent. An intent either succeeds (Ack) or fails
@@ -665,6 +665,7 @@ type ServerMessage struct {
 	//	*ServerMessage_Shell
 	//	*ServerMessage_Toast
 	//	*ServerMessage_Event
+	//	*ServerMessage_FieldErrors
 	Body          isServerMessage_Body `protobuf_oneof:"body"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -750,6 +751,15 @@ func (x *ServerMessage) GetEvent() *Event {
 	return nil
 }
 
+func (x *ServerMessage) GetFieldErrors() *FieldErrors {
+	if x != nil {
+		if x, ok := x.Body.(*ServerMessage_FieldErrors); ok {
+			return x.FieldErrors
+		}
+	}
+	return nil
+}
+
 type isServerMessage_Body interface {
 	isServerMessage_Body()
 }
@@ -770,6 +780,10 @@ type ServerMessage_Event struct {
 	Event *Event `protobuf:"bytes,5,opt,name=event,proto3,oneof"` // an unsolicited domain event.
 }
 
+type ServerMessage_FieldErrors struct {
+	FieldErrors *FieldErrors `protobuf:"bytes,6,opt,name=field_errors,json=fieldErrors,proto3,oneof"` // a submission was rejected, per field.
+}
+
 func (*ServerMessage_Region) isServerMessage_Body() {}
 
 func (*ServerMessage_Shell) isServerMessage_Body() {}
@@ -777,6 +791,132 @@ func (*ServerMessage_Shell) isServerMessage_Body() {}
 func (*ServerMessage_Toast) isServerMessage_Body() {}
 
 func (*ServerMessage_Event) isServerMessage_Body() {}
+
+func (*ServerMessage_FieldErrors) isServerMessage_Body() {}
+
+// FieldErrors carries a rejected submission back to the fields that caused it.
+//
+// It exists because client-side validation and server-side rejection are the
+// same statement made twice, and only one of them had anywhere to land. A client
+// enforces the six validators the contract declares; a server enforces
+// everything a client cannot know — that a username is taken, that a key is
+// invalid — and until now the only way it could say so was a toast, which is a
+// sentence about a form floating next to it rather than a mark on the field that
+// is wrong.
+//
+// Symmetric on purpose: this is the shape a client already produces locally, so
+// a rejection from either side renders identically and a screen cannot tell you
+// where the problem is in two different ways.
+type FieldErrors struct {
+	state  protoimpl.MessageState `protogen:"open.v1"`
+	Errors []*FieldError          `protobuf:"bytes,1,rep,name=errors,proto3" json:"errors,omitempty"`
+	// A failure that belongs to the submission rather than to any one field — a
+	// conflict between two of them, or a service that was unavailable.
+	FormError     string `protobuf:"bytes,2,opt,name=form_error,json=formError,proto3" json:"form_error,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FieldErrors) Reset() {
+	*x = FieldErrors{}
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FieldErrors) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FieldErrors) ProtoMessage() {}
+
+func (x *FieldErrors) ProtoReflect() protoreflect.Message {
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FieldErrors.ProtoReflect.Descriptor instead.
+func (*FieldErrors) Descriptor() ([]byte, []int) {
+	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *FieldErrors) GetErrors() []*FieldError {
+	if x != nil {
+		return x.Errors
+	}
+	return nil
+}
+
+func (x *FieldErrors) GetFormError() string {
+	if x != nil {
+		return x.FormError
+	}
+	return ""
+}
+
+// FieldError names the field and what is wrong with it.
+type FieldError struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The field's name in the enclosing State scope, which is what the input that
+	// wrote it declares. A name matching no field renders as a form-level error
+	// rather than being dropped: a rejection nobody can see is worse than one in
+	// the wrong place.
+	Field         string `protobuf:"bytes,1,opt,name=field,proto3" json:"field,omitempty"`
+	Message       string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FieldError) Reset() {
+	*x = FieldError{}
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FieldError) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FieldError) ProtoMessage() {}
+
+func (x *FieldError) ProtoReflect() protoreflect.Message {
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FieldError.ProtoReflect.Descriptor instead.
+func (*FieldError) Descriptor() ([]byte, []int) {
+	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *FieldError) GetField() string {
+	if x != nil {
+		return x.Field
+	}
+	return ""
+}
+
+func (x *FieldError) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
 
 // RegionUpdate applies one operation to a named region (ADR 0029 / 0031). The
 // op-set is contract-owned and transport-agnostic: a Compose composable, a
@@ -792,7 +932,7 @@ type RegionUpdate struct {
 
 func (x *RegionUpdate) Reset() {
 	*x = RegionUpdate{}
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[9]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -804,7 +944,7 @@ func (x *RegionUpdate) String() string {
 func (*RegionUpdate) ProtoMessage() {}
 
 func (x *RegionUpdate) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[9]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -817,7 +957,7 @@ func (x *RegionUpdate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegionUpdate.ProtoReflect.Descriptor instead.
 func (*RegionUpdate) Descriptor() ([]byte, []int) {
-	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{9}
+	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *RegionUpdate) GetRegion() string {
@@ -852,7 +992,7 @@ type ShellUpdate struct {
 
 func (x *ShellUpdate) Reset() {
 	*x = ShellUpdate{}
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[10]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -864,7 +1004,7 @@ func (x *ShellUpdate) String() string {
 func (*ShellUpdate) ProtoMessage() {}
 
 func (x *ShellUpdate) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[10]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -877,7 +1017,7 @@ func (x *ShellUpdate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ShellUpdate.ProtoReflect.Descriptor instead.
 func (*ShellUpdate) Descriptor() ([]byte, []int) {
-	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{10}
+	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *ShellUpdate) GetUiNode() *v1.UINode {
@@ -898,7 +1038,7 @@ type Toast struct {
 
 func (x *Toast) Reset() {
 	*x = Toast{}
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[11]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -910,7 +1050,7 @@ func (x *Toast) String() string {
 func (*Toast) ProtoMessage() {}
 
 func (x *Toast) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[11]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -923,7 +1063,7 @@ func (x *Toast) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Toast.ProtoReflect.Descriptor instead.
 func (*Toast) Descriptor() ([]byte, []int) {
-	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{11}
+	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *Toast) GetMessage() string {
@@ -953,7 +1093,7 @@ type Event struct {
 
 func (x *Event) Reset() {
 	*x = Event{}
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[12]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -965,7 +1105,7 @@ func (x *Event) String() string {
 func (*Event) ProtoMessage() {}
 
 func (x *Event) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_session_v1_session_proto_msgTypes[12]
+	mi := &file_mosaic_session_v1_session_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -978,7 +1118,7 @@ func (x *Event) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Event.ProtoReflect.Descriptor instead.
 func (*Event) Descriptor() ([]byte, []int) {
-	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{12}
+	return file_mosaic_session_v1_session_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *Event) GetType() string {
@@ -1037,14 +1177,23 @@ const file_mosaic_session_v1_session_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tR\x05value\"Q\n" +
 	"\x10SubscribeRequest\x12\x18\n" +
 	"\asession\x18\x01 \x01(\tR\asession\x12#\n" +
-	"\rresume_cursor\x18\x02 \x01(\x04R\fresumeCursor\"\x80\x02\n" +
+	"\rresume_cursor\x18\x02 \x01(\x04R\fresumeCursor\"\xc5\x02\n" +
 	"\rServerMessage\x12\x10\n" +
 	"\x03seq\x18\x01 \x01(\x04R\x03seq\x129\n" +
 	"\x06region\x18\x02 \x01(\v2\x1f.mosaic.session.v1.RegionUpdateH\x00R\x06region\x126\n" +
 	"\x05shell\x18\x03 \x01(\v2\x1e.mosaic.session.v1.ShellUpdateH\x00R\x05shell\x120\n" +
 	"\x05toast\x18\x04 \x01(\v2\x18.mosaic.session.v1.ToastH\x00R\x05toast\x120\n" +
-	"\x05event\x18\x05 \x01(\v2\x18.mosaic.session.v1.EventH\x00R\x05eventB\x06\n" +
-	"\x04body\"\xce\x01\n" +
+	"\x05event\x18\x05 \x01(\v2\x18.mosaic.session.v1.EventH\x00R\x05event\x12C\n" +
+	"\ffield_errors\x18\x06 \x01(\v2\x1e.mosaic.session.v1.FieldErrorsH\x00R\vfieldErrorsB\x06\n" +
+	"\x04body\"c\n" +
+	"\vFieldErrors\x125\n" +
+	"\x06errors\x18\x01 \x03(\v2\x1d.mosaic.session.v1.FieldErrorR\x06errors\x12\x1d\n" +
+	"\n" +
+	"form_error\x18\x02 \x01(\tR\tformError\"<\n" +
+	"\n" +
+	"FieldError\x12\x14\n" +
+	"\x05field\x18\x01 \x01(\tR\x05field\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"\xce\x01\n" +
 	"\fRegionUpdate\x12\x16\n" +
 	"\x06region\x18\x01 \x01(\tR\x06region\x122\n" +
 	"\x02op\x18\x02 \x01(\x0e2\".mosaic.session.v1.RegionUpdate.OpR\x02op\x12/\n" +
@@ -1085,7 +1234,7 @@ func file_mosaic_session_v1_session_proto_rawDescGZIP() []byte {
 }
 
 var file_mosaic_session_v1_session_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_mosaic_session_v1_session_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_mosaic_session_v1_session_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_mosaic_session_v1_session_proto_goTypes = []any{
 	(RegionUpdate_Op)(0),      // 0: mosaic.session.v1.RegionUpdate.Op
 	(*Ack)(nil),               // 1: mosaic.session.v1.Ack
@@ -1097,37 +1246,41 @@ var file_mosaic_session_v1_session_proto_goTypes = []any{
 	(*InputRequest)(nil),      // 7: mosaic.session.v1.InputRequest
 	(*SubscribeRequest)(nil),  // 8: mosaic.session.v1.SubscribeRequest
 	(*ServerMessage)(nil),     // 9: mosaic.session.v1.ServerMessage
-	(*RegionUpdate)(nil),      // 10: mosaic.session.v1.RegionUpdate
-	(*ShellUpdate)(nil),       // 11: mosaic.session.v1.ShellUpdate
-	(*Toast)(nil),             // 12: mosaic.session.v1.Toast
-	(*Event)(nil),             // 13: mosaic.session.v1.Event
-	(*v1.UINode)(nil),         // 14: mosaic.sdui.v1.UINode
+	(*FieldErrors)(nil),       // 10: mosaic.session.v1.FieldErrors
+	(*FieldError)(nil),        // 11: mosaic.session.v1.FieldError
+	(*RegionUpdate)(nil),      // 12: mosaic.session.v1.RegionUpdate
+	(*ShellUpdate)(nil),       // 13: mosaic.session.v1.ShellUpdate
+	(*Toast)(nil),             // 14: mosaic.session.v1.Toast
+	(*Event)(nil),             // 15: mosaic.session.v1.Event
+	(*v1.UINode)(nil),         // 16: mosaic.sdui.v1.UINode
 }
 var file_mosaic_session_v1_session_proto_depIdxs = []int32{
 	4,  // 0: mosaic.session.v1.AttachRequest.profile:type_name -> mosaic.session.v1.ClientProfile
 	3,  // 1: mosaic.session.v1.AttachRequest.vocabulary:type_name -> mosaic.session.v1.VocabularyProfile
-	10, // 2: mosaic.session.v1.ServerMessage.region:type_name -> mosaic.session.v1.RegionUpdate
-	11, // 3: mosaic.session.v1.ServerMessage.shell:type_name -> mosaic.session.v1.ShellUpdate
-	12, // 4: mosaic.session.v1.ServerMessage.toast:type_name -> mosaic.session.v1.Toast
-	13, // 5: mosaic.session.v1.ServerMessage.event:type_name -> mosaic.session.v1.Event
-	0,  // 6: mosaic.session.v1.RegionUpdate.op:type_name -> mosaic.session.v1.RegionUpdate.Op
-	14, // 7: mosaic.session.v1.RegionUpdate.ui_node:type_name -> mosaic.sdui.v1.UINode
-	14, // 8: mosaic.session.v1.ShellUpdate.ui_node:type_name -> mosaic.sdui.v1.UINode
-	2,  // 9: mosaic.session.v1.SessionService.Attach:input_type -> mosaic.session.v1.AttachRequest
-	5,  // 10: mosaic.session.v1.SessionService.Navigate:input_type -> mosaic.session.v1.NavigateRequest
-	6,  // 11: mosaic.session.v1.SessionService.Invoke:input_type -> mosaic.session.v1.InvokeRequest
-	7,  // 12: mosaic.session.v1.SessionService.SubmitInput:input_type -> mosaic.session.v1.InputRequest
-	8,  // 13: mosaic.session.v1.SessionService.Subscribe:input_type -> mosaic.session.v1.SubscribeRequest
-	1,  // 14: mosaic.session.v1.SessionService.Attach:output_type -> mosaic.session.v1.Ack
-	1,  // 15: mosaic.session.v1.SessionService.Navigate:output_type -> mosaic.session.v1.Ack
-	1,  // 16: mosaic.session.v1.SessionService.Invoke:output_type -> mosaic.session.v1.Ack
-	1,  // 17: mosaic.session.v1.SessionService.SubmitInput:output_type -> mosaic.session.v1.Ack
-	9,  // 18: mosaic.session.v1.SessionService.Subscribe:output_type -> mosaic.session.v1.ServerMessage
-	14, // [14:19] is the sub-list for method output_type
-	9,  // [9:14] is the sub-list for method input_type
-	9,  // [9:9] is the sub-list for extension type_name
-	9,  // [9:9] is the sub-list for extension extendee
-	0,  // [0:9] is the sub-list for field type_name
+	12, // 2: mosaic.session.v1.ServerMessage.region:type_name -> mosaic.session.v1.RegionUpdate
+	13, // 3: mosaic.session.v1.ServerMessage.shell:type_name -> mosaic.session.v1.ShellUpdate
+	14, // 4: mosaic.session.v1.ServerMessage.toast:type_name -> mosaic.session.v1.Toast
+	15, // 5: mosaic.session.v1.ServerMessage.event:type_name -> mosaic.session.v1.Event
+	10, // 6: mosaic.session.v1.ServerMessage.field_errors:type_name -> mosaic.session.v1.FieldErrors
+	11, // 7: mosaic.session.v1.FieldErrors.errors:type_name -> mosaic.session.v1.FieldError
+	0,  // 8: mosaic.session.v1.RegionUpdate.op:type_name -> mosaic.session.v1.RegionUpdate.Op
+	16, // 9: mosaic.session.v1.RegionUpdate.ui_node:type_name -> mosaic.sdui.v1.UINode
+	16, // 10: mosaic.session.v1.ShellUpdate.ui_node:type_name -> mosaic.sdui.v1.UINode
+	2,  // 11: mosaic.session.v1.SessionService.Attach:input_type -> mosaic.session.v1.AttachRequest
+	5,  // 12: mosaic.session.v1.SessionService.Navigate:input_type -> mosaic.session.v1.NavigateRequest
+	6,  // 13: mosaic.session.v1.SessionService.Invoke:input_type -> mosaic.session.v1.InvokeRequest
+	7,  // 14: mosaic.session.v1.SessionService.SubmitInput:input_type -> mosaic.session.v1.InputRequest
+	8,  // 15: mosaic.session.v1.SessionService.Subscribe:input_type -> mosaic.session.v1.SubscribeRequest
+	1,  // 16: mosaic.session.v1.SessionService.Attach:output_type -> mosaic.session.v1.Ack
+	1,  // 17: mosaic.session.v1.SessionService.Navigate:output_type -> mosaic.session.v1.Ack
+	1,  // 18: mosaic.session.v1.SessionService.Invoke:output_type -> mosaic.session.v1.Ack
+	1,  // 19: mosaic.session.v1.SessionService.SubmitInput:output_type -> mosaic.session.v1.Ack
+	9,  // 20: mosaic.session.v1.SessionService.Subscribe:output_type -> mosaic.session.v1.ServerMessage
+	16, // [16:21] is the sub-list for method output_type
+	11, // [11:16] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_mosaic_session_v1_session_proto_init() }
@@ -1140,6 +1293,7 @@ func file_mosaic_session_v1_session_proto_init() {
 		(*ServerMessage_Shell)(nil),
 		(*ServerMessage_Toast)(nil),
 		(*ServerMessage_Event)(nil),
+		(*ServerMessage_FieldErrors)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -1147,7 +1301,7 @@ func file_mosaic_session_v1_session_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_mosaic_session_v1_session_proto_rawDesc), len(file_mosaic_session_v1_session_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   13,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

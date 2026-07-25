@@ -74,7 +74,7 @@
     },
     "Binding": {
       "title": "Binding",
-      "description": "A prop value the client resolves where the node renders, rather than one decided when the tree was built. It names a path and nothing else \u2014 there is no formatting, default, expression or operator, because formatting stays server-side. An object is a Binding only when it has exactly this one key; carrying \"$bind\" beside anything else makes it a literal object, so a prop that happens to contain a field of that name is never reinterpreted. Any prop value may be one; a node's `type` may not, because a tree whose shape depends on data is a ComponentDefinition, not a screen.",
+      "description": "A prop value the client resolves where the node renders, rather than one decided when the tree was built. It names a path and nothing else — there is no formatting, default, expression or operator, because formatting stays server-side. An object is a Binding only when it has exactly this one key; carrying \"$bind\" beside anything else makes it a literal object, so a prop that happens to contain a field of that name is never reinterpreted. Any prop value may be one; a node's `type` may not, because a tree whose shape depends on data is a ComponentDefinition, not a screen.",
       "type": "object",
       "required": [
         "$bind"
@@ -618,6 +618,24 @@
           "description": "Truncate after this many lines."
         }
       }
+    },
+    "FieldError": {
+      "title": "FieldError",
+      "description": "One field's rejection. `field` is the field's name in the enclosing State scope — the same name the input that wrote it declares — so a rejection from the server renders exactly where a client-side validator's would. A name matching no field renders as a form-level error rather than being dropped, because a rejection nobody can see is worse than one in the wrong place.",
+      "type": "object",
+      "required": [
+        "field",
+        "message"
+      ],
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
     }
   }
 }
