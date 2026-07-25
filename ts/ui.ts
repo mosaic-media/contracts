@@ -754,6 +754,16 @@ export function Error(v: string): El {
   return Prop("error", v);
 }
 
+/** OnAppear is emitted the first time this node becomes visible on screen. The server decides what that means by choosing the action; a client never reports anything it was not asked to. */
+export function OnAppear(v: Action): El {
+  return Prop("onAppear", v);
+}
+
+/** OnDisappear is emitted when this node leaves the screen, having been visible. */
+export function OnDisappear(v: Action): El {
+  return Prop("onDisappear", v);
+}
+
 // ── bound sugar ────────────────────────────────────────────────────────────
 // The same props, set to a binding the client resolves where the node renders.
 
@@ -1065,6 +1075,16 @@ export function BindBusy(path: string): El {
 /** BindError sets "error" from the named path instead of from a value. */
 export function BindError(path: string): El {
   return Prop("error", bind(path));
+}
+
+/** BindOnAppear sets "onAppear" from the named path instead of from a value. */
+export function BindOnAppear(path: string): El {
+  return Prop("onAppear", bind(path));
+}
+
+/** BindOnDisappear sets "onDisappear" from the named path instead of from a value. */
+export function BindOnDisappear(path: string): El {
+  return Prop("onDisappear", bind(path));
 }
 
 // Tone values, mirroring the Go Tone constants. They are the schema enum's

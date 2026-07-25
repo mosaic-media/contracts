@@ -64,7 +64,14 @@ export enum ActionKind {
  */
 export interface UINode {
     children?: UINode[];
-    id?:       string;
+    /**
+     * A stable identity for this node. It is the React key and the target of a narrow region
+     * update, and it is also the *analytics* identity: an onAppear action names what was seen
+     * by carrying whatever the server put here, so an id that is a row index attributes nothing
+     * and one that names the thing attributes everything. The server chooses it, because only
+     * the server knows what the node is about.
+     */
+    id?: string;
     /**
      * Component-specific data. Open by design. Any value may be a literal or a Binding (see
      * #/$defs/Binding), which the client resolves where the node renders.

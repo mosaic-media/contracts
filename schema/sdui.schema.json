@@ -36,7 +36,8 @@
           "description": "Component discriminator, e.g. \"PosterCard\". Namespaced: a core type — every primitive and every component in the published vocabulary — is unprefixed and never contains the type separator; a module's own type is \"moduleId:Type\". Open and flat is not the same as open: without the namespace two modules could both contribute a StatChip, and one could contribute a PosterCard and take the core component's place in every client's registry."
         },
         "id": {
-          "type": "string"
+          "type": "string",
+          "description": "A stable identity for this node. It is the React key and the target of a narrow region update, and it is also the *analytics* identity: an onAppear action names what was seen by carrying whatever the server put here, so an id that is a row index attributes nothing and one that names the thing attributes everything. The server chooses it, because only the server knows what the node is about."
         },
         "props": {
           "type": "object",

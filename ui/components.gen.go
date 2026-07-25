@@ -508,6 +508,12 @@ func Busy(v bool) El { return Prop("busy", v) }
 // Error is a form-level failure message, distinct from a field's own.
 func Error(v string) El { return Prop("error", v) }
 
+// OnAppear is emitted the first time this node becomes visible on screen. The server decides what that means by choosing the action; a client never reports anything it was not asked to.
+func OnAppear(v Action) El { return Prop("onAppear", v) }
+
+// OnDisappear is emitted when this node leaves the screen, having been visible.
+func OnDisappear(v Action) El { return Prop("onDisappear", v) }
+
 // ── bound sugar ────────────────────────────────────────────────────────────
 // The same props, set to a binding the client resolves where the node renders
 // rather than to a value decided now. One per helper, generated, because a
@@ -700,6 +706,12 @@ func BindBusy(path string) El { return Prop("busy", sdui.Bind(path)) }
 
 // BindError sets "error" from the named path instead of from a value.
 func BindError(path string) El { return Prop("error", sdui.Bind(path)) }
+
+// BindOnAppear sets "onAppear" from the named path instead of from a value.
+func BindOnAppear(path string) El { return Prop("onAppear", sdui.Bind(path)) }
+
+// BindOnDisappear sets "onDisappear" from the named path instead of from a value.
+func BindOnDisappear(path string) El { return Prop("onDisappear", sdui.Bind(path)) }
 
 // Tone values (the open-bag string encoding), re-exported from the producer binding.
 const (

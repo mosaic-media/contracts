@@ -36,7 +36,12 @@ type Action struct {
 // Optional — a definition without one is served unchanged to everyone.
 type UINode struct {
 	Children []UINode `json:"children,omitempty"`
-	ID       *string  `json:"id,omitempty"`
+	// A stable identity for this node. It is the React key and the target of a narrow region
+	// update, and it is also the *analytics* identity: an onAppear action names what was seen
+	// by carrying whatever the server put here, so an id that is a row index attributes nothing
+	// and one that names the thing attributes everything. The server chooses it, because only
+	// the server knows what the node is about.
+	ID *string `json:"id,omitempty"`
 	// Component-specific data. Open by design. Any value may be a literal or a Binding (see
 	// #/$defs/Binding), which the client resolves where the node renders.
 	Props map[string]interface{} `json:"props,omitempty"`
