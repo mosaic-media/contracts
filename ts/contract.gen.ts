@@ -66,7 +66,8 @@ export interface UINode {
     children?: UINode[];
     id?:       string;
     /**
-     * Component-specific data. Open by design.
+     * Component-specific data. Open by design. Any value may be a literal or a Binding (see
+     * #/$defs/Binding), which the client resolves where the node renders.
      */
     props?: { [key: string]: any };
     slots?: { [key: string]: UINode[] };

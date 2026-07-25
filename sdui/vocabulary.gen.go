@@ -7,13 +7,18 @@ package sdui
 // VocabularyVersion is the version a client declares it implements. Additive
 // growth is a minor bump; removing or changing the meaning of a primitive, a
 // prop or an action is a major one.
-const VocabularyVersion = "1.1.0"
+const VocabularyVersion = "1.2.0"
 
 // TypeSeparator divides a module's id from its own type name. Core types are
 // unprefixed and may never contain it; a module's are moduleId:type. Two
 // modules could otherwise both call a component StatChip, and one could call
 // it PosterCard and take the core component's place.
 const TypeSeparator = ":"
+
+// BindingMarker is the single key that makes a prop value a binding rather
+// than a literal. It is spelled as a definition template's binding is,
+// because it means the same thing — resolve a path against a scope.
+const BindingMarker = "$bind"
 
 // Node type names — the primitive tier.
 const (

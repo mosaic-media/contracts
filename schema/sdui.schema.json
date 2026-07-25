@@ -41,7 +41,7 @@
         "props": {
           "type": "object",
           "additionalProperties": true,
-          "description": "Component-specific data. Open by design."
+          "description": "Component-specific data. Open by design. Any value may be a literal or a Binding (see #/$defs/Binding), which the client resolves where the node renders."
         },
         "children": {
           "type": "array",
@@ -71,6 +71,22 @@
         "danger",
         "info"
       ]
+    },
+    "Binding": {
+      "title": "Binding",
+      "description": "A prop value the client resolves where the node renders, rather than one decided when the tree was built. It names a path and nothing else \u2014 there is no formatting, default, expression or operator, because formatting stays server-side. An object is a Binding only when it has exactly this one key; carrying \"$bind\" beside anything else makes it a literal object, so a prop that happens to contain a field of that name is never reinterpreted. Any prop value may be one; a node's `type` may not, because a tree whose shape depends on data is a ComponentDefinition, not a screen.",
+      "type": "object",
+      "required": [
+        "$bind"
+      ],
+      "properties": {
+        "$bind": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The path to resolve. In this version of the vocabulary the only scope is the screen's params; later scopes resolve nearest-first, above that one."
+        }
+      },
+      "additionalProperties": false
     },
     "Surface": {
       "title": "Surface",

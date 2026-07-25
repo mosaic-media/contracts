@@ -37,7 +37,8 @@ type Action struct {
 type UINode struct {
 	Children []UINode `json:"children,omitempty"`
 	ID       *string  `json:"id,omitempty"`
-	// Component-specific data. Open by design.
+	// Component-specific data. Open by design. Any value may be a literal or a Binding (see
+	// #/$defs/Binding), which the client resolves where the node renders.
 	Props map[string]interface{} `json:"props,omitempty"`
 	Slots map[string][]UINode    `json:"slots,omitempty"`
 	// Component discriminator, e.g. "PosterCard". Namespaced: a core type — every primitive and

@@ -62,6 +62,7 @@ import (
 type spec struct {
 	Version       string      `json:"version"`
 	TypeSeparator string      `json:"typeSeparator"`
+	BindingMarker string      `json:"bindingMarker"`
 	Tones         []tone      `json:"tones"`
 	Surfaces      []surface   `json:"surfaces"`
 	Actions       []action    `json:"actions"`
@@ -331,6 +332,17 @@ func genGo(sp spec) []byte {
 		fmt.Fprintf(&b, "func %s(%s) El { return Prop(%s, v) }\n\n", s.Func, goSugarParam(s.Type), strconv.Quote(s.Key))
 	}
 
+	b.WriteString("// ── bound sugar ────────────────────────────────────────────────────────────\n")
+	b.WriteString("// The same props, set to a binding the client resolves where the node renders\n")
+	b.WriteString("// rather than to a value decided now. One per helper, generated, because a\n")
+	b.WriteString("// prop set by string is the failure this contract keeps having: ui.Subtitle on\n")
+	b.WriteString("// a Stack drew nothing for a screen's whole life, and Prop(\"title\", Bind(…))\n")
+	b.WriteString("// would put every bound prop back on that footing.\n\n")
+	for _, s := range sp.Sugar {
+		fmt.Fprintf(&b, "// Bind%s sets %s from the named path instead of from a value.\n", s.Func, strconv.Quote(s.Key))
+		fmt.Fprintf(&b, "func Bind%s(path string) El { return Prop(%s, sdui.Bind(path)) }\n\n", s.Func, strconv.Quote(s.Key))
+	}
+
 	if len(sp.Tones) > 0 {
 		b.WriteString("// Tone values (the open-bag string encoding), re-exported from the producer binding.\n")
 		b.WriteString("const (\n")
@@ -412,10 +424,13 @@ func genTS(sp spec) []byte {
 	b.WriteString("// SPDX-License-Identifier: Apache-2.0\n")
 	b.WriteString("// SPDX-FileCopyrightText: 2026 the Mosaic authors\n\n")
 	b.WriteString("import { ActionKind, Tone, type Action, type Surface } from \"./contract.gen.js\";\n")
-	b.WriteString("import { compose, Prop, Slot, type El, type Elish, type Element, type Props } from \"./ui_runtime.js\";\n\n")
+	b.WriteString("import { compose, Prop, Slot, type El, type Elish, type Element, type Props } from \"./ui_runtime.js\";\n")
+	b.WriteString("import { bind } from \"./binding.js\";\n\n")
 	b.WriteString("export { Group, ID, Prop, Slot, When, Element } from \"./ui_runtime.js\";\n")
 	b.WriteString("export type { El, Elish, Props } from \"./ui_runtime.js\";\n")
 	b.WriteString("export { ActionKind, Surface, Tone } from \"./contract.gen.js\";\n")
+	b.WriteString("export { bind, isBinding, bindingPath, bindingMarker } from \"./binding.js\";\n")
+	b.WriteString("export type { Binding } from \"./binding.js\";\n")
 	b.WriteString("export type { Action, UINode } from \"./contract.gen.js\";\n\n")
 
 	b.WriteString("// ── primitives ─────────────────────────────────────────────────────────────\n")
@@ -472,6 +487,13 @@ func genTS(sp spec) []byte {
 			fmt.Fprintf(&b, "/** %s */\n", s.Doc)
 		}
 		fmt.Fprintf(&b, "export function %s(%s): El {\n  return Prop(%s, v);\n}\n\n", s.Func, tsSugarParam(s.Type), strconv.Quote(s.Key))
+	}
+
+	b.WriteString("// ── bound sugar ────────────────────────────────────────────────────────────\n")
+	b.WriteString("// The same props, set to a binding the client resolves where the node renders.\n\n")
+	for _, s := range sp.Sugar {
+		fmt.Fprintf(&b, "/** Bind%s sets %s from the named path instead of from a value. */\n", s.Func, strconv.Quote(s.Key))
+		fmt.Fprintf(&b, "export function Bind%s(path: string): El {\n  return Prop(%s, bind(path));\n}\n\n", s.Func, strconv.Quote(s.Key))
 	}
 
 	if len(sp.Tones) > 0 {
@@ -589,6 +611,11 @@ func genVocabularyGo(sp spec) []byte {
 	b.WriteString("// it PosterCard and take the core component's place.\n")
 	fmt.Fprintf(&b, "const TypeSeparator = %s\n\n", strconv.Quote(sp.TypeSeparator))
 
+	b.WriteString("// BindingMarker is the single key that makes a prop value a binding rather\n")
+	b.WriteString("// than a literal. It is spelled as a definition template's binding is,\n")
+	b.WriteString("// because it means the same thing — resolve a path against a scope.\n")
+	fmt.Fprintf(&b, "const BindingMarker = %s\n\n", strconv.Quote(sp.BindingMarker))
+
 	b.WriteString("// Node type names — the primitive tier.\n")
 	b.WriteString("const (\n")
 	for _, p := range sp.Primitives {
@@ -700,6 +727,8 @@ func genVocabularyTS(sp spec) []byte {
 
 	fmt.Fprintf(&b, "/** Divides a module's id from its own type name; core types never contain it. */\nexport const typeSeparator = %s;\n\n", strconv.Quote(sp.TypeSeparator))
 
+	fmt.Fprintf(&b, "/** The single key that makes a prop value a binding rather than a literal. */\nexport const bindingMarker = %s;\n\n", strconv.Quote(sp.BindingMarker))
+
 	b.WriteString("/** The native tier — what a client must implement (ADR 0024). */\n")
 	b.WriteString("export const primitives: PrimitiveSpec[] = [\n")
 	for _, p := range sp.Primitives {
@@ -755,6 +784,7 @@ type fixture struct {
 	Comment       string        `json:"//"`
 	Version       string        `json:"version"`
 	TypeSeparator string        `json:"typeSeparator"`
+	BindingMarker string        `json:"bindingMarker"`
 	Primitives    []fixturePrim `json:"primitives"`
 	Components    []string      `json:"components"`
 	Actions       []string      `json:"actions"`
@@ -780,6 +810,7 @@ func genFixture(sp spec) []byte {
 			"only as one client's TypeScript.",
 		Version:       sp.Version,
 		TypeSeparator: sp.TypeSeparator,
+		BindingMarker: sp.BindingMarker,
 		Components:    []string{},
 		Actions:       []string{},
 		Validators:    []string{},
@@ -833,6 +864,14 @@ func lintSpecSanity(sp spec) []string {
 	if sp.Version == "" {
 		errs = append(errs, "the spec declares no version — a client cannot negotiate against an unnamed vocabulary")
 	}
+	if sp.BindingMarker == "" {
+		errs = append(errs, "the spec declares no bindingMarker — nothing then distinguishes a bound prop from a literal object")
+	}
+	for _, sg := range sp.Sugar {
+		if sg.Key == sp.BindingMarker {
+			errs = append(errs, fmt.Sprintf("sugar %q sets a prop named %q, which is the binding marker — the two cannot share a key", sg.Func, sg.Key))
+		}
+	}
 	if sp.TypeSeparator == "" {
 		errs = append(errs, "the spec declares no typeSeparator — nothing then distinguishes a module's type from a core one")
 		return errs
@@ -878,6 +917,7 @@ func runLint(sp spec, root string) []string {
 	}
 	for _, s := range sp.Sugar {
 		claim(s.Func, "sugar")
+		claim("Bind"+s.Func, "bound sugar")
 	}
 	for _, a := range sp.Actions {
 		claim(a.Func, "action")

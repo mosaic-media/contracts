@@ -57,7 +57,7 @@ services:
         # tsc is the command.
         npx --yes -p typescript@5 tsc --noEmit --strict \
           --module esnext --moduleResolution bundler \
-          ts/contract.gen.ts ts/ui_runtime.ts ts/ui.ts ts/vocabulary.gen.ts
+          ts/contract.gen.ts ts/ui_runtime.ts ts/ui.ts ts/vocabulary.gen.ts ts/binding.ts
 
 volumes:
   mosaic-contracts-gomod:

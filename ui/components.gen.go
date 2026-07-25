@@ -487,6 +487,181 @@ func On(v bool) El { return Prop("on", v) }
 // Origin is where a thing came from — an extension's id, version and repository. Distinct from Meta, which is a hero's variadic meta line: the same key cannot be a string in one component and a list in another.
 func Origin(v string) El { return Prop("origin", v) }
 
+// ── bound sugar ────────────────────────────────────────────────────────────
+// The same props, set to a binding the client resolves where the node renders
+// rather than to a value decided now. One per helper, generated, because a
+// prop set by string is the failure this contract keeps having: ui.Subtitle on
+// a Stack drew nothing for a screen's whole life, and Prop("title", Bind(…))
+// would put every bound prop back on that footing.
+
+// BindOnTap sets "action" from the named path instead of from a value.
+func BindOnTap(path string) El { return Prop("action", sdui.Bind(path)) }
+
+// BindTitle sets "title" from the named path instead of from a value.
+func BindTitle(path string) El { return Prop("title", sdui.Bind(path)) }
+
+// BindSubtitle sets "subtitle" from the named path instead of from a value.
+func BindSubtitle(path string) El { return Prop("subtitle", sdui.Bind(path)) }
+
+// BindPoster sets "poster" from the named path instead of from a value.
+func BindPoster(path string) El { return Prop("poster", sdui.Bind(path)) }
+
+// BindBackdrop sets "backdrop" from the named path instead of from a value.
+func BindBackdrop(path string) El { return Prop("backdrop", sdui.Bind(path)) }
+
+// BindLogo sets "logo" from the named path instead of from a value.
+func BindLogo(path string) El { return Prop("logo", sdui.Bind(path)) }
+
+// BindOverview sets "overview" from the named path instead of from a value.
+func BindOverview(path string) El { return Prop("overview", sdui.Bind(path)) }
+
+// BindProgress sets "progress" from the named path instead of from a value.
+func BindProgress(path string) El { return Prop("progress", sdui.Bind(path)) }
+
+// BindBadgeText sets "badge" from the named path instead of from a value.
+func BindBadgeText(path string) El { return Prop("badge", sdui.Bind(path)) }
+
+// BindActionLabel sets "actionLabel" from the named path instead of from a value.
+func BindActionLabel(path string) El { return Prop("actionLabel", sdui.Bind(path)) }
+
+// BindMeta sets "meta" from the named path instead of from a value.
+func BindMeta(path string) El { return Prop("meta", sdui.Bind(path)) }
+
+// BindGenres sets "genres" from the named path instead of from a value.
+func BindGenres(path string) El { return Prop("genres", sdui.Bind(path)) }
+
+// BindResumeAt sets "resumeAt" from the named path instead of from a value.
+func BindResumeAt(path string) El { return Prop("resumeAt", sdui.Bind(path)) }
+
+// BindMimeType sets "mimeType" from the named path instead of from a value.
+func BindMimeType(path string) El { return Prop("mimeType", sdui.Bind(path)) }
+
+// BindNodeID sets "nodeId" from the named path instead of from a value.
+func BindNodeID(path string) El { return Prop("nodeId", sdui.Bind(path)) }
+
+// BindPartID sets "partId" from the named path instead of from a value.
+func BindPartID(path string) El { return Prop("partId", sdui.Bind(path)) }
+
+// BindDisabled sets "disabled" from the named path instead of from a value.
+func BindDisabled(path string) El { return Prop("disabled", sdui.Bind(path)) }
+
+// BindIconName sets "icon" from the named path instead of from a value.
+func BindIconName(path string) El { return Prop("icon", sdui.Bind(path)) }
+
+// BindItemWidth sets "itemWidth" from the named path instead of from a value.
+func BindItemWidth(path string) El { return Prop("itemWidth", sdui.Bind(path)) }
+
+// BindMinColumnWidth sets "minColumnWidth" from the named path instead of from a value.
+func BindMinColumnWidth(path string) El { return Prop("minColumnWidth", sdui.Bind(path)) }
+
+// BindRating sets "rating" from the named path instead of from a value.
+func BindRating(path string) El { return Prop("rating", sdui.Bind(path)) }
+
+// BindRatingLabel sets "ratingLabel" from the named path instead of from a value.
+func BindRatingLabel(path string) El { return Prop("ratingLabel", sdui.Bind(path)) }
+
+// BindYear sets "year" from the named path instead of from a value.
+func BindYear(path string) El { return Prop("year", sdui.Bind(path)) }
+
+// BindIndex sets "index" from the named path instead of from a value.
+func BindIndex(path string) El { return Prop("index", sdui.Bind(path)) }
+
+// BindRuntime sets "runtime" from the named path instead of from a value.
+func BindRuntime(path string) El { return Prop("runtime", sdui.Bind(path)) }
+
+// BindThumbnail sets "thumbnail" from the named path instead of from a value.
+func BindThumbnail(path string) El { return Prop("thumbnail", sdui.Bind(path)) }
+
+// BindWatched sets "watched" from the named path instead of from a value.
+func BindWatched(path string) El { return Prop("watched", sdui.Bind(path)) }
+
+// BindCredits sets "credits" from the named path instead of from a value.
+func BindCredits(path string) El { return Prop("credits", sdui.Bind(path)) }
+
+// BindKicker sets "kicker" from the named path instead of from a value.
+func BindKicker(path string) El { return Prop("kicker", sdui.Bind(path)) }
+
+// BindNativeTitle sets "nativeTitle" from the named path instead of from a value.
+func BindNativeTitle(path string) El { return Prop("nativeTitle", sdui.Bind(path)) }
+
+// BindProgressLabel sets "progressLabel" from the named path instead of from a value.
+func BindProgressLabel(path string) El { return Prop("progressLabel", sdui.Bind(path)) }
+
+// BindShowTags sets "showTags" from the named path instead of from a value.
+func BindShowTags(path string) El { return Prop("showTags", sdui.Bind(path)) }
+
+// BindAvatar sets "avatar" from the named path instead of from a value.
+func BindAvatar(path string) El { return Prop("avatar", sdui.Bind(path)) }
+
+// BindRole sets "role" from the named path instead of from a value.
+func BindRole(path string) El { return Prop("role", sdui.Bind(path)) }
+
+// BindAlign sets "align" from the named path instead of from a value.
+func BindAlign(path string) El { return Prop("align", sdui.Bind(path)) }
+
+// BindJustify sets "justify" from the named path instead of from a value.
+func BindJustify(path string) El { return Prop("justify", sdui.Bind(path)) }
+
+// BindWrap sets "wrap" from the named path instead of from a value.
+func BindWrap(path string) El { return Prop("wrap", sdui.Bind(path)) }
+
+// BindRetry sets "retry" from the named path instead of from a value.
+func BindRetry(path string) El { return Prop("retry", sdui.Bind(path)) }
+
+// BindRows sets "rows" from the named path instead of from a value.
+func BindRows(path string) El { return Prop("rows", sdui.Bind(path)) }
+
+// BindSources sets "sources" from the named path instead of from a value.
+func BindSources(path string) El { return Prop("sources", sdui.Bind(path)) }
+
+// BindOptions sets "options" from the named path instead of from a value.
+func BindOptions(path string) El { return Prop("options", sdui.Bind(path)) }
+
+// BindCapabilities sets "capabilities" from the named path instead of from a value.
+func BindCapabilities(path string) El { return Prop("capabilities", sdui.Bind(path)) }
+
+// BindSummary sets "summary" from the named path instead of from a value.
+func BindSummary(path string) El { return Prop("summary", sdui.Bind(path)) }
+
+// BindValue sets "value" from the named path instead of from a value.
+func BindValue(path string) El { return Prop("value", sdui.Bind(path)) }
+
+// BindPlaceholder sets "placeholder" from the named path instead of from a value.
+func BindPlaceholder(path string) El { return Prop("placeholder", sdui.Bind(path)) }
+
+// BindHelp sets "help" from the named path instead of from a value.
+func BindHelp(path string) El { return Prop("help", sdui.Bind(path)) }
+
+// BindInputType sets "inputType" from the named path instead of from a value.
+func BindInputType(path string) El { return Prop("inputType", sdui.Bind(path)) }
+
+// BindHeading sets "heading" from the named path instead of from a value.
+func BindHeading(path string) El { return Prop("heading", sdui.Bind(path)) }
+
+// BindSelected sets "selected" from the named path instead of from a value.
+func BindSelected(path string) El { return Prop("selected", sdui.Bind(path)) }
+
+// BindActive sets "active" from the named path instead of from a value.
+func BindActive(path string) El { return Prop("active", sdui.Bind(path)) }
+
+// BindHasPrev sets "hasPrev" from the named path instead of from a value.
+func BindHasPrev(path string) El { return Prop("hasPrev", sdui.Bind(path)) }
+
+// BindHasNext sets "hasNext" from the named path instead of from a value.
+func BindHasNext(path string) El { return Prop("hasNext", sdui.Bind(path)) }
+
+// BindPrevAction sets "prevAction" from the named path instead of from a value.
+func BindPrevAction(path string) El { return Prop("prevAction", sdui.Bind(path)) }
+
+// BindNextAction sets "nextAction" from the named path instead of from a value.
+func BindNextAction(path string) El { return Prop("nextAction", sdui.Bind(path)) }
+
+// BindOn sets "on" from the named path instead of from a value.
+func BindOn(path string) El { return Prop("on", sdui.Bind(path)) }
+
+// BindOrigin sets "origin" from the named path instead of from a value.
+func BindOrigin(path string) El { return Prop("origin", sdui.Bind(path)) }
+
 // Tone values (the open-bag string encoding), re-exported from the producer binding.
 const (
 	ToneNeutral = sdui.ToneNeutral

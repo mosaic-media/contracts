@@ -20,10 +20,13 @@ export interface PrimitiveSpec {
 }
 
 /** The vocabulary version a client declares it implements. */
-export const vocabularyVersion = "1.1.0";
+export const vocabularyVersion = "1.2.0";
 
 /** Divides a module's id from its own type name; core types never contain it. */
 export const typeSeparator = ":";
+
+/** The single key that makes a prop value a binding rather than a literal. */
+export const bindingMarker = "$bind";
 
 /** The native tier — what a client must implement (ADR 0024). */
 export const primitives: PrimitiveSpec[] = [

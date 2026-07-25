@@ -4,10 +4,13 @@
 
 import { ActionKind, Tone, type Action, type Surface } from "./contract.gen.js";
 import { compose, Prop, Slot, type El, type Elish, type Element, type Props } from "./ui_runtime.js";
+import { bind } from "./binding.js";
 
 export { Group, ID, Prop, Slot, When, Element } from "./ui_runtime.js";
 export type { El, Elish, Props } from "./ui_runtime.js";
 export { ActionKind, Surface, Tone } from "./contract.gen.js";
+export { bind, isBinding, bindingPath, bindingMarker } from "./binding.js";
+export type { Binding } from "./binding.js";
 export type { Action, UINode } from "./contract.gen.js";
 
 // ── primitives ─────────────────────────────────────────────────────────────
@@ -714,6 +717,289 @@ export function On(v: boolean): El {
 /** Origin is where a thing came from — an extension's id, version and repository. Distinct from Meta, which is a hero's variadic meta line: the same key cannot be a string in one component and a list in another. */
 export function Origin(v: string): El {
   return Prop("origin", v);
+}
+
+// ── bound sugar ────────────────────────────────────────────────────────────
+// The same props, set to a binding the client resolves where the node renders.
+
+/** BindOnTap sets "action" from the named path instead of from a value. */
+export function BindOnTap(path: string): El {
+  return Prop("action", bind(path));
+}
+
+/** BindTitle sets "title" from the named path instead of from a value. */
+export function BindTitle(path: string): El {
+  return Prop("title", bind(path));
+}
+
+/** BindSubtitle sets "subtitle" from the named path instead of from a value. */
+export function BindSubtitle(path: string): El {
+  return Prop("subtitle", bind(path));
+}
+
+/** BindPoster sets "poster" from the named path instead of from a value. */
+export function BindPoster(path: string): El {
+  return Prop("poster", bind(path));
+}
+
+/** BindBackdrop sets "backdrop" from the named path instead of from a value. */
+export function BindBackdrop(path: string): El {
+  return Prop("backdrop", bind(path));
+}
+
+/** BindLogo sets "logo" from the named path instead of from a value. */
+export function BindLogo(path: string): El {
+  return Prop("logo", bind(path));
+}
+
+/** BindOverview sets "overview" from the named path instead of from a value. */
+export function BindOverview(path: string): El {
+  return Prop("overview", bind(path));
+}
+
+/** BindProgress sets "progress" from the named path instead of from a value. */
+export function BindProgress(path: string): El {
+  return Prop("progress", bind(path));
+}
+
+/** BindBadgeText sets "badge" from the named path instead of from a value. */
+export function BindBadgeText(path: string): El {
+  return Prop("badge", bind(path));
+}
+
+/** BindActionLabel sets "actionLabel" from the named path instead of from a value. */
+export function BindActionLabel(path: string): El {
+  return Prop("actionLabel", bind(path));
+}
+
+/** BindMeta sets "meta" from the named path instead of from a value. */
+export function BindMeta(path: string): El {
+  return Prop("meta", bind(path));
+}
+
+/** BindGenres sets "genres" from the named path instead of from a value. */
+export function BindGenres(path: string): El {
+  return Prop("genres", bind(path));
+}
+
+/** BindResumeAt sets "resumeAt" from the named path instead of from a value. */
+export function BindResumeAt(path: string): El {
+  return Prop("resumeAt", bind(path));
+}
+
+/** BindMimeType sets "mimeType" from the named path instead of from a value. */
+export function BindMimeType(path: string): El {
+  return Prop("mimeType", bind(path));
+}
+
+/** BindNodeID sets "nodeId" from the named path instead of from a value. */
+export function BindNodeID(path: string): El {
+  return Prop("nodeId", bind(path));
+}
+
+/** BindPartID sets "partId" from the named path instead of from a value. */
+export function BindPartID(path: string): El {
+  return Prop("partId", bind(path));
+}
+
+/** BindDisabled sets "disabled" from the named path instead of from a value. */
+export function BindDisabled(path: string): El {
+  return Prop("disabled", bind(path));
+}
+
+/** BindIconName sets "icon" from the named path instead of from a value. */
+export function BindIconName(path: string): El {
+  return Prop("icon", bind(path));
+}
+
+/** BindItemWidth sets "itemWidth" from the named path instead of from a value. */
+export function BindItemWidth(path: string): El {
+  return Prop("itemWidth", bind(path));
+}
+
+/** BindMinColumnWidth sets "minColumnWidth" from the named path instead of from a value. */
+export function BindMinColumnWidth(path: string): El {
+  return Prop("minColumnWidth", bind(path));
+}
+
+/** BindRating sets "rating" from the named path instead of from a value. */
+export function BindRating(path: string): El {
+  return Prop("rating", bind(path));
+}
+
+/** BindRatingLabel sets "ratingLabel" from the named path instead of from a value. */
+export function BindRatingLabel(path: string): El {
+  return Prop("ratingLabel", bind(path));
+}
+
+/** BindYear sets "year" from the named path instead of from a value. */
+export function BindYear(path: string): El {
+  return Prop("year", bind(path));
+}
+
+/** BindIndex sets "index" from the named path instead of from a value. */
+export function BindIndex(path: string): El {
+  return Prop("index", bind(path));
+}
+
+/** BindRuntime sets "runtime" from the named path instead of from a value. */
+export function BindRuntime(path: string): El {
+  return Prop("runtime", bind(path));
+}
+
+/** BindThumbnail sets "thumbnail" from the named path instead of from a value. */
+export function BindThumbnail(path: string): El {
+  return Prop("thumbnail", bind(path));
+}
+
+/** BindWatched sets "watched" from the named path instead of from a value. */
+export function BindWatched(path: string): El {
+  return Prop("watched", bind(path));
+}
+
+/** BindCredits sets "credits" from the named path instead of from a value. */
+export function BindCredits(path: string): El {
+  return Prop("credits", bind(path));
+}
+
+/** BindKicker sets "kicker" from the named path instead of from a value. */
+export function BindKicker(path: string): El {
+  return Prop("kicker", bind(path));
+}
+
+/** BindNativeTitle sets "nativeTitle" from the named path instead of from a value. */
+export function BindNativeTitle(path: string): El {
+  return Prop("nativeTitle", bind(path));
+}
+
+/** BindProgressLabel sets "progressLabel" from the named path instead of from a value. */
+export function BindProgressLabel(path: string): El {
+  return Prop("progressLabel", bind(path));
+}
+
+/** BindShowTags sets "showTags" from the named path instead of from a value. */
+export function BindShowTags(path: string): El {
+  return Prop("showTags", bind(path));
+}
+
+/** BindAvatar sets "avatar" from the named path instead of from a value. */
+export function BindAvatar(path: string): El {
+  return Prop("avatar", bind(path));
+}
+
+/** BindRole sets "role" from the named path instead of from a value. */
+export function BindRole(path: string): El {
+  return Prop("role", bind(path));
+}
+
+/** BindAlign sets "align" from the named path instead of from a value. */
+export function BindAlign(path: string): El {
+  return Prop("align", bind(path));
+}
+
+/** BindJustify sets "justify" from the named path instead of from a value. */
+export function BindJustify(path: string): El {
+  return Prop("justify", bind(path));
+}
+
+/** BindWrap sets "wrap" from the named path instead of from a value. */
+export function BindWrap(path: string): El {
+  return Prop("wrap", bind(path));
+}
+
+/** BindRetry sets "retry" from the named path instead of from a value. */
+export function BindRetry(path: string): El {
+  return Prop("retry", bind(path));
+}
+
+/** BindRows sets "rows" from the named path instead of from a value. */
+export function BindRows(path: string): El {
+  return Prop("rows", bind(path));
+}
+
+/** BindSources sets "sources" from the named path instead of from a value. */
+export function BindSources(path: string): El {
+  return Prop("sources", bind(path));
+}
+
+/** BindOptions sets "options" from the named path instead of from a value. */
+export function BindOptions(path: string): El {
+  return Prop("options", bind(path));
+}
+
+/** BindCapabilities sets "capabilities" from the named path instead of from a value. */
+export function BindCapabilities(path: string): El {
+  return Prop("capabilities", bind(path));
+}
+
+/** BindSummary sets "summary" from the named path instead of from a value. */
+export function BindSummary(path: string): El {
+  return Prop("summary", bind(path));
+}
+
+/** BindValue sets "value" from the named path instead of from a value. */
+export function BindValue(path: string): El {
+  return Prop("value", bind(path));
+}
+
+/** BindPlaceholder sets "placeholder" from the named path instead of from a value. */
+export function BindPlaceholder(path: string): El {
+  return Prop("placeholder", bind(path));
+}
+
+/** BindHelp sets "help" from the named path instead of from a value. */
+export function BindHelp(path: string): El {
+  return Prop("help", bind(path));
+}
+
+/** BindInputType sets "inputType" from the named path instead of from a value. */
+export function BindInputType(path: string): El {
+  return Prop("inputType", bind(path));
+}
+
+/** BindHeading sets "heading" from the named path instead of from a value. */
+export function BindHeading(path: string): El {
+  return Prop("heading", bind(path));
+}
+
+/** BindSelected sets "selected" from the named path instead of from a value. */
+export function BindSelected(path: string): El {
+  return Prop("selected", bind(path));
+}
+
+/** BindActive sets "active" from the named path instead of from a value. */
+export function BindActive(path: string): El {
+  return Prop("active", bind(path));
+}
+
+/** BindHasPrev sets "hasPrev" from the named path instead of from a value. */
+export function BindHasPrev(path: string): El {
+  return Prop("hasPrev", bind(path));
+}
+
+/** BindHasNext sets "hasNext" from the named path instead of from a value. */
+export function BindHasNext(path: string): El {
+  return Prop("hasNext", bind(path));
+}
+
+/** BindPrevAction sets "prevAction" from the named path instead of from a value. */
+export function BindPrevAction(path: string): El {
+  return Prop("prevAction", bind(path));
+}
+
+/** BindNextAction sets "nextAction" from the named path instead of from a value. */
+export function BindNextAction(path: string): El {
+  return Prop("nextAction", bind(path));
+}
+
+/** BindOn sets "on" from the named path instead of from a value. */
+export function BindOn(path: string): El {
+  return Prop("on", bind(path));
+}
+
+/** BindOrigin sets "origin" from the named path instead of from a value. */
+export function BindOrigin(path: string): El {
+  return Prop("origin", bind(path));
 }
 
 // Tone values, mirroring the Go Tone constants. They are the schema enum's
