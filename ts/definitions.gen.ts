@@ -920,6 +920,48 @@ export const DEFINITIONS: ComponentDefinition[] = [
             {
               "type": "Box",
               "props": {
+                "$if": {
+                  "$bind": "poster"
+                },
+                "style": {
+                  "width": 196,
+                  "aspectRatio": "2 / 3",
+                  "radius": "md",
+                  "overflow": "hidden",
+                  "bg": "surface-raised",
+                  "border": true,
+                  "shadow": "2",
+                  "responsive": {
+                    "below": 900,
+                    "style": {
+                      "hidden": true
+                    }
+                  }
+                }
+              },
+              "children": [
+                {
+                  "type": "Image",
+                  "props": {
+                    "src": {
+                      "$bind": "poster"
+                    },
+                    "alt": {
+                      "$bind": "title"
+                    },
+                    "fit": "cover",
+                    "placeholder": " ",
+                    "style": {
+                      "width": "full",
+                      "height": "full"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "Box",
+              "props": {
                 "style": {
                   "glass": true,
                   "radius": "xl",
