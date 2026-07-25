@@ -64,6 +64,7 @@ export const primitives: PrimitiveSpec[] = [
       { key: "placeholder", type: "string", doc: "Text shown while loading or when the source fails." },
       { key: "placeholderMode", type: "enum:label|initials", doc: "Whether the placeholder renders as a label or as initials." },
       { key: "artLight", type: "enum:ambient|focus", doc: "Publish this image's palette to the acrylic surfaces." },
+      { key: "motion", type: "enum:drift", doc: "Slowly scale and pan the image behind its frame, so a still backdrop reads as a live surface rather than a photograph. A client that honours prefers-reduced-motion holds it still." },
       { key: "style", type: "boxStyle", doc: "Box style applied to the image frame." },
     ],
   },

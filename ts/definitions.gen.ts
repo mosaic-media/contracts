@@ -20,7 +20,8 @@ export const DEFINITIONS: ComponentDefinition[] = [
         "style": {
           "position": "relative",
           "direction": "column",
-          "height": "screen"
+          "height": "screen",
+          "bg": "bg"
         }
       },
       "children": [
@@ -46,63 +47,189 @@ export const DEFINITIONS: ComponentDefinition[] = [
           "type": "Box",
           "props": {
             "style": {
-              "position": "absolute",
-              "top": 0,
-              "left": 0,
-              "right": 0,
+              "position": "fixed",
+              "top": 4,
+              "left": "gutter",
+              "right": "gutter",
               "z": "overlay",
               "direction": "row",
               "align": "center",
-              "gap": 4,
-              "px": "gutter",
-              "py": 3
+              "gap": 3,
+              "responsive": {
+                "below": 720,
+                "style": {
+                  "top": 2,
+                  "gap": 2
+                }
+              }
             }
           },
           "children": [
             {
-              "type": "Pressable",
+              "type": "Box",
               "props": {
-                "action": {
-                  "kind": "navigate",
-                  "screen": "home"
-                },
-                "label": "Home",
                 "style": {
                   "direction": "row",
                   "align": "center",
-                  "gap": 3
+                  "gap": 2,
+                  "height": 52,
+                  "pl": 4,
+                  "pr": 3,
+                  "radius": "pill",
+                  "bg": "surface-overlay",
+                  "glass": true,
+                  "border": true,
+                  "shadow": "2"
                 }
               },
               "children": [
                 {
-                  "type": "Box",
+                  "type": "Pressable",
                   "props": {
+                    "action": {
+                      "kind": "navigate",
+                      "screen": "home"
+                    },
+                    "label": "Home",
                     "style": {
-                      "width": 26,
-                      "height": 26,
-                      "radius": "sm",
-                      "bgGradient": {
-                        "from": "accent",
-                        "to": "info",
-                        "angle": 135
-                      },
-                      "shadow": "1"
+                      "direction": "row",
+                      "align": "center",
+                      "gap": 3,
+                      "pr": 2
                     }
-                  }
+                  },
+                  "children": [
+                    {
+                      "type": "Box",
+                      "props": {
+                        "style": {
+                          "layout": "grid",
+                          "gridColumns": [
+                            {
+                              "fill": 1
+                            },
+                            {
+                              "fill": 1
+                            },
+                            {
+                              "fill": 1
+                            }
+                          ],
+                          "gap": 1,
+                          "width": 22,
+                          "height": 22
+                        }
+                      },
+                      "children": [
+                        {
+                          "type": "Box",
+                          "props": {
+                            "style": {
+                              "bg": "accent",
+                              "radius": "sm"
+                            }
+                          }
+                        },
+                        {
+                          "type": "Box",
+                          "props": {
+                            "style": {
+                              "bg": "text-faint",
+                              "radius": "sm"
+                            }
+                          }
+                        },
+                        {
+                          "type": "Box",
+                          "props": {
+                            "style": {
+                              "bg": "accent-quiet",
+                              "radius": "sm"
+                            }
+                          }
+                        },
+                        {
+                          "type": "Box",
+                          "props": {
+                            "style": {
+                              "bg": "text-faint",
+                              "radius": "sm"
+                            }
+                          }
+                        },
+                        {
+                          "type": "Box",
+                          "props": {
+                            "style": {
+                              "bg": "accent",
+                              "radius": "sm"
+                            }
+                          }
+                        },
+                        {
+                          "type": "Box",
+                          "props": {
+                            "style": {
+                              "bg": "text-faint",
+                              "radius": "sm"
+                            }
+                          }
+                        },
+                        {
+                          "type": "Box",
+                          "props": {
+                            "style": {
+                              "bg": "accent-quiet",
+                              "radius": "sm"
+                            }
+                          }
+                        },
+                        {
+                          "type": "Box",
+                          "props": {
+                            "style": {
+                              "bg": "text-faint",
+                              "radius": "sm"
+                            }
+                          }
+                        },
+                        {
+                          "type": "Box",
+                          "props": {
+                            "style": {
+                              "bg": "accent",
+                              "radius": "sm"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "Text",
+                      "props": {
+                        "text": {
+                          "$bind": "title"
+                        },
+                        "style": {
+                          "variant": "sm",
+                          "weight": "bold",
+                          "transform": "uppercase",
+                          "tracking": "wide"
+                        }
+                      }
+                    }
+                  ]
                 },
                 {
-                  "type": "Text",
-                  "props": {
-                    "text": {
-                      "$bind": "title"
-                    },
-                    "style": {
-                      "variant": "lg",
-                      "weight": "bold",
-                      "transform": "uppercase",
-                      "tracking": "wide"
+                  "type": "NavBar",
+                  "children": [
+                    {
+                      "type": "Outlet",
+                      "props": {
+                        "name": "nav"
+                      }
                     }
-                  }
+                  ]
                 }
               ]
             },
@@ -110,12 +237,24 @@ export const DEFINITIONS: ComponentDefinition[] = [
               "type": "Box",
               "props": {
                 "style": {
+                  "grow": true
+                }
+              }
+            },
+            {
+              "type": "Box",
+              "props": {
+                "style": {
                   "direction": "row",
                   "align": "center",
-                  "justify": "center",
-                  "grow": true,
-                  "minWidth": 180,
-                  "kind": "top-search"
+                  "gap": 1,
+                  "height": 52,
+                  "px": 2,
+                  "radius": "pill",
+                  "bg": "surface-overlay",
+                  "glass": true,
+                  "border": true,
+                  "shadow": "2"
                 }
               },
               "children": [
@@ -124,20 +263,17 @@ export const DEFINITIONS: ComponentDefinition[] = [
                   "props": {
                     "name": "topbar"
                   }
-                }
-              ]
-            },
-            {
-              "type": "Box",
-              "props": {
-                "style": {
-                  "direction": "row",
-                  "align": "center",
-                  "gap": 3,
-                  "kind": "account"
-                }
-              },
-              "children": [
+                },
+                {
+                  "type": "Box",
+                  "props": {
+                    "style": {
+                      "width": 1,
+                      "height": 22,
+                      "bg": "border"
+                    }
+                  }
+                },
                 {
                   "type": "Outlet",
                   "props": {
@@ -145,17 +281,6 @@ export const DEFINITIONS: ComponentDefinition[] = [
                   }
                 }
               ]
-            }
-          ]
-        },
-        {
-          "type": "NavBar",
-          "children": [
-            {
-              "type": "Outlet",
-              "props": {
-                "name": "nav"
-              }
             }
           ]
         }
@@ -357,23 +482,22 @@ export const DEFINITIONS: ComponentDefinition[] = [
                 "align": "center",
                 "justify": "center",
                 "gap": 2,
-                "px": 4,
+                "px": 6,
                 "py": 3,
-                "radius": "md",
-                "glass": true,
-                "bg": "accent-quiet",
-                "color": "text",
-                "border": true,
-                "borderColor": "accent"
+                "minHeight": 52,
+                "radius": "pill",
+                "bg": "text",
+                "color": "bg"
               },
               "secondary": {
                 "direction": "row",
                 "align": "center",
                 "justify": "center",
                 "gap": 2,
-                "px": 4,
+                "px": 5,
                 "py": 3,
-                "radius": "md",
+                "minHeight": 52,
+                "radius": "pill",
                 "glass": true,
                 "bg": "surface-raised",
                 "color": "text",
@@ -385,9 +509,10 @@ export const DEFINITIONS: ComponentDefinition[] = [
                 "align": "center",
                 "justify": "center",
                 "gap": 2,
-                "px": 4,
+                "px": 5,
                 "py": 3,
-                "radius": "md",
+                "minHeight": 52,
+                "radius": "pill",
                 "color": "text-muted"
               },
               "danger": {
@@ -395,9 +520,10 @@ export const DEFINITIONS: ComponentDefinition[] = [
                 "align": "center",
                 "justify": "center",
                 "gap": 2,
-                "px": 4,
+                "px": 5,
                 "py": 3,
-                "radius": "md",
+                "minHeight": 52,
+                "radius": "pill",
                 "glass": true,
                 "bg": "danger-quiet",
                 "color": "danger",
@@ -410,14 +536,12 @@ export const DEFINITIONS: ComponentDefinition[] = [
               "align": "center",
               "justify": "center",
               "gap": 2,
-              "px": 4,
+              "px": 6,
               "py": 3,
-              "radius": "md",
-              "glass": true,
-              "bg": "accent-quiet",
-              "color": "text",
-              "border": true,
-              "borderColor": "accent"
+              "minHeight": 52,
+              "radius": "pill",
+              "bg": "text",
+              "color": "bg"
             }
           }
         }
@@ -442,7 +566,17 @@ export const DEFINITIONS: ComponentDefinition[] = [
               "$bind": "label"
             },
             "style": {
-              "weight": "medium"
+              "weight": {
+                "$match": {
+                  "on": {
+                    "$bind": "variant"
+                  },
+                  "cases": {
+                    "primary": "bold"
+                  },
+                  "default": "medium"
+                }
+              }
             }
           }
         }
@@ -1833,6 +1967,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
             },
             "placeholder": " ",
             "artLight": "ambient",
+            "motion": "drift",
             "style": {
               "position": "absolute",
               "top": 0,
@@ -1853,11 +1988,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
               "right": 0,
               "bottom": 0,
               "left": 0,
-              "bgGradient": {
-                "from": "bg",
-                "to": "transparent",
-                "angle": 70
-              }
+              "glow": "art"
             }
           }
         },
@@ -1870,11 +2001,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
               "right": 0,
               "bottom": 0,
               "left": 0,
-              "bgGradient": {
-                "from": "bg",
-                "to": "transparent",
-                "angle": 0
-              }
+              "scrim": "cinematic"
             }
           }
         },
@@ -2281,6 +2408,19 @@ export const DEFINITIONS: ComponentDefinition[] = [
               }
             }
           ]
+        },
+        {
+          "type": "Box",
+          "props": {
+            "style": {
+              "position": "absolute",
+              "top": 0,
+              "right": 0,
+              "bottom": 0,
+              "left": 0,
+              "grain": true
+            }
+          }
         }
       ]
     }
@@ -2483,11 +2623,8 @@ export const DEFINITIONS: ComponentDefinition[] = [
         },
         "lift": true,
         "style": {
-          "glass": true,
-          "radius": "lg",
-          "border": true,
-          "p": 2,
-          "gap": 2
+          "gap": 2,
+          "hoverGroup": true
         }
       },
       "children": [
@@ -2498,9 +2635,11 @@ export const DEFINITIONS: ComponentDefinition[] = [
               "position": "relative",
               "radius": "md",
               "overflow": "hidden",
-              "aspectRatio": "2 / 3",
+              "aspectRatio": "16 / 9",
               "bg": "surface-raised",
-              "glass": true
+              "glass": true,
+              "border": true,
+              "shadow": "2"
             }
           },
           "children": [
@@ -2531,12 +2670,12 @@ export const DEFINITIONS: ComponentDefinition[] = [
                 },
                 "style": {
                   "position": "absolute",
-                  "top": 1,
-                  "left": 1,
+                  "top": 2,
+                  "left": 2,
                   "glass": true,
                   "bg": "surface-overlay",
                   "border": true,
-                  "radius": "pill",
+                  "radius": "sm",
                   "px": 2,
                   "py": 1
                 }
@@ -2555,6 +2694,88 @@ export const DEFINITIONS: ComponentDefinition[] = [
                   }
                 }
               ]
+            },
+            {
+              "type": "Box",
+              "props": {
+                "style": {
+                  "position": "absolute",
+                  "top": 0,
+                  "right": 0,
+                  "bottom": 0,
+                  "left": 0,
+                  "hoverReveal": true,
+                  "scrim": "bottom",
+                  "direction": "row",
+                  "align": "end",
+                  "gap": 3,
+                  "p": 3
+                }
+              },
+              "children": [
+                {
+                  "type": "Box",
+                  "props": {
+                    "style": {
+                      "width": 34,
+                      "height": 34,
+                      "radius": "pill",
+                      "bg": "text",
+                      "align": "center",
+                      "justify": "center"
+                    }
+                  },
+                  "children": [
+                    {
+                      "type": "Icon",
+                      "props": {
+                        "name": "play",
+                        "size": 13,
+                        "color": "bg"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "Text",
+                  "props": {
+                    "$if": {
+                      "$bind": "progressLabel"
+                    },
+                    "text": {
+                      "$bind": "progressLabel"
+                    },
+                    "style": {
+                      "variant": "xs",
+                      "color": "text-muted"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "Box",
+              "props": {
+                "$if": {
+                  "$bind": "progress"
+                },
+                "style": {
+                  "position": "absolute",
+                  "left": 2,
+                  "right": 2,
+                  "bottom": 2
+                }
+              },
+              "children": [
+                {
+                  "type": "ProgressBar",
+                  "props": {
+                    "value": {
+                      "$bind": "progress"
+                    }
+                  }
+                }
+              ]
             }
           ]
         },
@@ -2562,7 +2783,6 @@ export const DEFINITIONS: ComponentDefinition[] = [
           "type": "Box",
           "props": {
             "style": {
-              "px": 1,
               "gap": 0
             }
           },
@@ -2906,7 +3126,8 @@ export const DEFINITIONS: ComponentDefinition[] = [
         },
         "lift": true,
         "style": {
-          "gap": 2
+          "gap": 2,
+          "hoverGroup": true
         }
       },
       "children": [
@@ -2972,6 +3193,40 @@ export const DEFINITIONS: ComponentDefinition[] = [
                     "style": {
                       "variant": "xs",
                       "weight": "medium"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "Box",
+              "props": {
+                "$if": {
+                  "$bind": "origin"
+                },
+                "style": {
+                  "position": "absolute",
+                  "top": 0,
+                  "right": 0,
+                  "bottom": 0,
+                  "left": 0,
+                  "hoverReveal": true,
+                  "scrim": "bottom",
+                  "direction": "column",
+                  "justify": "end",
+                  "p": 3
+                }
+              },
+              "children": [
+                {
+                  "type": "Text",
+                  "props": {
+                    "text": {
+                      "$bind": "origin"
+                    },
+                    "style": {
+                      "variant": "xs",
+                      "color": "text-muted"
                     }
                   }
                 }
@@ -3211,7 +3466,8 @@ export const DEFINITIONS: ComponentDefinition[] = [
       "type": "Box",
       "props": {
         "style": {
-          "gap": 5
+          "gap": 4,
+          "hoverGroup": true
         }
       },
       "children": [
@@ -3223,8 +3479,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
             },
             "style": {
               "direction": "row",
-              "align": "center",
-              "justify": "between",
+              "align": "baseline",
               "gap": 4
             }
           },
@@ -3236,9 +3491,24 @@ export const DEFINITIONS: ComponentDefinition[] = [
                   "$bind": "title"
                 },
                 "style": {
-                  "variant": "xl",
-                  "weight": "bold",
+                  "variant": "lg",
+                  "weight": "medium",
                   "tracking": "tight"
+                }
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "$if": {
+                  "$bind": "subtitle"
+                },
+                "text": {
+                  "$bind": "subtitle"
+                },
+                "style": {
+                  "variant": "sm",
+                  "color": "text-faint"
                 }
               }
             },
@@ -3255,7 +3525,8 @@ export const DEFINITIONS: ComponentDefinition[] = [
                   "direction": "row",
                   "align": "center",
                   "gap": 1,
-                  "color": "text-muted"
+                  "color": "text-faint",
+                  "hoverReveal": true
                 }
               },
               "children": [
@@ -3266,15 +3537,14 @@ export const DEFINITIONS: ComponentDefinition[] = [
                       "$bind": "actionLabel"
                     },
                     "style": {
-                      "variant": "sm",
-                      "weight": "medium"
+                      "variant": "xs"
                     }
                   }
                 },
                 {
                   "type": "Icon",
                   "props": {
-                    "name": "chevron-right",
+                    "name": "arrow-right",
                     "size": "1em"
                   }
                 }

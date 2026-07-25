@@ -11,11 +11,8 @@
       },
       "lift": true,
       "style": {
-        "glass": true,
-        "radius": "lg",
-        "border": true,
-        "p": 2,
-        "gap": 2
+        "gap": 2,
+        "hoverGroup": true
       }
     },
     "children": [
@@ -26,9 +23,11 @@
             "position": "relative",
             "radius": "md",
             "overflow": "hidden",
-            "aspectRatio": "2 / 3",
+            "aspectRatio": "16 / 9",
             "bg": "surface-raised",
-            "glass": true
+            "glass": true,
+            "border": true,
+            "shadow": "2"
           }
         },
         "children": [
@@ -59,12 +58,12 @@
               },
               "style": {
                 "position": "absolute",
-                "top": 1,
-                "left": 1,
+                "top": 2,
+                "left": 2,
                 "glass": true,
                 "bg": "surface-overlay",
                 "border": true,
-                "radius": "pill",
+                "radius": "sm",
                 "px": 2,
                 "py": 1
               }
@@ -83,6 +82,88 @@
                 }
               }
             ]
+          },
+          {
+            "type": "Box",
+            "props": {
+              "style": {
+                "position": "absolute",
+                "top": 0,
+                "right": 0,
+                "bottom": 0,
+                "left": 0,
+                "hoverReveal": true,
+                "scrim": "bottom",
+                "direction": "row",
+                "align": "end",
+                "gap": 3,
+                "p": 3
+              }
+            },
+            "children": [
+              {
+                "type": "Box",
+                "props": {
+                  "style": {
+                    "width": 34,
+                    "height": 34,
+                    "radius": "pill",
+                    "bg": "text",
+                    "align": "center",
+                    "justify": "center"
+                  }
+                },
+                "children": [
+                  {
+                    "type": "Icon",
+                    "props": {
+                      "name": "play",
+                      "size": 13,
+                      "color": "bg"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "Text",
+                "props": {
+                  "$if": {
+                    "$bind": "progressLabel"
+                  },
+                  "text": {
+                    "$bind": "progressLabel"
+                  },
+                  "style": {
+                    "variant": "xs",
+                    "color": "text-muted"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "Box",
+            "props": {
+              "$if": {
+                "$bind": "progress"
+              },
+              "style": {
+                "position": "absolute",
+                "left": 2,
+                "right": 2,
+                "bottom": 2
+              }
+            },
+            "children": [
+              {
+                "type": "ProgressBar",
+                "props": {
+                  "value": {
+                    "$bind": "progress"
+                  }
+                }
+              }
+            ]
           }
         ]
       },
@@ -90,7 +171,6 @@
         "type": "Box",
         "props": {
           "style": {
-            "px": 1,
             "gap": 0
           }
         },

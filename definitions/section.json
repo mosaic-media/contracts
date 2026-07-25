@@ -7,7 +7,8 @@
     "type": "Box",
     "props": {
       "style": {
-        "gap": 5
+        "gap": 4,
+        "hoverGroup": true
       }
     },
     "children": [
@@ -19,8 +20,7 @@
           },
           "style": {
             "direction": "row",
-            "align": "center",
-            "justify": "between",
+            "align": "baseline",
             "gap": 4
           }
         },
@@ -32,9 +32,24 @@
                 "$bind": "title"
               },
               "style": {
-                "variant": "xl",
-                "weight": "bold",
+                "variant": "lg",
+                "weight": "medium",
                 "tracking": "tight"
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "$if": {
+                "$bind": "subtitle"
+              },
+              "text": {
+                "$bind": "subtitle"
+              },
+              "style": {
+                "variant": "sm",
+                "color": "text-faint"
               }
             }
           },
@@ -51,7 +66,8 @@
                 "direction": "row",
                 "align": "center",
                 "gap": 1,
-                "color": "text-muted"
+                "color": "text-faint",
+                "hoverReveal": true
               }
             },
             "children": [
@@ -62,15 +78,14 @@
                     "$bind": "actionLabel"
                   },
                   "style": {
-                    "variant": "sm",
-                    "weight": "medium"
+                    "variant": "xs"
                   }
                 }
               },
               {
                 "type": "Icon",
                 "props": {
-                  "name": "chevron-right",
+                  "name": "arrow-right",
                   "size": "1em"
                 }
               }

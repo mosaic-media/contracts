@@ -57,6 +57,7 @@
           },
           "placeholder": " ",
           "artLight": "ambient",
+          "motion": "drift",
           "style": {
             "position": "absolute",
             "top": 0,
@@ -77,11 +78,7 @@
             "right": 0,
             "bottom": 0,
             "left": 0,
-            "bgGradient": {
-              "from": "bg",
-              "to": "transparent",
-              "angle": 70
-            }
+            "glow": "art"
           }
         }
       },
@@ -94,11 +91,7 @@
             "right": 0,
             "bottom": 0,
             "left": 0,
-            "bgGradient": {
-              "from": "bg",
-              "to": "transparent",
-              "angle": 0
-            }
+            "scrim": "cinematic"
           }
         }
       },
@@ -505,6 +498,19 @@
             }
           }
         ]
+      },
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "position": "absolute",
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0,
+            "grain": true
+          }
+        }
       }
     ]
   }

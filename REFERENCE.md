@@ -76,6 +76,7 @@ Image renders a remote or proxied image with a placeholder fallback.
 | `placeholder` | `string` | Text shown while loading or when the source fails. |
 | `placeholderMode` | `enum:label|initials` | Whether the placeholder renders as a label or as initials. |
 | `artLight` | `enum:ambient|focus` | Publish this image's palette to the acrylic surfaces. |
+| `motion` | `enum:drift` | Slowly scale and pan the image behind its frame, so a still backdrop reads as a live surface rather than a photograph. A client that honours prefers-reduced-motion holds it still. |
 | `style` | `boxStyle` | Box style applied to the image frame. |
 
 ### `Icon`

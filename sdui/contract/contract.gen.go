@@ -81,17 +81,40 @@ type BoxStyle struct {
 	BgGradient  *BgGradient `json:"bgGradient,omitempty"`
 	Border      *bool       `json:"border,omitempty"`
 	BorderColor *ColorToken `json:"borderColor,omitempty"`
-	Bottom      *SpaceToken `json:"bottom"`
-	Color       *ColorToken `json:"color,omitempty"`
-	Direction   *Direction  `json:"direction,omitempty"`
-	Flex        *float64    `json:"flex,omitempty"`
-	Gap         *SpaceToken `json:"gap"`
+	// Draw `border` on one edge only — a rule under a row, a marker down the side of the
+	// selected item. Without it `border` draws all four.
+	BorderSide *BorderSide `json:"borderSide,omitempty"`
+	// The border's weight. Two steps, not a number: a hairline rule and a marker heavy enough
+	// to read as a selection. Anything thicker is a filled box, which this vocabulary already
+	// has.
+	BorderWidth *BorderWidth `json:"borderWidth"`
+	Bottom      *SpaceToken  `json:"bottom"`
+	Color       *ColorToken  `json:"color,omitempty"`
+	Direction   *Direction   `json:"direction,omitempty"`
+	Flex        *float64     `json:"flex,omitempty"`
+	Gap         *SpaceToken  `json:"gap"`
 	// Render this surface in the acrylic material: translucent, blurred, and lit by the current
 	// light source (the focused artwork, or the brand light when there is none). A client
 	// without the material renders a plain translucent surface.
 	Glass *bool `json:"glass,omitempty"`
+	// A soft bloom cast over this box, screen-blended so it lights the artwork rather than
+	// tinting it flat. "art" draws the palette sampled from the focused image (the same source
+	// the acrylic material is lit by), so a hero glows in the colours of its own backdrop;
+	// "brand" uses the accent pair, for a surface with no artwork to sample. A client with no
+	// sampler renders "art" as "brand" rather than nothing.
+	Glow *Glow `json:"glow,omitempty"`
+	// Overlay the material texture — the grain, blotch and scuff the token set carries — so a
+	// large flat surface reads as a material rather than as a fill. Soft-light blended over
+	// whatever is beneath, and purely decorative: it never affects layout or hit-testing.
+	Grain *bool `json:"grain,omitempty"`
 	// grid: fixed track size for a rail, in px.
 	GridAutoColumns *float64 `json:"gridAutoColumns,omitempty"`
+	// grid: an explicit column track list, for the arrangements auto-fill cannot state — a
+	// settings frame's nav/panel/aside, an episode row's fixed thumbnail beside a fluid title.
+	// A track is a number of pixels (fixed), "auto" (sized to its content), or {"fill": n} (n
+	// shares of what is left). Deliberately not a CSS grid-template string: these three are
+	// what a flexbox client and a Flutter client can both lay out identically.
+	GridColumns []GridColumnElement `json:"gridColumns,omitempty"`
 	// grid: flow direction; "column" makes a horizontal rail.
 	GridFlow *Direction `json:"gridFlow,omitempty"`
 	// grid: responsive auto-fill columns of at least this width in px.
@@ -101,38 +124,65 @@ type BoxStyle struct {
 	// Take the box out of the layout entirely. Its purpose is `responsive`: one payload carries
 	// both a desktop and a phone arrangement, and each viewport drops the half it does not use.
 	Hidden *bool `json:"hidden,omitempty"`
+	// Mark this box as the region whose hover or focus reveals the `hoverReveal` boxes inside
+	// it. Stated explicitly, and on the ancestor rather than inferred from interactivity,
+	// because the thing revealed is frequently not inside the thing hovered: a rail's "see all"
+	// appears when the *section* is approached, and a link that appeared only while pointing at
+	// it could never be clicked.
+	HoverGroup *bool `json:"hoverGroup,omitempty"`
+	// Hide this box until its nearest `hoverGroup` ancestor is hovered or focused, then fade it
+	// in. It is the card veil: the extra detail a tile shows on approach — time remaining, file
+	// size, a play affordance — which must not be in the resting composition and must not cost
+	// a second payload. An input model with no pointer reveals it on focus instead, and a
+	// client with neither renders it always-visible rather than never: unreachable detail is
+	// the worse failure.
+	HoverReveal *bool `json:"hoverReveal,omitempty"`
 	// Main-axis distribution.
 	Justify *Justify `json:"justify,omitempty"`
 	// DEPRECATED in favour of `responsive`. A named hook a client may map to a rule of its own;
 	// it makes a layout depend on client CSS, which is what `responsive` exists to avoid.
 	Kind *string `json:"kind,omitempty"`
 	// Layout mode. "grid" enables the grid-* fields.
-	Layout    *Layout      `json:"layout,omitempty"`
-	Left      *SpaceToken  `json:"left"`
-	MaxWidth  *Dimension   `json:"maxWidth"`
-	MinHeight *Dimension   `json:"minHeight"`
-	MinWidth  *Dimension   `json:"minWidth"`
-	Opacity   *float64     `json:"opacity,omitempty"`
-	Overflow  *Overflow    `json:"overflow,omitempty"`
-	OverflowX *Overflow    `json:"overflowX,omitempty"`
-	OverflowY *Overflow    `json:"overflowY,omitempty"`
-	P         *SpaceToken  `json:"p"`
-	Pb        *SpaceToken  `json:"pb"`
-	Pl        *SpaceToken  `json:"pl"`
-	Position  *Position    `json:"position,omitempty"`
-	PR        *SpaceToken  `json:"pr"`
-	Pt        *SpaceToken  `json:"pt"`
-	Px        *SpaceToken  `json:"px"`
-	Py        *SpaceToken  `json:"py"`
-	Radius    *RadiusToken `json:"radius,omitempty"`
+	Layout    *Layout     `json:"layout,omitempty"`
+	Left      *SpaceToken `json:"left"`
+	MaxWidth  *Dimension  `json:"maxWidth"`
+	MinHeight *Dimension  `json:"minHeight"`
+	MinWidth  *Dimension  `json:"minWidth"`
+	Opacity   *float64    `json:"opacity,omitempty"`
+	Overflow  *Overflow   `json:"overflow,omitempty"`
+	OverflowX *Overflow   `json:"overflowX,omitempty"`
+	OverflowY *Overflow   `json:"overflowY,omitempty"`
+	// Pull this box up over what precedes it by one step of the spacing scale, so a content
+	// sheet rides over the bottom of a full-bleed hero. A single direction and a token step,
+	// rather than negative margins in four directions: this is the one case in the layout where
+	// two siblings are meant to intersect, and naming it keeps it from becoming an
+	// arbitrary-offset escape hatch. Pair with `z` to say which one is in front.
+	Overlap  *SpaceToken  `json:"overlap"`
+	P        *SpaceToken  `json:"p"`
+	Pb       *SpaceToken  `json:"pb"`
+	Pl       *SpaceToken  `json:"pl"`
+	Position *Position    `json:"position,omitempty"`
+	PR       *SpaceToken  `json:"pr"`
+	Pt       *SpaceToken  `json:"pt"`
+	Px       *SpaceToken  `json:"px"`
+	Py       *SpaceToken  `json:"py"`
+	Radius   *RadiusToken `json:"radius,omitempty"`
 	// A style override applied below a viewport width — the vocabulary's one responsive
 	// capability, and what lets a layout adapt as DATA rather than through a client stylesheet.
 	// The override is a plain BoxStyle merged over the base: a field it does not mention keeps
 	// its base value, and null clears one (these travel as JSON, where an undefined member
 	// would vanish silently). One breakpoint, not a cascade.
-	Responsive *Responsive  `json:"responsive,omitempty"`
-	Right      *SpaceToken  `json:"right"`
-	Shadow     *ShadowToken `json:"shadow,omitempty"`
+	Responsive *Responsive `json:"responsive,omitempty"`
+	Right      *SpaceToken `json:"right"`
+	// A named legibility wash over artwork, so text laid on a backdrop stays readable whatever
+	// the image behind it. NAMED rather than a gradient the server writes, for the same reason
+	// colours are tokens: the recipe is a formula each client evaluates over its own tokens,
+	// and one written as literal stops would be a second skin the Platform owns. "bottom"/"top"
+	// fade an edge into the page; "leading" washes the text side (the direction follows the
+	// reading direction, so it mirrors in RTL); "cinematic" is both — the full-bleed hero
+	// treatment.
+	Scrim  *Scrim       `json:"scrim,omitempty"`
+	Shadow *ShadowToken `json:"shadow,omitempty"`
 	// Scroll snapping axis, for carousels.
 	Snap      *Snap       `json:"snap,omitempty"`
 	SnapAlign *SnapAlign  `json:"snapAlign,omitempty"`
@@ -148,6 +198,10 @@ type BgGradient struct {
 	Angle *float64     `json:"angle,omitempty"`
 	From  GradientStop `json:"from"`
 	To    GradientStop `json:"to"`
+}
+
+type GridColumnClass struct {
+	Fill float64 `json:"fill"`
 }
 
 // A component expressed as data: a name, default params, and a template of primitives.
@@ -175,6 +229,11 @@ type TextStyle struct {
 	// Truncate after this many lines.
 	LineClamp *int64 `json:"lineClamp,omitempty"`
 	Mono      *bool  `json:"mono,omitempty"`
+	// A legibility shadow behind the glyphs, for text laid directly over artwork with no scrim
+	// beneath it — a title on a tile, a caption on a still. Boolean rather than a shadow spec:
+	// the only question a payload gets to answer is whether the text is over an image, and how
+	// that is drawn is the client's.
+	Shadow *bool `json:"shadow,omitempty"`
 	// Tabular figures, so numbers in a column line up.
 	Tabular *bool `json:"tabular,omitempty"`
 	// Letter-spacing: tight for display headings, wide for an eyebrow.
@@ -295,6 +354,17 @@ const (
 	Transparent                GradientStop = "transparent"
 )
 
+// Draw `border` on one edge only — a rule under a row, a marker down the side of the
+// selected item. Without it `border` draws all four.
+type BorderSide string
+
+const (
+	BorderSideBottom BorderSide = "bottom"
+	BorderSideTop    BorderSide = "top"
+	Left             BorderSide = "left"
+	Right            BorderSide = "right"
+)
+
 type SpaceTokenEnum string
 
 const (
@@ -307,6 +377,24 @@ type Direction string
 const (
 	Column Direction = "column"
 	Row    Direction = "row"
+)
+
+// A soft bloom cast over this box, screen-blended so it lights the artwork rather than
+// tinting it flat. "art" draws the palette sampled from the focused image (the same source
+// the acrylic material is lit by), so a hero glows in the colours of its own backdrop;
+// "brand" uses the accent pair, for a surface with no artwork to sample. A client with no
+// sampler renders "art" as "brand" rather than nothing.
+type Glow string
+
+const (
+	Art   Glow = "art"
+	Brand Glow = "brand"
+)
+
+type GridColumnEnum string
+
+const (
+	GridColumnAuto GridColumnEnum = "auto"
 )
 
 // Main-axis distribution.
@@ -331,9 +419,9 @@ const (
 type Overflow string
 
 const (
-	Auto    Overflow = "auto"
-	Hidden  Overflow = "hidden"
-	Visible Overflow = "visible"
+	Hidden       Overflow = "hidden"
+	OverflowAuto Overflow = "auto"
+	Visible      Overflow = "visible"
 )
 
 type Position string
@@ -354,6 +442,22 @@ const (
 	RadiusTokenMd RadiusToken = "md"
 	RadiusTokenSm RadiusToken = "sm"
 	RadiusTokenXl RadiusToken = "xl"
+)
+
+// A named legibility wash over artwork, so text laid on a backdrop stays readable whatever
+// the image behind it. NAMED rather than a gradient the server writes, for the same reason
+// colours are tokens: the recipe is a formula each client evaluates over its own tokens,
+// and one written as literal stops would be a second skin the Platform owns. "bottom"/"top"
+// fade an edge into the page; "leading" washes the text side (the direction follows the
+// reading direction, so it mirrors in RTL); "cinematic" is both — the full-bleed hero
+// treatment.
+type Scrim string
+
+const (
+	Cinematic   Scrim = "cinematic"
+	Leading     Scrim = "leading"
+	ScrimBottom Scrim = "bottom"
+	ScrimTop    Scrim = "top"
 )
 
 // An elevation step.
@@ -437,11 +541,31 @@ const (
 	Regular FontWeight = "regular"
 )
 
+// The border's weight. Two steps, not a number: a hairline rule and a marker heavy enough
+// to read as a selection. Anything thicker is a filled box, which this vocabulary already
+// has.
+type BorderWidth struct {
+	Double  *float64
+	Integer *int64
+}
+
 // A step on the spacing scale (0–9), or "gutter" — the fluid page margin that clamps with
 // the viewport, so page padding is responsive without a breakpoint.
+//
+// Pull this box up over what precedes it by one step of the spacing scale, so a content
+// sheet rides over the bottom of a full-bleed hero. A single direction and a token step,
+// rather than negative margins in four directions: this is the one case in the layout where
+// two siblings are meant to intersect, and naming it keeps it from becoming an
+// arbitrary-offset escape hatch. Pair with `z` to say which one is in front.
 type SpaceToken struct {
 	Enum    *SpaceTokenEnum
 	Integer *int64
+}
+
+type GridColumnElement struct {
+	Double          *float64
+	Enum            *GridColumnEnum
+	GridColumnClass *GridColumnClass
 }
 
 // A size: a number of pixels, "full" (100% of the parent), "screen" (the viewport in that

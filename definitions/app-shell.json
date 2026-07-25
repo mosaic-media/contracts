@@ -9,7 +9,8 @@
       "style": {
         "position": "relative",
         "direction": "column",
-        "height": "screen"
+        "height": "screen",
+        "bg": "bg"
       }
     },
     "children": [
@@ -35,63 +36,189 @@
         "type": "Box",
         "props": {
           "style": {
-            "position": "absolute",
-            "top": 0,
-            "left": 0,
-            "right": 0,
+            "position": "fixed",
+            "top": 4,
+            "left": "gutter",
+            "right": "gutter",
             "z": "overlay",
             "direction": "row",
             "align": "center",
-            "gap": 4,
-            "px": "gutter",
-            "py": 3
+            "gap": 3,
+            "responsive": {
+              "below": 720,
+              "style": {
+                "top": 2,
+                "gap": 2
+              }
+            }
           }
         },
         "children": [
           {
-            "type": "Pressable",
+            "type": "Box",
             "props": {
-              "action": {
-                "kind": "navigate",
-                "screen": "home"
-              },
-              "label": "Home",
               "style": {
                 "direction": "row",
                 "align": "center",
-                "gap": 3
+                "gap": 2,
+                "height": 52,
+                "pl": 4,
+                "pr": 3,
+                "radius": "pill",
+                "bg": "surface-overlay",
+                "glass": true,
+                "border": true,
+                "shadow": "2"
               }
             },
             "children": [
               {
-                "type": "Box",
+                "type": "Pressable",
                 "props": {
+                  "action": {
+                    "kind": "navigate",
+                    "screen": "home"
+                  },
+                  "label": "Home",
                   "style": {
-                    "width": 26,
-                    "height": 26,
-                    "radius": "sm",
-                    "bgGradient": {
-                      "from": "accent",
-                      "to": "info",
-                      "angle": 135
-                    },
-                    "shadow": "1"
+                    "direction": "row",
+                    "align": "center",
+                    "gap": 3,
+                    "pr": 2
                   }
-                }
+                },
+                "children": [
+                  {
+                    "type": "Box",
+                    "props": {
+                      "style": {
+                        "layout": "grid",
+                        "gridColumns": [
+                          {
+                            "fill": 1
+                          },
+                          {
+                            "fill": 1
+                          },
+                          {
+                            "fill": 1
+                          }
+                        ],
+                        "gap": 1,
+                        "width": 22,
+                        "height": 22
+                      }
+                    },
+                    "children": [
+                      {
+                        "type": "Box",
+                        "props": {
+                          "style": {
+                            "bg": "accent",
+                            "radius": "sm"
+                          }
+                        }
+                      },
+                      {
+                        "type": "Box",
+                        "props": {
+                          "style": {
+                            "bg": "text-faint",
+                            "radius": "sm"
+                          }
+                        }
+                      },
+                      {
+                        "type": "Box",
+                        "props": {
+                          "style": {
+                            "bg": "accent-quiet",
+                            "radius": "sm"
+                          }
+                        }
+                      },
+                      {
+                        "type": "Box",
+                        "props": {
+                          "style": {
+                            "bg": "text-faint",
+                            "radius": "sm"
+                          }
+                        }
+                      },
+                      {
+                        "type": "Box",
+                        "props": {
+                          "style": {
+                            "bg": "accent",
+                            "radius": "sm"
+                          }
+                        }
+                      },
+                      {
+                        "type": "Box",
+                        "props": {
+                          "style": {
+                            "bg": "text-faint",
+                            "radius": "sm"
+                          }
+                        }
+                      },
+                      {
+                        "type": "Box",
+                        "props": {
+                          "style": {
+                            "bg": "accent-quiet",
+                            "radius": "sm"
+                          }
+                        }
+                      },
+                      {
+                        "type": "Box",
+                        "props": {
+                          "style": {
+                            "bg": "text-faint",
+                            "radius": "sm"
+                          }
+                        }
+                      },
+                      {
+                        "type": "Box",
+                        "props": {
+                          "style": {
+                            "bg": "accent",
+                            "radius": "sm"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "text": {
+                        "$bind": "title"
+                      },
+                      "style": {
+                        "variant": "sm",
+                        "weight": "bold",
+                        "transform": "uppercase",
+                        "tracking": "wide"
+                      }
+                    }
+                  }
+                ]
               },
               {
-                "type": "Text",
-                "props": {
-                  "text": {
-                    "$bind": "title"
-                  },
-                  "style": {
-                    "variant": "lg",
-                    "weight": "bold",
-                    "transform": "uppercase",
-                    "tracking": "wide"
+                "type": "NavBar",
+                "children": [
+                  {
+                    "type": "Outlet",
+                    "props": {
+                      "name": "nav"
+                    }
                   }
-                }
+                ]
               }
             ]
           },
@@ -99,12 +226,24 @@
             "type": "Box",
             "props": {
               "style": {
+                "grow": true
+              }
+            }
+          },
+          {
+            "type": "Box",
+            "props": {
+              "style": {
                 "direction": "row",
                 "align": "center",
-                "justify": "center",
-                "grow": true,
-                "minWidth": 180,
-                "kind": "top-search"
+                "gap": 1,
+                "height": 52,
+                "px": 2,
+                "radius": "pill",
+                "bg": "surface-overlay",
+                "glass": true,
+                "border": true,
+                "shadow": "2"
               }
             },
             "children": [
@@ -113,20 +252,17 @@
                 "props": {
                   "name": "topbar"
                 }
-              }
-            ]
-          },
-          {
-            "type": "Box",
-            "props": {
-              "style": {
-                "direction": "row",
-                "align": "center",
-                "gap": 3,
-                "kind": "account"
-              }
-            },
-            "children": [
+              },
+              {
+                "type": "Box",
+                "props": {
+                  "style": {
+                    "width": 1,
+                    "height": 22,
+                    "bg": "border"
+                  }
+                }
+              },
               {
                 "type": "Outlet",
                 "props": {
@@ -134,17 +270,6 @@
                 }
               }
             ]
-          }
-        ]
-      },
-      {
-        "type": "NavBar",
-        "children": [
-          {
-            "type": "Outlet",
-            "props": {
-              "name": "nav"
-            }
           }
         ]
       }

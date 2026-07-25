@@ -174,6 +174,7 @@ var Primitives = []PrimitiveSpec{
 		{Key: "placeholder", Type: "string", Doc: "Text shown while loading or when the source fails."},
 		{Key: "placeholderMode", Type: "enum:label|initials", Doc: "Whether the placeholder renders as a label or as initials."},
 		{Key: "artLight", Type: "enum:ambient|focus", Doc: "Publish this image's palette to the acrylic surfaces."},
+		{Key: "motion", Type: "enum:drift", Doc: "Slowly scale and pan the image behind its frame, so a still backdrop reads as a live surface rather than a photograph. A client that honours prefers-reduced-motion holds it still."},
 		{Key: "style", Type: "boxStyle", Doc: "Box style applied to the image frame."},
 	}},
 	{Type: "Icon", Tier: "presentational", Doc: "Icon renders one glyph from the client's bundled icon set.", Native: "Resolves a name to a vector the client ships. The glyph set is a client asset, not data.", Children: false, Props: []PropSpec{

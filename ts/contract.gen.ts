@@ -142,6 +142,17 @@ export interface BoxStyle {
     bgGradient?:  BgGradient;
     border?:      boolean;
     borderColor?: ColorToken;
+    /**
+     * Draw `border` on one edge only — a rule under a row, a marker down the side of the
+     * selected item. Without it `border` draws all four.
+     */
+    borderSide?: BorderSide;
+    /**
+     * The border's weight. Two steps, not a number: a hairline rule and a marker heavy enough
+     * to read as a selection. Anything thicker is a filled box, which this vocabulary already
+     * has.
+     */
+    borderWidth?: number | number;
     bottom?:      SpaceTokenEnum | number;
     color?:       ColorToken;
     direction?:   Direction;
@@ -154,9 +165,31 @@ export interface BoxStyle {
      */
     glass?: boolean;
     /**
+     * A soft bloom cast over this box, screen-blended so it lights the artwork rather than
+     * tinting it flat. "art" draws the palette sampled from the focused image (the same source
+     * the acrylic material is lit by), so a hero glows in the colours of its own backdrop;
+     * "brand" uses the accent pair, for a surface with no artwork to sample. A client with no
+     * sampler renders "art" as "brand" rather than nothing.
+     */
+    glow?: Glow;
+    /**
+     * Overlay the material texture — the grain, blotch and scuff the token set carries — so a
+     * large flat surface reads as a material rather than as a fill. Soft-light blended over
+     * whatever is beneath, and purely decorative: it never affects layout or hit-testing.
+     */
+    grain?: boolean;
+    /**
      * grid: fixed track size for a rail, in px.
      */
     gridAutoColumns?: number;
+    /**
+     * grid: an explicit column track list, for the arrangements auto-fill cannot state — a
+     * settings frame's nav/panel/aside, an episode row's fixed thumbnail beside a fluid title.
+     * A track is a number of pixels (fixed), "auto" (sized to its content), or {"fill": n} (n
+     * shares of what is left). Deliberately not a CSS grid-template string: these three are
+     * what a flexbox client and a Flutter client can both lay out identically.
+     */
+    gridColumns?: Array<GridColumnClass | number | GridColumnEnum>;
     /**
      * grid: flow direction; "column" makes a horizontal rail.
      */
@@ -172,6 +205,23 @@ export interface BoxStyle {
      * both a desktop and a phone arrangement, and each viewport drops the half it does not use.
      */
     hidden?: boolean;
+    /**
+     * Mark this box as the region whose hover or focus reveals the `hoverReveal` boxes inside
+     * it. Stated explicitly, and on the ancestor rather than inferred from interactivity,
+     * because the thing revealed is frequently not inside the thing hovered: a rail's "see all"
+     * appears when the *section* is approached, and a link that appeared only while pointing at
+     * it could never be clicked.
+     */
+    hoverGroup?: boolean;
+    /**
+     * Hide this box until its nearest `hoverGroup` ancestor is hovered or focused, then fade it
+     * in. It is the card veil: the extra detail a tile shows on approach — time remaining, file
+     * size, a play affordance — which must not be in the resting composition and must not cost
+     * a second payload. An input model with no pointer reveals it on focus instead, and a
+     * client with neither renders it always-visible rather than never: unreachable detail is
+     * the worse failure.
+     */
+    hoverReveal?: boolean;
     /**
      * Main-axis distribution.
      */
@@ -193,15 +243,23 @@ export interface BoxStyle {
     overflow?:  Overflow;
     overflowX?: Overflow;
     overflowY?: Overflow;
-    p?:         SpaceTokenEnum | number;
-    pb?:        SpaceTokenEnum | number;
-    pl?:        SpaceTokenEnum | number;
-    position?:  Position;
-    pr?:        SpaceTokenEnum | number;
-    pt?:        SpaceTokenEnum | number;
-    px?:        SpaceTokenEnum | number;
-    py?:        SpaceTokenEnum | number;
-    radius?:    RadiusToken;
+    /**
+     * Pull this box up over what precedes it by one step of the spacing scale, so a content
+     * sheet rides over the bottom of a full-bleed hero. A single direction and a token step,
+     * rather than negative margins in four directions: this is the one case in the layout where
+     * two siblings are meant to intersect, and naming it keeps it from becoming an
+     * arbitrary-offset escape hatch. Pair with `z` to say which one is in front.
+     */
+    overlap?:  SpaceTokenEnum | number;
+    p?:        SpaceTokenEnum | number;
+    pb?:       SpaceTokenEnum | number;
+    pl?:       SpaceTokenEnum | number;
+    position?: Position;
+    pr?:       SpaceTokenEnum | number;
+    pt?:       SpaceTokenEnum | number;
+    px?:       SpaceTokenEnum | number;
+    py?:       SpaceTokenEnum | number;
+    radius?:   RadiusToken;
     /**
      * A style override applied below a viewport width — the vocabulary's one responsive
      * capability, and what lets a layout adapt as DATA rather than through a client stylesheet.
@@ -211,7 +269,17 @@ export interface BoxStyle {
      */
     responsive?: Responsive;
     right?:      SpaceTokenEnum | number;
-    shadow?:     ShadowToken;
+    /**
+     * A named legibility wash over artwork, so text laid on a backdrop stays readable whatever
+     * the image behind it. NAMED rather than a gradient the server writes, for the same reason
+     * colours are tokens: the recipe is a formula each client evaluates over its own tokens,
+     * and one written as literal stops would be a second skin the Platform owns. "bottom"/"top"
+     * fade an edge into the page; "leading" washes the text side (the direction follows the
+     * reading direction, so it mirrors in RTL); "cinematic" is both — the full-bleed hero
+     * treatment.
+     */
+    scrim?:  Scrim;
+    shadow?: ShadowToken;
     /**
      * Scroll snapping axis, for carousels.
      */
@@ -307,6 +375,17 @@ export enum GradientStop {
     WarningQuiet = "warning-quiet",
 }
 
+/**
+ * Draw `border` on one edge only — a rule under a row, a marker down the side of the
+ * selected item. Without it `border` draws all four.
+ */
+export enum BorderSide {
+    Bottom = "bottom",
+    Left = "left",
+    Right = "right",
+    Top = "top",
+}
+
 export enum SpaceTokenEnum {
     Gutter = "gutter",
 }
@@ -317,6 +396,26 @@ export enum SpaceTokenEnum {
 export enum Direction {
     Column = "column",
     Row = "row",
+}
+
+/**
+ * A soft bloom cast over this box, screen-blended so it lights the artwork rather than
+ * tinting it flat. "art" draws the palette sampled from the focused image (the same source
+ * the acrylic material is lit by), so a hero glows in the colours of its own backdrop;
+ * "brand" uses the accent pair, for a surface with no artwork to sample. A client with no
+ * sampler renders "art" as "brand" rather than nothing.
+ */
+export enum Glow {
+    Art = "art",
+    Brand = "brand",
+}
+
+export interface GridColumnClass {
+    fill: number;
+}
+
+export enum GridColumnEnum {
+    Auto = "auto",
 }
 
 /**
@@ -360,6 +459,22 @@ export enum RadiusToken {
     Pill = "pill",
     Sm = "sm",
     Xl = "xl",
+}
+
+/**
+ * A named legibility wash over artwork, so text laid on a backdrop stays readable whatever
+ * the image behind it. NAMED rather than a gradient the server writes, for the same reason
+ * colours are tokens: the recipe is a formula each client evaluates over its own tokens,
+ * and one written as literal stops would be a second skin the Platform owns. "bottom"/"top"
+ * fade an edge into the page; "leading" washes the text side (the direction follows the
+ * reading direction, so it mirrors in RTL); "cinematic" is both — the full-bleed hero
+ * treatment.
+ */
+export enum Scrim {
+    Bottom = "bottom",
+    Cinematic = "cinematic",
+    Leading = "leading",
+    Top = "top",
 }
 
 /**
@@ -430,6 +545,13 @@ export interface TextStyle {
      */
     lineClamp?: number;
     mono?:      boolean;
+    /**
+     * A legibility shadow behind the glyphs, for text laid directly over artwork with no scrim
+     * beneath it — a title on a tile, a caption on a still. Boolean rather than a shadow spec:
+     * the only question a payload gets to answer is whether the text is over an image, and how
+     * that is drawn is the client's.
+     */
+    shadow?: boolean;
     /**
      * Tabular figures, so numbers in a column line up.
      */
