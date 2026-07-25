@@ -845,7 +845,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
           "direction": "row",
           "align": "end",
           "width": "full",
-          "minHeight": 720,
+          "minHeight": "screen",
           "overflow": "hidden"
         }
       },
@@ -974,7 +974,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
                 "style": {
                   "direction": "column",
                   "align": "start",
-                  "gap": 4,
+                  "gap": 3,
                   "grow": true,
                   "minWidth": 0,
                   "maxWidth": 760
@@ -1051,26 +1051,37 @@ export const DEFINITIONS: ComponentDefinition[] = [
                           "width": 260,
                           "height": 80
                         }
-                      }
+                      },
+                      "pt": 5
                     }
                   }
                 },
                 {
-                  "type": "Text",
+                  "type": "Box",
                   "props": {
                     "$ifNot": {
                       "$bind": "logo"
                     },
-                    "text": {
-                      "$bind": "title"
-                    },
                     "style": {
-                      "variant": "4xl",
-                      "weight": "bold",
-                      "tracking": "tight",
-                      "lineClamp": 2
+                      "pt": 5
                     }
-                  }
+                  },
+                  "children": [
+                    {
+                      "type": "Text",
+                      "props": {
+                        "text": {
+                          "$bind": "title"
+                        },
+                        "style": {
+                          "variant": "4xl",
+                          "weight": "bold",
+                          "tracking": "tight",
+                          "lineClamp": 2
+                        }
+                      }
+                    }
+                  ]
                 },
                 {
                   "type": "Text",
@@ -1156,21 +1167,31 @@ export const DEFINITIONS: ComponentDefinition[] = [
                   ]
                 },
                 {
-                  "type": "Text",
+                  "type": "Box",
                   "props": {
                     "$if": {
                       "$bind": "overview"
                     },
-                    "text": {
-                      "$bind": "overview"
-                    },
                     "style": {
-                      "variant": "md",
-                      "color": "text-muted",
-                      "lineClamp": 4,
-                      "pt": 1
+                      "pt": 1,
+                      "maxWidth": 600
                     }
-                  }
+                  },
+                  "children": [
+                    {
+                      "type": "Text",
+                      "props": {
+                        "text": {
+                          "$bind": "overview"
+                        },
+                        "style": {
+                          "variant": "md",
+                          "color": "text-muted",
+                          "lineClamp": 4
+                        }
+                      }
+                    }
+                  ]
                 },
                 {
                   "type": "Box",
@@ -1180,7 +1201,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
                       "align": "center",
                       "wrap": true,
                       "gap": 3,
-                      "pt": 2
+                      "pt": 3
                     }
                   },
                   "children": [
@@ -1193,20 +1214,29 @@ export const DEFINITIONS: ComponentDefinition[] = [
                   ]
                 },
                 {
-                  "type": "Text",
+                  "type": "Box",
                   "props": {
                     "$if": {
                       "$bind": "credits"
                     },
-                    "text": {
-                      "$bind": "credits"
-                    },
                     "style": {
-                      "variant": "sm",
-                      "color": "text-faint",
-                      "pt": 1
+                      "pt": 3
                     }
-                  }
+                  },
+                  "children": [
+                    {
+                      "type": "Text",
+                      "props": {
+                        "text": {
+                          "$bind": "credits"
+                        },
+                        "style": {
+                          "variant": "sm",
+                          "color": "text-faint"
+                        }
+                      }
+                    }
+                  ]
                 }
               ]
             },
