@@ -3160,6 +3160,337 @@ export const DEFINITIONS: ComponentDefinition[] = [
     }
   },
   {
+    "name": "LatencyHistogram",
+    "template": {
+      "type": "Box",
+      "props": {
+        "style": {
+          "direction": "column",
+          "gap": 4,
+          "p": 4,
+          "radius": "md",
+          "bg": "surface",
+          "border": true
+        }
+      },
+      "children": [
+        {
+          "type": "Box",
+          "props": {
+            "style": {
+              "direction": "row",
+              "align": "baseline",
+              "gap": 3
+            }
+          },
+          "children": [
+            {
+              "type": "Text",
+              "props": {
+                "text": {
+                  "$bind": "label"
+                },
+                "style": {
+                  "variant": "xs",
+                  "color": "text-faint",
+                  "transform": "uppercase",
+                  "tracking": "wide"
+                }
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "$if": {
+                  "$bind": "summary"
+                },
+                "text": {
+                  "$bind": "summary"
+                },
+                "style": {
+                  "variant": "xs",
+                  "color": "text-faint"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "Box",
+          "props": {
+            "style": {
+              "direction": "row",
+              "align": "end",
+              "gap": 2,
+              "height": 76
+            }
+          },
+          "children": [
+            {
+              "type": "Box",
+              "props": {
+                "$each": {
+                  "$bind": "buckets"
+                },
+                "$as": "b",
+                "style": {
+                  "direction": "column",
+                  "align": "center",
+                  "justify": "end",
+                  "gap": 1,
+                  "grow": true,
+                  "minWidth": 0,
+                  "height": "full"
+                }
+              },
+              "children": [
+                {
+                  "type": "Text",
+                  "props": {
+                    "text": {
+                      "$bind": "b.count"
+                    },
+                    "style": {
+                      "variant": "xs",
+                      "color": "text-faint"
+                    }
+                  }
+                },
+                {
+                  "type": "Box",
+                  "props": {
+                    "style": {
+                      "width": "full",
+                      "height": {
+                        "$bind": "b.height"
+                      },
+                      "radius": "sm",
+                      "bg": "accent"
+                    }
+                  }
+                },
+                {
+                  "type": "Text",
+                  "props": {
+                    "text": {
+                      "$bind": "b.label"
+                    },
+                    "style": {
+                      "variant": "xs",
+                      "color": "text-faint"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "LogTable",
+    "template": {
+      "type": "Box",
+      "props": {
+        "style": {
+          "direction": "column",
+          "radius": "md",
+          "border": true,
+          "overflow": "hidden",
+          "bg": "surface"
+        }
+      },
+      "children": [
+        {
+          "type": "Box",
+          "props": {
+            "style": {
+              "layout": "grid",
+              "gridColumns": [
+                88,
+                72,
+                132,
+                {
+                  "fill": 1
+                },
+                88
+              ],
+              "gap": 4,
+              "px": 4,
+              "py": 2,
+              "bg": "surface-raised",
+              "borderSide": "bottom",
+              "border": true
+            }
+          },
+          "children": [
+            {
+              "type": "Text",
+              "props": {
+                "text": "Time",
+                "style": {
+                  "variant": "xs",
+                  "color": "text-faint",
+                  "transform": "uppercase",
+                  "tracking": "wide"
+                }
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "text": "Level",
+                "style": {
+                  "variant": "xs",
+                  "color": "text-faint",
+                  "transform": "uppercase",
+                  "tracking": "wide"
+                }
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "text": "Service",
+                "style": {
+                  "variant": "xs",
+                  "color": "text-faint",
+                  "transform": "uppercase",
+                  "tracking": "wide"
+                }
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "text": "Message",
+                "style": {
+                  "variant": "xs",
+                  "color": "text-faint",
+                  "transform": "uppercase",
+                  "tracking": "wide"
+                }
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "text": "Trace",
+                "style": {
+                  "variant": "xs",
+                  "color": "text-faint",
+                  "transform": "uppercase",
+                  "tracking": "wide"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "Pressable",
+          "props": {
+            "$each": {
+              "$bind": "rows"
+            },
+            "$as": "r",
+            "action": {
+              "$bind": "r.action"
+            },
+            "style": {
+              "layout": "grid",
+              "gridColumns": [
+                88,
+                72,
+                132,
+                {
+                  "fill": 1
+                },
+                88
+              ],
+              "gap": 4,
+              "align": "baseline",
+              "px": 4,
+              "py": 2,
+              "borderSide": "top",
+              "border": true,
+              "borderColor": "border"
+            }
+          },
+          "children": [
+            {
+              "type": "Text",
+              "props": {
+                "text": {
+                  "$bind": "r.time"
+                },
+                "style": {
+                  "variant": "xs",
+                  "color": "text-muted",
+                  "mono": true
+                }
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "text": {
+                  "$bind": "r.level"
+                },
+                "style": {
+                  "variant": "xs",
+                  "weight": "medium",
+                  "transform": "uppercase",
+                  "color": {
+                    "$bind": "r.tone"
+                  }
+                }
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "text": {
+                  "$bind": "r.service"
+                },
+                "style": {
+                  "variant": "xs",
+                  "color": "text-muted",
+                  "lineClamp": 1
+                }
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "text": {
+                  "$bind": "r.message"
+                },
+                "style": {
+                  "variant": "xs",
+                  "lineClamp": 1
+                }
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "text": {
+                  "$bind": "r.trace"
+                },
+                "style": {
+                  "variant": "xs",
+                  "color": "text-faint",
+                  "mono": true
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
     "name": "MediaTile",
     "params": {
       "title": "Untitled",
@@ -4917,6 +5248,69 @@ export const DEFINITIONS: ComponentDefinition[] = [
     }
   },
   {
+    "name": "StatCard",
+    "template": {
+      "type": "Box",
+      "props": {
+        "style": {
+          "direction": "column",
+          "gap": 2,
+          "px": 4,
+          "py": 3,
+          "radius": "md",
+          "bg": "surface",
+          "border": true,
+          "minWidth": 0
+        }
+      },
+      "children": [
+        {
+          "type": "Text",
+          "props": {
+            "text": {
+              "$bind": "label"
+            },
+            "style": {
+              "variant": "xs",
+              "color": "text-faint",
+              "transform": "uppercase",
+              "tracking": "wide"
+            }
+          }
+        },
+        {
+          "type": "Text",
+          "props": {
+            "text": {
+              "$bind": "value"
+            },
+            "style": {
+              "variant": "lg",
+              "weight": "medium",
+              "lineClamp": 1
+            }
+          }
+        },
+        {
+          "type": "Text",
+          "props": {
+            "$if": {
+              "$bind": "summary"
+            },
+            "text": {
+              "$bind": "summary"
+            },
+            "style": {
+              "variant": "xs",
+              "color": "text-faint",
+              "lineClamp": 1
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
     "name": "StatusIndicator",
     "params": {
       "tone": "neutral"
@@ -5068,6 +5462,129 @@ export const DEFINITIONS: ComponentDefinition[] = [
               "variant": "sm"
             }
           }
+        }
+      ]
+    }
+  },
+  {
+    "name": "TraceRow",
+    "template": {
+      "type": "Pressable",
+      "props": {
+        "action": {
+          "$bind": "action"
+        },
+        "style": {
+          "direction": "row",
+          "align": "center",
+          "justify": "between",
+          "gap": 3,
+          "px": 4,
+          "py": 3,
+          "radius": "md",
+          "bg": "surface",
+          "border": true,
+          "hoverGroup": true
+        }
+      },
+      "children": [
+        {
+          "type": "Box",
+          "props": {
+            "style": {
+              "direction": "row",
+              "align": "center",
+              "gap": 3,
+              "minWidth": 0
+            }
+          },
+          "children": [
+            {
+              "type": "Box",
+              "props": {
+                "$if": {
+                  "$bind": "tone"
+                },
+                "style": {
+                  "width": 6,
+                  "height": 6,
+                  "radius": "pill",
+                  "bg": {
+                    "$bind": "tone"
+                  }
+                }
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "text": {
+                  "$bind": "title"
+                },
+                "style": {
+                  "variant": "sm",
+                  "weight": "medium",
+                  "lineClamp": 1
+                }
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "$if": {
+                  "$bind": "origin"
+                },
+                "text": {
+                  "$bind": "origin"
+                },
+                "style": {
+                  "variant": "xs",
+                  "color": "text-faint",
+                  "mono": true
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "Box",
+          "props": {
+            "style": {
+              "direction": "row",
+              "align": "center",
+              "gap": 3
+            }
+          },
+          "children": [
+            {
+              "type": "Text",
+              "props": {
+                "$if": {
+                  "$bind": "summary"
+                },
+                "text": {
+                  "$bind": "summary"
+                },
+                "style": {
+                  "variant": "xs",
+                  "color": "text-faint"
+                }
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "text": {
+                  "$bind": "value"
+                },
+                "style": {
+                  "variant": "sm",
+                  "color": "text-muted",
+                  "mono": true
+                }
+              }
+            }
+          ]
         }
       ]
     }

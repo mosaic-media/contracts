@@ -80,6 +80,10 @@ const (
 	TypeRelatedRail      = "RelatedRail"
 	TypeSelect           = "Select"
 	TypeSettingsFrame    = "SettingsFrame"
+	TypeStatCard         = "StatCard"
+	TypeLogTable         = "LogTable"
+	TypeLatencyHistogram = "LatencyHistogram"
+	TypeTraceRow         = "TraceRow"
 	TypeSettingsRow      = "SettingsRow"
 	TypeSettingsNavGroup = "SettingsNavGroup"
 	TypeSettingsNavItem  = "SettingsNavItem"
@@ -331,6 +335,10 @@ var Components = []string{
 	"RelatedRail",
 	"Select",
 	"SettingsFrame",
+	"StatCard",
+	"LogTable",
+	"LatencyHistogram",
+	"TraceRow",
 	"SettingsRow",
 	"SettingsNavGroup",
 	"SettingsNavItem",

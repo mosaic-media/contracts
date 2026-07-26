@@ -1,0 +1,129 @@
+{
+  "name": "LatencyHistogram",
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "direction": "column",
+        "gap": 4,
+        "p": 4,
+        "radius": "md",
+        "bg": "surface",
+        "border": true
+      }
+    },
+    "children": [
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "direction": "row",
+            "align": "baseline",
+            "gap": 3
+          }
+        },
+        "children": [
+          {
+            "type": "Text",
+            "props": {
+              "text": {
+                "$bind": "label"
+              },
+              "style": {
+                "variant": "xs",
+                "color": "text-faint",
+                "transform": "uppercase",
+                "tracking": "wide"
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "$if": {
+                "$bind": "summary"
+              },
+              "text": {
+                "$bind": "summary"
+              },
+              "style": {
+                "variant": "xs",
+                "color": "text-faint"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "direction": "row",
+            "align": "end",
+            "gap": 2,
+            "height": 76
+          }
+        },
+        "children": [
+          {
+            "type": "Box",
+            "props": {
+              "$each": {
+                "$bind": "buckets"
+              },
+              "$as": "b",
+              "style": {
+                "direction": "column",
+                "align": "center",
+                "justify": "end",
+                "gap": 1,
+                "grow": true,
+                "minWidth": 0,
+                "height": "full"
+              }
+            },
+            "children": [
+              {
+                "type": "Text",
+                "props": {
+                  "text": {
+                    "$bind": "b.count"
+                  },
+                  "style": {
+                    "variant": "xs",
+                    "color": "text-faint"
+                  }
+                }
+              },
+              {
+                "type": "Box",
+                "props": {
+                  "style": {
+                    "width": "full",
+                    "height": {
+                      "$bind": "b.height"
+                    },
+                    "radius": "sm",
+                    "bg": "accent"
+                  }
+                }
+              },
+              {
+                "type": "Text",
+                "props": {
+                  "text": {
+                    "$bind": "b.label"
+                  },
+                  "style": {
+                    "variant": "xs",
+                    "color": "text-faint"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

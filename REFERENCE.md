@@ -12,7 +12,7 @@ Three tiers, and the difference between them is what a change costs:
 | Tier | What it is | Cost of adding one |
 |---|---|---|
 | **Primitives** (25) | Native code every client implements | A client release, on every platform |
-| **Components** (37) | Definitions the Platform serves as data | Nothing — a file in `definitions/` |
+| **Components** (41) | Definitions the Platform serves as data | Nothing — a file in `definitions/` |
 | **Actions** (12) | Behaviours a client interprets | A client release |
 
 ## Type names
@@ -425,6 +425,10 @@ expands whatever it is sent.
 - **`RelatedRail`** — RelatedRail is a titled rail that says so when it is empty.
 - **`Select`** — Select is a labelled dropdown over server-supplied options.
 - **`SettingsFrame`** — SettingsFrame is the Platform-owned settings chrome (ADR 0038): a nav beside the panel the open section fills.
+- **`StatCard`** — StatCard is one figure with a name over it — a percentile, an error rate, a throughput. Distinct from FactCard, which states three short sentences about an aspect of something; this states one number and exists to be scanned in a row of its siblings.
+- **`LogTable`** — LogTable is a run of structured records as a table — time, level, service, message and the trace that produced it, in fixed columns. A table rather than a stack of cards because the columns are how you read a log: the eye runs down one of them looking for the line that is different.
+- **`LatencyHistogram`** — LatencyHistogram is a distribution as bars — where the time actually went, which a set of percentiles summarises and cannot show. Bars carry their own count and label; the server sizes them, because only it knows what the tallest bucket is.
+- **`TraceRow`** — TraceRow is one trace in a list: what ran, its id, how long it took, and a status dot when something inside it failed.
 - **`SettingsRow`** — SettingsRow is one line of a settings panel — a label, an optional explanation of what it does, and a control or a value on the right. It is the workhorse of every panel in the design, which is why it is a component rather than a Stack assembled per screen: a panel that builds its own rows is a panel that drifts from the others.
 - **`SettingsNavGroup`** — SettingsNavGroup is one labelled run of settings nav rows.
 - **`SettingsNavItem`** — SettingsNavItem is one settings nav row. The server marks the active one — it is the side that knows the params (ADR 0039).

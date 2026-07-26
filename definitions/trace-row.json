@@ -1,0 +1,123 @@
+{
+  "name": "TraceRow",
+  "template": {
+    "type": "Pressable",
+    "props": {
+      "action": {
+        "$bind": "action"
+      },
+      "style": {
+        "direction": "row",
+        "align": "center",
+        "justify": "between",
+        "gap": 3,
+        "px": 4,
+        "py": 3,
+        "radius": "md",
+        "bg": "surface",
+        "border": true,
+        "hoverGroup": true
+      }
+    },
+    "children": [
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "direction": "row",
+            "align": "center",
+            "gap": 3,
+            "minWidth": 0
+          }
+        },
+        "children": [
+          {
+            "type": "Box",
+            "props": {
+              "$if": {
+                "$bind": "tone"
+              },
+              "style": {
+                "width": 6,
+                "height": 6,
+                "radius": "pill",
+                "bg": {
+                  "$bind": "tone"
+                }
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "text": {
+                "$bind": "title"
+              },
+              "style": {
+                "variant": "sm",
+                "weight": "medium",
+                "lineClamp": 1
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "$if": {
+                "$bind": "origin"
+              },
+              "text": {
+                "$bind": "origin"
+              },
+              "style": {
+                "variant": "xs",
+                "color": "text-faint",
+                "mono": true
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "direction": "row",
+            "align": "center",
+            "gap": 3
+          }
+        },
+        "children": [
+          {
+            "type": "Text",
+            "props": {
+              "$if": {
+                "$bind": "summary"
+              },
+              "text": {
+                "$bind": "summary"
+              },
+              "style": {
+                "variant": "xs",
+                "color": "text-faint"
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "text": {
+                "$bind": "value"
+              },
+              "style": {
+                "variant": "sm",
+                "color": "text-muted",
+                "mono": true
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

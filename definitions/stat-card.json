@@ -1,0 +1,63 @@
+{
+  "name": "StatCard",
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "direction": "column",
+        "gap": 2,
+        "px": 4,
+        "py": 3,
+        "radius": "md",
+        "bg": "surface",
+        "border": true,
+        "minWidth": 0
+      }
+    },
+    "children": [
+      {
+        "type": "Text",
+        "props": {
+          "text": {
+            "$bind": "label"
+          },
+          "style": {
+            "variant": "xs",
+            "color": "text-faint",
+            "transform": "uppercase",
+            "tracking": "wide"
+          }
+        }
+      },
+      {
+        "type": "Text",
+        "props": {
+          "text": {
+            "$bind": "value"
+          },
+          "style": {
+            "variant": "lg",
+            "weight": "medium",
+            "lineClamp": 1
+          }
+        }
+      },
+      {
+        "type": "Text",
+        "props": {
+          "$if": {
+            "$bind": "summary"
+          },
+          "text": {
+            "$bind": "summary"
+          },
+          "style": {
+            "variant": "xs",
+            "color": "text-faint",
+            "lineClamp": 1
+          }
+        }
+      }
+    ]
+  }
+}

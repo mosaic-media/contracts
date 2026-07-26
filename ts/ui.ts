@@ -338,6 +338,26 @@ export function SettingsFrame(title: string, ...els: Elish[]): Element {
   return compose("SettingsFrame", { title }, els);
 }
 
+/** StatCard is one figure with a name over it — a percentile, an error rate, a throughput. Distinct from FactCard, which states three short sentences about an aspect of something; this states one number and exists to be scanned in a row of its siblings. */
+export function StatCard(label: string, value: string, ...els: Elish[]): Element {
+  return compose("StatCard", { label, value }, els);
+}
+
+/** LogTable is a run of structured records as a table — time, level, service, message and the trace that produced it, in fixed columns. A table rather than a stack of cards because the columns are how you read a log: the eye runs down one of them looking for the line that is different. */
+export function LogTable(...els: Elish[]): Element {
+  return compose("LogTable", undefined, els);
+}
+
+/** LatencyHistogram is a distribution as bars — where the time actually went, which a set of percentiles summarises and cannot show. Bars carry their own count and label; the server sizes them, because only it knows what the tallest bucket is. */
+export function LatencyHistogram(label: string, ...els: Elish[]): Element {
+  return compose("LatencyHistogram", { label }, els);
+}
+
+/** TraceRow is one trace in a list: what ran, its id, how long it took, and a status dot when something inside it failed. */
+export function TraceRow(title: string, ...els: Elish[]): Element {
+  return compose("TraceRow", { title }, els);
+}
+
 /** SettingsRow is one line of a settings panel — a label, an optional explanation of what it does, and a control or a value on the right. It is the workhorse of every panel in the design, which is why it is a component rather than a Stack assembled per screen: a panel that builds its own rows is a panel that drifts from the others. */
 export function SettingsRow(label: string, ...els: Elish[]): Element {
   return compose("SettingsRow", { label }, els);
@@ -670,6 +690,16 @@ export function Wrap(v: boolean): El {
 /** Retry is what an error state's try-again control emits. */
 export function Retry(v: Action): El {
   return Prop("retry", v);
+}
+
+/** Buckets are a histogram's bars — each a label, a count and the height the server sized it to. */
+export function Buckets(v: Props[]): El {
+  return Prop("buckets", v);
+}
+
+/** Tone is the colour a row's status marker takes, named as a colour token because the server decides what a level or a status means and the client only draws it. */
+export function Tone(v: string): El {
+  return Prop("tone", v);
 }
 
 /** Rows are an info panel's label/value pairs. */
@@ -1093,6 +1123,16 @@ export function BindWrap(path: string): El {
 /** BindRetry sets "retry" from the named path instead of from a value. */
 export function BindRetry(path: string): El {
   return Prop("retry", bind(path));
+}
+
+/** BindBuckets sets "buckets" from the named path instead of from a value. */
+export function BindBuckets(path: string): El {
+  return Prop("buckets", bind(path));
+}
+
+/** BindTone sets "tone" from the named path instead of from a value. */
+export function BindTone(path: string): El {
+  return Prop("tone", bind(path));
 }
 
 /** BindRows sets "rows" from the named path instead of from a value. */

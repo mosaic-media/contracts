@@ -1,0 +1,202 @@
+{
+  "name": "LogTable",
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "direction": "column",
+        "radius": "md",
+        "border": true,
+        "overflow": "hidden",
+        "bg": "surface"
+      }
+    },
+    "children": [
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "layout": "grid",
+            "gridColumns": [
+              88,
+              72,
+              132,
+              {
+                "fill": 1
+              },
+              88
+            ],
+            "gap": 4,
+            "px": 4,
+            "py": 2,
+            "bg": "surface-raised",
+            "borderSide": "bottom",
+            "border": true
+          }
+        },
+        "children": [
+          {
+            "type": "Text",
+            "props": {
+              "text": "Time",
+              "style": {
+                "variant": "xs",
+                "color": "text-faint",
+                "transform": "uppercase",
+                "tracking": "wide"
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "text": "Level",
+              "style": {
+                "variant": "xs",
+                "color": "text-faint",
+                "transform": "uppercase",
+                "tracking": "wide"
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "text": "Service",
+              "style": {
+                "variant": "xs",
+                "color": "text-faint",
+                "transform": "uppercase",
+                "tracking": "wide"
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "text": "Message",
+              "style": {
+                "variant": "xs",
+                "color": "text-faint",
+                "transform": "uppercase",
+                "tracking": "wide"
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "text": "Trace",
+              "style": {
+                "variant": "xs",
+                "color": "text-faint",
+                "transform": "uppercase",
+                "tracking": "wide"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "Pressable",
+        "props": {
+          "$each": {
+            "$bind": "rows"
+          },
+          "$as": "r",
+          "action": {
+            "$bind": "r.action"
+          },
+          "style": {
+            "layout": "grid",
+            "gridColumns": [
+              88,
+              72,
+              132,
+              {
+                "fill": 1
+              },
+              88
+            ],
+            "gap": 4,
+            "align": "baseline",
+            "px": 4,
+            "py": 2,
+            "borderSide": "top",
+            "border": true,
+            "borderColor": "border"
+          }
+        },
+        "children": [
+          {
+            "type": "Text",
+            "props": {
+              "text": {
+                "$bind": "r.time"
+              },
+              "style": {
+                "variant": "xs",
+                "color": "text-muted",
+                "mono": true
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "text": {
+                "$bind": "r.level"
+              },
+              "style": {
+                "variant": "xs",
+                "weight": "medium",
+                "transform": "uppercase",
+                "color": {
+                  "$bind": "r.tone"
+                }
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "text": {
+                "$bind": "r.service"
+              },
+              "style": {
+                "variant": "xs",
+                "color": "text-muted",
+                "lineClamp": 1
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "text": {
+                "$bind": "r.message"
+              },
+              "style": {
+                "variant": "xs",
+                "lineClamp": 1
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "text": {
+                "$bind": "r.trace"
+              },
+              "style": {
+                "variant": "xs",
+                "color": "text-faint",
+                "mono": true
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

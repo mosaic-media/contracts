@@ -249,6 +249,24 @@ func SettingsFrame(title string, els ...El) *Element {
 	return compose("SettingsFrame", map[string]any{"title": title}, els)
 }
 
+// StatCard is one figure with a name over it — a percentile, an error rate, a throughput. Distinct from FactCard, which states three short sentences about an aspect of something; this states one number and exists to be scanned in a row of its siblings.
+func StatCard(label string, value string, els ...El) *Element {
+	return compose("StatCard", map[string]any{"label": label, "value": value}, els)
+}
+
+// LogTable is a run of structured records as a table — time, level, service, message and the trace that produced it, in fixed columns. A table rather than a stack of cards because the columns are how you read a log: the eye runs down one of them looking for the line that is different.
+func LogTable(els ...El) *Element { return compose("LogTable", nil, els) }
+
+// LatencyHistogram is a distribution as bars — where the time actually went, which a set of percentiles summarises and cannot show. Bars carry their own count and label; the server sizes them, because only it knows what the tallest bucket is.
+func LatencyHistogram(label string, els ...El) *Element {
+	return compose("LatencyHistogram", map[string]any{"label": label}, els)
+}
+
+// TraceRow is one trace in a list: what ran, its id, how long it took, and a status dot when something inside it failed.
+func TraceRow(title string, els ...El) *Element {
+	return compose("TraceRow", map[string]any{"title": title}, els)
+}
+
 // SettingsRow is one line of a settings panel — a label, an optional explanation of what it does, and a control or a value on the right. It is the workhorse of every panel in the design, which is why it is a component rather than a Stack assembled per screen: a panel that builds its own rows is a panel that drifts from the others.
 func SettingsRow(label string, els ...El) *Element {
 	return compose("SettingsRow", map[string]any{"label": label}, els)
@@ -462,6 +480,12 @@ func Wrap(v bool) El { return Prop("wrap", v) }
 
 // Retry is what an error state's try-again control emits.
 func Retry(v Action) El { return Prop("retry", v) }
+
+// Buckets are a histogram's bars — each a label, a count and the height the server sized it to.
+func Buckets(v []any) El { return Prop("buckets", v) }
+
+// Tone is the colour a row's status marker takes, named as a colour token because the server decides what a level or a status means and the client only draws it.
+func Tone(v string) El { return Prop("tone", v) }
 
 // Rows are an info panel's label/value pairs.
 func Rows(v []any) El { return Prop("rows", v) }
@@ -721,6 +745,12 @@ func BindWrap(path string) El { return Prop("wrap", sdui.Bind(path)) }
 
 // BindRetry sets "retry" from the named path instead of from a value.
 func BindRetry(path string) El { return Prop("retry", sdui.Bind(path)) }
+
+// BindBuckets sets "buckets" from the named path instead of from a value.
+func BindBuckets(path string) El { return Prop("buckets", sdui.Bind(path)) }
+
+// BindTone sets "tone" from the named path instead of from a value.
+func BindTone(path string) El { return Prop("tone", sdui.Bind(path)) }
 
 // BindRows sets "rows" from the named path instead of from a value.
 func BindRows(path string) El { return Prop("rows", sdui.Bind(path)) }
