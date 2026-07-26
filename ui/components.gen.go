@@ -500,8 +500,8 @@ func Depth(v int) El { return Prop("depth", v) }
 // Buckets are a histogram's bars — each a label, a count and the height the server sized it to.
 func Buckets(v []any) El { return Prop("buckets", v) }
 
-// Tone is the colour a row's status marker takes, named as a colour token because the server decides what a level or a status means and the client only draws it.
-func Tone(v string) El { return Prop("tone", v) }
+// StatusTone is the colour a row's status marker takes, named as a colour token because the server decides what a level or a status means and the client only draws it. Named StatusTone rather than Tone because the TypeScript binding already exports a `Tone` *type* — the tones enum — and a helper of the same name shadows it.
+func StatusTone(v string) El { return Prop("tone", v) }
 
 // Rows are an info panel's label/value pairs.
 func Rows(v []any) El { return Prop("rows", v) }
@@ -771,8 +771,8 @@ func BindDepth(path string) El { return Prop("depth", sdui.Bind(path)) }
 // BindBuckets sets "buckets" from the named path instead of from a value.
 func BindBuckets(path string) El { return Prop("buckets", sdui.Bind(path)) }
 
-// BindTone sets "tone" from the named path instead of from a value.
-func BindTone(path string) El { return Prop("tone", sdui.Bind(path)) }
+// BindStatusTone sets "tone" from the named path instead of from a value.
+func BindStatusTone(path string) El { return Prop("tone", sdui.Bind(path)) }
 
 // BindRows sets "rows" from the named path instead of from a value.
 func BindRows(path string) El { return Prop("rows", sdui.Bind(path)) }

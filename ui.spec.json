@@ -1261,10 +1261,10 @@
       "doc": "Buckets are a histogram's bars — each a label, a count and the height the server sized it to."
     },
     {
-      "func": "Tone",
+      "func": "StatusTone",
       "key": "tone",
       "type": "string",
-      "doc": "Tone is the colour a row's status marker takes, named as a colour token because the server decides what a level or a status means and the client only draws it."
+      "doc": "StatusTone is the colour a row's status marker takes, named as a colour token because the server decides what a level or a status means and the client only draws it. Named StatusTone rather than Tone because the TypeScript binding already exports a `Tone` *type* — the tones enum — and a helper of the same name shadows it."
     },
     {
       "func": "Rows",

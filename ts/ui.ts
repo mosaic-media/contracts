@@ -717,8 +717,8 @@ export function Buckets(v: Props[]): El {
   return Prop("buckets", v);
 }
 
-/** Tone is the colour a row's status marker takes, named as a colour token because the server decides what a level or a status means and the client only draws it. */
-export function Tone(v: string): El {
+/** StatusTone is the colour a row's status marker takes, named as a colour token because the server decides what a level or a status means and the client only draws it. Named StatusTone rather than Tone because the TypeScript binding already exports a `Tone` *type* — the tones enum — and a helper of the same name shadows it. */
+export function StatusTone(v: string): El {
   return Prop("tone", v);
 }
 
@@ -1160,8 +1160,8 @@ export function BindBuckets(path: string): El {
   return Prop("buckets", bind(path));
 }
 
-/** BindTone sets "tone" from the named path instead of from a value. */
-export function BindTone(path: string): El {
+/** BindStatusTone sets "tone" from the named path instead of from a value. */
+export function BindStatusTone(path: string): El {
   return Prop("tone", bind(path));
 }
 
