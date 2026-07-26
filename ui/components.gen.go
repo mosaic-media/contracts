@@ -424,6 +424,9 @@ func Quality(v string) El { return Prop("quality", v) }
 // Lines are a fact card's body, one short statement per line. Separate from Meta because Meta's entries are pills on one row and these are stacked sentences.
 func Lines(v ...string) El { return Prop("lines", v) }
 
+// Compact is the search screen's heading treatment: a small uppercase label rather than a title, and the heading itself becomes the way into the thing it names. One flag because it is one treatment — a results group is labelled, counted and entered from the same line.
+func Compact(v bool) El { return Prop("compact", v) }
+
 // PinAction keeps a Section's onward link visible instead of revealing it on hover. A rail whose heading is the only way into a catalog cannot hide that link behind a pointer, which no remote control has.
 func PinAction(v bool) El { return Prop("pinAction", v) }
 
@@ -679,6 +682,9 @@ func BindQuality(path string) El { return Prop("quality", sdui.Bind(path)) }
 
 // BindLines sets "lines" from the named path instead of from a value.
 func BindLines(path string) El { return Prop("lines", sdui.Bind(path)) }
+
+// BindCompact sets "compact" from the named path instead of from a value.
+func BindCompact(path string) El { return Prop("compact", sdui.Bind(path)) }
 
 // BindPinAction sets "pinAction" from the named path instead of from a value.
 func BindPinAction(path string) El { return Prop("pinAction", sdui.Bind(path)) }

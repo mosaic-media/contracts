@@ -607,6 +607,11 @@ export function Lines(...v: string[]): El {
   return Prop("lines", v);
 }
 
+/** Compact is the search screen's heading treatment: a small uppercase label rather than a title, and the heading itself becomes the way into the thing it names. One flag because it is one treatment — a results group is labelled, counted and entered from the same line. */
+export function Compact(v: boolean): El {
+  return Prop("compact", v);
+}
+
 /** PinAction keeps a Section's onward link visible instead of revealing it on hover. A rail whose heading is the only way into a catalog cannot hide that link behind a pointer, which no remote control has. */
 export function PinAction(v: boolean): El {
   return Prop("pinAction", v);
@@ -1023,6 +1028,11 @@ export function BindQuality(path: string): El {
 /** BindLines sets "lines" from the named path instead of from a value. */
 export function BindLines(path: string): El {
   return Prop("lines", bind(path));
+}
+
+/** BindCompact sets "compact" from the named path instead of from a value. */
+export function BindCompact(path: string): El {
+  return Prop("compact", bind(path));
 }
 
 /** BindPinAction sets "pinAction" from the named path instead of from a value. */

@@ -16,7 +16,7 @@
     },
     "children": [
       {
-        "type": "Box",
+        "type": "Pressable",
         "props": {
           "$if": {
             "$bind": "title"
@@ -24,7 +24,21 @@
           "style": {
             "direction": "row",
             "align": "center",
-            "gap": 4
+            "gap": 4,
+            "color": {
+              "$match": {
+                "on": {
+                  "$bind": "compact"
+                },
+                "cases": {
+                  "true": "text-faint"
+                },
+                "default": "text"
+              }
+            }
+          },
+          "action": {
+            "$bind": "action"
           }
         },
         "children": [
@@ -35,9 +49,25 @@
                 "$bind": "title"
               },
               "style": {
-                "variant": "lg",
-                "weight": "medium",
-                "tracking": "tight"
+                "$match": {
+                  "on": {
+                    "$bind": "compact"
+                  },
+                  "cases": {
+                    "true": {
+                      "variant": "xs",
+                      "weight": "medium",
+                      "color": "text-faint",
+                      "transform": "uppercase",
+                      "tracking": "wide"
+                    }
+                  },
+                  "default": {
+                    "variant": "lg",
+                    "weight": "medium",
+                    "tracking": "tight"
+                  }
+                }
               }
             }
           },

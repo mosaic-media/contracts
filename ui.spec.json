@@ -1165,6 +1165,12 @@
       "doc": "Lines are a fact card's body, one short statement per line. Separate from Meta because Meta's entries are pills on one row and these are stacked sentences."
     },
     {
+      "func": "Compact",
+      "key": "compact",
+      "type": "bool",
+      "doc": "Compact is the search screen's heading treatment: a small uppercase label rather than a title, and the heading itself becomes the way into the thing it names. One flag because it is one treatment — a results group is labelled, counted and entered from the same line."
+    },
+    {
       "func": "PinAction",
       "key": "pinAction",
       "type": "bool",

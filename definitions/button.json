@@ -71,6 +71,32 @@
               "color": "danger",
               "border": true,
               "borderColor": "danger"
+            },
+            "chip": {
+              "direction": "row",
+              "align": "center",
+              "justify": "center",
+              "gap": 2,
+              "px": 4,
+              "py": 2,
+              "minHeight": 34,
+              "radius": "pill",
+              "bg": "surface",
+              "color": "text-muted",
+              "border": true
+            },
+            "chipOn": {
+              "direction": "row",
+              "align": "center",
+              "justify": "center",
+              "gap": 2,
+              "px": 4,
+              "py": 2,
+              "minHeight": 34,
+              "radius": "pill",
+              "bg": "accent-quiet",
+              "color": "text",
+              "border": true
             }
           },
           "default": {

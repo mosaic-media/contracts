@@ -676,6 +676,32 @@ export const DEFINITIONS: ComponentDefinition[] = [
                 "color": "danger",
                 "border": true,
                 "borderColor": "danger"
+              },
+              "chip": {
+                "direction": "row",
+                "align": "center",
+                "justify": "center",
+                "gap": 2,
+                "px": 4,
+                "py": 2,
+                "minHeight": 34,
+                "radius": "pill",
+                "bg": "surface",
+                "color": "text-muted",
+                "border": true
+              },
+              "chipOn": {
+                "direction": "row",
+                "align": "center",
+                "justify": "center",
+                "gap": 2,
+                "px": 4,
+                "py": 2,
+                "minHeight": 34,
+                "radius": "pill",
+                "bg": "accent-quiet",
+                "color": "text",
+                "border": true
               }
             },
             "default": {
@@ -4076,7 +4102,7 @@ export const DEFINITIONS: ComponentDefinition[] = [
       },
       "children": [
         {
-          "type": "Box",
+          "type": "Pressable",
           "props": {
             "$if": {
               "$bind": "title"
@@ -4084,7 +4110,21 @@ export const DEFINITIONS: ComponentDefinition[] = [
             "style": {
               "direction": "row",
               "align": "center",
-              "gap": 4
+              "gap": 4,
+              "color": {
+                "$match": {
+                  "on": {
+                    "$bind": "compact"
+                  },
+                  "cases": {
+                    "true": "text-faint"
+                  },
+                  "default": "text"
+                }
+              }
+            },
+            "action": {
+              "$bind": "action"
             }
           },
           "children": [
@@ -4095,9 +4135,25 @@ export const DEFINITIONS: ComponentDefinition[] = [
                   "$bind": "title"
                 },
                 "style": {
-                  "variant": "lg",
-                  "weight": "medium",
-                  "tracking": "tight"
+                  "$match": {
+                    "on": {
+                      "$bind": "compact"
+                    },
+                    "cases": {
+                      "true": {
+                        "variant": "xs",
+                        "weight": "medium",
+                        "color": "text-faint",
+                        "transform": "uppercase",
+                        "tracking": "wide"
+                      }
+                    },
+                    "default": {
+                      "variant": "lg",
+                      "weight": "medium",
+                      "tracking": "tight"
+                    }
+                  }
                 }
               }
             },
