@@ -109,8 +109,7 @@ import { UINodeSchema } from "@mosaic-media/sdui/sdui-pb";
 ```
 
 The package is types + JSON data (no runtime code); it's meant for a bundler
-(the Shell uses Vite). Until the first npm release lands you can install straight
-from git: `npm install github:mosaic-media/contracts`.
+(the Shell uses Vite).
 
 ### Widget-style authoring (mocks & fixtures)
 
