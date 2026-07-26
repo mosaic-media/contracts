@@ -4061,13 +4061,16 @@ export const DEFINITIONS: ComponentDefinition[] = [
   {
     "name": "Section",
     "params": {
-      "actionLabel": "See all"
+      "actionLabel": "See all",
+      "gap": 5
     },
     "template": {
       "type": "Box",
       "props": {
         "style": {
-          "gap": 5,
+          "gap": {
+            "$bind": "gap"
+          },
           "hoverGroup": true
         }
       },
