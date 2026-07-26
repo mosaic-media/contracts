@@ -311,7 +311,6 @@ export const DEFINITIONS: ComponentDefinition[] = [
               "height": 66,
               "px": "gutter",
               "bg": "surface-overlay",
-              "glass": true,
               "border": true,
               "borderSide": "bottom",
               "borderColor": "border"
@@ -702,6 +701,33 @@ export const DEFINITIONS: ComponentDefinition[] = [
                 "bg": "accent-quiet",
                 "color": "text",
                 "border": true
+              },
+              "quiet": {
+                "direction": "row",
+                "align": "center",
+                "justify": "center",
+                "gap": 2,
+                "px": 5,
+                "py": 3,
+                "minHeight": 40,
+                "radius": "pill",
+                "bg": "surface",
+                "color": "text",
+                "border": true
+              },
+              "dangerQuiet": {
+                "direction": "row",
+                "align": "center",
+                "justify": "center",
+                "gap": 2,
+                "px": 5,
+                "py": 3,
+                "minHeight": 40,
+                "radius": "pill",
+                "bg": "danger-quiet",
+                "color": "danger",
+                "border": true,
+                "borderColor": "danger"
               }
             },
             "default": {
@@ -1451,6 +1477,115 @@ export const DEFINITIONS: ComponentDefinition[] = [
               "grain": true
             }
           }
+        }
+      ]
+    }
+  },
+  {
+    "name": "DetailPanel",
+    "template": {
+      "type": "Box",
+      "props": {
+        "style": {
+          "direction": "column",
+          "radius": "lg",
+          "bg": "surface",
+          "border": true,
+          "overflow": "hidden"
+        }
+      },
+      "children": [
+        {
+          "type": "Box",
+          "props": {
+            "style": {
+              "direction": "row",
+              "align": "center",
+              "gap": 3,
+              "px": 5,
+              "py": 4,
+              "borderSide": "bottom",
+              "border": true,
+              "borderColor": "border",
+              "wrap": true
+            }
+          },
+          "children": [
+            {
+              "type": "Text",
+              "props": {
+                "text": {
+                  "$bind": "title"
+                },
+                "style": {
+                  "variant": "md",
+                  "weight": "medium",
+                  "lineClamp": 1
+                }
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "$if": {
+                  "$bind": "origin"
+                },
+                "text": {
+                  "$bind": "origin"
+                },
+                "style": {
+                  "variant": "xs",
+                  "color": "text-faint",
+                  "mono": true
+                }
+              }
+            },
+            {
+              "type": "Box",
+              "props": {
+                "style": {
+                  "grow": true
+                }
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "$if": {
+                  "$bind": "summary"
+                },
+                "text": {
+                  "$bind": "summary"
+                },
+                "style": {
+                  "variant": "xs",
+                  "color": "text-faint"
+                }
+              }
+            },
+            {
+              "type": "Outlet",
+              "props": {
+                "name": "actions"
+              }
+            }
+          ]
+        },
+        {
+          "type": "Box",
+          "props": {
+            "style": {
+              "direction": "column",
+              "gap": 4,
+              "px": 5,
+              "py": 4
+            }
+          },
+          "children": [
+            {
+              "type": "Outlet"
+            }
+          ]
         }
       ]
     }
@@ -5200,6 +5335,92 @@ export const DEFINITIONS: ComponentDefinition[] = [
               }
             }
           ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "SpanRow",
+    "template": {
+      "type": "Box",
+      "props": {
+        "style": {
+          "direction": "row",
+          "align": "center",
+          "gap": 3,
+          "responsive": {
+            "below": 720,
+            "style": {
+              "direction": "column",
+              "align": "start",
+              "gap": 1
+            }
+          }
+        }
+      },
+      "children": [
+        {
+          "type": "Text",
+          "props": {
+            "text": {
+              "$bind": "title"
+            },
+            "style": {
+              "variant": "xs",
+              "color": "text-muted",
+              "width": 210,
+              "minWidth": 210,
+              "lineClamp": 1,
+              "pl": {
+                "$bind": "depth"
+              }
+            }
+          }
+        },
+        {
+          "type": "Box",
+          "props": {
+            "style": {
+              "grow": true,
+              "minWidth": 0,
+              "height": 8,
+              "radius": "sm",
+              "bg": "border"
+            }
+          },
+          "children": [
+            {
+              "type": "Box",
+              "props": {
+                "style": {
+                  "height": "full",
+                  "width": {
+                    "$bind": "share"
+                  },
+                  "radius": "sm",
+                  "bg": {
+                    "$bind": "tone"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "Text",
+          "props": {
+            "text": {
+              "$bind": "value"
+            },
+            "style": {
+              "variant": "xs",
+              "color": "text-muted",
+              "align": "end",
+              "width": 62,
+              "minWidth": 62,
+              "mono": true
+            }
+          }
         }
       ]
     }

@@ -1,0 +1,86 @@
+{
+  "name": "SpanRow",
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "direction": "row",
+        "align": "center",
+        "gap": 3,
+        "responsive": {
+          "below": 720,
+          "style": {
+            "direction": "column",
+            "align": "start",
+            "gap": 1
+          }
+        }
+      }
+    },
+    "children": [
+      {
+        "type": "Text",
+        "props": {
+          "text": {
+            "$bind": "title"
+          },
+          "style": {
+            "variant": "xs",
+            "color": "text-muted",
+            "width": 210,
+            "minWidth": 210,
+            "lineClamp": 1,
+            "pl": {
+              "$bind": "depth"
+            }
+          }
+        }
+      },
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "grow": true,
+            "minWidth": 0,
+            "height": 8,
+            "radius": "sm",
+            "bg": "border"
+          }
+        },
+        "children": [
+          {
+            "type": "Box",
+            "props": {
+              "style": {
+                "height": "full",
+                "width": {
+                  "$bind": "share"
+                },
+                "radius": "sm",
+                "bg": {
+                  "$bind": "tone"
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "Text",
+        "props": {
+          "text": {
+            "$bind": "value"
+          },
+          "style": {
+            "variant": "xs",
+            "color": "text-muted",
+            "align": "end",
+            "width": 62,
+            "minWidth": 62,
+            "mono": true
+          }
+        }
+      }
+    ]
+  }
+}

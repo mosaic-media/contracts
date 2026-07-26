@@ -97,6 +97,33 @@
               "bg": "accent-quiet",
               "color": "text",
               "border": true
+            },
+            "quiet": {
+              "direction": "row",
+              "align": "center",
+              "justify": "center",
+              "gap": 2,
+              "px": 5,
+              "py": 3,
+              "minHeight": 40,
+              "radius": "pill",
+              "bg": "surface",
+              "color": "text",
+              "border": true
+            },
+            "dangerQuiet": {
+              "direction": "row",
+              "align": "center",
+              "justify": "center",
+              "gap": 2,
+              "px": 5,
+              "py": 3,
+              "minHeight": 40,
+              "radius": "pill",
+              "bg": "danger-quiet",
+              "color": "danger",
+              "border": true,
+              "borderColor": "danger"
             }
           },
           "default": {

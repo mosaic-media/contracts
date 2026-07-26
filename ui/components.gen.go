@@ -249,6 +249,16 @@ func SettingsFrame(title string, els ...El) *Element {
 	return compose("SettingsFrame", map[string]any{"title": title}, els)
 }
 
+// SpanRow is one span of a waterfall: its name, indented by depth, a bar showing its share of the whole, and its duration. The share is the point — a waterfall exists to answer which part of this was the time, and a duration alone does not.
+func SpanRow(title string, els ...El) *Element {
+	return compose("SpanRow", map[string]any{"title": title}, els)
+}
+
+// DetailPanel is a titled working surface: a header carrying a name, an identifier and a summary, over a body. Flat rather than acrylic — it is the administrative side of the app, where there is no artwork behind the surface for the material to bend.
+func DetailPanel(title string, els ...El) *Element {
+	return compose("DetailPanel", map[string]any{"title": title}, els)
+}
+
 // StatCard is one figure with a name over it — a percentile, an error rate, a throughput. Distinct from FactCard, which states three short sentences about an aspect of something; this states one number and exists to be scanned in a row of its siblings.
 func StatCard(label string, value string, els ...El) *Element {
 	return compose("StatCard", map[string]any{"label": label, "value": value}, els)
@@ -480,6 +490,12 @@ func Wrap(v bool) El { return Prop("wrap", v) }
 
 // Retry is what an error state's try-again control emits.
 func Retry(v Action) El { return Prop("retry", v) }
+
+// Share is how much of a whole a bar represents, as a percentage the server computed. The server sizes it because only it knows what the whole is.
+func Share(v string) El { return Prop("share", v) }
+
+// Depth is a row's level in a tree, as a space token to indent by. Distinct from Indent, which is a bool saying a nav row is nested under the one above it: one is how far, the other is whether.
+func Depth(v int) El { return Prop("depth", v) }
 
 // Buckets are a histogram's bars — each a label, a count and the height the server sized it to.
 func Buckets(v []any) El { return Prop("buckets", v) }
@@ -745,6 +761,12 @@ func BindWrap(path string) El { return Prop("wrap", sdui.Bind(path)) }
 
 // BindRetry sets "retry" from the named path instead of from a value.
 func BindRetry(path string) El { return Prop("retry", sdui.Bind(path)) }
+
+// BindShare sets "share" from the named path instead of from a value.
+func BindShare(path string) El { return Prop("share", sdui.Bind(path)) }
+
+// BindDepth sets "depth" from the named path instead of from a value.
+func BindDepth(path string) El { return Prop("depth", sdui.Bind(path)) }
 
 // BindBuckets sets "buckets" from the named path instead of from a value.
 func BindBuckets(path string) El { return Prop("buckets", sdui.Bind(path)) }

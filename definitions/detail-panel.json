@@ -1,0 +1,109 @@
+{
+  "name": "DetailPanel",
+  "template": {
+    "type": "Box",
+    "props": {
+      "style": {
+        "direction": "column",
+        "radius": "lg",
+        "bg": "surface",
+        "border": true,
+        "overflow": "hidden"
+      }
+    },
+    "children": [
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "direction": "row",
+            "align": "center",
+            "gap": 3,
+            "px": 5,
+            "py": 4,
+            "borderSide": "bottom",
+            "border": true,
+            "borderColor": "border",
+            "wrap": true
+          }
+        },
+        "children": [
+          {
+            "type": "Text",
+            "props": {
+              "text": {
+                "$bind": "title"
+              },
+              "style": {
+                "variant": "md",
+                "weight": "medium",
+                "lineClamp": 1
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "$if": {
+                "$bind": "origin"
+              },
+              "text": {
+                "$bind": "origin"
+              },
+              "style": {
+                "variant": "xs",
+                "color": "text-faint",
+                "mono": true
+              }
+            }
+          },
+          {
+            "type": "Box",
+            "props": {
+              "style": {
+                "grow": true
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "$if": {
+                "$bind": "summary"
+              },
+              "text": {
+                "$bind": "summary"
+              },
+              "style": {
+                "variant": "xs",
+                "color": "text-faint"
+              }
+            }
+          },
+          {
+            "type": "Outlet",
+            "props": {
+              "name": "actions"
+            }
+          }
+        ]
+      },
+      {
+        "type": "Box",
+        "props": {
+          "style": {
+            "direction": "column",
+            "gap": 4,
+            "px": 5,
+            "py": 4
+          }
+        },
+        "children": [
+          {
+            "type": "Outlet"
+          }
+        ]
+      }
+    ]
+  }
+}
