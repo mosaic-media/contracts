@@ -4,12 +4,28 @@ name: release
 # This workflow publishes the npm package on a version tag. It requires an
 # NPM_TOKEN repository secret (an npm automation token for the @mosaic-media
 # scope). Without it, the npm job fails and the Go tag is still published.
+#
+# The publish runs behind the full gate, by reusing verify.yml against the
+# tagged commit rather than a second copy of the checks that could drift. Every
+# module repository's release.yml has this shape (module-tmdb's says why at
+# length), and the argument is sharpest here: this is the most depended-on
+# artifact in the tree — the Platform, four modules and the Shell all resolve it
+# — and neither half of a release can be taken back. The module proxy and the
+# checksum database pin a tag on first fetch, and a published npm version can be
+# deprecated and superseded but never replaced. So the gate runs before the
+# publish; there is no after.
 on:
   push:
     tags: ["v*"]
 
 jobs:
+  # The same gates as an ordinary push, run against the tagged commit. Reused
+  # rather than restated, so the tag path cannot fall behind what main enforces.
+  verify:
+    uses: ./.github/workflows/verify.yml
+
   npm:
+    needs: verify
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,6 +33,10 @@ jobs:
         with:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
+      # Not redundant with the verify job's check-versions.mjs, which asks
+      # whether package.json agrees with the *newest* tag in the repository.
+      # This asks whether it agrees with the tag being released, which is the
+      # question that decides what npm is about to serve.
       - name: Guard — package.json version matches the tag
         run: |
           tag="${GITHUB_REF_NAME#v}"
