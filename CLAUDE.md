@@ -113,6 +113,12 @@ mismatch fails rather than shipping a package that lies about itself.
 git tag v0.10.0 && git push origin main && git push origin v0.10.0
 ```
 
+**Publishing to npm is not a thing anyone does by hand.** `.github/workflows/release.yml`
+fires on `push: tags: ["v*"]` and publishes the package. Pushing the tag *is*
+the publish — there is no `npm publish` step to run locally, no registry token
+on any developer machine, and asking for one is asking for the wrong thing. If a
+version needs to reach consumers, it needs a tag pushed and nothing else.
+
 Consumers then bump: the Platform's `go.mod` require, and the `web` workspace's
 `@mosaic-media/sdui` dependency. For local cross-repo work use a `replace` (Go)
 or the workspace link (npm) temporarily — **neither may land in a commit.**
