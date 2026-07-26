@@ -27,6 +27,9 @@
       {
         "type": "TextInput",
         "props": {
+          "name": {
+            "$bind": "name"
+          },
           "inputType": {
             "$bind": "inputType"
           },
@@ -35,6 +38,9 @@
           },
           "value": {
             "$bind": "value"
+          },
+          "validators": {
+            "$bind": "validators"
           }
         }
       },

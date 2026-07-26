@@ -1,6 +1,6 @@
 {
   "//": "The Mosaic SDUI vocabulary — the single source of truth for what a client renders and what the emit-side may author. It has three tiers and they are generated, never hand-written: `primitives` are the native vocabulary every client must implement (growing this set needs a client release — ADR 0024); `components` are definitions, authored as data in definitions/*.json and delivered by the Platform at runtime (free); `actions` are the behaviours a client interprets. Run `go run ./tools/genui` to regenerate the authoring builders and the vocabulary registry; do not hand-edit the generated files. `go run ./tools/genui -lint` fails when any tier drifts from another — that check is the whole reason this file is one file.",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "//typeSeparator": "The separator between a module's id and its own type name. Core types — every primitive and every component in this file — are unprefixed and may not contain it; a module's types are `moduleId:type`. One character, chosen because it cannot appear in a module id and reads as a namespace in every client language.",
   "typeSeparator": ":",
   "//bindingMarker": "The single key that makes a prop value a binding rather than a literal. An object is a binding only when it has exactly one key and that key is this one — the same closed-set discipline the action-kind check uses, so a prop that happens to carry a field of this name is never silently reinterpreted. It is spelled the same as a definition template's binding because it means the same thing: resolve a path against a scope. Making it one concept rather than two that share a spelling is the point.",
@@ -309,13 +309,18 @@
       "type": "Box",
       "tier": "presentational",
       "doc": "Box is the layout container every composition is built from.",
-      "native": "The irreducible layout leaf. A definition is a tree of primitives, so the base case cannot itself be a definition. It also resolves style.responsive against the live viewport, which is a render-time branch no static tree can carry.",
+      "native": "The irreducible layout leaf. A definition is a tree of primitives, so the base case cannot itself be a definition. It also resolves style.responsive against the live viewport, and visibleWhen against the live State scope — two render-time branches no static tree can carry.",
       "children": true,
       "props": [
         {
           "key": "style",
           "type": "boxStyle",
           "doc": "Layout and surface style, including the responsive override."
+        },
+        {
+          "key": "visibleWhen",
+          "type": "predicate",
+          "doc": "Structured predicate over the enclosing State scope's values; absent means always visible. On a field it hides one control, and on a Box it hides a whole branch — which is what makes a multi-step form expressible at all. Without it a wizard is either one long page or a round trip per step, and a round trip per step means every step's answers travel back down in the next tree."
         }
       ]
     },
@@ -1319,6 +1324,24 @@
       "key": "inputType",
       "type": "string",
       "doc": "InputType selects the keyboard/validation a field asks for."
+    },
+    {
+      "func": "Validators",
+      "key": "validators",
+      "type": "props",
+      "doc": "Validators are the rules a client enforces before it submits — the six the contract declares, no more. A server rejection lands in the same slot (ADR 0089), so this is the fast half of one statement rather than the whole of it. It is sugar because a field's rules were being set with ui.Prop(\"validators\", …) at every call site in every module, which is precisely the untyped setting that let ui.Subtitle onto a Stack."
+    },
+    {
+      "func": "VisibleWhen",
+      "key": "visibleWhen",
+      "type": "props",
+      "doc": "VisibleWhen hides a node until a predicate over the enclosing State scope holds. Absent means visible; unreadable means hidden, because a control shown because its rule could not be read is the fail-open case."
+    },
+    {
+      "func": "FieldLabel",
+      "key": "label",
+      "type": "string",
+      "doc": "FieldLabel names a field's control. Named FieldLabel rather than Label because every other component that carries a label takes it positionally — ui.Button(label, …) — and a second, optional way to set the same key on those would be two spellings of one prop."
     },
     {
       "func": "Chrome",

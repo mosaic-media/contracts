@@ -7,7 +7,7 @@ package sdui
 // VocabularyVersion is the version a client declares it implements. Additive
 // growth is a minor bump; removing or changing the meaning of a primitive, a
 // prop or an action is a major one.
-const VocabularyVersion = "3.0.0"
+const VocabularyVersion = "3.1.0"
 
 // TypeSeparator divides a module's id from its own type name. Core types are
 // unprefixed and may never contain it; a module's are moduleId:type. Two
@@ -168,8 +168,9 @@ var FocusDirections = []string{
 // Primitives is the native tier as data: what a client must implement, and
 // for each one the reason it cannot be a definition.
 var Primitives = []PrimitiveSpec{
-	{Type: "Box", Tier: "presentational", Doc: "Box is the layout container every composition is built from.", Native: "The irreducible layout leaf. A definition is a tree of primitives, so the base case cannot itself be a definition. It also resolves style.responsive against the live viewport, which is a render-time branch no static tree can carry.", Children: true, Props: []PropSpec{
+	{Type: "Box", Tier: "presentational", Doc: "Box is the layout container every composition is built from.", Native: "The irreducible layout leaf. A definition is a tree of primitives, so the base case cannot itself be a definition. It also resolves style.responsive against the live viewport, and visibleWhen against the live State scope — two render-time branches no static tree can carry.", Children: true, Props: []PropSpec{
 		{Key: "style", Type: "boxStyle", Doc: "Layout and surface style, including the responsive override."},
+		{Key: "visibleWhen", Type: "predicate", Doc: "Structured predicate over the enclosing State scope's values; absent means always visible. On a field it hides one control, and on a Box it hides a whole branch — which is what makes a multi-step form expressible at all. Without it a wizard is either one long page or a round trip per step, and a round trip per step means every step's answers travel back down in the next tree."},
 	}},
 	{Type: "Text", Tier: "presentational", Doc: "Text renders a run of text in a token style. Children render after the text, for inline nesting.", Native: "The irreducible text leaf.", Children: true, Props: []PropSpec{
 		{Key: "text", Type: "string", Doc: "The string to render."},

@@ -27,7 +27,7 @@ import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 import type { UINode } from "../../sdui/v1/sdui_pb";
 import { file_mosaic_sdui_v1_sdui } from "../../sdui/v1/sdui_pb";
-import type { VocabularyProfile } from "../../session/v1/session_pb";
+import type { FieldErrors, VocabularyProfile } from "../../session/v1/session_pb";
 import { file_mosaic_session_v1_session } from "../../session/v1/session_pb";
 import type { Message } from "@bufbuild/protobuf";
 
@@ -35,7 +35,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file mosaic/auth/v1/auth.proto.
  */
 export const file_mosaic_auth_v1_auth: GenFile = /*@__PURE__*/
-  fileDesc("Chltb3NhaWMvYXV0aC92MS9hdXRoLnByb3RvEg5tb3NhaWMuYXV0aC52MSJMChBCb290c3RyYXBSZXF1ZXN0EjgKCnZvY2FidWxhcnkYASABKAsyJC5tb3NhaWMuc2Vzc2lvbi52MS5Wb2NhYnVsYXJ5UHJvZmlsZSJhChFCb290c3RyYXBSZXNwb25zZRIOCgZ0b2tlbnMYASABKAwSEwoLZGVmaW5pdGlvbnMYAiABKAwSJwoHdWlfbm9kZRgDIAEoCzIWLm1vc2FpYy5zZHVpLnYxLlVJTm9kZSJGCg1TaWduSW5SZXF1ZXN0EhAKCHVzZXJuYW1lGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJEhEKCWRldmljZV9pZBgDIAEoCSJlCg5TaWduSW5SZXNwb25zZRIoCgdzZXNzaW9uGAEgASgLMhcubW9zYWljLmF1dGgudjEuU2Vzc2lvbhIpCgZ0b2tlbnMYAiABKAsyGS5tb3NhaWMuYXV0aC52MS5Ub2tlblBhaXIipwEKCVRva2VuUGFpchIUCgxhY2Nlc3NfdG9rZW4YASABKAkSNQoRYWNjZXNzX2V4cGlyZXNfYXQYAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhUKDXJlZnJlc2hfdG9rZW4YAyABKAkSNgoScmVmcmVzaF9leHBpcmVzX2F0GAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCI6Cg5SZWZyZXNoUmVxdWVzdBIVCg1yZWZyZXNoX3Rva2VuGAEgASgJEhEKCWRldmljZV9pZBgCIAEoCSJmCg9SZWZyZXNoUmVzcG9uc2USKAoHc2Vzc2lvbhgBIAEoCzIXLm1vc2FpYy5hdXRoLnYxLlNlc3Npb24SKQoGdG9rZW5zGAIgASgLMhkubW9zYWljLmF1dGgudjEuVG9rZW5QYWlyIkAKDlNpZ25PdXRSZXF1ZXN0EhYKDmNhbGxlcl9zZXNzaW9uGAEgASgJEhYKDnRhcmdldF9zZXNzaW9uGAIgASgJIiIKD1NpZ25PdXRSZXNwb25zZRIPCgdzZXNzaW9uGAEgASgJIuEBCgdTZXNzaW9uEgoKAmlkGAEgASgJEg8KB3VzZXJfaWQYAiABKAkSEQoJZGV2aWNlX2lkGAMgASgJEi0KCWlzc3VlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASMAoMbGFzdF9zZWVuX2F0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgpleHBpcmVzX2F0GAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIVCg1hdXRoX3N0cmVuZ3RoGAcgASgJMsACCgtBdXRoU2VydmljZRJQCglCb290c3RyYXASIC5tb3NhaWMuYXV0aC52MS5Cb290c3RyYXBSZXF1ZXN0GiEubW9zYWljLmF1dGgudjEuQm9vdHN0cmFwUmVzcG9uc2USRwoGU2lnbkluEh0ubW9zYWljLmF1dGgudjEuU2lnbkluUmVxdWVzdBoeLm1vc2FpYy5hdXRoLnYxLlNpZ25JblJlc3BvbnNlEkoKB1NpZ25PdXQSHi5tb3NhaWMuYXV0aC52MS5TaWduT3V0UmVxdWVzdBofLm1vc2FpYy5hdXRoLnYxLlNpZ25PdXRSZXNwb25zZRJKCgdSZWZyZXNoEh4ubW9zYWljLmF1dGgudjEuUmVmcmVzaFJlcXVlc3QaHy5tb3NhaWMuYXV0aC52MS5SZWZyZXNoUmVzcG9uc2VCPVo7Z2l0aHViLmNvbS9tb3NhaWMtbWVkaWEvY29udHJhY3RzL2dlbi9tb3NhaWMvYXV0aC92MTthdXRodjFiBnByb3RvMw", [file_google_protobuf_timestamp, file_mosaic_sdui_v1_sdui, file_mosaic_session_v1_session]);
+  fileDesc("Chltb3NhaWMvYXV0aC92MS9hdXRoLnByb3RvEg5tb3NhaWMuYXV0aC52MSJMChBCb290c3RyYXBSZXF1ZXN0EjgKCnZvY2FidWxhcnkYASABKAsyJC5tb3NhaWMuc2Vzc2lvbi52MS5Wb2NhYnVsYXJ5UHJvZmlsZSJhChFCb290c3RyYXBSZXNwb25zZRIOCgZ0b2tlbnMYASABKAwSEwoLZGVmaW5pdGlvbnMYAiABKAwSJwoHdWlfbm9kZRgDIAEoCzIWLm1vc2FpYy5zZHVpLnYxLlVJTm9kZSJ7Cg1JbnZva2VSZXF1ZXN0Eg4KBmFjdGlvbhgBIAEoCRINCgVpbnB1dBgCIAEoDBIRCglkZXZpY2VfaWQYAyABKAkSOAoKdm9jYWJ1bGFyeRgEIAEoCzIkLm1vc2FpYy5zZXNzaW9uLnYxLlZvY2FidWxhcnlQcm9maWxlIqkBCg5JbnZva2VSZXNwb25zZRIoCgZzaWduZWQYASABKAsyFi5tb3NhaWMuYXV0aC52MS5TaWduZWRIABIqCgdkb29yd2F5GAIgASgLMhcubW9zYWljLmF1dGgudjEuRG9vcndheUgAEjYKDGZpZWxkX2Vycm9ycxgDIAEoCzIeLm1vc2FpYy5zZXNzaW9uLnYxLkZpZWxkRXJyb3JzSABCCQoHb3V0Y29tZSJdCgZTaWduZWQSKAoHc2Vzc2lvbhgBIAEoCzIXLm1vc2FpYy5hdXRoLnYxLlNlc3Npb24SKQoGdG9rZW5zGAIgASgLMhkubW9zYWljLmF1dGgudjEuVG9rZW5QYWlyIkcKB0Rvb3J3YXkSEwoLZGVmaW5pdGlvbnMYASABKAwSJwoHdWlfbm9kZRgCIAEoCzIWLm1vc2FpYy5zZHVpLnYxLlVJTm9kZSJGCg1TaWduSW5SZXF1ZXN0EhAKCHVzZXJuYW1lGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJEhEKCWRldmljZV9pZBgDIAEoCSJlCg5TaWduSW5SZXNwb25zZRIoCgdzZXNzaW9uGAEgASgLMhcubW9zYWljLmF1dGgudjEuU2Vzc2lvbhIpCgZ0b2tlbnMYAiABKAsyGS5tb3NhaWMuYXV0aC52MS5Ub2tlblBhaXIipwEKCVRva2VuUGFpchIUCgxhY2Nlc3NfdG9rZW4YASABKAkSNQoRYWNjZXNzX2V4cGlyZXNfYXQYAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhUKDXJlZnJlc2hfdG9rZW4YAyABKAkSNgoScmVmcmVzaF9leHBpcmVzX2F0GAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCI6Cg5SZWZyZXNoUmVxdWVzdBIVCg1yZWZyZXNoX3Rva2VuGAEgASgJEhEKCWRldmljZV9pZBgCIAEoCSJmCg9SZWZyZXNoUmVzcG9uc2USKAoHc2Vzc2lvbhgBIAEoCzIXLm1vc2FpYy5hdXRoLnYxLlNlc3Npb24SKQoGdG9rZW5zGAIgASgLMhkubW9zYWljLmF1dGgudjEuVG9rZW5QYWlyIkAKDlNpZ25PdXRSZXF1ZXN0EhYKDmNhbGxlcl9zZXNzaW9uGAEgASgJEhYKDnRhcmdldF9zZXNzaW9uGAIgASgJIiIKD1NpZ25PdXRSZXNwb25zZRIPCgdzZXNzaW9uGAEgASgJIvcBCgdTZXNzaW9uEgoKAmlkGAEgASgJEg8KB3VzZXJfaWQYAiABKAkSEQoJZGV2aWNlX2lkGAMgASgJEi0KCWlzc3VlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASMAoMbGFzdF9zZWVuX2F0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgpleHBpcmVzX2F0GAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIVCg1hdXRoX3N0cmVuZ3RoGAcgASgJEhQKDGNhcGFiaWxpdGllcxgIIAMoCTKJAwoLQXV0aFNlcnZpY2USUAoJQm9vdHN0cmFwEiAubW9zYWljLmF1dGgudjEuQm9vdHN0cmFwUmVxdWVzdBohLm1vc2FpYy5hdXRoLnYxLkJvb3RzdHJhcFJlc3BvbnNlEkcKBkludm9rZRIdLm1vc2FpYy5hdXRoLnYxLkludm9rZVJlcXVlc3QaHi5tb3NhaWMuYXV0aC52MS5JbnZva2VSZXNwb25zZRJHCgZTaWduSW4SHS5tb3NhaWMuYXV0aC52MS5TaWduSW5SZXF1ZXN0Gh4ubW9zYWljLmF1dGgudjEuU2lnbkluUmVzcG9uc2USSgoHU2lnbk91dBIeLm1vc2FpYy5hdXRoLnYxLlNpZ25PdXRSZXF1ZXN0Gh8ubW9zYWljLmF1dGgudjEuU2lnbk91dFJlc3BvbnNlEkoKB1JlZnJlc2gSHi5tb3NhaWMuYXV0aC52MS5SZWZyZXNoUmVxdWVzdBofLm1vc2FpYy5hdXRoLnYxLlJlZnJlc2hSZXNwb25zZUI9WjtnaXRodWIuY29tL21vc2FpYy1tZWRpYS9jb250cmFjdHMvZ2VuL21vc2FpYy9hdXRoL3YxO2F1dGh2MWIGcHJvdG8z", [file_google_protobuf_timestamp, file_mosaic_sdui_v1_sdui, file_mosaic_session_v1_session]);
 
 /**
  * BootstrapRequest asks for the doorway.
@@ -117,6 +117,172 @@ export const BootstrapResponseSchema: GenMessage<BootstrapResponse> = /*@__PURE_
   messageDesc(file_mosaic_auth_v1_auth, 1);
 
 /**
+ * InvokeRequest carries one doorway action and whatever the form beneath it
+ * collected.
+ *
+ * input is the SDUI runtime's action envelope in JSON, exactly as it is on
+ * mosaic.session.v1.InvokeRequest — an action's ABI is a property of the action
+ * rather than of the transport carrying it, so the two lanes must not describe
+ * the same envelope differently.
+ *
+ * @generated from message mosaic.auth.v1.InvokeRequest
+ */
+export type InvokeRequest = Message<"mosaic.auth.v1.InvokeRequest"> & {
+  /**
+   * The action name the doorway's control emitted. The server enumerates what
+   * it will dispatch; an action it does not know is refused rather than
+   * guessed at.
+   *
+   * @generated from field: string action = 1;
+   */
+  action: string;
+
+  /**
+   * The action's input, as a JSON object.
+   *
+   * @generated from field: bytes input = 2;
+   */
+  input: Uint8Array;
+
+  /**
+   * The device the resulting session would belong to. Carried on the request
+   * rather than inside input because a session belongs to a device whatever the
+   * action was, and an action that mints one must not have to remember to say
+   * so.
+   *
+   * @generated from field: string device_id = 3;
+   */
+  deviceId: string;
+
+  /**
+   * The same vocabulary declaration Bootstrap carries, so a replacement doorway
+   * is negotiated exactly as the first one was (ADR 0084). Without it the
+   * second tree a client is sent would be the one tree nobody degraded.
+   *
+   * @generated from field: mosaic.session.v1.VocabularyProfile vocabulary = 4;
+   */
+  vocabulary?: VocabularyProfile | undefined;
+};
+
+/**
+ * Describes the message mosaic.auth.v1.InvokeRequest.
+ * Use `create(InvokeRequestSchema)` to create a new message.
+ */
+export const InvokeRequestSchema: GenMessage<InvokeRequest> = /*@__PURE__*/
+  messageDesc(file_mosaic_auth_v1_auth, 2);
+
+/**
+ * InvokeResponse is one of three outcomes, and the oneof is what makes them
+ * exclusive rather than a set of fields a client has to rank.
+ *
+ * A transport-level failure is still a Connect error — an unknown action is
+ * INVALID_ARGUMENT, a rate limit is RESOURCE_EXHAUSTED. What is here is the set
+ * of things that are *answers*: the action worked and minted a session, the
+ * action worked and the door now shows something else, or the submission was
+ * refused in a way that belongs on the fields it came from.
+ *
+ * @generated from message mosaic.auth.v1.InvokeResponse
+ */
+export type InvokeResponse = Message<"mosaic.auth.v1.InvokeResponse"> & {
+  /**
+   * @generated from oneof mosaic.auth.v1.InvokeResponse.outcome
+   */
+  outcome: {
+    /**
+     * The action signed the caller in. From here the client is on the session
+     * transport and this service is done with it.
+     *
+     * @generated from field: mosaic.auth.v1.Signed signed = 1;
+     */
+    value: Signed;
+    case: "signed";
+  } | {
+    /**
+     * The door now shows something else — the next step of a wizard, or a
+     * sign-in form where a setup form was. The definitions travel with it for
+     * the same reason they travel with Bootstrap: a client at this point still
+     * has no vocabulary but the subset it was last sent, and a tree naming a
+     * component outside that subset would draw the placeholder ADR 0101 exists
+     * to remove.
+     *
+     * @generated from field: mosaic.auth.v1.Doorway doorway = 2;
+     */
+    value: Doorway;
+    case: "doorway";
+  } | {
+    /**
+     * The submission was refused, per field (ADR 0089). It is the same envelope
+     * the session lane pushes, so a rejection renders identically whichever
+     * lane it arrived on.
+     *
+     * @generated from field: mosaic.session.v1.FieldErrors field_errors = 3;
+     */
+    value: FieldErrors;
+    case: "fieldErrors";
+  } | { case: undefined; value?: undefined };
+};
+
+/**
+ * Describes the message mosaic.auth.v1.InvokeResponse.
+ * Use `create(InvokeResponseSchema)` to create a new message.
+ */
+export const InvokeResponseSchema: GenMessage<InvokeResponse> = /*@__PURE__*/
+  messageDesc(file_mosaic_auth_v1_auth, 3);
+
+/**
+ * Signed is a minted session and the pair that spends it.
+ *
+ * @generated from message mosaic.auth.v1.Signed
+ */
+export type Signed = Message<"mosaic.auth.v1.Signed"> & {
+  /**
+   * @generated from field: mosaic.auth.v1.Session session = 1;
+   */
+  session?: Session | undefined;
+
+  /**
+   * @generated from field: mosaic.auth.v1.TokenPair tokens = 2;
+   */
+  tokens?: TokenPair | undefined;
+};
+
+/**
+ * Describes the message mosaic.auth.v1.Signed.
+ * Use `create(SignedSchema)` to create a new message.
+ */
+export const SignedSchema: GenMessage<Signed> = /*@__PURE__*/
+  messageDesc(file_mosaic_auth_v1_auth, 4);
+
+/**
+ * Doorway is a replacement pre-session tree and the definitions it needs.
+ *
+ * The token set is deliberately absent: the skin arrived with Bootstrap and
+ * does not change between two states of the same door, so re-sending it on
+ * every step of a wizard would be the largest field in the response and the one
+ * least likely to differ.
+ *
+ * @generated from message mosaic.auth.v1.Doorway
+ */
+export type Doorway = Message<"mosaic.auth.v1.Doorway"> & {
+  /**
+   * @generated from field: bytes definitions = 1;
+   */
+  definitions: Uint8Array;
+
+  /**
+   * @generated from field: mosaic.sdui.v1.UINode ui_node = 2;
+   */
+  uiNode?: UINode | undefined;
+};
+
+/**
+ * Describes the message mosaic.auth.v1.Doorway.
+ * Use `create(DoorwaySchema)` to create a new message.
+ */
+export const DoorwaySchema: GenMessage<Doorway> = /*@__PURE__*/
+  messageDesc(file_mosaic_auth_v1_auth, 5);
+
+/**
  * SignInRequest is a local username/password authentication from a named
  * device. device_id is required: a session belongs to a device, so the Platform
  * can revoke one client without ending the others.
@@ -145,7 +311,7 @@ export type SignInRequest = Message<"mosaic.auth.v1.SignInRequest"> & {
  * Use `create(SignInRequestSchema)` to create a new message.
  */
 export const SignInRequestSchema: GenMessage<SignInRequest> = /*@__PURE__*/
-  messageDesc(file_mosaic_auth_v1_auth, 2);
+  messageDesc(file_mosaic_auth_v1_auth, 6);
 
 /**
  * SignInResponse carries the issued session and the credential pair that spends
@@ -173,7 +339,7 @@ export type SignInResponse = Message<"mosaic.auth.v1.SignInResponse"> & {
  * Use `create(SignInResponseSchema)` to create a new message.
  */
 export const SignInResponseSchema: GenMessage<SignInResponse> = /*@__PURE__*/
-  messageDesc(file_mosaic_auth_v1_auth, 3);
+  messageDesc(file_mosaic_auth_v1_auth, 7);
 
 /**
  * TokenPair is the session credential (ADR 0102): a short-lived access token
@@ -227,7 +393,7 @@ export type TokenPair = Message<"mosaic.auth.v1.TokenPair"> & {
  * Use `create(TokenPairSchema)` to create a new message.
  */
 export const TokenPairSchema: GenMessage<TokenPair> = /*@__PURE__*/
-  messageDesc(file_mosaic_auth_v1_auth, 4);
+  messageDesc(file_mosaic_auth_v1_auth, 8);
 
 /**
  * RefreshRequest exchanges a refresh token for a new pair.
@@ -255,7 +421,7 @@ export type RefreshRequest = Message<"mosaic.auth.v1.RefreshRequest"> & {
  * Use `create(RefreshRequestSchema)` to create a new message.
  */
 export const RefreshRequestSchema: GenMessage<RefreshRequest> = /*@__PURE__*/
-  messageDesc(file_mosaic_auth_v1_auth, 5);
+  messageDesc(file_mosaic_auth_v1_auth, 9);
 
 /**
  * RefreshResponse carries the new pair and the session it belongs to.
@@ -279,7 +445,7 @@ export type RefreshResponse = Message<"mosaic.auth.v1.RefreshResponse"> & {
  * Use `create(RefreshResponseSchema)` to create a new message.
  */
 export const RefreshResponseSchema: GenMessage<RefreshResponse> = /*@__PURE__*/
-  messageDesc(file_mosaic_auth_v1_auth, 6);
+  messageDesc(file_mosaic_auth_v1_auth, 10);
 
 /**
  * SignOutRequest revokes target_session on behalf of caller_session.
@@ -311,7 +477,7 @@ export type SignOutRequest = Message<"mosaic.auth.v1.SignOutRequest"> & {
  * Use `create(SignOutRequestSchema)` to create a new message.
  */
 export const SignOutRequestSchema: GenMessage<SignOutRequest> = /*@__PURE__*/
-  messageDesc(file_mosaic_auth_v1_auth, 7);
+  messageDesc(file_mosaic_auth_v1_auth, 11);
 
 /**
  * SignOutResponse echoes the session that was revoked.
@@ -330,20 +496,10 @@ export type SignOutResponse = Message<"mosaic.auth.v1.SignOutResponse"> & {
  * Use `create(SignOutResponseSchema)` to create a new message.
  */
 export const SignOutResponseSchema: GenMessage<SignOutResponse> = /*@__PURE__*/
-  messageDesc(file_mosaic_auth_v1_auth, 8);
+  messageDesc(file_mosaic_auth_v1_auth, 12);
 
 /**
  * Session is the projection of an issued session a client is allowed to see.
- *
- * There is deliberately no capabilities field. domain.Session models one and
- * the Postgres store round-trips it, but nothing populates it at issue time, so
- * the GraphQL surface this replaced returned an empty list on every sign-in. A
- * contract that always sends an empty list is worse than one that does not
- * mention it: a client would reasonably read "no capabilities" as "hide
- * everything". Capability-gated affordances (ADR 0036) therefore stay a server
- * concern — the Platform omits what the caller cannot use when it renders the
- * screen. Add the field when a session genuinely carries the set, and it is a
- * backward-compatible addition when that happens.
  *
  * @generated from message mosaic.auth.v1.Session
  */
@@ -389,6 +545,31 @@ export type Session = Message<"mosaic.auth.v1.Session"> & {
    * @generated from field: string auth_strength = 7;
    */
   authStrength: string;
+
+  /**
+   * What this session may do — the caller's flattened authority, resolved once
+   * when the session was issued.
+   *
+   * It was absent until a session genuinely carried one. `domain.Session` had
+   * modelled the field and the Postgres store had round-tripped it since the
+   * beginning, and nothing ever populated it, so the GraphQL surface this
+   * replaced answered every sign-in with an empty list — which a client would
+   * reasonably have read as "hide everything". A field that is always empty is
+   * worse than an absent one, so it was left out until it was true.
+   *
+   * **It is not a permission check and a client must not use it as one.** Every
+   * call re-authorises server-side against the grants as they are *now*, and
+   * this list is a snapshot as they were at issue time; a grant revoked since
+   * is still in here and is refused anyway. What it is for is
+   * [ADR 0036](0036): an affordance the caller could not exercise should not be
+   * drawn, and until now that was a decision only the server could make,
+   * because only the server knew. A client that composes its own chrome — a
+   * native one deciding whether to draw an admin tab before it asks for a
+   * screen — can now make the same omission the emit-side makes.
+   *
+   * @generated from field: repeated string capabilities = 8;
+   */
+  capabilities: string[];
 };
 
 /**
@@ -396,7 +577,7 @@ export type Session = Message<"mosaic.auth.v1.Session"> & {
  * Use `create(SessionSchema)` to create a new message.
  */
 export const SessionSchema: GenMessage<Session> = /*@__PURE__*/
-  messageDesc(file_mosaic_auth_v1_auth, 9);
+  messageDesc(file_mosaic_auth_v1_auth, 13);
 
 /**
  * AuthService mints and revokes sessions, and answers the one client that has
@@ -425,9 +606,38 @@ export const AuthService: GenService<{
     output: typeof BootstrapResponseSchema;
   },
   /**
+   * Invoke runs an action the doorway emitted, before there is a session to run
+   * it on. It is the pre-session counterpart of
+   * mosaic.session.v1.SessionService.Invoke and exists for the same reason:
+   * the surface a client can reach is the enumeration the server dispatches,
+   * not something the client knows the meaning of.
+   *
+   * A doorway is a screen like any other, so its controls emit actions like any
+   * other. What it does not have is the two-lane transport those actions
+   * normally answer on — there is no session, so there is no push lane — which
+   * is why the outcome rides the unary response instead: a minted session, a
+   * replacement doorway, or the fields that were refused.
+   *
+   * A client dispatches every doorway action here without interpreting any of
+   * them. That is the property worth keeping: a client that special-cased
+   * "signIn" would be a client that had to be released before the door could
+   * change.
+   *
+   * @generated from rpc mosaic.auth.v1.AuthService.Invoke
+   */
+  invoke: {
+    methodKind: "unary";
+    input: typeof InvokeRequestSchema;
+    output: typeof InvokeResponseSchema;
+  },
+  /**
    * SignIn authenticates a local user with a password and issues a session.
    * The returned session id is the opaque ref (ADR 0017) the client presents on
    * every SessionService call.
+   *
+   * It stays a method of its own rather than becoming a doorway action: an
+   * automated client with credentials and no interest in a screen should not
+   * have to render a door to use them.
    *
    * @generated from rpc mosaic.auth.v1.AuthService.SignIn
    */

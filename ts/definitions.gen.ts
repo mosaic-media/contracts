@@ -4729,11 +4729,17 @@ export const DEFINITIONS: ComponentDefinition[] = [
         {
           "type": "SelectInput",
           "props": {
+            "name": {
+              "$bind": "name"
+            },
             "options": {
               "$bind": "options"
             },
             "value": {
               "$bind": "value"
+            },
+            "validators": {
+              "$bind": "validators"
             }
           }
         }
@@ -5618,6 +5624,9 @@ export const DEFINITIONS: ComponentDefinition[] = [
         {
           "type": "TextInput",
           "props": {
+            "name": {
+              "$bind": "name"
+            },
             "inputType": {
               "$bind": "inputType"
             },
@@ -5626,6 +5635,9 @@ export const DEFINITIONS: ComponentDefinition[] = [
             },
             "value": {
               "$bind": "value"
+            },
+            "validators": {
+              "$bind": "validators"
             }
           }
         },
@@ -5662,6 +5674,9 @@ export const DEFINITIONS: ComponentDefinition[] = [
         {
           "type": "Switch",
           "props": {
+            "name": {
+              "$bind": "name"
+            },
             "value": {
               "$bind": "on"
             },

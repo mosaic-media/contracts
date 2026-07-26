@@ -13,7 +13,7 @@ import "github.com/mosaic-media/contracts/sdui"
 // emitted by name with no entry in any contract.
 
 // Box is the layout container every composition is built from.
-// Native: The irreducible layout leaf. A definition is a tree of primitives, so the base case cannot itself be a definition. It also resolves style.responsive against the live viewport, which is a render-time branch no static tree can carry.
+// Native: The irreducible layout leaf. A definition is a tree of primitives, so the base case cannot itself be a definition. It also resolves style.responsive against the live viewport, and visibleWhen against the live State scope — two render-time branches no static tree can carry.
 func Box(els ...El) *Element { return compose("Box", nil, els) }
 
 // Text renders a run of text in a token style. Children render after the text, for inline nesting.
@@ -530,6 +530,15 @@ func Help(v string) El { return Prop("help", v) }
 // InputType selects the keyboard/validation a field asks for.
 func InputType(v string) El { return Prop("inputType", v) }
 
+// Validators are the rules a client enforces before it submits — the six the contract declares, no more. A server rejection lands in the same slot (ADR 0089), so this is the fast half of one statement rather than the whole of it. It is sugar because a field's rules were being set with ui.Prop("validators", …) at every call site in every module, which is precisely the untyped setting that let ui.Subtitle onto a Stack.
+func Validators(v map[string]any) El { return Prop("validators", v) }
+
+// VisibleWhen hides a node until a predicate over the enclosing State scope holds. Absent means visible; unreadable means hidden, because a control shown because its rule could not be read is the fail-open case.
+func VisibleWhen(v map[string]any) El { return Prop("visibleWhen", v) }
+
+// FieldLabel names a field's control. Named FieldLabel rather than Label because every other component that carries a label takes it positionally — ui.Button(label, …) — and a second, optional way to set the same key on those would be two spellings of one prop.
+func FieldLabel(v string) El { return Prop("label", v) }
+
 // Chrome selects which frame the app shell draws: "media" — the floating pills over a full-bleed hero — or "admin", the solid bar the settings side of the app wears. Named rather than a boolean because the two are different rooms in the same building, and a third (a player, a setup wizard) is a case rather than a second flag.
 func Chrome(v string) El { return Prop("chrome", v) }
 
@@ -800,6 +809,15 @@ func BindHelp(path string) El { return Prop("help", sdui.Bind(path)) }
 
 // BindInputType sets "inputType" from the named path instead of from a value.
 func BindInputType(path string) El { return Prop("inputType", sdui.Bind(path)) }
+
+// BindValidators sets "validators" from the named path instead of from a value.
+func BindValidators(path string) El { return Prop("validators", sdui.Bind(path)) }
+
+// BindVisibleWhen sets "visibleWhen" from the named path instead of from a value.
+func BindVisibleWhen(path string) El { return Prop("visibleWhen", sdui.Bind(path)) }
+
+// BindFieldLabel sets "label" from the named path instead of from a value.
+func BindFieldLabel(path string) El { return Prop("label", sdui.Bind(path)) }
 
 // BindChrome sets "chrome" from the named path instead of from a value.
 func BindChrome(path string) El { return Prop("chrome", sdui.Bind(path)) }

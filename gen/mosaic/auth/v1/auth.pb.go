@@ -176,6 +176,320 @@ func (x *BootstrapResponse) GetUiNode() *v11.UINode {
 	return nil
 }
 
+// InvokeRequest carries one doorway action and whatever the form beneath it
+// collected.
+//
+// input is the SDUI runtime's action envelope in JSON, exactly as it is on
+// mosaic.session.v1.InvokeRequest — an action's ABI is a property of the action
+// rather than of the transport carrying it, so the two lanes must not describe
+// the same envelope differently.
+type InvokeRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The action name the doorway's control emitted. The server enumerates what
+	// it will dispatch; an action it does not know is refused rather than
+	// guessed at.
+	Action string `protobuf:"bytes,1,opt,name=action,proto3" json:"action,omitempty"`
+	// The action's input, as a JSON object.
+	Input []byte `protobuf:"bytes,2,opt,name=input,proto3" json:"input,omitempty"`
+	// The device the resulting session would belong to. Carried on the request
+	// rather than inside input because a session belongs to a device whatever the
+	// action was, and an action that mints one must not have to remember to say
+	// so.
+	DeviceId string `protobuf:"bytes,3,opt,name=device_id,json=deviceId,proto3" json:"device_id,omitempty"`
+	// The same vocabulary declaration Bootstrap carries, so a replacement doorway
+	// is negotiated exactly as the first one was (ADR 0084). Without it the
+	// second tree a client is sent would be the one tree nobody degraded.
+	Vocabulary    *v1.VocabularyProfile `protobuf:"bytes,4,opt,name=vocabulary,proto3" json:"vocabulary,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *InvokeRequest) Reset() {
+	*x = InvokeRequest{}
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *InvokeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InvokeRequest) ProtoMessage() {}
+
+func (x *InvokeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InvokeRequest.ProtoReflect.Descriptor instead.
+func (*InvokeRequest) Descriptor() ([]byte, []int) {
+	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *InvokeRequest) GetAction() string {
+	if x != nil {
+		return x.Action
+	}
+	return ""
+}
+
+func (x *InvokeRequest) GetInput() []byte {
+	if x != nil {
+		return x.Input
+	}
+	return nil
+}
+
+func (x *InvokeRequest) GetDeviceId() string {
+	if x != nil {
+		return x.DeviceId
+	}
+	return ""
+}
+
+func (x *InvokeRequest) GetVocabulary() *v1.VocabularyProfile {
+	if x != nil {
+		return x.Vocabulary
+	}
+	return nil
+}
+
+// InvokeResponse is one of three outcomes, and the oneof is what makes them
+// exclusive rather than a set of fields a client has to rank.
+//
+// A transport-level failure is still a Connect error — an unknown action is
+// INVALID_ARGUMENT, a rate limit is RESOURCE_EXHAUSTED. What is here is the set
+// of things that are *answers*: the action worked and minted a session, the
+// action worked and the door now shows something else, or the submission was
+// refused in a way that belongs on the fields it came from.
+type InvokeResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Types that are valid to be assigned to Outcome:
+	//
+	//	*InvokeResponse_Signed
+	//	*InvokeResponse_Doorway
+	//	*InvokeResponse_FieldErrors
+	Outcome       isInvokeResponse_Outcome `protobuf_oneof:"outcome"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *InvokeResponse) Reset() {
+	*x = InvokeResponse{}
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *InvokeResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InvokeResponse) ProtoMessage() {}
+
+func (x *InvokeResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InvokeResponse.ProtoReflect.Descriptor instead.
+func (*InvokeResponse) Descriptor() ([]byte, []int) {
+	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *InvokeResponse) GetOutcome() isInvokeResponse_Outcome {
+	if x != nil {
+		return x.Outcome
+	}
+	return nil
+}
+
+func (x *InvokeResponse) GetSigned() *Signed {
+	if x != nil {
+		if x, ok := x.Outcome.(*InvokeResponse_Signed); ok {
+			return x.Signed
+		}
+	}
+	return nil
+}
+
+func (x *InvokeResponse) GetDoorway() *Doorway {
+	if x != nil {
+		if x, ok := x.Outcome.(*InvokeResponse_Doorway); ok {
+			return x.Doorway
+		}
+	}
+	return nil
+}
+
+func (x *InvokeResponse) GetFieldErrors() *v1.FieldErrors {
+	if x != nil {
+		if x, ok := x.Outcome.(*InvokeResponse_FieldErrors); ok {
+			return x.FieldErrors
+		}
+	}
+	return nil
+}
+
+type isInvokeResponse_Outcome interface {
+	isInvokeResponse_Outcome()
+}
+
+type InvokeResponse_Signed struct {
+	// The action signed the caller in. From here the client is on the session
+	// transport and this service is done with it.
+	Signed *Signed `protobuf:"bytes,1,opt,name=signed,proto3,oneof"`
+}
+
+type InvokeResponse_Doorway struct {
+	// The door now shows something else — the next step of a wizard, or a
+	// sign-in form where a setup form was. The definitions travel with it for
+	// the same reason they travel with Bootstrap: a client at this point still
+	// has no vocabulary but the subset it was last sent, and a tree naming a
+	// component outside that subset would draw the placeholder ADR 0101 exists
+	// to remove.
+	Doorway *Doorway `protobuf:"bytes,2,opt,name=doorway,proto3,oneof"`
+}
+
+type InvokeResponse_FieldErrors struct {
+	// The submission was refused, per field (ADR 0089). It is the same envelope
+	// the session lane pushes, so a rejection renders identically whichever
+	// lane it arrived on.
+	FieldErrors *v1.FieldErrors `protobuf:"bytes,3,opt,name=field_errors,json=fieldErrors,proto3,oneof"`
+}
+
+func (*InvokeResponse_Signed) isInvokeResponse_Outcome() {}
+
+func (*InvokeResponse_Doorway) isInvokeResponse_Outcome() {}
+
+func (*InvokeResponse_FieldErrors) isInvokeResponse_Outcome() {}
+
+// Signed is a minted session and the pair that spends it.
+type Signed struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Session       *Session               `protobuf:"bytes,1,opt,name=session,proto3" json:"session,omitempty"`
+	Tokens        *TokenPair             `protobuf:"bytes,2,opt,name=tokens,proto3" json:"tokens,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Signed) Reset() {
+	*x = Signed{}
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Signed) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Signed) ProtoMessage() {}
+
+func (x *Signed) ProtoReflect() protoreflect.Message {
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Signed.ProtoReflect.Descriptor instead.
+func (*Signed) Descriptor() ([]byte, []int) {
+	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *Signed) GetSession() *Session {
+	if x != nil {
+		return x.Session
+	}
+	return nil
+}
+
+func (x *Signed) GetTokens() *TokenPair {
+	if x != nil {
+		return x.Tokens
+	}
+	return nil
+}
+
+// Doorway is a replacement pre-session tree and the definitions it needs.
+//
+// The token set is deliberately absent: the skin arrived with Bootstrap and
+// does not change between two states of the same door, so re-sending it on
+// every step of a wizard would be the largest field in the response and the one
+// least likely to differ.
+type Doorway struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Definitions   []byte                 `protobuf:"bytes,1,opt,name=definitions,proto3" json:"definitions,omitempty"`
+	UiNode        *v11.UINode            `protobuf:"bytes,2,opt,name=ui_node,json=uiNode,proto3" json:"ui_node,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Doorway) Reset() {
+	*x = Doorway{}
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Doorway) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Doorway) ProtoMessage() {}
+
+func (x *Doorway) ProtoReflect() protoreflect.Message {
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Doorway.ProtoReflect.Descriptor instead.
+func (*Doorway) Descriptor() ([]byte, []int) {
+	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *Doorway) GetDefinitions() []byte {
+	if x != nil {
+		return x.Definitions
+	}
+	return nil
+}
+
+func (x *Doorway) GetUiNode() *v11.UINode {
+	if x != nil {
+		return x.UiNode
+	}
+	return nil
+}
+
 // SignInRequest is a local username/password authentication from a named
 // device. device_id is required: a session belongs to a device, so the Platform
 // can revoke one client without ending the others.
@@ -190,7 +504,7 @@ type SignInRequest struct {
 
 func (x *SignInRequest) Reset() {
 	*x = SignInRequest{}
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[2]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -202,7 +516,7 @@ func (x *SignInRequest) String() string {
 func (*SignInRequest) ProtoMessage() {}
 
 func (x *SignInRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[2]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -215,7 +529,7 @@ func (x *SignInRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SignInRequest.ProtoReflect.Descriptor instead.
 func (*SignInRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{2}
+	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *SignInRequest) GetUsername() string {
@@ -253,7 +567,7 @@ type SignInResponse struct {
 
 func (x *SignInResponse) Reset() {
 	*x = SignInResponse{}
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[3]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -265,7 +579,7 @@ func (x *SignInResponse) String() string {
 func (*SignInResponse) ProtoMessage() {}
 
 func (x *SignInResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[3]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -278,7 +592,7 @@ func (x *SignInResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SignInResponse.ProtoReflect.Descriptor instead.
 func (*SignInResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{3}
+	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *SignInResponse) GetSession() *Session {
@@ -327,7 +641,7 @@ type TokenPair struct {
 
 func (x *TokenPair) Reset() {
 	*x = TokenPair{}
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[4]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -339,7 +653,7 @@ func (x *TokenPair) String() string {
 func (*TokenPair) ProtoMessage() {}
 
 func (x *TokenPair) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[4]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -352,7 +666,7 @@ func (x *TokenPair) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TokenPair.ProtoReflect.Descriptor instead.
 func (*TokenPair) Descriptor() ([]byte, []int) {
-	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{4}
+	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *TokenPair) GetAccessToken() string {
@@ -398,7 +712,7 @@ type RefreshRequest struct {
 
 func (x *RefreshRequest) Reset() {
 	*x = RefreshRequest{}
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[5]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -410,7 +724,7 @@ func (x *RefreshRequest) String() string {
 func (*RefreshRequest) ProtoMessage() {}
 
 func (x *RefreshRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[5]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -423,7 +737,7 @@ func (x *RefreshRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RefreshRequest.ProtoReflect.Descriptor instead.
 func (*RefreshRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{5}
+	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *RefreshRequest) GetRefreshToken() string {
@@ -451,7 +765,7 @@ type RefreshResponse struct {
 
 func (x *RefreshResponse) Reset() {
 	*x = RefreshResponse{}
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[6]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -463,7 +777,7 @@ func (x *RefreshResponse) String() string {
 func (*RefreshResponse) ProtoMessage() {}
 
 func (x *RefreshResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[6]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -476,7 +790,7 @@ func (x *RefreshResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RefreshResponse.ProtoReflect.Descriptor instead.
 func (*RefreshResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{6}
+	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *RefreshResponse) GetSession() *Session {
@@ -512,7 +826,7 @@ type SignOutRequest struct {
 
 func (x *SignOutRequest) Reset() {
 	*x = SignOutRequest{}
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[7]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -524,7 +838,7 @@ func (x *SignOutRequest) String() string {
 func (*SignOutRequest) ProtoMessage() {}
 
 func (x *SignOutRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[7]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -537,7 +851,7 @@ func (x *SignOutRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SignOutRequest.ProtoReflect.Descriptor instead.
 func (*SignOutRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{7}
+	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *SignOutRequest) GetCallerSession() string {
@@ -564,7 +878,7 @@ type SignOutResponse struct {
 
 func (x *SignOutResponse) Reset() {
 	*x = SignOutResponse{}
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[8]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -576,7 +890,7 @@ func (x *SignOutResponse) String() string {
 func (*SignOutResponse) ProtoMessage() {}
 
 func (x *SignOutResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[8]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -589,7 +903,7 @@ func (x *SignOutResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SignOutResponse.ProtoReflect.Descriptor instead.
 func (*SignOutResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{8}
+	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *SignOutResponse) GetSession() string {
@@ -600,16 +914,6 @@ func (x *SignOutResponse) GetSession() string {
 }
 
 // Session is the projection of an issued session a client is allowed to see.
-//
-// There is deliberately no capabilities field. domain.Session models one and
-// the Postgres store round-trips it, but nothing populates it at issue time, so
-// the GraphQL surface this replaced returned an empty list on every sign-in. A
-// contract that always sends an empty list is worse than one that does not
-// mention it: a client would reasonably read "no capabilities" as "hide
-// everything". Capability-gated affordances (ADR 0036) therefore stay a server
-// concern — the Platform omits what the caller cannot use when it renders the
-// screen. Add the field when a session genuinely carries the set, and it is a
-// backward-compatible addition when that happens.
 type Session struct {
 	state      protoimpl.MessageState `protogen:"open.v1"`
 	Id         string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -623,15 +927,35 @@ type Session struct {
 	// not the idle ceiling, which the server applies against last_seen_at and
 	// does not publish — a client that knew it would be tempted to poll to stay
 	// inside it.
-	ExpiresAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty"`
-	AuthStrength  string                 `protobuf:"bytes,7,opt,name=auth_strength,json=authStrength,proto3" json:"auth_strength,omitempty"`
+	ExpiresAt    *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty"`
+	AuthStrength string                 `protobuf:"bytes,7,opt,name=auth_strength,json=authStrength,proto3" json:"auth_strength,omitempty"`
+	// What this session may do — the caller's flattened authority, resolved once
+	// when the session was issued.
+	//
+	// It was absent until a session genuinely carried one. `domain.Session` had
+	// modelled the field and the Postgres store had round-tripped it since the
+	// beginning, and nothing ever populated it, so the GraphQL surface this
+	// replaced answered every sign-in with an empty list — which a client would
+	// reasonably have read as "hide everything". A field that is always empty is
+	// worse than an absent one, so it was left out until it was true.
+	//
+	// **It is not a permission check and a client must not use it as one.** Every
+	// call re-authorises server-side against the grants as they are *now*, and
+	// this list is a snapshot as they were at issue time; a grant revoked since
+	// is still in here and is refused anyway. What it is for is
+	// [ADR 0036](0036): an affordance the caller could not exercise should not be
+	// drawn, and until now that was a decision only the server could make,
+	// because only the server knew. A client that composes its own chrome — a
+	// native one deciding whether to draw an admin tab before it asks for a
+	// screen — can now make the same omission the emit-side makes.
+	Capabilities  []string `protobuf:"bytes,8,rep,name=capabilities,proto3" json:"capabilities,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *Session) Reset() {
 	*x = Session{}
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[9]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -643,7 +967,7 @@ func (x *Session) String() string {
 func (*Session) ProtoMessage() {}
 
 func (x *Session) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[9]
+	mi := &file_mosaic_auth_v1_auth_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -656,7 +980,7 @@ func (x *Session) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Session.ProtoReflect.Descriptor instead.
 func (*Session) Descriptor() ([]byte, []int) {
-	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{9}
+	return file_mosaic_auth_v1_auth_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *Session) GetId() string {
@@ -708,6 +1032,13 @@ func (x *Session) GetAuthStrength() string {
 	return ""
 }
 
+func (x *Session) GetCapabilities() []string {
+	if x != nil {
+		return x.Capabilities
+	}
+	return nil
+}
+
 var File_mosaic_auth_v1_auth_proto protoreflect.FileDescriptor
 
 const file_mosaic_auth_v1_auth_proto_rawDesc = "" +
@@ -720,7 +1051,25 @@ const file_mosaic_auth_v1_auth_proto_rawDesc = "" +
 	"\x11BootstrapResponse\x12\x16\n" +
 	"\x06tokens\x18\x01 \x01(\fR\x06tokens\x12 \n" +
 	"\vdefinitions\x18\x02 \x01(\fR\vdefinitions\x12/\n" +
-	"\aui_node\x18\x03 \x01(\v2\x16.mosaic.sdui.v1.UINodeR\x06uiNode\"d\n" +
+	"\aui_node\x18\x03 \x01(\v2\x16.mosaic.sdui.v1.UINodeR\x06uiNode\"\xa0\x01\n" +
+	"\rInvokeRequest\x12\x16\n" +
+	"\x06action\x18\x01 \x01(\tR\x06action\x12\x14\n" +
+	"\x05input\x18\x02 \x01(\fR\x05input\x12\x1b\n" +
+	"\tdevice_id\x18\x03 \x01(\tR\bdeviceId\x12D\n" +
+	"\n" +
+	"vocabulary\x18\x04 \x01(\v2$.mosaic.session.v1.VocabularyProfileR\n" +
+	"vocabulary\"\xc7\x01\n" +
+	"\x0eInvokeResponse\x120\n" +
+	"\x06signed\x18\x01 \x01(\v2\x16.mosaic.auth.v1.SignedH\x00R\x06signed\x123\n" +
+	"\adoorway\x18\x02 \x01(\v2\x17.mosaic.auth.v1.DoorwayH\x00R\adoorway\x12C\n" +
+	"\ffield_errors\x18\x03 \x01(\v2\x1e.mosaic.session.v1.FieldErrorsH\x00R\vfieldErrorsB\t\n" +
+	"\aoutcome\"n\n" +
+	"\x06Signed\x121\n" +
+	"\asession\x18\x01 \x01(\v2\x17.mosaic.auth.v1.SessionR\asession\x121\n" +
+	"\x06tokens\x18\x02 \x01(\v2\x19.mosaic.auth.v1.TokenPairR\x06tokens\"\\\n" +
+	"\aDoorway\x12 \n" +
+	"\vdefinitions\x18\x01 \x01(\fR\vdefinitions\x12/\n" +
+	"\aui_node\x18\x02 \x01(\v2\x16.mosaic.sdui.v1.UINodeR\x06uiNode\"d\n" +
 	"\rSignInRequest\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\x12\x1b\n" +
@@ -743,7 +1092,7 @@ const file_mosaic_auth_v1_auth_proto_rawDesc = "" +
 	"\x0ecaller_session\x18\x01 \x01(\tR\rcallerSession\x12%\n" +
 	"\x0etarget_session\x18\x02 \x01(\tR\rtargetSession\"+\n" +
 	"\x0fSignOutResponse\x12\x18\n" +
-	"\asession\x18\x01 \x01(\tR\asession\"\xa6\x02\n" +
+	"\asession\x18\x01 \x01(\tR\asession\"\xca\x02\n" +
 	"\aSession\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x1b\n" +
@@ -753,9 +1102,11 @@ const file_mosaic_auth_v1_auth_proto_rawDesc = "" +
 	"lastSeenAt\x129\n" +
 	"\n" +
 	"expires_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\texpiresAt\x12#\n" +
-	"\rauth_strength\x18\a \x01(\tR\fauthStrength2\xc0\x02\n" +
+	"\rauth_strength\x18\a \x01(\tR\fauthStrength\x12\"\n" +
+	"\fcapabilities\x18\b \x03(\tR\fcapabilities2\x89\x03\n" +
 	"\vAuthService\x12P\n" +
 	"\tBootstrap\x12 .mosaic.auth.v1.BootstrapRequest\x1a!.mosaic.auth.v1.BootstrapResponse\x12G\n" +
+	"\x06Invoke\x12\x1d.mosaic.auth.v1.InvokeRequest\x1a\x1e.mosaic.auth.v1.InvokeResponse\x12G\n" +
 	"\x06SignIn\x12\x1d.mosaic.auth.v1.SignInRequest\x1a\x1e.mosaic.auth.v1.SignInResponse\x12J\n" +
 	"\aSignOut\x12\x1e.mosaic.auth.v1.SignOutRequest\x1a\x1f.mosaic.auth.v1.SignOutResponse\x12J\n" +
 	"\aRefresh\x12\x1e.mosaic.auth.v1.RefreshRequest\x1a\x1f.mosaic.auth.v1.RefreshResponseB=Z;github.com/mosaic-media/contracts/gen/mosaic/auth/v1;authv1b\x06proto3"
@@ -772,47 +1123,61 @@ func file_mosaic_auth_v1_auth_proto_rawDescGZIP() []byte {
 	return file_mosaic_auth_v1_auth_proto_rawDescData
 }
 
-var file_mosaic_auth_v1_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_mosaic_auth_v1_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_mosaic_auth_v1_auth_proto_goTypes = []any{
 	(*BootstrapRequest)(nil),      // 0: mosaic.auth.v1.BootstrapRequest
 	(*BootstrapResponse)(nil),     // 1: mosaic.auth.v1.BootstrapResponse
-	(*SignInRequest)(nil),         // 2: mosaic.auth.v1.SignInRequest
-	(*SignInResponse)(nil),        // 3: mosaic.auth.v1.SignInResponse
-	(*TokenPair)(nil),             // 4: mosaic.auth.v1.TokenPair
-	(*RefreshRequest)(nil),        // 5: mosaic.auth.v1.RefreshRequest
-	(*RefreshResponse)(nil),       // 6: mosaic.auth.v1.RefreshResponse
-	(*SignOutRequest)(nil),        // 7: mosaic.auth.v1.SignOutRequest
-	(*SignOutResponse)(nil),       // 8: mosaic.auth.v1.SignOutResponse
-	(*Session)(nil),               // 9: mosaic.auth.v1.Session
-	(*v1.VocabularyProfile)(nil),  // 10: mosaic.session.v1.VocabularyProfile
-	(*v11.UINode)(nil),            // 11: mosaic.sdui.v1.UINode
-	(*timestamppb.Timestamp)(nil), // 12: google.protobuf.Timestamp
+	(*InvokeRequest)(nil),         // 2: mosaic.auth.v1.InvokeRequest
+	(*InvokeResponse)(nil),        // 3: mosaic.auth.v1.InvokeResponse
+	(*Signed)(nil),                // 4: mosaic.auth.v1.Signed
+	(*Doorway)(nil),               // 5: mosaic.auth.v1.Doorway
+	(*SignInRequest)(nil),         // 6: mosaic.auth.v1.SignInRequest
+	(*SignInResponse)(nil),        // 7: mosaic.auth.v1.SignInResponse
+	(*TokenPair)(nil),             // 8: mosaic.auth.v1.TokenPair
+	(*RefreshRequest)(nil),        // 9: mosaic.auth.v1.RefreshRequest
+	(*RefreshResponse)(nil),       // 10: mosaic.auth.v1.RefreshResponse
+	(*SignOutRequest)(nil),        // 11: mosaic.auth.v1.SignOutRequest
+	(*SignOutResponse)(nil),       // 12: mosaic.auth.v1.SignOutResponse
+	(*Session)(nil),               // 13: mosaic.auth.v1.Session
+	(*v1.VocabularyProfile)(nil),  // 14: mosaic.session.v1.VocabularyProfile
+	(*v11.UINode)(nil),            // 15: mosaic.sdui.v1.UINode
+	(*v1.FieldErrors)(nil),        // 16: mosaic.session.v1.FieldErrors
+	(*timestamppb.Timestamp)(nil), // 17: google.protobuf.Timestamp
 }
 var file_mosaic_auth_v1_auth_proto_depIdxs = []int32{
-	10, // 0: mosaic.auth.v1.BootstrapRequest.vocabulary:type_name -> mosaic.session.v1.VocabularyProfile
-	11, // 1: mosaic.auth.v1.BootstrapResponse.ui_node:type_name -> mosaic.sdui.v1.UINode
-	9,  // 2: mosaic.auth.v1.SignInResponse.session:type_name -> mosaic.auth.v1.Session
-	4,  // 3: mosaic.auth.v1.SignInResponse.tokens:type_name -> mosaic.auth.v1.TokenPair
-	12, // 4: mosaic.auth.v1.TokenPair.access_expires_at:type_name -> google.protobuf.Timestamp
-	12, // 5: mosaic.auth.v1.TokenPair.refresh_expires_at:type_name -> google.protobuf.Timestamp
-	9,  // 6: mosaic.auth.v1.RefreshResponse.session:type_name -> mosaic.auth.v1.Session
-	4,  // 7: mosaic.auth.v1.RefreshResponse.tokens:type_name -> mosaic.auth.v1.TokenPair
-	12, // 8: mosaic.auth.v1.Session.issued_at:type_name -> google.protobuf.Timestamp
-	12, // 9: mosaic.auth.v1.Session.last_seen_at:type_name -> google.protobuf.Timestamp
-	12, // 10: mosaic.auth.v1.Session.expires_at:type_name -> google.protobuf.Timestamp
-	0,  // 11: mosaic.auth.v1.AuthService.Bootstrap:input_type -> mosaic.auth.v1.BootstrapRequest
-	2,  // 12: mosaic.auth.v1.AuthService.SignIn:input_type -> mosaic.auth.v1.SignInRequest
-	7,  // 13: mosaic.auth.v1.AuthService.SignOut:input_type -> mosaic.auth.v1.SignOutRequest
-	5,  // 14: mosaic.auth.v1.AuthService.Refresh:input_type -> mosaic.auth.v1.RefreshRequest
-	1,  // 15: mosaic.auth.v1.AuthService.Bootstrap:output_type -> mosaic.auth.v1.BootstrapResponse
-	3,  // 16: mosaic.auth.v1.AuthService.SignIn:output_type -> mosaic.auth.v1.SignInResponse
-	8,  // 17: mosaic.auth.v1.AuthService.SignOut:output_type -> mosaic.auth.v1.SignOutResponse
-	6,  // 18: mosaic.auth.v1.AuthService.Refresh:output_type -> mosaic.auth.v1.RefreshResponse
-	15, // [15:19] is the sub-list for method output_type
-	11, // [11:15] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	14, // 0: mosaic.auth.v1.BootstrapRequest.vocabulary:type_name -> mosaic.session.v1.VocabularyProfile
+	15, // 1: mosaic.auth.v1.BootstrapResponse.ui_node:type_name -> mosaic.sdui.v1.UINode
+	14, // 2: mosaic.auth.v1.InvokeRequest.vocabulary:type_name -> mosaic.session.v1.VocabularyProfile
+	4,  // 3: mosaic.auth.v1.InvokeResponse.signed:type_name -> mosaic.auth.v1.Signed
+	5,  // 4: mosaic.auth.v1.InvokeResponse.doorway:type_name -> mosaic.auth.v1.Doorway
+	16, // 5: mosaic.auth.v1.InvokeResponse.field_errors:type_name -> mosaic.session.v1.FieldErrors
+	13, // 6: mosaic.auth.v1.Signed.session:type_name -> mosaic.auth.v1.Session
+	8,  // 7: mosaic.auth.v1.Signed.tokens:type_name -> mosaic.auth.v1.TokenPair
+	15, // 8: mosaic.auth.v1.Doorway.ui_node:type_name -> mosaic.sdui.v1.UINode
+	13, // 9: mosaic.auth.v1.SignInResponse.session:type_name -> mosaic.auth.v1.Session
+	8,  // 10: mosaic.auth.v1.SignInResponse.tokens:type_name -> mosaic.auth.v1.TokenPair
+	17, // 11: mosaic.auth.v1.TokenPair.access_expires_at:type_name -> google.protobuf.Timestamp
+	17, // 12: mosaic.auth.v1.TokenPair.refresh_expires_at:type_name -> google.protobuf.Timestamp
+	13, // 13: mosaic.auth.v1.RefreshResponse.session:type_name -> mosaic.auth.v1.Session
+	8,  // 14: mosaic.auth.v1.RefreshResponse.tokens:type_name -> mosaic.auth.v1.TokenPair
+	17, // 15: mosaic.auth.v1.Session.issued_at:type_name -> google.protobuf.Timestamp
+	17, // 16: mosaic.auth.v1.Session.last_seen_at:type_name -> google.protobuf.Timestamp
+	17, // 17: mosaic.auth.v1.Session.expires_at:type_name -> google.protobuf.Timestamp
+	0,  // 18: mosaic.auth.v1.AuthService.Bootstrap:input_type -> mosaic.auth.v1.BootstrapRequest
+	2,  // 19: mosaic.auth.v1.AuthService.Invoke:input_type -> mosaic.auth.v1.InvokeRequest
+	6,  // 20: mosaic.auth.v1.AuthService.SignIn:input_type -> mosaic.auth.v1.SignInRequest
+	11, // 21: mosaic.auth.v1.AuthService.SignOut:input_type -> mosaic.auth.v1.SignOutRequest
+	9,  // 22: mosaic.auth.v1.AuthService.Refresh:input_type -> mosaic.auth.v1.RefreshRequest
+	1,  // 23: mosaic.auth.v1.AuthService.Bootstrap:output_type -> mosaic.auth.v1.BootstrapResponse
+	3,  // 24: mosaic.auth.v1.AuthService.Invoke:output_type -> mosaic.auth.v1.InvokeResponse
+	7,  // 25: mosaic.auth.v1.AuthService.SignIn:output_type -> mosaic.auth.v1.SignInResponse
+	12, // 26: mosaic.auth.v1.AuthService.SignOut:output_type -> mosaic.auth.v1.SignOutResponse
+	10, // 27: mosaic.auth.v1.AuthService.Refresh:output_type -> mosaic.auth.v1.RefreshResponse
+	23, // [23:28] is the sub-list for method output_type
+	18, // [18:23] is the sub-list for method input_type
+	18, // [18:18] is the sub-list for extension type_name
+	18, // [18:18] is the sub-list for extension extendee
+	0,  // [0:18] is the sub-list for field type_name
 }
 
 func init() { file_mosaic_auth_v1_auth_proto_init() }
@@ -820,13 +1185,18 @@ func file_mosaic_auth_v1_auth_proto_init() {
 	if File_mosaic_auth_v1_auth_proto != nil {
 		return
 	}
+	file_mosaic_auth_v1_auth_proto_msgTypes[3].OneofWrappers = []any{
+		(*InvokeResponse_Signed)(nil),
+		(*InvokeResponse_Doorway)(nil),
+		(*InvokeResponse_FieldErrors)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_mosaic_auth_v1_auth_proto_rawDesc), len(file_mosaic_auth_v1_auth_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   14,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

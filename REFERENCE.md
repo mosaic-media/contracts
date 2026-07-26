@@ -2,7 +2,7 @@
 
 # The Mosaic SDUI vocabulary
 
-**Version 3.0.0.** This is the whole of what a client must implement and what a
+**Version 3.1.0.** This is the whole of what a client must implement and what a
 producer may emit. It is generated from `ui.spec.json`, so it cannot disagree
 with the bindings, the conformance fixture or the corpus — all four come from
 that one file.
@@ -39,13 +39,14 @@ a release on every platform at once.
 
 Box is the layout container every composition is built from.
 
-*Native because:* The irreducible layout leaf. A definition is a tree of primitives, so the base case cannot itself be a definition. It also resolves style.responsive against the live viewport, which is a render-time branch no static tree can carry.
+*Native because:* The irreducible layout leaf. A definition is a tree of primitives, so the base case cannot itself be a definition. It also resolves style.responsive against the live viewport, and visibleWhen against the live State scope — two render-time branches no static tree can carry.
 
 *Tier:* presentational · *Renders children:* true
 
 | Prop | Type | Meaning |
 |---|---|---|
 | `style` | `boxStyle` | Layout and surface style, including the responsive override. |
+| `visibleWhen` | `predicate` | Structured predicate over the enclosing State scope's values; absent means always visible. On a field it hides one control, and on a Box it hides a whole branch — which is what makes a multi-step form expressible at all. Without it a wizard is either one long page or a round trip per step, and a round trip per step means every step's answers travel back down in the next tree. |
 
 ### `Text`
 

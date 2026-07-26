@@ -18,7 +18,7 @@ export type { Action, UINode } from "./contract.gen.js";
 
 /** Box is the layout container every composition is built from.
  *
- *  Native: The irreducible layout leaf. A definition is a tree of primitives, so the base case cannot itself be a definition. It also resolves style.responsive against the live viewport, which is a render-time branch no static tree can carry. */
+ *  Native: The irreducible layout leaf. A definition is a tree of primitives, so the base case cannot itself be a definition. It also resolves style.responsive against the live viewport, and visibleWhen against the live State scope — two render-time branches no static tree can carry. */
 export function Box(...els: Elish[]): Element {
   return compose("Box", undefined, els);
 }
@@ -767,6 +767,21 @@ export function InputType(v: string): El {
   return Prop("inputType", v);
 }
 
+/** Validators are the rules a client enforces before it submits — the six the contract declares, no more. A server rejection lands in the same slot (ADR 0089), so this is the fast half of one statement rather than the whole of it. It is sugar because a field's rules were being set with ui.Prop("validators", …) at every call site in every module, which is precisely the untyped setting that let ui.Subtitle onto a Stack. */
+export function Validators(v: Props): El {
+  return Prop("validators", v);
+}
+
+/** VisibleWhen hides a node until a predicate over the enclosing State scope holds. Absent means visible; unreadable means hidden, because a control shown because its rule could not be read is the fail-open case. */
+export function VisibleWhen(v: Props): El {
+  return Prop("visibleWhen", v);
+}
+
+/** FieldLabel names a field's control. Named FieldLabel rather than Label because every other component that carries a label takes it positionally — ui.Button(label, …) — and a second, optional way to set the same key on those would be two spellings of one prop. */
+export function FieldLabel(v: string): El {
+  return Prop("label", v);
+}
+
 /** Chrome selects which frame the app shell draws: "media" — the floating pills over a full-bleed hero — or "admin", the solid bar the settings side of the app wears. Named rather than a boolean because the two are different rooms in the same building, and a third (a player, a setup wizard) is a case rather than a second flag. */
 export function Chrome(v: string): El {
   return Prop("chrome", v);
@@ -1208,6 +1223,21 @@ export function BindHelp(path: string): El {
 /** BindInputType sets "inputType" from the named path instead of from a value. */
 export function BindInputType(path: string): El {
   return Prop("inputType", bind(path));
+}
+
+/** BindValidators sets "validators" from the named path instead of from a value. */
+export function BindValidators(path: string): El {
+  return Prop("validators", bind(path));
+}
+
+/** BindVisibleWhen sets "visibleWhen" from the named path instead of from a value. */
+export function BindVisibleWhen(path: string): El {
+  return Prop("visibleWhen", bind(path));
+}
+
+/** BindFieldLabel sets "label" from the named path instead of from a value. */
+export function BindFieldLabel(path: string): El {
+  return Prop("label", bind(path));
 }
 
 /** BindChrome sets "chrome" from the named path instead of from a value. */

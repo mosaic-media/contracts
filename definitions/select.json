@@ -27,11 +27,17 @@
       {
         "type": "SelectInput",
         "props": {
+          "name": {
+            "$bind": "name"
+          },
           "options": {
             "$bind": "options"
           },
           "value": {
             "$bind": "value"
+          },
+          "validators": {
+            "$bind": "validators"
           }
         }
       }

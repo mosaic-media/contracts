@@ -54,6 +54,8 @@ const (
 const (
 	// AuthServiceBootstrapProcedure is the fully-qualified name of the AuthService's Bootstrap RPC.
 	AuthServiceBootstrapProcedure = "/mosaic.auth.v1.AuthService/Bootstrap"
+	// AuthServiceInvokeProcedure is the fully-qualified name of the AuthService's Invoke RPC.
+	AuthServiceInvokeProcedure = "/mosaic.auth.v1.AuthService/Invoke"
 	// AuthServiceSignInProcedure is the fully-qualified name of the AuthService's SignIn RPC.
 	AuthServiceSignInProcedure = "/mosaic.auth.v1.AuthService/SignIn"
 	// AuthServiceSignOutProcedure is the fully-qualified name of the AuthService's SignOut RPC.
@@ -74,9 +76,30 @@ type AuthServiceClient interface {
 	// the only surface reachable before authentication, and it does not vary on
 	// any identity, so nothing about it can be used to learn who exists.
 	Bootstrap(context.Context, *connect.Request[v1.BootstrapRequest]) (*connect.Response[v1.BootstrapResponse], error)
+	// Invoke runs an action the doorway emitted, before there is a session to run
+	// it on. It is the pre-session counterpart of
+	// mosaic.session.v1.SessionService.Invoke and exists for the same reason:
+	// the surface a client can reach is the enumeration the server dispatches,
+	// not something the client knows the meaning of.
+	//
+	// A doorway is a screen like any other, so its controls emit actions like any
+	// other. What it does not have is the two-lane transport those actions
+	// normally answer on — there is no session, so there is no push lane — which
+	// is why the outcome rides the unary response instead: a minted session, a
+	// replacement doorway, or the fields that were refused.
+	//
+	// A client dispatches every doorway action here without interpreting any of
+	// them. That is the property worth keeping: a client that special-cased
+	// "signIn" would be a client that had to be released before the door could
+	// change.
+	Invoke(context.Context, *connect.Request[v1.InvokeRequest]) (*connect.Response[v1.InvokeResponse], error)
 	// SignIn authenticates a local user with a password and issues a session.
 	// The returned session id is the opaque ref (ADR 0017) the client presents on
 	// every SessionService call.
+	//
+	// It stays a method of its own rather than becoming a doorway action: an
+	// automated client with credentials and no interest in a screen should not
+	// have to render a door to use them.
 	SignIn(context.Context, *connect.Request[v1.SignInRequest]) (*connect.Response[v1.SignInResponse], error)
 	// SignOut revokes a session server-side. A client revoking its own session
 	// passes the same value for both fields; revoking another device's session is
@@ -106,6 +129,12 @@ func NewAuthServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(authServiceMethods.ByName("Bootstrap")),
 			connect.WithClientOptions(opts...),
 		),
+		invoke: connect.NewClient[v1.InvokeRequest, v1.InvokeResponse](
+			httpClient,
+			baseURL+AuthServiceInvokeProcedure,
+			connect.WithSchema(authServiceMethods.ByName("Invoke")),
+			connect.WithClientOptions(opts...),
+		),
 		signIn: connect.NewClient[v1.SignInRequest, v1.SignInResponse](
 			httpClient,
 			baseURL+AuthServiceSignInProcedure,
@@ -130,6 +159,7 @@ func NewAuthServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 // authServiceClient implements AuthServiceClient.
 type authServiceClient struct {
 	bootstrap *connect.Client[v1.BootstrapRequest, v1.BootstrapResponse]
+	invoke    *connect.Client[v1.InvokeRequest, v1.InvokeResponse]
 	signIn    *connect.Client[v1.SignInRequest, v1.SignInResponse]
 	signOut   *connect.Client[v1.SignOutRequest, v1.SignOutResponse]
 	refresh   *connect.Client[v1.RefreshRequest, v1.RefreshResponse]
@@ -138,6 +168,11 @@ type authServiceClient struct {
 // Bootstrap calls mosaic.auth.v1.AuthService.Bootstrap.
 func (c *authServiceClient) Bootstrap(ctx context.Context, req *connect.Request[v1.BootstrapRequest]) (*connect.Response[v1.BootstrapResponse], error) {
 	return c.bootstrap.CallUnary(ctx, req)
+}
+
+// Invoke calls mosaic.auth.v1.AuthService.Invoke.
+func (c *authServiceClient) Invoke(ctx context.Context, req *connect.Request[v1.InvokeRequest]) (*connect.Response[v1.InvokeResponse], error) {
+	return c.invoke.CallUnary(ctx, req)
 }
 
 // SignIn calls mosaic.auth.v1.AuthService.SignIn.
@@ -167,9 +202,30 @@ type AuthServiceHandler interface {
 	// the only surface reachable before authentication, and it does not vary on
 	// any identity, so nothing about it can be used to learn who exists.
 	Bootstrap(context.Context, *connect.Request[v1.BootstrapRequest]) (*connect.Response[v1.BootstrapResponse], error)
+	// Invoke runs an action the doorway emitted, before there is a session to run
+	// it on. It is the pre-session counterpart of
+	// mosaic.session.v1.SessionService.Invoke and exists for the same reason:
+	// the surface a client can reach is the enumeration the server dispatches,
+	// not something the client knows the meaning of.
+	//
+	// A doorway is a screen like any other, so its controls emit actions like any
+	// other. What it does not have is the two-lane transport those actions
+	// normally answer on — there is no session, so there is no push lane — which
+	// is why the outcome rides the unary response instead: a minted session, a
+	// replacement doorway, or the fields that were refused.
+	//
+	// A client dispatches every doorway action here without interpreting any of
+	// them. That is the property worth keeping: a client that special-cased
+	// "signIn" would be a client that had to be released before the door could
+	// change.
+	Invoke(context.Context, *connect.Request[v1.InvokeRequest]) (*connect.Response[v1.InvokeResponse], error)
 	// SignIn authenticates a local user with a password and issues a session.
 	// The returned session id is the opaque ref (ADR 0017) the client presents on
 	// every SessionService call.
+	//
+	// It stays a method of its own rather than becoming a doorway action: an
+	// automated client with credentials and no interest in a screen should not
+	// have to render a door to use them.
 	SignIn(context.Context, *connect.Request[v1.SignInRequest]) (*connect.Response[v1.SignInResponse], error)
 	// SignOut revokes a session server-side. A client revoking its own session
 	// passes the same value for both fields; revoking another device's session is
@@ -195,6 +251,12 @@ func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(authServiceMethods.ByName("Bootstrap")),
 		connect.WithHandlerOptions(opts...),
 	)
+	authServiceInvokeHandler := connect.NewUnaryHandler(
+		AuthServiceInvokeProcedure,
+		svc.Invoke,
+		connect.WithSchema(authServiceMethods.ByName("Invoke")),
+		connect.WithHandlerOptions(opts...),
+	)
 	authServiceSignInHandler := connect.NewUnaryHandler(
 		AuthServiceSignInProcedure,
 		svc.SignIn,
@@ -217,6 +279,8 @@ func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption
 		switch r.URL.Path {
 		case AuthServiceBootstrapProcedure:
 			authServiceBootstrapHandler.ServeHTTP(w, r)
+		case AuthServiceInvokeProcedure:
+			authServiceInvokeHandler.ServeHTTP(w, r)
 		case AuthServiceSignInProcedure:
 			authServiceSignInHandler.ServeHTTP(w, r)
 		case AuthServiceSignOutProcedure:
@@ -234,6 +298,10 @@ type UnimplementedAuthServiceHandler struct{}
 
 func (UnimplementedAuthServiceHandler) Bootstrap(context.Context, *connect.Request[v1.BootstrapRequest]) (*connect.Response[v1.BootstrapResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("mosaic.auth.v1.AuthService.Bootstrap is not implemented"))
+}
+
+func (UnimplementedAuthServiceHandler) Invoke(context.Context, *connect.Request[v1.InvokeRequest]) (*connect.Response[v1.InvokeResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("mosaic.auth.v1.AuthService.Invoke is not implemented"))
 }
 
 func (UnimplementedAuthServiceHandler) SignIn(context.Context, *connect.Request[v1.SignInRequest]) (*connect.Response[v1.SignInResponse], error) {

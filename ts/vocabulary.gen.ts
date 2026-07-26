@@ -20,7 +20,7 @@ export interface PrimitiveSpec {
 }
 
 /** The vocabulary version a client declares it implements. */
-export const vocabularyVersion = "3.0.0";
+export const vocabularyVersion = "3.1.0";
 
 /** Divides a module's id from its own type name; core types never contain it. */
 export const typeSeparator = ":";
@@ -34,10 +34,11 @@ export const primitives: PrimitiveSpec[] = [
     type: "Box",
     tier: "presentational",
     doc: "Box is the layout container every composition is built from.",
-    native: "The irreducible layout leaf. A definition is a tree of primitives, so the base case cannot itself be a definition. It also resolves style.responsive against the live viewport, which is a render-time branch no static tree can carry.",
+    native: "The irreducible layout leaf. A definition is a tree of primitives, so the base case cannot itself be a definition. It also resolves style.responsive against the live viewport, and visibleWhen against the live State scope — two render-time branches no static tree can carry.",
     children: true,
     props: [
       { key: "style", type: "boxStyle", doc: "Layout and surface style, including the responsive override." },
+      { key: "visibleWhen", type: "predicate", doc: "Structured predicate over the enclosing State scope's values; absent means always visible. On a field it hides one control, and on a Box it hides a whole branch — which is what makes a multi-step form expressible at all. Without it a wizard is either one long page or a round trip per step, and a round trip per step means every step's answers travel back down in the next tree." },
     ],
   },
   {
