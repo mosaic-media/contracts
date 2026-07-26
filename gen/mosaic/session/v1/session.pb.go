@@ -147,10 +147,16 @@ func (*Ack) Descriptor() ([]byte, []int) {
 
 // AttachRequest binds a session and optionally declares the route to show.
 type AttachRequest struct {
-	state   protoimpl.MessageState `protogen:"open.v1"`
-	Session string                 `protobuf:"bytes,1,opt,name=session,proto3" json:"session,omitempty"` // opaque session ref (ADR 0017); auth is on this call.
-	Screen  string                 `protobuf:"bytes,2,opt,name=screen,proto3" json:"screen,omitempty"`   // optional route to (re-)assert; empty leaves it unchanged.
-	Params  []byte                 `protobuf:"bytes,3,opt,name=params,proto3" json:"params,omitempty"`   // optional screen params as a JSON object (see params note).
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The caller's opaque credential (ADR 0017), which is its **access token**
+	// since ADR 0102 made the session a bearer pair. The field keeps its name
+	// because every client sends it in the same place and for the same reason;
+	// what changed is that the value is minutes-lived and rotates, so a client
+	// that caches it forever will start seeing UNAUTHENTICATED and must refresh
+	// rather than re-authenticate.
+	Session string `protobuf:"bytes,1,opt,name=session,proto3" json:"session,omitempty"`
+	Screen  string `protobuf:"bytes,2,opt,name=screen,proto3" json:"screen,omitempty"` // optional route to (re-)assert; empty leaves it unchanged.
+	Params  []byte `protobuf:"bytes,3,opt,name=params,proto3" json:"params,omitempty"` // optional screen params as a JSON object (see params note).
 	// What this client can actually play (ADR 0047). Optional: a client that
 	// declares nothing gets whatever the server assumes, which is what every
 	// client got before this field existed.

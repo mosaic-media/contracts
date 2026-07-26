@@ -52,14 +52,28 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
+	// AuthServiceBootstrapProcedure is the fully-qualified name of the AuthService's Bootstrap RPC.
+	AuthServiceBootstrapProcedure = "/mosaic.auth.v1.AuthService/Bootstrap"
 	// AuthServiceSignInProcedure is the fully-qualified name of the AuthService's SignIn RPC.
 	AuthServiceSignInProcedure = "/mosaic.auth.v1.AuthService/SignIn"
 	// AuthServiceSignOutProcedure is the fully-qualified name of the AuthService's SignOut RPC.
 	AuthServiceSignOutProcedure = "/mosaic.auth.v1.AuthService/SignOut"
+	// AuthServiceRefreshProcedure is the fully-qualified name of the AuthService's Refresh RPC.
+	AuthServiceRefreshProcedure = "/mosaic.auth.v1.AuthService/Refresh"
 )
 
 // AuthServiceClient is a client for the mosaic.auth.v1.AuthService service.
 type AuthServiceClient interface {
+	// Bootstrap is the first call every client makes, before it has anything
+	// (ADR 0101). It answers with the skin, the definitions the doorway needs and
+	// the doorway itself, in one response — because definitions and the token set
+	// are otherwise pushed on connect, which is to say after a session exists, and
+	// a client without one has no vocabulary at all rather than a thin one.
+	//
+	// It is unauthenticated by necessity and rate-limited by consequence: it is
+	// the only surface reachable before authentication, and it does not vary on
+	// any identity, so nothing about it can be used to learn who exists.
+	Bootstrap(context.Context, *connect.Request[v1.BootstrapRequest]) (*connect.Response[v1.BootstrapResponse], error)
 	// SignIn authenticates a local user with a password and issues a session.
 	// The returned session id is the opaque ref (ADR 0017) the client presents on
 	// every SessionService call.
@@ -68,6 +82,11 @@ type AuthServiceClient interface {
 	// passes the same value for both fields; revoking another device's session is
 	// an authorised act, which is why the caller is named separately.
 	SignOut(context.Context, *connect.Request[v1.SignOutRequest]) (*connect.Response[v1.SignOutResponse], error)
+	// Refresh exchanges a refresh token for a new pair (ADR 0102). The presented
+	// token is spent by the exchange: rotation is the load-bearing part, and a
+	// token presented twice revokes the whole chain rather than being refused on
+	// its own.
+	Refresh(context.Context, *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error)
 }
 
 // NewAuthServiceClient constructs a client for the mosaic.auth.v1.AuthService service. By default,
@@ -81,6 +100,12 @@ func NewAuthServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 	baseURL = strings.TrimRight(baseURL, "/")
 	authServiceMethods := v1.File_mosaic_auth_v1_auth_proto.Services().ByName("AuthService").Methods()
 	return &authServiceClient{
+		bootstrap: connect.NewClient[v1.BootstrapRequest, v1.BootstrapResponse](
+			httpClient,
+			baseURL+AuthServiceBootstrapProcedure,
+			connect.WithSchema(authServiceMethods.ByName("Bootstrap")),
+			connect.WithClientOptions(opts...),
+		),
 		signIn: connect.NewClient[v1.SignInRequest, v1.SignInResponse](
 			httpClient,
 			baseURL+AuthServiceSignInProcedure,
@@ -93,13 +118,26 @@ func NewAuthServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(authServiceMethods.ByName("SignOut")),
 			connect.WithClientOptions(opts...),
 		),
+		refresh: connect.NewClient[v1.RefreshRequest, v1.RefreshResponse](
+			httpClient,
+			baseURL+AuthServiceRefreshProcedure,
+			connect.WithSchema(authServiceMethods.ByName("Refresh")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // authServiceClient implements AuthServiceClient.
 type authServiceClient struct {
-	signIn  *connect.Client[v1.SignInRequest, v1.SignInResponse]
-	signOut *connect.Client[v1.SignOutRequest, v1.SignOutResponse]
+	bootstrap *connect.Client[v1.BootstrapRequest, v1.BootstrapResponse]
+	signIn    *connect.Client[v1.SignInRequest, v1.SignInResponse]
+	signOut   *connect.Client[v1.SignOutRequest, v1.SignOutResponse]
+	refresh   *connect.Client[v1.RefreshRequest, v1.RefreshResponse]
+}
+
+// Bootstrap calls mosaic.auth.v1.AuthService.Bootstrap.
+func (c *authServiceClient) Bootstrap(ctx context.Context, req *connect.Request[v1.BootstrapRequest]) (*connect.Response[v1.BootstrapResponse], error) {
+	return c.bootstrap.CallUnary(ctx, req)
 }
 
 // SignIn calls mosaic.auth.v1.AuthService.SignIn.
@@ -112,8 +150,23 @@ func (c *authServiceClient) SignOut(ctx context.Context, req *connect.Request[v1
 	return c.signOut.CallUnary(ctx, req)
 }
 
+// Refresh calls mosaic.auth.v1.AuthService.Refresh.
+func (c *authServiceClient) Refresh(ctx context.Context, req *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error) {
+	return c.refresh.CallUnary(ctx, req)
+}
+
 // AuthServiceHandler is an implementation of the mosaic.auth.v1.AuthService service.
 type AuthServiceHandler interface {
+	// Bootstrap is the first call every client makes, before it has anything
+	// (ADR 0101). It answers with the skin, the definitions the doorway needs and
+	// the doorway itself, in one response — because definitions and the token set
+	// are otherwise pushed on connect, which is to say after a session exists, and
+	// a client without one has no vocabulary at all rather than a thin one.
+	//
+	// It is unauthenticated by necessity and rate-limited by consequence: it is
+	// the only surface reachable before authentication, and it does not vary on
+	// any identity, so nothing about it can be used to learn who exists.
+	Bootstrap(context.Context, *connect.Request[v1.BootstrapRequest]) (*connect.Response[v1.BootstrapResponse], error)
 	// SignIn authenticates a local user with a password and issues a session.
 	// The returned session id is the opaque ref (ADR 0017) the client presents on
 	// every SessionService call.
@@ -122,6 +175,11 @@ type AuthServiceHandler interface {
 	// passes the same value for both fields; revoking another device's session is
 	// an authorised act, which is why the caller is named separately.
 	SignOut(context.Context, *connect.Request[v1.SignOutRequest]) (*connect.Response[v1.SignOutResponse], error)
+	// Refresh exchanges a refresh token for a new pair (ADR 0102). The presented
+	// token is spent by the exchange: rotation is the load-bearing part, and a
+	// token presented twice revokes the whole chain rather than being refused on
+	// its own.
+	Refresh(context.Context, *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error)
 }
 
 // NewAuthServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -131,6 +189,12 @@ type AuthServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	authServiceMethods := v1.File_mosaic_auth_v1_auth_proto.Services().ByName("AuthService").Methods()
+	authServiceBootstrapHandler := connect.NewUnaryHandler(
+		AuthServiceBootstrapProcedure,
+		svc.Bootstrap,
+		connect.WithSchema(authServiceMethods.ByName("Bootstrap")),
+		connect.WithHandlerOptions(opts...),
+	)
 	authServiceSignInHandler := connect.NewUnaryHandler(
 		AuthServiceSignInProcedure,
 		svc.SignIn,
@@ -143,12 +207,22 @@ func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(authServiceMethods.ByName("SignOut")),
 		connect.WithHandlerOptions(opts...),
 	)
+	authServiceRefreshHandler := connect.NewUnaryHandler(
+		AuthServiceRefreshProcedure,
+		svc.Refresh,
+		connect.WithSchema(authServiceMethods.ByName("Refresh")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/mosaic.auth.v1.AuthService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
+		case AuthServiceBootstrapProcedure:
+			authServiceBootstrapHandler.ServeHTTP(w, r)
 		case AuthServiceSignInProcedure:
 			authServiceSignInHandler.ServeHTTP(w, r)
 		case AuthServiceSignOutProcedure:
 			authServiceSignOutHandler.ServeHTTP(w, r)
+		case AuthServiceRefreshProcedure:
+			authServiceRefreshHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -158,10 +232,18 @@ func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption
 // UnimplementedAuthServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedAuthServiceHandler struct{}
 
+func (UnimplementedAuthServiceHandler) Bootstrap(context.Context, *connect.Request[v1.BootstrapRequest]) (*connect.Response[v1.BootstrapResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("mosaic.auth.v1.AuthService.Bootstrap is not implemented"))
+}
+
 func (UnimplementedAuthServiceHandler) SignIn(context.Context, *connect.Request[v1.SignInRequest]) (*connect.Response[v1.SignInResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("mosaic.auth.v1.AuthService.SignIn is not implemented"))
 }
 
 func (UnimplementedAuthServiceHandler) SignOut(context.Context, *connect.Request[v1.SignOutRequest]) (*connect.Response[v1.SignOutResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("mosaic.auth.v1.AuthService.SignOut is not implemented"))
+}
+
+func (UnimplementedAuthServiceHandler) Refresh(context.Context, *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("mosaic.auth.v1.AuthService.Refresh is not implemented"))
 }

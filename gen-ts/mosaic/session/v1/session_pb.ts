@@ -65,7 +65,12 @@ export const AckSchema: GenMessage<Ack> = /*@__PURE__*/
  */
 export type AttachRequest = Message<"mosaic.session.v1.AttachRequest"> & {
   /**
-   * opaque session ref (ADR 0017); auth is on this call.
+   * The caller's opaque credential (ADR 0017), which is its **access token**
+   * since ADR 0102 made the session a bearer pair. The field keeps its name
+   * because every client sends it in the same place and for the same reason;
+   * what changed is that the value is minutes-lived and rotates, so a client
+   * that caches it forever will start seeing UNAUTHENTICATED and must refresh
+   * rather than re-authenticate.
    *
    * @generated from field: string session = 1;
    */

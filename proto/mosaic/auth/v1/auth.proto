@@ -21,12 +21,25 @@ syntax = "proto3";
 package mosaic.auth.v1;
 
 import "google/protobuf/timestamp.proto";
+import "mosaic/sdui/v1/sdui.proto";
+import "mosaic/session/v1/session.proto";
 
 option go_package = "github.com/mosaic-media/contracts/gen/mosaic/auth/v1;authv1";
 
-// AuthService mints and revokes sessions. Both calls are unary: there is
-// nothing to push before a client has a session to push to.
+// AuthService mints and revokes sessions, and answers the one client that has
+// none. Every call is unary: there is nothing to push before a client has a
+// session to push to.
 service AuthService {
+  // Bootstrap is the first call every client makes, before it has anything
+  // (ADR 0101). It answers with the skin, the definitions the doorway needs and
+  // the doorway itself, in one response — because definitions and the token set
+  // are otherwise pushed on connect, which is to say after a session exists, and
+  // a client without one has no vocabulary at all rather than a thin one.
+  //
+  // It is unauthenticated by necessity and rate-limited by consequence: it is
+  // the only surface reachable before authentication, and it does not vary on
+  // any identity, so nothing about it can be used to learn who exists.
+  rpc Bootstrap(BootstrapRequest) returns (BootstrapResponse);
   // SignIn authenticates a local user with a password and issues a session.
   // The returned session id is the opaque ref (ADR 0017) the client presents on
   // every SessionService call.
@@ -35,6 +48,50 @@ service AuthService {
   // passes the same value for both fields; revoking another device's session is
   // an authorised act, which is why the caller is named separately.
   rpc SignOut(SignOutRequest) returns (SignOutResponse);
+  // Refresh exchanges a refresh token for a new pair (ADR 0102). The presented
+  // token is spent by the exchange: rotation is the load-bearing part, and a
+  // token presented twice revokes the whole chain rather than being refused on
+  // its own.
+  rpc Refresh(RefreshRequest) returns (RefreshResponse);
+}
+
+// BootstrapRequest asks for the doorway.
+//
+// It carries no identity, by design. The response is the same whether a
+// username exists or not, so there is nothing here to vary it on.
+message BootstrapRequest {
+  // The same vocabulary declaration Attach carries, so ADR 0084's negotiation
+  // applies to the doorway exactly as it applies to every screen after it. It
+  // is literally the same message rather than a copy of its shape: two
+  // declarations that must not diverge are one declaration.
+  //
+  // No ClientProfile: nothing at a doorway plays.
+  mosaic.session.v1.VocabularyProfile vocabulary = 1;
+}
+
+// BootstrapResponse is everything a client needs to draw one screen, and
+// nothing else.
+//
+// The three fields arrive together deliberately. Splitting them would make "the
+// vocabulary arrives before the render" two mechanisms that can each succeed
+// while the other does not — which is precisely the failure this replaces: the
+// tree was right, the vocabulary was absent, and nothing anywhere reported a
+// mismatch.
+message BootstrapResponse {
+  // The design token set (ADR 0040), as the same DTCG document the session
+  // pushes. Without it the doorway would be the one screen drawn unstyled.
+  bytes tokens = 1;
+  // The component definitions the tree needs, **transitively closed over it and
+  // no larger**. This is the one payload an unauthenticated party can
+  // enumerate, so it describes a doorway and nothing else; the subset is the
+  // security property, not an optimisation, and it must not be allowed to grow
+  // into the whole library out of convenience.
+  bytes definitions = 2;
+  // The doorway. Which one is the server's decision, unchanged from ADR 0098:
+  // the setup tree while the server is unclaimed, the sign-in tree once it is
+  // not. A doorway has two states and the client is not told which — it is
+  // shown one.
+  mosaic.sdui.v1.UINode ui_node = 3;
 }
 
 // SignInRequest is a local username/password authentication from a named
@@ -46,12 +103,67 @@ message SignInRequest {
   string device_id = 3;
 }
 
-// SignInResponse carries the issued session.
+// SignInResponse carries the issued session and the credential pair that spends
+// it.
 message SignInResponse {
   Session session = 1;
+  // The bearer pair (ADR 0102). A client stores both and presents the access
+  // token on every SessionService call.
+  TokenPair tokens = 2;
+}
+
+// TokenPair is the session credential (ADR 0102): a short-lived access token
+// presented on every call, and a long-lived refresh token exchanged for a new
+// pair.
+//
+// Both are **opaque** — not JWTs, and not for fashion. A claims-carrying token
+// makes a tightened limit or a revoked grant take effect only when the token
+// expires; validation here is a store read, and that cost is accepted
+// deliberately. Neither rides a cookie: three of the four clients this
+// transport was chosen against have no use for one, and the credential must not
+// depend on a same-origin front door that does not exist.
+//
+// A client stores both in whatever secure storage its platform has —
+// localStorage on the web, the keychain or keystore on native. On the web that
+// is reachable by any script that gets into the page, which is stated plainly
+// rather than smoothed over: what limits the damage is the short access
+// lifetime, rotation with reuse detection, and per-device revocation.
+message TokenPair {
+  string access_token = 1;
+  google.protobuf.Timestamp access_expires_at = 2;
+  // The refresh token, bound to the device the session was issued to and
+  // **rotated on every use**. The value returned here is spent the moment it is
+  // exchanged; a client that keeps the old one and presents it again revokes
+  // the whole chain, which is what makes theft detectable rather than silent.
+  string refresh_token = 3;
+  google.protobuf.Timestamp refresh_expires_at = 4;
+}
+
+// RefreshRequest exchanges a refresh token for a new pair.
+//
+// The device is named as well as the token because the token is bound to it:
+// a refresh presented from a different device is a stolen credential being
+// used, not a client that moved.
+message RefreshRequest {
+  string refresh_token = 1;
+  string device_id = 2;
+}
+
+// RefreshResponse carries the new pair and the session it belongs to.
+message RefreshResponse {
+  Session session = 1;
+  TokenPair tokens = 2;
 }
 
 // SignOutRequest revokes target_session on behalf of caller_session.
+//
+// caller_session is the caller's credential — its access token (ADR 0102), the
+// same value it presents on every SessionService call. target_session is the
+// **session id** of the device being ended, which is what a device list names
+// and is not itself a credential.
+//
+// Signing out now means revoking the refresh chain, not merely dropping a value
+// the client was holding.
 message SignOutRequest {
   string caller_session = 1;
   string target_session = 2;
@@ -79,6 +191,12 @@ message Session {
   string device_id = 3;
   google.protobuf.Timestamp issued_at = 4;
   google.protobuf.Timestamp last_seen_at = 5;
+  // The **absolute** expiry (ADR 0102): the moment past which no refresh can
+  // extend this session, however recently it was used. It is not the access
+  // token's lifetime, which is minutes and is carried on TokenPair, and it is
+  // not the idle ceiling, which the server applies against last_seen_at and
+  // does not publish — a client that knew it would be tempted to poll to stay
+  // inside it.
   google.protobuf.Timestamp expires_at = 6;
   string auth_strength = 7;
 }

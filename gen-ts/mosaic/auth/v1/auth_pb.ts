@@ -25,13 +25,96 @@ import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegen
 import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
+import type { UINode } from "../../sdui/v1/sdui_pb";
+import { file_mosaic_sdui_v1_sdui } from "../../sdui/v1/sdui_pb";
+import type { VocabularyProfile } from "../../session/v1/session_pb";
+import { file_mosaic_session_v1_session } from "../../session/v1/session_pb";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file mosaic/auth/v1/auth.proto.
  */
 export const file_mosaic_auth_v1_auth: GenFile = /*@__PURE__*/
-  fileDesc("Chltb3NhaWMvYXV0aC92MS9hdXRoLnByb3RvEg5tb3NhaWMuYXV0aC52MSJGCg1TaWduSW5SZXF1ZXN0EhAKCHVzZXJuYW1lGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJEhEKCWRldmljZV9pZBgDIAEoCSI6Cg5TaWduSW5SZXNwb25zZRIoCgdzZXNzaW9uGAEgASgLMhcubW9zYWljLmF1dGgudjEuU2Vzc2lvbiJACg5TaWduT3V0UmVxdWVzdBIWCg5jYWxsZXJfc2Vzc2lvbhgBIAEoCRIWCg50YXJnZXRfc2Vzc2lvbhgCIAEoCSIiCg9TaWduT3V0UmVzcG9uc2USDwoHc2Vzc2lvbhgBIAEoCSLhAQoHU2Vzc2lvbhIKCgJpZBgBIAEoCRIPCgd1c2VyX2lkGAIgASgJEhEKCWRldmljZV9pZBgDIAEoCRItCglpc3N1ZWRfYXQYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEjAKDGxhc3Rfc2Vlbl9hdBgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKZXhwaXJlc19hdBgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASFQoNYXV0aF9zdHJlbmd0aBgHIAEoCTKiAQoLQXV0aFNlcnZpY2USRwoGU2lnbkluEh0ubW9zYWljLmF1dGgudjEuU2lnbkluUmVxdWVzdBoeLm1vc2FpYy5hdXRoLnYxLlNpZ25JblJlc3BvbnNlEkoKB1NpZ25PdXQSHi5tb3NhaWMuYXV0aC52MS5TaWduT3V0UmVxdWVzdBofLm1vc2FpYy5hdXRoLnYxLlNpZ25PdXRSZXNwb25zZUI9WjtnaXRodWIuY29tL21vc2FpYy1tZWRpYS9jb250cmFjdHMvZ2VuL21vc2FpYy9hdXRoL3YxO2F1dGh2MWIGcHJvdG8z", [file_google_protobuf_timestamp]);
+  fileDesc("Chltb3NhaWMvYXV0aC92MS9hdXRoLnByb3RvEg5tb3NhaWMuYXV0aC52MSJMChBCb290c3RyYXBSZXF1ZXN0EjgKCnZvY2FidWxhcnkYASABKAsyJC5tb3NhaWMuc2Vzc2lvbi52MS5Wb2NhYnVsYXJ5UHJvZmlsZSJhChFCb290c3RyYXBSZXNwb25zZRIOCgZ0b2tlbnMYASABKAwSEwoLZGVmaW5pdGlvbnMYAiABKAwSJwoHdWlfbm9kZRgDIAEoCzIWLm1vc2FpYy5zZHVpLnYxLlVJTm9kZSJGCg1TaWduSW5SZXF1ZXN0EhAKCHVzZXJuYW1lGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJEhEKCWRldmljZV9pZBgDIAEoCSJlCg5TaWduSW5SZXNwb25zZRIoCgdzZXNzaW9uGAEgASgLMhcubW9zYWljLmF1dGgudjEuU2Vzc2lvbhIpCgZ0b2tlbnMYAiABKAsyGS5tb3NhaWMuYXV0aC52MS5Ub2tlblBhaXIipwEKCVRva2VuUGFpchIUCgxhY2Nlc3NfdG9rZW4YASABKAkSNQoRYWNjZXNzX2V4cGlyZXNfYXQYAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhUKDXJlZnJlc2hfdG9rZW4YAyABKAkSNgoScmVmcmVzaF9leHBpcmVzX2F0GAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCI6Cg5SZWZyZXNoUmVxdWVzdBIVCg1yZWZyZXNoX3Rva2VuGAEgASgJEhEKCWRldmljZV9pZBgCIAEoCSJmCg9SZWZyZXNoUmVzcG9uc2USKAoHc2Vzc2lvbhgBIAEoCzIXLm1vc2FpYy5hdXRoLnYxLlNlc3Npb24SKQoGdG9rZW5zGAIgASgLMhkubW9zYWljLmF1dGgudjEuVG9rZW5QYWlyIkAKDlNpZ25PdXRSZXF1ZXN0EhYKDmNhbGxlcl9zZXNzaW9uGAEgASgJEhYKDnRhcmdldF9zZXNzaW9uGAIgASgJIiIKD1NpZ25PdXRSZXNwb25zZRIPCgdzZXNzaW9uGAEgASgJIuEBCgdTZXNzaW9uEgoKAmlkGAEgASgJEg8KB3VzZXJfaWQYAiABKAkSEQoJZGV2aWNlX2lkGAMgASgJEi0KCWlzc3VlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASMAoMbGFzdF9zZWVuX2F0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgpleHBpcmVzX2F0GAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIVCg1hdXRoX3N0cmVuZ3RoGAcgASgJMsACCgtBdXRoU2VydmljZRJQCglCb290c3RyYXASIC5tb3NhaWMuYXV0aC52MS5Cb290c3RyYXBSZXF1ZXN0GiEubW9zYWljLmF1dGgudjEuQm9vdHN0cmFwUmVzcG9uc2USRwoGU2lnbkluEh0ubW9zYWljLmF1dGgudjEuU2lnbkluUmVxdWVzdBoeLm1vc2FpYy5hdXRoLnYxLlNpZ25JblJlc3BvbnNlEkoKB1NpZ25PdXQSHi5tb3NhaWMuYXV0aC52MS5TaWduT3V0UmVxdWVzdBofLm1vc2FpYy5hdXRoLnYxLlNpZ25PdXRSZXNwb25zZRJKCgdSZWZyZXNoEh4ubW9zYWljLmF1dGgudjEuUmVmcmVzaFJlcXVlc3QaHy5tb3NhaWMuYXV0aC52MS5SZWZyZXNoUmVzcG9uc2VCPVo7Z2l0aHViLmNvbS9tb3NhaWMtbWVkaWEvY29udHJhY3RzL2dlbi9tb3NhaWMvYXV0aC92MTthdXRodjFiBnByb3RvMw", [file_google_protobuf_timestamp, file_mosaic_sdui_v1_sdui, file_mosaic_session_v1_session]);
+
+/**
+ * BootstrapRequest asks for the doorway.
+ *
+ * It carries no identity, by design. The response is the same whether a
+ * username exists or not, so there is nothing here to vary it on.
+ *
+ * @generated from message mosaic.auth.v1.BootstrapRequest
+ */
+export type BootstrapRequest = Message<"mosaic.auth.v1.BootstrapRequest"> & {
+  /**
+   * The same vocabulary declaration Attach carries, so ADR 0084's negotiation
+   * applies to the doorway exactly as it applies to every screen after it. It
+   * is literally the same message rather than a copy of its shape: two
+   * declarations that must not diverge are one declaration.
+   *
+   * No ClientProfile: nothing at a doorway plays.
+   *
+   * @generated from field: mosaic.session.v1.VocabularyProfile vocabulary = 1;
+   */
+  vocabulary?: VocabularyProfile | undefined;
+};
+
+/**
+ * Describes the message mosaic.auth.v1.BootstrapRequest.
+ * Use `create(BootstrapRequestSchema)` to create a new message.
+ */
+export const BootstrapRequestSchema: GenMessage<BootstrapRequest> = /*@__PURE__*/
+  messageDesc(file_mosaic_auth_v1_auth, 0);
+
+/**
+ * BootstrapResponse is everything a client needs to draw one screen, and
+ * nothing else.
+ *
+ * The three fields arrive together deliberately. Splitting them would make "the
+ * vocabulary arrives before the render" two mechanisms that can each succeed
+ * while the other does not — which is precisely the failure this replaces: the
+ * tree was right, the vocabulary was absent, and nothing anywhere reported a
+ * mismatch.
+ *
+ * @generated from message mosaic.auth.v1.BootstrapResponse
+ */
+export type BootstrapResponse = Message<"mosaic.auth.v1.BootstrapResponse"> & {
+  /**
+   * The design token set (ADR 0040), as the same DTCG document the session
+   * pushes. Without it the doorway would be the one screen drawn unstyled.
+   *
+   * @generated from field: bytes tokens = 1;
+   */
+  tokens: Uint8Array;
+
+  /**
+   * The component definitions the tree needs, **transitively closed over it and
+   * no larger**. This is the one payload an unauthenticated party can
+   * enumerate, so it describes a doorway and nothing else; the subset is the
+   * security property, not an optimisation, and it must not be allowed to grow
+   * into the whole library out of convenience.
+   *
+   * @generated from field: bytes definitions = 2;
+   */
+  definitions: Uint8Array;
+
+  /**
+   * The doorway. Which one is the server's decision, unchanged from ADR 0098:
+   * the setup tree while the server is unclaimed, the sign-in tree once it is
+   * not. A doorway has two states and the client is not told which — it is
+   * shown one.
+   *
+   * @generated from field: mosaic.sdui.v1.UINode ui_node = 3;
+   */
+  uiNode?: UINode | undefined;
+};
+
+/**
+ * Describes the message mosaic.auth.v1.BootstrapResponse.
+ * Use `create(BootstrapResponseSchema)` to create a new message.
+ */
+export const BootstrapResponseSchema: GenMessage<BootstrapResponse> = /*@__PURE__*/
+  messageDesc(file_mosaic_auth_v1_auth, 1);
 
 /**
  * SignInRequest is a local username/password authentication from a named
@@ -62,10 +145,11 @@ export type SignInRequest = Message<"mosaic.auth.v1.SignInRequest"> & {
  * Use `create(SignInRequestSchema)` to create a new message.
  */
 export const SignInRequestSchema: GenMessage<SignInRequest> = /*@__PURE__*/
-  messageDesc(file_mosaic_auth_v1_auth, 0);
+  messageDesc(file_mosaic_auth_v1_auth, 2);
 
 /**
- * SignInResponse carries the issued session.
+ * SignInResponse carries the issued session and the credential pair that spends
+ * it.
  *
  * @generated from message mosaic.auth.v1.SignInResponse
  */
@@ -74,6 +158,14 @@ export type SignInResponse = Message<"mosaic.auth.v1.SignInResponse"> & {
    * @generated from field: mosaic.auth.v1.Session session = 1;
    */
   session?: Session | undefined;
+
+  /**
+   * The bearer pair (ADR 0102). A client stores both and presents the access
+   * token on every SessionService call.
+   *
+   * @generated from field: mosaic.auth.v1.TokenPair tokens = 2;
+   */
+  tokens?: TokenPair | undefined;
 };
 
 /**
@@ -81,10 +173,124 @@ export type SignInResponse = Message<"mosaic.auth.v1.SignInResponse"> & {
  * Use `create(SignInResponseSchema)` to create a new message.
  */
 export const SignInResponseSchema: GenMessage<SignInResponse> = /*@__PURE__*/
-  messageDesc(file_mosaic_auth_v1_auth, 1);
+  messageDesc(file_mosaic_auth_v1_auth, 3);
+
+/**
+ * TokenPair is the session credential (ADR 0102): a short-lived access token
+ * presented on every call, and a long-lived refresh token exchanged for a new
+ * pair.
+ *
+ * Both are **opaque** — not JWTs, and not for fashion. A claims-carrying token
+ * makes a tightened limit or a revoked grant take effect only when the token
+ * expires; validation here is a store read, and that cost is accepted
+ * deliberately. Neither rides a cookie: three of the four clients this
+ * transport was chosen against have no use for one, and the credential must not
+ * depend on a same-origin front door that does not exist.
+ *
+ * A client stores both in whatever secure storage its platform has —
+ * localStorage on the web, the keychain or keystore on native. On the web that
+ * is reachable by any script that gets into the page, which is stated plainly
+ * rather than smoothed over: what limits the damage is the short access
+ * lifetime, rotation with reuse detection, and per-device revocation.
+ *
+ * @generated from message mosaic.auth.v1.TokenPair
+ */
+export type TokenPair = Message<"mosaic.auth.v1.TokenPair"> & {
+  /**
+   * @generated from field: string access_token = 1;
+   */
+  accessToken: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp access_expires_at = 2;
+   */
+  accessExpiresAt?: Timestamp | undefined;
+
+  /**
+   * The refresh token, bound to the device the session was issued to and
+   * **rotated on every use**. The value returned here is spent the moment it is
+   * exchanged; a client that keeps the old one and presents it again revokes
+   * the whole chain, which is what makes theft detectable rather than silent.
+   *
+   * @generated from field: string refresh_token = 3;
+   */
+  refreshToken: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp refresh_expires_at = 4;
+   */
+  refreshExpiresAt?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message mosaic.auth.v1.TokenPair.
+ * Use `create(TokenPairSchema)` to create a new message.
+ */
+export const TokenPairSchema: GenMessage<TokenPair> = /*@__PURE__*/
+  messageDesc(file_mosaic_auth_v1_auth, 4);
+
+/**
+ * RefreshRequest exchanges a refresh token for a new pair.
+ *
+ * The device is named as well as the token because the token is bound to it:
+ * a refresh presented from a different device is a stolen credential being
+ * used, not a client that moved.
+ *
+ * @generated from message mosaic.auth.v1.RefreshRequest
+ */
+export type RefreshRequest = Message<"mosaic.auth.v1.RefreshRequest"> & {
+  /**
+   * @generated from field: string refresh_token = 1;
+   */
+  refreshToken: string;
+
+  /**
+   * @generated from field: string device_id = 2;
+   */
+  deviceId: string;
+};
+
+/**
+ * Describes the message mosaic.auth.v1.RefreshRequest.
+ * Use `create(RefreshRequestSchema)` to create a new message.
+ */
+export const RefreshRequestSchema: GenMessage<RefreshRequest> = /*@__PURE__*/
+  messageDesc(file_mosaic_auth_v1_auth, 5);
+
+/**
+ * RefreshResponse carries the new pair and the session it belongs to.
+ *
+ * @generated from message mosaic.auth.v1.RefreshResponse
+ */
+export type RefreshResponse = Message<"mosaic.auth.v1.RefreshResponse"> & {
+  /**
+   * @generated from field: mosaic.auth.v1.Session session = 1;
+   */
+  session?: Session | undefined;
+
+  /**
+   * @generated from field: mosaic.auth.v1.TokenPair tokens = 2;
+   */
+  tokens?: TokenPair | undefined;
+};
+
+/**
+ * Describes the message mosaic.auth.v1.RefreshResponse.
+ * Use `create(RefreshResponseSchema)` to create a new message.
+ */
+export const RefreshResponseSchema: GenMessage<RefreshResponse> = /*@__PURE__*/
+  messageDesc(file_mosaic_auth_v1_auth, 6);
 
 /**
  * SignOutRequest revokes target_session on behalf of caller_session.
+ *
+ * caller_session is the caller's credential — its access token (ADR 0102), the
+ * same value it presents on every SessionService call. target_session is the
+ * **session id** of the device being ended, which is what a device list names
+ * and is not itself a credential.
+ *
+ * Signing out now means revoking the refresh chain, not merely dropping a value
+ * the client was holding.
  *
  * @generated from message mosaic.auth.v1.SignOutRequest
  */
@@ -105,7 +311,7 @@ export type SignOutRequest = Message<"mosaic.auth.v1.SignOutRequest"> & {
  * Use `create(SignOutRequestSchema)` to create a new message.
  */
 export const SignOutRequestSchema: GenMessage<SignOutRequest> = /*@__PURE__*/
-  messageDesc(file_mosaic_auth_v1_auth, 2);
+  messageDesc(file_mosaic_auth_v1_auth, 7);
 
 /**
  * SignOutResponse echoes the session that was revoked.
@@ -124,7 +330,7 @@ export type SignOutResponse = Message<"mosaic.auth.v1.SignOutResponse"> & {
  * Use `create(SignOutResponseSchema)` to create a new message.
  */
 export const SignOutResponseSchema: GenMessage<SignOutResponse> = /*@__PURE__*/
-  messageDesc(file_mosaic_auth_v1_auth, 3);
+  messageDesc(file_mosaic_auth_v1_auth, 8);
 
 /**
  * Session is the projection of an issued session a client is allowed to see.
@@ -168,6 +374,13 @@ export type Session = Message<"mosaic.auth.v1.Session"> & {
   lastSeenAt?: Timestamp | undefined;
 
   /**
+   * The **absolute** expiry (ADR 0102): the moment past which no refresh can
+   * extend this session, however recently it was used. It is not the access
+   * token's lifetime, which is minutes and is carried on TokenPair, and it is
+   * not the idle ceiling, which the server applies against last_seen_at and
+   * does not publish — a client that knew it would be tempted to poll to stay
+   * inside it.
+   *
    * @generated from field: google.protobuf.Timestamp expires_at = 6;
    */
   expiresAt?: Timestamp | undefined;
@@ -183,15 +396,34 @@ export type Session = Message<"mosaic.auth.v1.Session"> & {
  * Use `create(SessionSchema)` to create a new message.
  */
 export const SessionSchema: GenMessage<Session> = /*@__PURE__*/
-  messageDesc(file_mosaic_auth_v1_auth, 4);
+  messageDesc(file_mosaic_auth_v1_auth, 9);
 
 /**
- * AuthService mints and revokes sessions. Both calls are unary: there is
- * nothing to push before a client has a session to push to.
+ * AuthService mints and revokes sessions, and answers the one client that has
+ * none. Every call is unary: there is nothing to push before a client has a
+ * session to push to.
  *
  * @generated from service mosaic.auth.v1.AuthService
  */
 export const AuthService: GenService<{
+  /**
+   * Bootstrap is the first call every client makes, before it has anything
+   * (ADR 0101). It answers with the skin, the definitions the doorway needs and
+   * the doorway itself, in one response — because definitions and the token set
+   * are otherwise pushed on connect, which is to say after a session exists, and
+   * a client without one has no vocabulary at all rather than a thin one.
+   *
+   * It is unauthenticated by necessity and rate-limited by consequence: it is
+   * the only surface reachable before authentication, and it does not vary on
+   * any identity, so nothing about it can be used to learn who exists.
+   *
+   * @generated from rpc mosaic.auth.v1.AuthService.Bootstrap
+   */
+  bootstrap: {
+    methodKind: "unary";
+    input: typeof BootstrapRequestSchema;
+    output: typeof BootstrapResponseSchema;
+  },
   /**
    * SignIn authenticates a local user with a password and issues a session.
    * The returned session id is the opaque ref (ADR 0017) the client presents on
@@ -215,6 +447,19 @@ export const AuthService: GenService<{
     methodKind: "unary";
     input: typeof SignOutRequestSchema;
     output: typeof SignOutResponseSchema;
+  },
+  /**
+   * Refresh exchanges a refresh token for a new pair (ADR 0102). The presented
+   * token is spent by the exchange: rotation is the load-bearing part, and a
+   * token presented twice revokes the whole chain rather than being refused on
+   * its own.
+   *
+   * @generated from rpc mosaic.auth.v1.AuthService.Refresh
+   */
+  refresh: {
+    methodKind: "unary";
+    input: typeof RefreshRequestSchema;
+    output: typeof RefreshResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_mosaic_auth_v1_auth, 0);

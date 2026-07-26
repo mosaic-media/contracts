@@ -64,7 +64,13 @@ message Ack {}
 
 // AttachRequest binds a session and optionally declares the route to show.
 message AttachRequest {
-  string session = 1; // opaque session ref (ADR 0017); auth is on this call.
+  // The caller's opaque credential (ADR 0017), which is its **access token**
+  // since ADR 0102 made the session a bearer pair. The field keeps its name
+  // because every client sends it in the same place and for the same reason;
+  // what changed is that the value is minutes-lived and rotates, so a client
+  // that caches it forever will start seeing UNAUTHENTICATED and must refresh
+  // rather than re-authenticate.
+  string session = 1;
   string screen = 2;  // optional route to (re-)assert; empty leaves it unchanged.
   bytes params = 3;   // optional screen params as a JSON object (see params note).
   // What this client can actually play (ADR 0047). Optional: a client that
