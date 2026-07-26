@@ -1,4 +1,4 @@
-# Claude Instructions — Mosaic SDUI
+# Claude Instructions — Mosaic contracts
 
 This repository is the **published Server-Driven-UI and session contract** shared
 by the Platform, the Modules and every client. It is to the interface what
@@ -14,7 +14,7 @@ get wrong:
 
 | Repository | Form | Source of truth |
 |---|---|---|
-| **`sdui`** (this one) | **protobuf and JSON Schema, Go and TS generated** | `proto/**/*.proto` and `schema/sdui.schema.json` |
+| **`contracts`** (this one) | **protobuf and JSON Schema, Go and TS generated** | `proto/**/*.proto` and `schema/sdui.schema.json` |
 | **`sdk`** | **hand-written Go** | the `.go` files in `contracts/platform/v1/` |
 
 [ADR 0044](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0044-contracts-protobuf-workspace.md)

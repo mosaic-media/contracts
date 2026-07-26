@@ -23,9 +23,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.test
-    working_dir: /src/sdui
+    working_dir: /src/contracts
     volumes:
-      - .:/src/sdui
+      - .:/src/contracts
       # Caches in volumes, not on the bind mount. The npm cache earns its place
       # here more than most: the generators are fetched with `npx --yes` on
       # every run, and without a warm cache that is a download per invocation.

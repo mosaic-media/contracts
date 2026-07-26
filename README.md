@@ -79,7 +79,7 @@ go get github.com/mosaic-media/contracts/ui@latest
 ```
 
 For local work across the sibling repos, use a
-`replace github.com/mosaic-media/contracts => ../sdui` in the consumer's
+`replace github.com/mosaic-media/contracts => ../contracts` in the consumer's
 `go.mod` instead.
 
 ## Using it — a TypeScript client
@@ -110,7 +110,7 @@ import { UINodeSchema } from "@mosaic-media/sdui/sdui-pb";
 
 The package is types + JSON data (no runtime code); it's meant for a bundler
 (the Shell uses Vite). Until the first npm release lands you can install straight
-from git: `npm install github:mosaic-media/sdui`.
+from git: `npm install github:mosaic-media/contracts`.
 
 ### Widget-style authoring (mocks & fixtures)
 

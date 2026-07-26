@@ -50,4 +50,4 @@ RUN git config --global --add safe.directory '*'
 # stat-ing, and Go fails the build on its ownership rather than degrading.
 ENV GOFLAGS=-buildvcs=false
 
-WORKDIR /src/sdui
+WORKDIR /src/contracts
