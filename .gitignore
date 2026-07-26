@@ -11,3 +11,6 @@ dist/
 *.tsbuildinfo
 
 .DS_Store
+
+# Editor and IDE state
+.idea/
