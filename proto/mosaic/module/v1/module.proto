@@ -350,6 +350,11 @@ message EpisodePreview {
   // The source's air date as it provides it, display-only — the Platform does
   // not parse it.
   string released = 6;
+  // How long this episode runs, 0 when the source does not say. Minutes rather
+  // than ContentMetadata.runtime's display string, because a source states a
+  // *per-episode* runtime as a number and a consumer showing a list of them
+  // needs them to read alike.
+  int32 runtime_minutes = 7;
 }
 
 message Collection {
@@ -413,6 +418,15 @@ message ContentMetadata {
   optional Collection collection = 16;
   repeated Trailer trailers = 17;
   optional WatchAvailability watch = 18;
+  // The handful of above-the-line credits a title is known by — its creators
+  // and directors, with the job in Person.role. Empty for a source that carries
+  // no crew, which is most addons.
+  //
+  // Separate from cast rather than merged with it because the two are shown
+  // differently and one is bounded: a cast list is a rail of faces and a crew
+  // credit is a line of prose. Merging them would put a director with no
+  // headshot into a rail of portraits.
+  repeated Person crew = 19;
 }
 
 message StreamLink {
@@ -530,6 +544,16 @@ message CatalogItemsRequest {
 
 message CatalogItemsResponse {
   repeated CatalogItem items = 1;
+  // Whether another page exists after this one.
+  //
+  // The provider's statement rather than the Platform's inference, because only
+  // the provider knows: a full page is not evidence of another, and a Platform
+  // guessing from the count asks upstream for a page that does not exist.
+  //
+  // False means "this is the last page", which is what a provider predating
+  // this field says by saying nothing — the zero value is the old behaviour
+  // exactly, so nothing has to be rewritten to keep working.
+  bool has_more = 2;
 }
 
 message StreamsRequest {
