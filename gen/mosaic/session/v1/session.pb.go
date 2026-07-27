@@ -1033,11 +1033,41 @@ func (x *ShellUpdate) GetUiNode() *v1.UINode {
 	return nil
 }
 
-// Toast is a transient notice — the confirmation an Invoke pushes.
+// Toast is one message in the client's notification stack, in one of two
+// lifetimes (ADR 0052).
+//
+// A **toast** is transient: the confirmation an Invoke pushes, which removes
+// itself on a timer. That is right for "import finished" and wrong for a
+// condition still true a minute later — a transient message for a lasting
+// condition is announced once and is then invisible to anybody who looked away.
+//
+// A **notice** is the same surface with the other lifetime: it stays until the
+// user dismisses it or the server retracts it. One surface and two lifetimes
+// rather than two surfaces, deliberately — giving a lasting condition its own
+// region would put two competing places to look for "something is wrong", and
+// the one that appears less often is the one people stop checking.
+//
+// A notice is therefore *identified*, which a toast never needed to be: a
+// fire-and-forget message removes itself, but one the server must later update
+// or retract has to be nameable.
 type Toast struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
-	Tone          string                 `protobuf:"bytes,2,opt,name=tone,proto3" json:"tone,omitempty"` // "success" | "danger" | "info" — an SDUI tone.
+	state   protoimpl.MessageState `protogen:"open.v1"`
+	Message string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	Tone    string                 `protobuf:"bytes,2,opt,name=tone,proto3" json:"tone,omitempty"` // "success" | "danger" | "info" — an SDUI tone.
+	// id names a standing notice, so a repeat of the same condition updates the
+	// notice already showing rather than stacking a fifth copy of it, and so a
+	// recovery can retract the exact one it fixed. Empty is an anonymous
+	// transient toast, which needs no name because it removes itself.
+	Id string `protobuf:"bytes,3,opt,name=id,proto3" json:"id,omitempty"`
+	// persistent holds this message until it is dismissed or retracted, instead
+	// of expiring on the client's timer. It requires id: a message the client
+	// will keep indefinitely and the server can never name again is a permanent
+	// one.
+	Persistent bool `protobuf:"varint,4,opt,name=persistent,proto3" json:"persistent,omitempty"`
+	// cleared retracts the notice named by id — the condition resolved. message
+	// and tone are ignored. A client that holds no such notice ignores it, which
+	// is the ordinary case after a reconnect rebuilt the stack from nothing.
+	Cleared       bool `protobuf:"varint,5,opt,name=cleared,proto3" json:"cleared,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1084,6 +1114,27 @@ func (x *Toast) GetTone() string {
 		return x.Tone
 	}
 	return ""
+}
+
+func (x *Toast) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Toast) GetPersistent() bool {
+	if x != nil {
+		return x.Persistent
+	}
+	return false
+}
+
+func (x *Toast) GetCleared() bool {
+	if x != nil {
+		return x.Cleared
+	}
+	return false
 }
 
 // Event is an unsolicited domain event: an import finished, a config changed, a
@@ -1213,10 +1264,15 @@ const file_mosaic_session_v1_session_proto_rawDesc = "" +
 	"\x06REMOVE\x10\x03\x12\t\n" +
 	"\x05PATCH\x10\x04\">\n" +
 	"\vShellUpdate\x12/\n" +
-	"\aui_node\x18\x01 \x01(\v2\x16.mosaic.sdui.v1.UINodeR\x06uiNode\"5\n" +
+	"\aui_node\x18\x01 \x01(\v2\x16.mosaic.sdui.v1.UINodeR\x06uiNode\"\x7f\n" +
 	"\x05Toast\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage\x12\x12\n" +
-	"\x04tone\x18\x02 \x01(\tR\x04tone\"5\n" +
+	"\x04tone\x18\x02 \x01(\tR\x04tone\x12\x0e\n" +
+	"\x02id\x18\x03 \x01(\tR\x02id\x12\x1e\n" +
+	"\n" +
+	"persistent\x18\x04 \x01(\bR\n" +
+	"persistent\x12\x18\n" +
+	"\acleared\x18\x05 \x01(\bR\acleared\"5\n" +
 	"\x05Event\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x12\x18\n" +
 	"\apayload\x18\x02 \x01(\fR\apayload2\xfe\x02\n" +

@@ -39,7 +39,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file mosaic/session/v1/session.proto.
  */
 export const file_mosaic_session_v1_session: GenFile = /*@__PURE__*/
-  fileDesc("Ch9tb3NhaWMvc2Vzc2lvbi92MS9zZXNzaW9uLnByb3RvEhFtb3NhaWMuc2Vzc2lvbi52MSIFCgNBY2sirQEKDUF0dGFjaFJlcXVlc3QSDwoHc2Vzc2lvbhgBIAEoCRIOCgZzY3JlZW4YAiABKAkSDgoGcGFyYW1zGAMgASgMEjEKB3Byb2ZpbGUYBCABKAsyIC5tb3NhaWMuc2Vzc2lvbi52MS5DbGllbnRQcm9maWxlEjgKCnZvY2FidWxhcnkYBSABKAsyJC5tb3NhaWMuc2Vzc2lvbi52MS5Wb2NhYnVsYXJ5UHJvZmlsZSJJChFWb2NhYnVsYXJ5UHJvZmlsZRIPCgd2ZXJzaW9uGAEgASgJEhIKCnByaW1pdGl2ZXMYAiADKAkSDwoHYWN0aW9ucxgDIAMoCSJwCg1DbGllbnRQcm9maWxlEhIKCmNvbnRhaW5lcnMYASADKAkSFAoMdmlkZW9fY29kZWNzGAIgAygJEhQKDGF1ZGlvX2NvZGVjcxgDIAMoCRILCgNoZHIYBCABKAgSEgoKbWF4X2hlaWdodBgFIAEoBSJCCg9OYXZpZ2F0ZVJlcXVlc3QSDwoHc2Vzc2lvbhgBIAEoCRIOCgZzY3JlZW4YAiABKAkSDgoGcGFyYW1zGAMgASgMIj8KDUludm9rZVJlcXVlc3QSDwoHc2Vzc2lvbhgBIAEoCRIOCgZhY3Rpb24YAiABKAkSDQoFaW5wdXQYAyABKAwiLgoMSW5wdXRSZXF1ZXN0Eg8KB3Nlc3Npb24YASABKAkSDQoFdmFsdWUYAiABKAkiOgoQU3Vic2NyaWJlUmVxdWVzdBIPCgdzZXNzaW9uGAEgASgJEhUKDXJlc3VtZV9jdXJzb3IYAiABKAQilgIKDVNlcnZlck1lc3NhZ2USCwoDc2VxGAEgASgEEjEKBnJlZ2lvbhgCIAEoCzIfLm1vc2FpYy5zZXNzaW9uLnYxLlJlZ2lvblVwZGF0ZUgAEi8KBXNoZWxsGAMgASgLMh4ubW9zYWljLnNlc3Npb24udjEuU2hlbGxVcGRhdGVIABIpCgV0b2FzdBgEIAEoCzIYLm1vc2FpYy5zZXNzaW9uLnYxLlRvYXN0SAASKQoFZXZlbnQYBSABKAsyGC5tb3NhaWMuc2Vzc2lvbi52MS5FdmVudEgAEjYKDGZpZWxkX2Vycm9ycxgGIAEoCzIeLm1vc2FpYy5zZXNzaW9uLnYxLkZpZWxkRXJyb3JzSABCBgoEYm9keSJQCgtGaWVsZEVycm9ycxItCgZlcnJvcnMYASADKAsyHS5tb3NhaWMuc2Vzc2lvbi52MS5GaWVsZEVycm9yEhIKCmZvcm1fZXJyb3IYAiABKAkiLAoKRmllbGRFcnJvchINCgVmaWVsZBgBIAEoCRIPCgdtZXNzYWdlGAIgASgJIroBCgxSZWdpb25VcGRhdGUSDgoGcmVnaW9uGAEgASgJEi4KAm9wGAIgASgOMiIubW9zYWljLnNlc3Npb24udjEuUmVnaW9uVXBkYXRlLk9wEicKB3VpX25vZGUYAyABKAsyFi5tb3NhaWMuc2R1aS52MS5VSU5vZGUiQQoCT3ASCwoHUkVQTEFDRRAAEgoKBkFQUEVORBABEgsKB1BSRVBFTkQQAhIKCgZSRU1PVkUQAxIJCgVQQVRDSBAEIjYKC1NoZWxsVXBkYXRlEicKB3VpX25vZGUYASABKAsyFi5tb3NhaWMuc2R1aS52MS5VSU5vZGUiJgoFVG9hc3QSDwoHbWVzc2FnZRgBIAEoCRIMCgR0b25lGAIgASgJIiYKBUV2ZW50EgwKBHR5cGUYASABKAkSDwoHcGF5bG9hZBgCIAEoDDL+AgoOU2Vzc2lvblNlcnZpY2USQgoGQXR0YWNoEiAubW9zYWljLnNlc3Npb24udjEuQXR0YWNoUmVxdWVzdBoWLm1vc2FpYy5zZXNzaW9uLnYxLkFjaxJGCghOYXZpZ2F0ZRIiLm1vc2FpYy5zZXNzaW9uLnYxLk5hdmlnYXRlUmVxdWVzdBoWLm1vc2FpYy5zZXNzaW9uLnYxLkFjaxJCCgZJbnZva2USIC5tb3NhaWMuc2Vzc2lvbi52MS5JbnZva2VSZXF1ZXN0GhYubW9zYWljLnNlc3Npb24udjEuQWNrEkYKC1N1Ym1pdElucHV0Eh8ubW9zYWljLnNlc3Npb24udjEuSW5wdXRSZXF1ZXN0GhYubW9zYWljLnNlc3Npb24udjEuQWNrElQKCVN1YnNjcmliZRIjLm1vc2FpYy5zZXNzaW9uLnYxLlN1YnNjcmliZVJlcXVlc3QaIC5tb3NhaWMuc2Vzc2lvbi52MS5TZXJ2ZXJNZXNzYWdlMAFCQ1pBZ2l0aHViLmNvbS9tb3NhaWMtbWVkaWEvY29udHJhY3RzL2dlbi9tb3NhaWMvc2Vzc2lvbi92MTtzZXNzaW9udjFiBnByb3RvMw", [file_mosaic_sdui_v1_sdui]);
+  fileDesc("Ch9tb3NhaWMvc2Vzc2lvbi92MS9zZXNzaW9uLnByb3RvEhFtb3NhaWMuc2Vzc2lvbi52MSIFCgNBY2sirQEKDUF0dGFjaFJlcXVlc3QSDwoHc2Vzc2lvbhgBIAEoCRIOCgZzY3JlZW4YAiABKAkSDgoGcGFyYW1zGAMgASgMEjEKB3Byb2ZpbGUYBCABKAsyIC5tb3NhaWMuc2Vzc2lvbi52MS5DbGllbnRQcm9maWxlEjgKCnZvY2FidWxhcnkYBSABKAsyJC5tb3NhaWMuc2Vzc2lvbi52MS5Wb2NhYnVsYXJ5UHJvZmlsZSJJChFWb2NhYnVsYXJ5UHJvZmlsZRIPCgd2ZXJzaW9uGAEgASgJEhIKCnByaW1pdGl2ZXMYAiADKAkSDwoHYWN0aW9ucxgDIAMoCSJwCg1DbGllbnRQcm9maWxlEhIKCmNvbnRhaW5lcnMYASADKAkSFAoMdmlkZW9fY29kZWNzGAIgAygJEhQKDGF1ZGlvX2NvZGVjcxgDIAMoCRILCgNoZHIYBCABKAgSEgoKbWF4X2hlaWdodBgFIAEoBSJCCg9OYXZpZ2F0ZVJlcXVlc3QSDwoHc2Vzc2lvbhgBIAEoCRIOCgZzY3JlZW4YAiABKAkSDgoGcGFyYW1zGAMgASgMIj8KDUludm9rZVJlcXVlc3QSDwoHc2Vzc2lvbhgBIAEoCRIOCgZhY3Rpb24YAiABKAkSDQoFaW5wdXQYAyABKAwiLgoMSW5wdXRSZXF1ZXN0Eg8KB3Nlc3Npb24YASABKAkSDQoFdmFsdWUYAiABKAkiOgoQU3Vic2NyaWJlUmVxdWVzdBIPCgdzZXNzaW9uGAEgASgJEhUKDXJlc3VtZV9jdXJzb3IYAiABKAQilgIKDVNlcnZlck1lc3NhZ2USCwoDc2VxGAEgASgEEjEKBnJlZ2lvbhgCIAEoCzIfLm1vc2FpYy5zZXNzaW9uLnYxLlJlZ2lvblVwZGF0ZUgAEi8KBXNoZWxsGAMgASgLMh4ubW9zYWljLnNlc3Npb24udjEuU2hlbGxVcGRhdGVIABIpCgV0b2FzdBgEIAEoCzIYLm1vc2FpYy5zZXNzaW9uLnYxLlRvYXN0SAASKQoFZXZlbnQYBSABKAsyGC5tb3NhaWMuc2Vzc2lvbi52MS5FdmVudEgAEjYKDGZpZWxkX2Vycm9ycxgGIAEoCzIeLm1vc2FpYy5zZXNzaW9uLnYxLkZpZWxkRXJyb3JzSABCBgoEYm9keSJQCgtGaWVsZEVycm9ycxItCgZlcnJvcnMYASADKAsyHS5tb3NhaWMuc2Vzc2lvbi52MS5GaWVsZEVycm9yEhIKCmZvcm1fZXJyb3IYAiABKAkiLAoKRmllbGRFcnJvchINCgVmaWVsZBgBIAEoCRIPCgdtZXNzYWdlGAIgASgJIroBCgxSZWdpb25VcGRhdGUSDgoGcmVnaW9uGAEgASgJEi4KAm9wGAIgASgOMiIubW9zYWljLnNlc3Npb24udjEuUmVnaW9uVXBkYXRlLk9wEicKB3VpX25vZGUYAyABKAsyFi5tb3NhaWMuc2R1aS52MS5VSU5vZGUiQQoCT3ASCwoHUkVQTEFDRRAAEgoKBkFQUEVORBABEgsKB1BSRVBFTkQQAhIKCgZSRU1PVkUQAxIJCgVQQVRDSBAEIjYKC1NoZWxsVXBkYXRlEicKB3VpX25vZGUYASABKAsyFi5tb3NhaWMuc2R1aS52MS5VSU5vZGUiVwoFVG9hc3QSDwoHbWVzc2FnZRgBIAEoCRIMCgR0b25lGAIgASgJEgoKAmlkGAMgASgJEhIKCnBlcnNpc3RlbnQYBCABKAgSDwoHY2xlYXJlZBgFIAEoCCImCgVFdmVudBIMCgR0eXBlGAEgASgJEg8KB3BheWxvYWQYAiABKAwy/gIKDlNlc3Npb25TZXJ2aWNlEkIKBkF0dGFjaBIgLm1vc2FpYy5zZXNzaW9uLnYxLkF0dGFjaFJlcXVlc3QaFi5tb3NhaWMuc2Vzc2lvbi52MS5BY2sSRgoITmF2aWdhdGUSIi5tb3NhaWMuc2Vzc2lvbi52MS5OYXZpZ2F0ZVJlcXVlc3QaFi5tb3NhaWMuc2Vzc2lvbi52MS5BY2sSQgoGSW52b2tlEiAubW9zYWljLnNlc3Npb24udjEuSW52b2tlUmVxdWVzdBoWLm1vc2FpYy5zZXNzaW9uLnYxLkFjaxJGCgtTdWJtaXRJbnB1dBIfLm1vc2FpYy5zZXNzaW9uLnYxLklucHV0UmVxdWVzdBoWLm1vc2FpYy5zZXNzaW9uLnYxLkFjaxJUCglTdWJzY3JpYmUSIy5tb3NhaWMuc2Vzc2lvbi52MS5TdWJzY3JpYmVSZXF1ZXN0GiAubW9zYWljLnNlc3Npb24udjEuU2VydmVyTWVzc2FnZTABQkNaQWdpdGh1Yi5jb20vbW9zYWljLW1lZGlhL2NvbnRyYWN0cy9nZW4vbW9zYWljL3Nlc3Npb24vdjE7c2Vzc2lvbnYxYgZwcm90bzM", [file_mosaic_sdui_v1_sdui]);
 
 /**
  * Ack is the empty reply to an intent. An intent either succeeds (Ack) or fails
@@ -592,7 +592,23 @@ export const ShellUpdateSchema: GenMessage<ShellUpdate> = /*@__PURE__*/
   messageDesc(file_mosaic_session_v1_session, 12);
 
 /**
- * Toast is a transient notice — the confirmation an Invoke pushes.
+ * Toast is one message in the client's notification stack, in one of two
+ * lifetimes (ADR 0052).
+ *
+ * A **toast** is transient: the confirmation an Invoke pushes, which removes
+ * itself on a timer. That is right for "import finished" and wrong for a
+ * condition still true a minute later — a transient message for a lasting
+ * condition is announced once and is then invisible to anybody who looked away.
+ *
+ * A **notice** is the same surface with the other lifetime: it stays until the
+ * user dismisses it or the server retracts it. One surface and two lifetimes
+ * rather than two surfaces, deliberately — giving a lasting condition its own
+ * region would put two competing places to look for "something is wrong", and
+ * the one that appears less often is the one people stop checking.
+ *
+ * A notice is therefore *identified*, which a toast never needed to be: a
+ * fire-and-forget message removes itself, but one the server must later update
+ * or retract has to be nameable.
  *
  * @generated from message mosaic.session.v1.Toast
  */
@@ -608,6 +624,35 @@ export type Toast = Message<"mosaic.session.v1.Toast"> & {
    * @generated from field: string tone = 2;
    */
   tone: string;
+
+  /**
+   * id names a standing notice, so a repeat of the same condition updates the
+   * notice already showing rather than stacking a fifth copy of it, and so a
+   * recovery can retract the exact one it fixed. Empty is an anonymous
+   * transient toast, which needs no name because it removes itself.
+   *
+   * @generated from field: string id = 3;
+   */
+  id: string;
+
+  /**
+   * persistent holds this message until it is dismissed or retracted, instead
+   * of expiring on the client's timer. It requires id: a message the client
+   * will keep indefinitely and the server can never name again is a permanent
+   * one.
+   *
+   * @generated from field: bool persistent = 4;
+   */
+  persistent: boolean;
+
+  /**
+   * cleared retracts the notice named by id — the condition resolved. message
+   * and tone are ignored. A client that holds no such notice ignores it, which
+   * is the ordinary case after a reconnect rebuilt the stack from nothing.
+   *
+   * @generated from field: bool cleared = 5;
+   */
+  cleared: boolean;
 };
 
 /**

@@ -252,10 +252,40 @@ message ShellUpdate {
   mosaic.sdui.v1.UINode ui_node = 1; // the typed shell UINode tree (ADR 0044).
 }
 
-// Toast is a transient notice — the confirmation an Invoke pushes.
+// Toast is one message in the client's notification stack, in one of two
+// lifetimes (ADR 0052).
+//
+// A **toast** is transient: the confirmation an Invoke pushes, which removes
+// itself on a timer. That is right for "import finished" and wrong for a
+// condition still true a minute later — a transient message for a lasting
+// condition is announced once and is then invisible to anybody who looked away.
+//
+// A **notice** is the same surface with the other lifetime: it stays until the
+// user dismisses it or the server retracts it. One surface and two lifetimes
+// rather than two surfaces, deliberately — giving a lasting condition its own
+// region would put two competing places to look for "something is wrong", and
+// the one that appears less often is the one people stop checking.
+//
+// A notice is therefore *identified*, which a toast never needed to be: a
+// fire-and-forget message removes itself, but one the server must later update
+// or retract has to be nameable.
 message Toast {
   string message = 1;
   string tone = 2; // "success" | "danger" | "info" — an SDUI tone.
+  // id names a standing notice, so a repeat of the same condition updates the
+  // notice already showing rather than stacking a fifth copy of it, and so a
+  // recovery can retract the exact one it fixed. Empty is an anonymous
+  // transient toast, which needs no name because it removes itself.
+  string id = 3;
+  // persistent holds this message until it is dismissed or retracted, instead
+  // of expiring on the client's timer. It requires id: a message the client
+  // will keep indefinitely and the server can never name again is a permanent
+  // one.
+  bool persistent = 4;
+  // cleared retracts the notice named by id — the condition resolved. message
+  // and tone are ignored. A client that holds no such notice ignores it, which
+  // is the ordinary case after a reconnect rebuilt the stack from nothing.
+  bool cleared = 5;
 }
 
 // Event is an unsolicited domain event: an import finished, a config changed, a
