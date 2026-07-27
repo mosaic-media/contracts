@@ -1137,8 +1137,11 @@ type Node struct {
 	// RFC 3339 UTC. Times are strings rather than google.protobuf.Timestamp to
 	// keep this schema free of well-known-type imports, matching how the sibling
 	// contracts in this workspace already carry them.
-	CreatedAt     string `protobuf:"bytes,14,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdatedAt     string `protobuf:"bytes,15,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	CreatedAt string `protobuf:"bytes,14,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt string `protobuf:"bytes,15,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	// The work's genres as its source named them, stored on the node and indexed
+	// so the library can be browsed by one. Set on a Work and empty beneath it.
+	Genres        []string `protobuf:"bytes,16,rep,name=genres,proto3" json:"genres,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1276,6 +1279,13 @@ func (x *Node) GetUpdatedAt() string {
 		return x.UpdatedAt
 	}
 	return ""
+}
+
+func (x *Node) GetGenres() []string {
+	if x != nil {
+		return x.Genres
+	}
+	return nil
 }
 
 // Part is playable bytes attached to an item.
@@ -2020,10 +2030,14 @@ func (x *RelatedItem) GetNodeId() string {
 // the object graph. Materialising a catalog copies its items into the library;
 // it does not import the catalog as an object.
 type Catalog struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	NativeType    string                 `protobuf:"bytes,2,opt,name=native_type,json=nativeType,proto3" json:"native_type,omitempty"`
-	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	state      protoimpl.MessageState `protogen:"open.v1"`
+	Id         string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	NativeType string                 `protobuf:"bytes,2,opt,name=native_type,json=nativeType,proto3" json:"native_type,omitempty"`
+	Name       string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	// The narrowings this catalog accepts, each declared with the values it
+	// accepts. Empty means it takes none, which is what every provider said
+	// before this field existed.
+	Filters       []*CatalogFilter `protobuf:"bytes,4,rep,name=filters,proto3" json:"filters,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2079,6 +2093,135 @@ func (x *Catalog) GetName() string {
 	return ""
 }
 
+func (x *Catalog) GetFilters() []*CatalogFilter {
+	if x != nil {
+		return x.Filters
+	}
+	return nil
+}
+
+// One narrowing a Catalog accepts — a genre, a streaming service, a decade —
+// declared with its permitted values so a consumer builds its control from the
+// source's own list and can never send a value the source did not name.
+type CatalogFilter struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The source-native parameter name ("genre"), opaque to the Platform and
+	// sent straight back on CatalogItemsRequest.filters.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// What a user reads above the control ("Genre"). Carried separately from the
+	// name because they diverge in practice — one popular catalogue carries a
+	// *year* under a parameter called "genre".
+	Label         string                 `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty"`
+	Options       []*CatalogFilterOption `protobuf:"bytes,3,rep,name=options,proto3" json:"options,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CatalogFilter) Reset() {
+	*x = CatalogFilter{}
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CatalogFilter) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CatalogFilter) ProtoMessage() {}
+
+func (x *CatalogFilter) ProtoReflect() protoreflect.Message {
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CatalogFilter.ProtoReflect.Descriptor instead.
+func (*CatalogFilter) Descriptor() ([]byte, []int) {
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *CatalogFilter) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CatalogFilter) GetLabel() string {
+	if x != nil {
+		return x.Label
+	}
+	return ""
+}
+
+func (x *CatalogFilter) GetOptions() []*CatalogFilterOption {
+	if x != nil {
+		return x.Options
+	}
+	return nil
+}
+
+// One selectable value of a CatalogFilter. Value and label are separate because
+// a source may address a genre by a numeric id and name it in words.
+type CatalogFilterOption struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Value         string                 `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
+	Label         string                 `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CatalogFilterOption) Reset() {
+	*x = CatalogFilterOption{}
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CatalogFilterOption) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CatalogFilterOption) ProtoMessage() {}
+
+func (x *CatalogFilterOption) ProtoReflect() protoreflect.Message {
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CatalogFilterOption.ProtoReflect.Descriptor instead.
+func (*CatalogFilterOption) Descriptor() ([]byte, []int) {
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *CatalogFilterOption) GetValue() string {
+	if x != nil {
+		return x.Value
+	}
+	return ""
+}
+
+func (x *CatalogFilterOption) GetLabel() string {
+	if x != nil {
+		return x.Label
+	}
+	return ""
+}
+
 type Person struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
@@ -2090,7 +2233,7 @@ type Person struct {
 
 func (x *Person) Reset() {
 	*x = Person{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[14]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2102,7 +2245,7 @@ func (x *Person) String() string {
 func (*Person) ProtoMessage() {}
 
 func (x *Person) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[14]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2115,7 +2258,7 @@ func (x *Person) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Person.ProtoReflect.Descriptor instead.
 func (*Person) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{14}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *Person) GetName() string {
@@ -2163,7 +2306,7 @@ type EpisodePreview struct {
 
 func (x *EpisodePreview) Reset() {
 	*x = EpisodePreview{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[15]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2175,7 +2318,7 @@ func (x *EpisodePreview) String() string {
 func (*EpisodePreview) ProtoMessage() {}
 
 func (x *EpisodePreview) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[15]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2188,7 +2331,7 @@ func (x *EpisodePreview) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EpisodePreview.ProtoReflect.Descriptor instead.
 func (*EpisodePreview) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{15}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *EpisodePreview) GetSeason() int32 {
@@ -2253,7 +2396,7 @@ type Collection struct {
 
 func (x *Collection) Reset() {
 	*x = Collection{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[16]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2265,7 +2408,7 @@ func (x *Collection) String() string {
 func (*Collection) ProtoMessage() {}
 
 func (x *Collection) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[16]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2278,7 +2421,7 @@ func (x *Collection) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Collection.ProtoReflect.Descriptor instead.
 func (*Collection) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{16}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *Collection) GetName() string {
@@ -2328,7 +2471,7 @@ type Trailer struct {
 
 func (x *Trailer) Reset() {
 	*x = Trailer{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[17]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2340,7 +2483,7 @@ func (x *Trailer) String() string {
 func (*Trailer) ProtoMessage() {}
 
 func (x *Trailer) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[17]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2353,7 +2496,7 @@ func (x *Trailer) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Trailer.ProtoReflect.Descriptor instead.
 func (*Trailer) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{17}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *Trailer) GetName() string {
@@ -2395,7 +2538,7 @@ type WatchOffer struct {
 
 func (x *WatchOffer) Reset() {
 	*x = WatchOffer{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[18]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2407,7 +2550,7 @@ func (x *WatchOffer) String() string {
 func (*WatchOffer) ProtoMessage() {}
 
 func (x *WatchOffer) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[18]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2420,7 +2563,7 @@ func (x *WatchOffer) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WatchOffer.ProtoReflect.Descriptor instead.
 func (*WatchOffer) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{18}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *WatchOffer) GetProvider() string {
@@ -2458,7 +2601,7 @@ type WatchAvailability struct {
 
 func (x *WatchAvailability) Reset() {
 	*x = WatchAvailability{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[19]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2470,7 +2613,7 @@ func (x *WatchAvailability) String() string {
 func (*WatchAvailability) ProtoMessage() {}
 
 func (x *WatchAvailability) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[19]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2483,7 +2626,7 @@ func (x *WatchAvailability) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WatchAvailability.ProtoReflect.Descriptor instead.
 func (*WatchAvailability) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{19}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *WatchAvailability) GetRegion() string {
@@ -2552,7 +2695,7 @@ type ContentMetadata struct {
 
 func (x *ContentMetadata) Reset() {
 	*x = ContentMetadata{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[20]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2564,7 +2707,7 @@ func (x *ContentMetadata) String() string {
 func (*ContentMetadata) ProtoMessage() {}
 
 func (x *ContentMetadata) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[20]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2577,7 +2720,7 @@ func (x *ContentMetadata) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ContentMetadata.ProtoReflect.Descriptor instead.
 func (*ContentMetadata) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{20}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *ContentMetadata) GetRef() *ContentRef {
@@ -2727,7 +2870,7 @@ type StreamLink struct {
 
 func (x *StreamLink) Reset() {
 	*x = StreamLink{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[21]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2739,7 +2882,7 @@ func (x *StreamLink) String() string {
 func (*StreamLink) ProtoMessage() {}
 
 func (x *StreamLink) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[21]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2752,7 +2895,7 @@ func (x *StreamLink) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StreamLink.ProtoReflect.Descriptor instead.
 func (*StreamLink) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{21}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *StreamLink) GetLabel() string {
@@ -2808,7 +2951,7 @@ type Subtitle struct {
 
 func (x *Subtitle) Reset() {
 	*x = Subtitle{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[22]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2820,7 +2963,7 @@ func (x *Subtitle) String() string {
 func (*Subtitle) ProtoMessage() {}
 
 func (x *Subtitle) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[22]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2833,7 +2976,7 @@ func (x *Subtitle) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Subtitle.ProtoReflect.Descriptor instead.
 func (*Subtitle) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{22}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *Subtitle) GetLanguage() string {
@@ -2867,7 +3010,7 @@ type ExternalIdentity struct {
 
 func (x *ExternalIdentity) Reset() {
 	*x = ExternalIdentity{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[23]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2879,7 +3022,7 @@ func (x *ExternalIdentity) String() string {
 func (*ExternalIdentity) ProtoMessage() {}
 
 func (x *ExternalIdentity) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[23]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2892,7 +3035,7 @@ func (x *ExternalIdentity) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ExternalIdentity.ProtoReflect.Descriptor instead.
 func (*ExternalIdentity) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{23}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *ExternalIdentity) GetScheme() string {
@@ -2936,7 +3079,7 @@ type Manifest struct {
 
 func (x *Manifest) Reset() {
 	*x = Manifest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[24]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2948,7 +3091,7 @@ func (x *Manifest) String() string {
 func (*Manifest) ProtoMessage() {}
 
 func (x *Manifest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[24]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2961,7 +3104,7 @@ func (x *Manifest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Manifest.ProtoReflect.Descriptor instead.
 func (*Manifest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{24}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *Manifest) GetId() string {
@@ -3007,7 +3150,7 @@ type ManifestRequest struct {
 
 func (x *ManifestRequest) Reset() {
 	*x = ManifestRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[25]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3019,7 +3162,7 @@ func (x *ManifestRequest) String() string {
 func (*ManifestRequest) ProtoMessage() {}
 
 func (x *ManifestRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[25]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3032,7 +3175,7 @@ func (x *ManifestRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ManifestRequest.ProtoReflect.Descriptor instead.
 func (*ManifestRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{25}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{27}
 }
 
 type ManifestResponse struct {
@@ -3044,7 +3187,7 @@ type ManifestResponse struct {
 
 func (x *ManifestResponse) Reset() {
 	*x = ManifestResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[26]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3056,7 +3199,7 @@ func (x *ManifestResponse) String() string {
 func (*ManifestResponse) ProtoMessage() {}
 
 func (x *ManifestResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[26]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3069,7 +3212,7 @@ func (x *ManifestResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ManifestResponse.ProtoReflect.Descriptor instead.
 func (*ManifestResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{26}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *ManifestResponse) GetManifest() *Manifest {
@@ -3094,7 +3237,7 @@ type ImportRequest struct {
 
 func (x *ImportRequest) Reset() {
 	*x = ImportRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[27]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3106,7 +3249,7 @@ func (x *ImportRequest) String() string {
 func (*ImportRequest) ProtoMessage() {}
 
 func (x *ImportRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[27]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3119,7 +3262,7 @@ func (x *ImportRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ImportRequest.ProtoReflect.Descriptor instead.
 func (*ImportRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{27}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *ImportRequest) GetCaller() *Caller {
@@ -3158,7 +3301,7 @@ type ImportResponse struct {
 
 func (x *ImportResponse) Reset() {
 	*x = ImportResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[28]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3170,7 +3313,7 @@ func (x *ImportResponse) String() string {
 func (*ImportResponse) ProtoMessage() {}
 
 func (x *ImportResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[28]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3183,7 +3326,7 @@ func (x *ImportResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ImportResponse.ProtoReflect.Descriptor instead.
 func (*ImportResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{28}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *ImportResponse) GetWorkId() string {
@@ -3232,7 +3375,7 @@ type MetadataRequest struct {
 
 func (x *MetadataRequest) Reset() {
 	*x = MetadataRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[29]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3244,7 +3387,7 @@ func (x *MetadataRequest) String() string {
 func (*MetadataRequest) ProtoMessage() {}
 
 func (x *MetadataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[29]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3257,7 +3400,7 @@ func (x *MetadataRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MetadataRequest.ProtoReflect.Descriptor instead.
 func (*MetadataRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{29}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *MetadataRequest) GetCaller() *Caller {
@@ -3290,7 +3433,7 @@ type MetadataResponse struct {
 
 func (x *MetadataResponse) Reset() {
 	*x = MetadataResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[30]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3302,7 +3445,7 @@ func (x *MetadataResponse) String() string {
 func (*MetadataResponse) ProtoMessage() {}
 
 func (x *MetadataResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[30]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3315,7 +3458,7 @@ func (x *MetadataResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MetadataResponse.ProtoReflect.Descriptor instead.
 func (*MetadataResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{30}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *MetadataResponse) GetMetadata() *ContentMetadata {
@@ -3338,7 +3481,7 @@ type SearchRequest struct {
 
 func (x *SearchRequest) Reset() {
 	*x = SearchRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[31]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3350,7 +3493,7 @@ func (x *SearchRequest) String() string {
 func (*SearchRequest) ProtoMessage() {}
 
 func (x *SearchRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[31]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3363,7 +3506,7 @@ func (x *SearchRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchRequest.ProtoReflect.Descriptor instead.
 func (*SearchRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{31}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *SearchRequest) GetCaller() *Caller {
@@ -3410,7 +3553,7 @@ type SearchResponse struct {
 
 func (x *SearchResponse) Reset() {
 	*x = SearchResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[32]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3422,7 +3565,7 @@ func (x *SearchResponse) String() string {
 func (*SearchResponse) ProtoMessage() {}
 
 func (x *SearchResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[32]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3435,7 +3578,7 @@ func (x *SearchResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchResponse.ProtoReflect.Descriptor instead.
 func (*SearchResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{32}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *SearchResponse) GetResults() []*SearchResult {
@@ -3455,7 +3598,7 @@ type CatalogsRequest struct {
 
 func (x *CatalogsRequest) Reset() {
 	*x = CatalogsRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[33]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3467,7 +3610,7 @@ func (x *CatalogsRequest) String() string {
 func (*CatalogsRequest) ProtoMessage() {}
 
 func (x *CatalogsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[33]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3480,7 +3623,7 @@ func (x *CatalogsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CatalogsRequest.ProtoReflect.Descriptor instead.
 func (*CatalogsRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{33}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *CatalogsRequest) GetCaller() *Caller {
@@ -3506,7 +3649,7 @@ type CatalogsResponse struct {
 
 func (x *CatalogsResponse) Reset() {
 	*x = CatalogsResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[34]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3518,7 +3661,7 @@ func (x *CatalogsResponse) String() string {
 func (*CatalogsResponse) ProtoMessage() {}
 
 func (x *CatalogsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[34]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3531,7 +3674,7 @@ func (x *CatalogsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CatalogsResponse.ProtoReflect.Descriptor instead.
 func (*CatalogsResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{34}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{36}
 }
 
 func (x *CatalogsResponse) GetCatalogs() []*Catalog {
@@ -3542,19 +3685,27 @@ func (x *CatalogsResponse) GetCatalogs() []*Catalog {
 }
 
 type CatalogItemsRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Caller        *Caller                `protobuf:"bytes,1,opt,name=caller,proto3" json:"caller,omitempty"`
-	Settings      []byte                 `protobuf:"bytes,2,opt,name=settings,proto3" json:"settings,omitempty"`
-	CatalogId     string                 `protobuf:"bytes,3,opt,name=catalog_id,json=catalogId,proto3" json:"catalog_id,omitempty"`
-	NativeType    string                 `protobuf:"bytes,4,opt,name=native_type,json=nativeType,proto3" json:"native_type,omitempty"`
-	Skip          int32                  `protobuf:"varint,5,opt,name=skip,proto3" json:"skip,omitempty"`
+	state      protoimpl.MessageState `protogen:"open.v1"`
+	Caller     *Caller                `protobuf:"bytes,1,opt,name=caller,proto3" json:"caller,omitempty"`
+	Settings   []byte                 `protobuf:"bytes,2,opt,name=settings,proto3" json:"settings,omitempty"`
+	CatalogId  string                 `protobuf:"bytes,3,opt,name=catalog_id,json=catalogId,proto3" json:"catalog_id,omitempty"`
+	NativeType string                 `protobuf:"bytes,4,opt,name=native_type,json=nativeType,proto3" json:"native_type,omitempty"`
+	Skip       int32                  `protobuf:"varint,5,opt,name=skip,proto3" json:"skip,omitempty"`
+	// The selected narrowings, keyed by CatalogFilter.name and holding one of
+	// that filter's declared option values. Empty means no narrowing, which is
+	// what every caller sent before this field existed.
+	//
+	// A provider must decline a name or value it does not recognise rather than
+	// returning the unfiltered page: quietly widening a query answers a question
+	// nobody asked, and the answer looks right.
+	Filters       map[string]string `protobuf:"bytes,6,rep,name=filters,proto3" json:"filters,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CatalogItemsRequest) Reset() {
 	*x = CatalogItemsRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[35]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3566,7 +3717,7 @@ func (x *CatalogItemsRequest) String() string {
 func (*CatalogItemsRequest) ProtoMessage() {}
 
 func (x *CatalogItemsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[35]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3579,7 +3730,7 @@ func (x *CatalogItemsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CatalogItemsRequest.ProtoReflect.Descriptor instead.
 func (*CatalogItemsRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{35}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{37}
 }
 
 func (x *CatalogItemsRequest) GetCaller() *Caller {
@@ -3617,6 +3768,13 @@ func (x *CatalogItemsRequest) GetSkip() int32 {
 	return 0
 }
 
+func (x *CatalogItemsRequest) GetFilters() map[string]string {
+	if x != nil {
+		return x.Filters
+	}
+	return nil
+}
+
 type CatalogItemsResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	Items []*CatalogItem         `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
@@ -3636,7 +3794,7 @@ type CatalogItemsResponse struct {
 
 func (x *CatalogItemsResponse) Reset() {
 	*x = CatalogItemsResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[36]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3648,7 +3806,7 @@ func (x *CatalogItemsResponse) String() string {
 func (*CatalogItemsResponse) ProtoMessage() {}
 
 func (x *CatalogItemsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[36]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3661,7 +3819,7 @@ func (x *CatalogItemsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CatalogItemsResponse.ProtoReflect.Descriptor instead.
 func (*CatalogItemsResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{36}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{38}
 }
 
 func (x *CatalogItemsResponse) GetItems() []*CatalogItem {
@@ -3691,7 +3849,7 @@ type StreamsRequest struct {
 
 func (x *StreamsRequest) Reset() {
 	*x = StreamsRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[37]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3703,7 +3861,7 @@ func (x *StreamsRequest) String() string {
 func (*StreamsRequest) ProtoMessage() {}
 
 func (x *StreamsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[37]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3716,7 +3874,7 @@ func (x *StreamsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StreamsRequest.ProtoReflect.Descriptor instead.
 func (*StreamsRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{37}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{39}
 }
 
 func (x *StreamsRequest) GetCaller() *Caller {
@@ -3763,7 +3921,7 @@ type StreamsResponse struct {
 
 func (x *StreamsResponse) Reset() {
 	*x = StreamsResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[38]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3775,7 +3933,7 @@ func (x *StreamsResponse) String() string {
 func (*StreamsResponse) ProtoMessage() {}
 
 func (x *StreamsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[38]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3788,7 +3946,7 @@ func (x *StreamsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StreamsResponse.ProtoReflect.Descriptor instead.
 func (*StreamsResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{38}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{40}
 }
 
 func (x *StreamsResponse) GetStreams() []*StreamLink {
@@ -3809,7 +3967,7 @@ type SubtitlesRequest struct {
 
 func (x *SubtitlesRequest) Reset() {
 	*x = SubtitlesRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[39]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3821,7 +3979,7 @@ func (x *SubtitlesRequest) String() string {
 func (*SubtitlesRequest) ProtoMessage() {}
 
 func (x *SubtitlesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[39]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3834,7 +3992,7 @@ func (x *SubtitlesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SubtitlesRequest.ProtoReflect.Descriptor instead.
 func (*SubtitlesRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{39}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{41}
 }
 
 func (x *SubtitlesRequest) GetCaller() *Caller {
@@ -3867,7 +4025,7 @@ type SubtitlesResponse struct {
 
 func (x *SubtitlesResponse) Reset() {
 	*x = SubtitlesResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[40]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3879,7 +4037,7 @@ func (x *SubtitlesResponse) String() string {
 func (*SubtitlesResponse) ProtoMessage() {}
 
 func (x *SubtitlesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[40]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3892,7 +4050,7 @@ func (x *SubtitlesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SubtitlesResponse.ProtoReflect.Descriptor instead.
 func (*SubtitlesResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{40}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{42}
 }
 
 func (x *SubtitlesResponse) GetSubtitles() []*Subtitle {
@@ -3920,7 +4078,7 @@ type ArtworkRequest struct {
 
 func (x *ArtworkRequest) Reset() {
 	*x = ArtworkRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[41]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3932,7 +4090,7 @@ func (x *ArtworkRequest) String() string {
 func (*ArtworkRequest) ProtoMessage() {}
 
 func (x *ArtworkRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[41]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3945,7 +4103,7 @@ func (x *ArtworkRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ArtworkRequest.ProtoReflect.Descriptor instead.
 func (*ArtworkRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{41}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{43}
 }
 
 func (x *ArtworkRequest) GetCaller() *Caller {
@@ -3992,7 +4150,7 @@ type ArtworkResponse struct {
 
 func (x *ArtworkResponse) Reset() {
 	*x = ArtworkResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[42]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4004,7 +4162,7 @@ func (x *ArtworkResponse) String() string {
 func (*ArtworkResponse) ProtoMessage() {}
 
 func (x *ArtworkResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[42]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4017,7 +4175,7 @@ func (x *ArtworkResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ArtworkResponse.ProtoReflect.Descriptor instead.
 func (*ArtworkResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{42}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{44}
 }
 
 func (x *ArtworkResponse) GetCandidates() []*ArtworkCandidate {
@@ -4040,7 +4198,7 @@ type PlaybackRequest struct {
 
 func (x *PlaybackRequest) Reset() {
 	*x = PlaybackRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[43]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4052,7 +4210,7 @@ func (x *PlaybackRequest) String() string {
 func (*PlaybackRequest) ProtoMessage() {}
 
 func (x *PlaybackRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[43]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4065,7 +4223,7 @@ func (x *PlaybackRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PlaybackRequest.ProtoReflect.Descriptor instead.
 func (*PlaybackRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{43}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{45}
 }
 
 func (x *PlaybackRequest) GetCaller() *Caller {
@@ -4100,7 +4258,7 @@ type PlaybackResponse struct {
 
 func (x *PlaybackResponse) Reset() {
 	*x = PlaybackResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[44]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4112,7 +4270,7 @@ func (x *PlaybackResponse) String() string {
 func (*PlaybackResponse) ProtoMessage() {}
 
 func (x *PlaybackResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[44]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4125,7 +4283,7 @@ func (x *PlaybackResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PlaybackResponse.ProtoReflect.Descriptor instead.
 func (*PlaybackResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{44}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{46}
 }
 
 func (x *PlaybackResponse) GetKind() PlaybackKind {
@@ -4159,7 +4317,7 @@ type SettingsUIRequest struct {
 
 func (x *SettingsUIRequest) Reset() {
 	*x = SettingsUIRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[45]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[47]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4171,7 +4329,7 @@ func (x *SettingsUIRequest) String() string {
 func (*SettingsUIRequest) ProtoMessage() {}
 
 func (x *SettingsUIRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[45]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[47]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4184,7 +4342,7 @@ func (x *SettingsUIRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SettingsUIRequest.ProtoReflect.Descriptor instead.
 func (*SettingsUIRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{45}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{47}
 }
 
 func (x *SettingsUIRequest) GetCaller() *Caller {
@@ -4214,7 +4372,7 @@ type SettingsUIResponse struct {
 
 func (x *SettingsUIResponse) Reset() {
 	*x = SettingsUIResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[46]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[48]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4226,7 +4384,7 @@ func (x *SettingsUIResponse) String() string {
 func (*SettingsUIResponse) ProtoMessage() {}
 
 func (x *SettingsUIResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[46]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[48]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4239,7 +4397,7 @@ func (x *SettingsUIResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SettingsUIResponse.ProtoReflect.Descriptor instead.
 func (*SettingsUIResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{46}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{48}
 }
 
 func (x *SettingsUIResponse) GetUi() []byte {
@@ -4250,20 +4408,24 @@ func (x *SettingsUIResponse) GetUi() []byte {
 }
 
 type AddContentWorkRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Caller        *Caller                `protobuf:"bytes,1,opt,name=caller,proto3" json:"caller,omitempty"`
-	MediaType     string                 `protobuf:"bytes,2,opt,name=media_type,json=mediaType,proto3" json:"media_type,omitempty"`
-	Title         string                 `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
-	ExternalIds   []byte                 `protobuf:"bytes,4,opt,name=external_ids,json=externalIds,proto3" json:"external_ids,omitempty"`
-	Attributes    []byte                 `protobuf:"bytes,5,opt,name=attributes,proto3" json:"attributes,omitempty"`
-	Artwork       *Artwork               `protobuf:"bytes,6,opt,name=artwork,proto3" json:"artwork,omitempty"`
+	state       protoimpl.MessageState `protogen:"open.v1"`
+	Caller      *Caller                `protobuf:"bytes,1,opt,name=caller,proto3" json:"caller,omitempty"`
+	MediaType   string                 `protobuf:"bytes,2,opt,name=media_type,json=mediaType,proto3" json:"media_type,omitempty"`
+	Title       string                 `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
+	ExternalIds []byte                 `protobuf:"bytes,4,opt,name=external_ids,json=externalIds,proto3" json:"external_ids,omitempty"`
+	Attributes  []byte                 `protobuf:"bytes,5,opt,name=attributes,proto3" json:"attributes,omitempty"`
+	Artwork     *Artwork               `protobuf:"bytes,6,opt,name=artwork,proto3" json:"artwork,omitempty"`
+	// The work's genres, as the source names them. Stored on the node rather
+	// than smuggled into attributes: genres are universal and filtered in bulk,
+	// and a facet that reads an unvalidated document cannot be indexed honestly.
+	Genres        []string `protobuf:"bytes,7,rep,name=genres,proto3" json:"genres,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *AddContentWorkRequest) Reset() {
 	*x = AddContentWorkRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[47]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[49]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4275,7 +4437,7 @@ func (x *AddContentWorkRequest) String() string {
 func (*AddContentWorkRequest) ProtoMessage() {}
 
 func (x *AddContentWorkRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[47]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[49]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4288,7 +4450,7 @@ func (x *AddContentWorkRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddContentWorkRequest.ProtoReflect.Descriptor instead.
 func (*AddContentWorkRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{47}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{49}
 }
 
 func (x *AddContentWorkRequest) GetCaller() *Caller {
@@ -4333,6 +4495,13 @@ func (x *AddContentWorkRequest) GetArtwork() *Artwork {
 	return nil
 }
 
+func (x *AddContentWorkRequest) GetGenres() []string {
+	if x != nil {
+		return x.Genres
+	}
+	return nil
+}
+
 type AddContentWorkResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Work          *Node                  `protobuf:"bytes,1,opt,name=work,proto3" json:"work,omitempty"`
@@ -4342,7 +4511,7 @@ type AddContentWorkResponse struct {
 
 func (x *AddContentWorkResponse) Reset() {
 	*x = AddContentWorkResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[48]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[50]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4354,7 +4523,7 @@ func (x *AddContentWorkResponse) String() string {
 func (*AddContentWorkResponse) ProtoMessage() {}
 
 func (x *AddContentWorkResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[48]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[50]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4367,7 +4536,7 @@ func (x *AddContentWorkResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddContentWorkResponse.ProtoReflect.Descriptor instead.
 func (*AddContentWorkResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{48}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{50}
 }
 
 func (x *AddContentWorkResponse) GetWork() *Node {
@@ -4395,7 +4564,7 @@ type AddContentChildRequest struct {
 
 func (x *AddContentChildRequest) Reset() {
 	*x = AddContentChildRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[49]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[51]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4407,7 +4576,7 @@ func (x *AddContentChildRequest) String() string {
 func (*AddContentChildRequest) ProtoMessage() {}
 
 func (x *AddContentChildRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[49]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[51]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4420,7 +4589,7 @@ func (x *AddContentChildRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddContentChildRequest.ProtoReflect.Descriptor instead.
 func (*AddContentChildRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{49}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{51}
 }
 
 func (x *AddContentChildRequest) GetCaller() *Caller {
@@ -4502,7 +4671,7 @@ type AddContentChildResponse struct {
 
 func (x *AddContentChildResponse) Reset() {
 	*x = AddContentChildResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[50]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[52]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4514,7 +4683,7 @@ func (x *AddContentChildResponse) String() string {
 func (*AddContentChildResponse) ProtoMessage() {}
 
 func (x *AddContentChildResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[50]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[52]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4527,7 +4696,7 @@ func (x *AddContentChildResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddContentChildResponse.ProtoReflect.Descriptor instead.
 func (*AddContentChildResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{50}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{52}
 }
 
 func (x *AddContentChildResponse) GetNode() *Node {
@@ -4561,7 +4730,7 @@ type AttachContentPartRequest struct {
 
 func (x *AttachContentPartRequest) Reset() {
 	*x = AttachContentPartRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[51]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[53]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4573,7 +4742,7 @@ func (x *AttachContentPartRequest) String() string {
 func (*AttachContentPartRequest) ProtoMessage() {}
 
 func (x *AttachContentPartRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[51]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[53]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4586,7 +4755,7 @@ func (x *AttachContentPartRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AttachContentPartRequest.ProtoReflect.Descriptor instead.
 func (*AttachContentPartRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{51}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{53}
 }
 
 func (x *AttachContentPartRequest) GetCaller() *Caller {
@@ -4710,7 +4879,7 @@ type AttachContentPartResponse struct {
 
 func (x *AttachContentPartResponse) Reset() {
 	*x = AttachContentPartResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[52]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[54]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4722,7 +4891,7 @@ func (x *AttachContentPartResponse) String() string {
 func (*AttachContentPartResponse) ProtoMessage() {}
 
 func (x *AttachContentPartResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[52]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[54]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4735,7 +4904,7 @@ func (x *AttachContentPartResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AttachContentPartResponse.ProtoReflect.Descriptor instead.
 func (*AttachContentPartResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{52}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{54}
 }
 
 func (x *AttachContentPartResponse) GetPart() *Part {
@@ -4758,7 +4927,7 @@ type SetContentArtworkRequest struct {
 
 func (x *SetContentArtworkRequest) Reset() {
 	*x = SetContentArtworkRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[53]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[55]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4770,7 +4939,7 @@ func (x *SetContentArtworkRequest) String() string {
 func (*SetContentArtworkRequest) ProtoMessage() {}
 
 func (x *SetContentArtworkRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[53]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[55]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4783,7 +4952,7 @@ func (x *SetContentArtworkRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetContentArtworkRequest.ProtoReflect.Descriptor instead.
 func (*SetContentArtworkRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{53}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{55}
 }
 
 func (x *SetContentArtworkRequest) GetCaller() *Caller {
@@ -4816,7 +4985,7 @@ type SetContentArtworkResponse struct {
 
 func (x *SetContentArtworkResponse) Reset() {
 	*x = SetContentArtworkResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[54]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[56]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4828,7 +4997,7 @@ func (x *SetContentArtworkResponse) String() string {
 func (*SetContentArtworkResponse) ProtoMessage() {}
 
 func (x *SetContentArtworkResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[54]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[56]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4841,7 +5010,7 @@ func (x *SetContentArtworkResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetContentArtworkResponse.ProtoReflect.Descriptor instead.
 func (*SetContentArtworkResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{54}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{56}
 }
 
 func (x *SetContentArtworkResponse) GetNode() *Node {
@@ -4865,7 +5034,7 @@ type RelateContentRequest struct {
 
 func (x *RelateContentRequest) Reset() {
 	*x = RelateContentRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[55]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[57]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4877,7 +5046,7 @@ func (x *RelateContentRequest) String() string {
 func (*RelateContentRequest) ProtoMessage() {}
 
 func (x *RelateContentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[55]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[57]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4890,7 +5059,7 @@ func (x *RelateContentRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RelateContentRequest.ProtoReflect.Descriptor instead.
 func (*RelateContentRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{55}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{57}
 }
 
 func (x *RelateContentRequest) GetCaller() *Caller {
@@ -4944,7 +5113,7 @@ type RelateContentResponse struct {
 
 func (x *RelateContentResponse) Reset() {
 	*x = RelateContentResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[56]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[58]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4956,7 +5125,7 @@ func (x *RelateContentResponse) String() string {
 func (*RelateContentResponse) ProtoMessage() {}
 
 func (x *RelateContentResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[56]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[58]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4969,7 +5138,7 @@ func (x *RelateContentResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RelateContentResponse.ProtoReflect.Descriptor instead.
 func (*RelateContentResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{56}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{58}
 }
 
 func (x *RelateContentResponse) GetRelation() *Relation {
@@ -4994,7 +5163,7 @@ type BindContentSourceRequest struct {
 
 func (x *BindContentSourceRequest) Reset() {
 	*x = BindContentSourceRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[57]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[59]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5006,7 +5175,7 @@ func (x *BindContentSourceRequest) String() string {
 func (*BindContentSourceRequest) ProtoMessage() {}
 
 func (x *BindContentSourceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[57]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[59]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5019,7 +5188,7 @@ func (x *BindContentSourceRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BindContentSourceRequest.ProtoReflect.Descriptor instead.
 func (*BindContentSourceRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{57}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{59}
 }
 
 func (x *BindContentSourceRequest) GetCaller() *Caller {
@@ -5080,7 +5249,7 @@ type BindContentSourceResponse struct {
 
 func (x *BindContentSourceResponse) Reset() {
 	*x = BindContentSourceResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[58]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[60]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5092,7 +5261,7 @@ func (x *BindContentSourceResponse) String() string {
 func (*BindContentSourceResponse) ProtoMessage() {}
 
 func (x *BindContentSourceResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[58]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[60]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5105,7 +5274,7 @@ func (x *BindContentSourceResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BindContentSourceResponse.ProtoReflect.Descriptor instead.
 func (*BindContentSourceResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{58}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{60}
 }
 
 func (x *BindContentSourceResponse) GetBinding() *SourceBinding {
@@ -5129,7 +5298,7 @@ type ResolveContentBindingRequest struct {
 
 func (x *ResolveContentBindingRequest) Reset() {
 	*x = ResolveContentBindingRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[59]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[61]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5141,7 +5310,7 @@ func (x *ResolveContentBindingRequest) String() string {
 func (*ResolveContentBindingRequest) ProtoMessage() {}
 
 func (x *ResolveContentBindingRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[59]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[61]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5154,7 +5323,7 @@ func (x *ResolveContentBindingRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ResolveContentBindingRequest.ProtoReflect.Descriptor instead.
 func (*ResolveContentBindingRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{59}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{61}
 }
 
 func (x *ResolveContentBindingRequest) GetCaller() *Caller {
@@ -5194,7 +5363,7 @@ type ResolveContentBindingResponse struct {
 
 func (x *ResolveContentBindingResponse) Reset() {
 	*x = ResolveContentBindingResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[60]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[62]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5206,7 +5375,7 @@ func (x *ResolveContentBindingResponse) String() string {
 func (*ResolveContentBindingResponse) ProtoMessage() {}
 
 func (x *ResolveContentBindingResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[60]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[62]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5219,7 +5388,7 @@ func (x *ResolveContentBindingResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ResolveContentBindingResponse.ProtoReflect.Descriptor instead.
 func (*ResolveContentBindingResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{60}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{62}
 }
 
 func (x *ResolveContentBindingResponse) GetBinding() *SourceBinding {
@@ -5237,13 +5406,16 @@ type SearchContentRequest struct {
 	Kind              NodeKind               `protobuf:"varint,4,opt,name=kind,proto3,enum=mosaic.module.v1.NodeKind" json:"kind,omitempty"`
 	AttributesContain []byte                 `protobuf:"bytes,5,opt,name=attributes_contain,json=attributesContain,proto3" json:"attributes_contain,omitempty"`
 	Limit             int32                  `protobuf:"varint,6,opt,name=limit,proto3" json:"limit,omitempty"`
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
+	// Narrows to nodes carrying every genre listed — conjunctive, because that is
+	// what two lit chips on a facet control mean.
+	Genres        []string `protobuf:"bytes,7,rep,name=genres,proto3" json:"genres,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *SearchContentRequest) Reset() {
 	*x = SearchContentRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[61]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[63]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5255,7 +5427,7 @@ func (x *SearchContentRequest) String() string {
 func (*SearchContentRequest) ProtoMessage() {}
 
 func (x *SearchContentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[61]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[63]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5268,7 +5440,7 @@ func (x *SearchContentRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchContentRequest.ProtoReflect.Descriptor instead.
 func (*SearchContentRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{61}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{63}
 }
 
 func (x *SearchContentRequest) GetCaller() *Caller {
@@ -5313,6 +5485,13 @@ func (x *SearchContentRequest) GetLimit() int32 {
 	return 0
 }
 
+func (x *SearchContentRequest) GetGenres() []string {
+	if x != nil {
+		return x.Genres
+	}
+	return nil
+}
+
 type SearchContentResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Nodes         []*Node                `protobuf:"bytes,1,rep,name=nodes,proto3" json:"nodes,omitempty"`
@@ -5322,7 +5501,7 @@ type SearchContentResponse struct {
 
 func (x *SearchContentResponse) Reset() {
 	*x = SearchContentResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[62]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[64]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5334,7 +5513,7 @@ func (x *SearchContentResponse) String() string {
 func (*SearchContentResponse) ProtoMessage() {}
 
 func (x *SearchContentResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[62]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[64]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5347,7 +5526,7 @@ func (x *SearchContentResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchContentResponse.ProtoReflect.Descriptor instead.
 func (*SearchContentResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{62}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{64}
 }
 
 func (x *SearchContentResponse) GetNodes() []*Node {
@@ -5368,7 +5547,7 @@ type FindContentByExternalIDRequest struct {
 
 func (x *FindContentByExternalIDRequest) Reset() {
 	*x = FindContentByExternalIDRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[63]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[65]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5380,7 +5559,7 @@ func (x *FindContentByExternalIDRequest) String() string {
 func (*FindContentByExternalIDRequest) ProtoMessage() {}
 
 func (x *FindContentByExternalIDRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[63]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[65]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5393,7 +5572,7 @@ func (x *FindContentByExternalIDRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FindContentByExternalIDRequest.ProtoReflect.Descriptor instead.
 func (*FindContentByExternalIDRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{63}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{65}
 }
 
 func (x *FindContentByExternalIDRequest) GetCaller() *Caller {
@@ -5426,7 +5605,7 @@ type FindContentByExternalIDResponse struct {
 
 func (x *FindContentByExternalIDResponse) Reset() {
 	*x = FindContentByExternalIDResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[64]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[66]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5438,7 +5617,7 @@ func (x *FindContentByExternalIDResponse) String() string {
 func (*FindContentByExternalIDResponse) ProtoMessage() {}
 
 func (x *FindContentByExternalIDResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[64]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[66]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5451,7 +5630,7 @@ func (x *FindContentByExternalIDResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FindContentByExternalIDResponse.ProtoReflect.Descriptor instead.
 func (*FindContentByExternalIDResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{64}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{66}
 }
 
 func (x *FindContentByExternalIDResponse) GetNodes() []*Node {
@@ -5472,7 +5651,7 @@ type GetContentNodeRequest struct {
 
 func (x *GetContentNodeRequest) Reset() {
 	*x = GetContentNodeRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[65]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[67]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5484,7 +5663,7 @@ func (x *GetContentNodeRequest) String() string {
 func (*GetContentNodeRequest) ProtoMessage() {}
 
 func (x *GetContentNodeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[65]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[67]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5497,7 +5676,7 @@ func (x *GetContentNodeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetContentNodeRequest.ProtoReflect.Descriptor instead.
 func (*GetContentNodeRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{65}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{67}
 }
 
 func (x *GetContentNodeRequest) GetCaller() *Caller {
@@ -5531,7 +5710,7 @@ type GetContentNodeResponse struct {
 
 func (x *GetContentNodeResponse) Reset() {
 	*x = GetContentNodeResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[66]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[68]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5543,7 +5722,7 @@ func (x *GetContentNodeResponse) String() string {
 func (*GetContentNodeResponse) ProtoMessage() {}
 
 func (x *GetContentNodeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[66]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[68]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5556,7 +5735,7 @@ func (x *GetContentNodeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetContentNodeResponse.ProtoReflect.Descriptor instead.
 func (*GetContentNodeResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{66}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{68}
 }
 
 func (x *GetContentNodeResponse) GetNode() *Node {
@@ -5583,7 +5762,7 @@ type ListContentPartsRequest struct {
 
 func (x *ListContentPartsRequest) Reset() {
 	*x = ListContentPartsRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[67]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[69]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5595,7 +5774,7 @@ func (x *ListContentPartsRequest) String() string {
 func (*ListContentPartsRequest) ProtoMessage() {}
 
 func (x *ListContentPartsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[67]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[69]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5608,7 +5787,7 @@ func (x *ListContentPartsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListContentPartsRequest.ProtoReflect.Descriptor instead.
 func (*ListContentPartsRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{67}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{69}
 }
 
 func (x *ListContentPartsRequest) GetCaller() *Caller {
@@ -5634,7 +5813,7 @@ type ListContentPartsResponse struct {
 
 func (x *ListContentPartsResponse) Reset() {
 	*x = ListContentPartsResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[68]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[70]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5646,7 +5825,7 @@ func (x *ListContentPartsResponse) String() string {
 func (*ListContentPartsResponse) ProtoMessage() {}
 
 func (x *ListContentPartsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[68]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[70]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5659,7 +5838,7 @@ func (x *ListContentPartsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListContentPartsResponse.ProtoReflect.Descriptor instead.
 func (*ListContentPartsResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{68}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{70}
 }
 
 func (x *ListContentPartsResponse) GetParts() []*Part {
@@ -5689,7 +5868,7 @@ type PlaybackState struct {
 
 func (x *PlaybackState) Reset() {
 	*x = PlaybackState{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[69]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[71]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5701,7 +5880,7 @@ func (x *PlaybackState) String() string {
 func (*PlaybackState) ProtoMessage() {}
 
 func (x *PlaybackState) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[69]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[71]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5714,7 +5893,7 @@ func (x *PlaybackState) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PlaybackState.ProtoReflect.Descriptor instead.
 func (*PlaybackState) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{69}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{71}
 }
 
 func (x *PlaybackState) GetNodeId() string {
@@ -5779,7 +5958,7 @@ type RecordPlaybackProgressRequest struct {
 
 func (x *RecordPlaybackProgressRequest) Reset() {
 	*x = RecordPlaybackProgressRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[70]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[72]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5791,7 +5970,7 @@ func (x *RecordPlaybackProgressRequest) String() string {
 func (*RecordPlaybackProgressRequest) ProtoMessage() {}
 
 func (x *RecordPlaybackProgressRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[70]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[72]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5804,7 +5983,7 @@ func (x *RecordPlaybackProgressRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RecordPlaybackProgressRequest.ProtoReflect.Descriptor instead.
 func (*RecordPlaybackProgressRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{70}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{72}
 }
 
 func (x *RecordPlaybackProgressRequest) GetCaller() *Caller {
@@ -5851,7 +6030,7 @@ type RecordPlaybackProgressResponse struct {
 
 func (x *RecordPlaybackProgressResponse) Reset() {
 	*x = RecordPlaybackProgressResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[71]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[73]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5863,7 +6042,7 @@ func (x *RecordPlaybackProgressResponse) String() string {
 func (*RecordPlaybackProgressResponse) ProtoMessage() {}
 
 func (x *RecordPlaybackProgressResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[71]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[73]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5876,7 +6055,7 @@ func (x *RecordPlaybackProgressResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RecordPlaybackProgressResponse.ProtoReflect.Descriptor instead.
 func (*RecordPlaybackProgressResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{71}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{73}
 }
 
 func (x *RecordPlaybackProgressResponse) GetState() *PlaybackState {
@@ -5897,7 +6076,7 @@ type SetPlaybackFinishedRequest struct {
 
 func (x *SetPlaybackFinishedRequest) Reset() {
 	*x = SetPlaybackFinishedRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[72]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[74]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5909,7 +6088,7 @@ func (x *SetPlaybackFinishedRequest) String() string {
 func (*SetPlaybackFinishedRequest) ProtoMessage() {}
 
 func (x *SetPlaybackFinishedRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[72]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[74]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5922,7 +6101,7 @@ func (x *SetPlaybackFinishedRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetPlaybackFinishedRequest.ProtoReflect.Descriptor instead.
 func (*SetPlaybackFinishedRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{72}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{74}
 }
 
 func (x *SetPlaybackFinishedRequest) GetCaller() *Caller {
@@ -5955,7 +6134,7 @@ type SetPlaybackFinishedResponse struct {
 
 func (x *SetPlaybackFinishedResponse) Reset() {
 	*x = SetPlaybackFinishedResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[73]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[75]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5967,7 +6146,7 @@ func (x *SetPlaybackFinishedResponse) String() string {
 func (*SetPlaybackFinishedResponse) ProtoMessage() {}
 
 func (x *SetPlaybackFinishedResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[73]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[75]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5980,7 +6159,7 @@ func (x *SetPlaybackFinishedResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetPlaybackFinishedResponse.ProtoReflect.Descriptor instead.
 func (*SetPlaybackFinishedResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{73}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{75}
 }
 
 func (x *SetPlaybackFinishedResponse) GetState() *PlaybackState {
@@ -6000,7 +6179,7 @@ type GetPlaybackStateRequest struct {
 
 func (x *GetPlaybackStateRequest) Reset() {
 	*x = GetPlaybackStateRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[74]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[76]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6012,7 +6191,7 @@ func (x *GetPlaybackStateRequest) String() string {
 func (*GetPlaybackStateRequest) ProtoMessage() {}
 
 func (x *GetPlaybackStateRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[74]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[76]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6025,7 +6204,7 @@ func (x *GetPlaybackStateRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetPlaybackStateRequest.ProtoReflect.Descriptor instead.
 func (*GetPlaybackStateRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{74}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{76}
 }
 
 func (x *GetPlaybackStateRequest) GetCaller() *Caller {
@@ -6052,7 +6231,7 @@ type GetPlaybackStateResponse struct {
 
 func (x *GetPlaybackStateResponse) Reset() {
 	*x = GetPlaybackStateResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[75]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[77]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6064,7 +6243,7 @@ func (x *GetPlaybackStateResponse) String() string {
 func (*GetPlaybackStateResponse) ProtoMessage() {}
 
 func (x *GetPlaybackStateResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[75]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[77]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6077,7 +6256,7 @@ func (x *GetPlaybackStateResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetPlaybackStateResponse.ProtoReflect.Descriptor instead.
 func (*GetPlaybackStateResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{75}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{77}
 }
 
 func (x *GetPlaybackStateResponse) GetState() *PlaybackState {
@@ -6104,7 +6283,7 @@ type ListPlaybackStatesRequest struct {
 
 func (x *ListPlaybackStatesRequest) Reset() {
 	*x = ListPlaybackStatesRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[76]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[78]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6116,7 +6295,7 @@ func (x *ListPlaybackStatesRequest) String() string {
 func (*ListPlaybackStatesRequest) ProtoMessage() {}
 
 func (x *ListPlaybackStatesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[76]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[78]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6129,7 +6308,7 @@ func (x *ListPlaybackStatesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListPlaybackStatesRequest.ProtoReflect.Descriptor instead.
 func (*ListPlaybackStatesRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{76}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{78}
 }
 
 func (x *ListPlaybackStatesRequest) GetCaller() *Caller {
@@ -6155,7 +6334,7 @@ type ListPlaybackStatesResponse struct {
 
 func (x *ListPlaybackStatesResponse) Reset() {
 	*x = ListPlaybackStatesResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[77]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[79]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6167,7 +6346,7 @@ func (x *ListPlaybackStatesResponse) String() string {
 func (*ListPlaybackStatesResponse) ProtoMessage() {}
 
 func (x *ListPlaybackStatesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[77]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[79]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6180,7 +6359,7 @@ func (x *ListPlaybackStatesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListPlaybackStatesResponse.ProtoReflect.Descriptor instead.
 func (*ListPlaybackStatesResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{77}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{79}
 }
 
 func (x *ListPlaybackStatesResponse) GetStates() map[string]*PlaybackState {
@@ -6200,7 +6379,7 @@ type ListInProgressRequest struct {
 
 func (x *ListInProgressRequest) Reset() {
 	*x = ListInProgressRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[78]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[80]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6212,7 +6391,7 @@ func (x *ListInProgressRequest) String() string {
 func (*ListInProgressRequest) ProtoMessage() {}
 
 func (x *ListInProgressRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[78]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[80]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6225,7 +6404,7 @@ func (x *ListInProgressRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListInProgressRequest.ProtoReflect.Descriptor instead.
 func (*ListInProgressRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{78}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{80}
 }
 
 func (x *ListInProgressRequest) GetCaller() *Caller {
@@ -6252,7 +6431,7 @@ type InProgressItem struct {
 
 func (x *InProgressItem) Reset() {
 	*x = InProgressItem{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[79]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[81]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6264,7 +6443,7 @@ func (x *InProgressItem) String() string {
 func (*InProgressItem) ProtoMessage() {}
 
 func (x *InProgressItem) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[79]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[81]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6277,7 +6456,7 @@ func (x *InProgressItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InProgressItem.ProtoReflect.Descriptor instead.
 func (*InProgressItem) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{79}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{81}
 }
 
 func (x *InProgressItem) GetNode() *Node {
@@ -6303,7 +6482,7 @@ type ListInProgressResponse struct {
 
 func (x *ListInProgressResponse) Reset() {
 	*x = ListInProgressResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[80]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[82]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6315,7 +6494,7 @@ func (x *ListInProgressResponse) String() string {
 func (*ListInProgressResponse) ProtoMessage() {}
 
 func (x *ListInProgressResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[80]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[82]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6328,7 +6507,7 @@ func (x *ListInProgressResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListInProgressResponse.ProtoReflect.Descriptor instead.
 func (*ListInProgressResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{80}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{82}
 }
 
 func (x *ListInProgressResponse) GetItems() []*InProgressItem {
@@ -6356,7 +6535,7 @@ type Field struct {
 
 func (x *Field) Reset() {
 	*x = Field{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[81]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[83]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6368,7 +6547,7 @@ func (x *Field) String() string {
 func (*Field) ProtoMessage() {}
 
 func (x *Field) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[81]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[83]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6381,7 +6560,7 @@ func (x *Field) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Field.ProtoReflect.Descriptor instead.
 func (*Field) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{81}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{83}
 }
 
 func (x *Field) GetKey() string {
@@ -6419,7 +6598,7 @@ type LogRequest struct {
 
 func (x *LogRequest) Reset() {
 	*x = LogRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[82]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[84]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6431,7 +6610,7 @@ func (x *LogRequest) String() string {
 func (*LogRequest) ProtoMessage() {}
 
 func (x *LogRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[82]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[84]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6444,7 +6623,7 @@ func (x *LogRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LogRequest.ProtoReflect.Descriptor instead.
 func (*LogRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{82}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{84}
 }
 
 func (x *LogRequest) GetCaller() *Caller {
@@ -6490,7 +6669,7 @@ type LogResponse struct {
 
 func (x *LogResponse) Reset() {
 	*x = LogResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[83]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[85]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6502,7 +6681,7 @@ func (x *LogResponse) String() string {
 func (*LogResponse) ProtoMessage() {}
 
 func (x *LogResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[83]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[85]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6515,7 +6694,7 @@ func (x *LogResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LogResponse.ProtoReflect.Descriptor instead.
 func (*LogResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{83}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{85}
 }
 
 type StartSpanRequest struct {
@@ -6534,7 +6713,7 @@ type StartSpanRequest struct {
 
 func (x *StartSpanRequest) Reset() {
 	*x = StartSpanRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[84]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[86]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6546,7 +6725,7 @@ func (x *StartSpanRequest) String() string {
 func (*StartSpanRequest) ProtoMessage() {}
 
 func (x *StartSpanRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[84]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[86]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6559,7 +6738,7 @@ func (x *StartSpanRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StartSpanRequest.ProtoReflect.Descriptor instead.
 func (*StartSpanRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{84}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{86}
 }
 
 func (x *StartSpanRequest) GetCaller() *Caller {
@@ -6599,7 +6778,7 @@ type StartSpanResponse struct {
 
 func (x *StartSpanResponse) Reset() {
 	*x = StartSpanResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[85]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[87]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6611,7 +6790,7 @@ func (x *StartSpanResponse) String() string {
 func (*StartSpanResponse) ProtoMessage() {}
 
 func (x *StartSpanResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[85]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[87]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6624,7 +6803,7 @@ func (x *StartSpanResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StartSpanResponse.ProtoReflect.Descriptor instead.
 func (*StartSpanResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{85}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{87}
 }
 
 func (x *StartSpanResponse) GetSpanId() string {
@@ -6645,7 +6824,7 @@ type SpanAttributesRequest struct {
 
 func (x *SpanAttributesRequest) Reset() {
 	*x = SpanAttributesRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[86]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[88]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6657,7 +6836,7 @@ func (x *SpanAttributesRequest) String() string {
 func (*SpanAttributesRequest) ProtoMessage() {}
 
 func (x *SpanAttributesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[86]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[88]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6670,7 +6849,7 @@ func (x *SpanAttributesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SpanAttributesRequest.ProtoReflect.Descriptor instead.
 func (*SpanAttributesRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{86}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{88}
 }
 
 func (x *SpanAttributesRequest) GetCaller() *Caller {
@@ -6702,7 +6881,7 @@ type SpanAttributesResponse struct {
 
 func (x *SpanAttributesResponse) Reset() {
 	*x = SpanAttributesResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[87]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[89]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6714,7 +6893,7 @@ func (x *SpanAttributesResponse) String() string {
 func (*SpanAttributesResponse) ProtoMessage() {}
 
 func (x *SpanAttributesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[87]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[89]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6727,7 +6906,7 @@ func (x *SpanAttributesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SpanAttributesResponse.ProtoReflect.Descriptor instead.
 func (*SpanAttributesResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{87}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{89}
 }
 
 type FailSpanRequest struct {
@@ -6742,7 +6921,7 @@ type FailSpanRequest struct {
 
 func (x *FailSpanRequest) Reset() {
 	*x = FailSpanRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[88]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[90]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6754,7 +6933,7 @@ func (x *FailSpanRequest) String() string {
 func (*FailSpanRequest) ProtoMessage() {}
 
 func (x *FailSpanRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[88]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[90]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6767,7 +6946,7 @@ func (x *FailSpanRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FailSpanRequest.ProtoReflect.Descriptor instead.
 func (*FailSpanRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{88}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{90}
 }
 
 func (x *FailSpanRequest) GetCaller() *Caller {
@@ -6806,7 +6985,7 @@ type FailSpanResponse struct {
 
 func (x *FailSpanResponse) Reset() {
 	*x = FailSpanResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[89]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[91]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6818,7 +6997,7 @@ func (x *FailSpanResponse) String() string {
 func (*FailSpanResponse) ProtoMessage() {}
 
 func (x *FailSpanResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[89]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[91]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6831,7 +7010,7 @@ func (x *FailSpanResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FailSpanResponse.ProtoReflect.Descriptor instead.
 func (*FailSpanResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{89}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{91}
 }
 
 type EndSpanRequest struct {
@@ -6844,7 +7023,7 @@ type EndSpanRequest struct {
 
 func (x *EndSpanRequest) Reset() {
 	*x = EndSpanRequest{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[90]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[92]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6856,7 +7035,7 @@ func (x *EndSpanRequest) String() string {
 func (*EndSpanRequest) ProtoMessage() {}
 
 func (x *EndSpanRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[90]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[92]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6869,7 +7048,7 @@ func (x *EndSpanRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EndSpanRequest.ProtoReflect.Descriptor instead.
 func (*EndSpanRequest) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{90}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{92}
 }
 
 func (x *EndSpanRequest) GetCaller() *Caller {
@@ -6894,7 +7073,7 @@ type EndSpanResponse struct {
 
 func (x *EndSpanResponse) Reset() {
 	*x = EndSpanResponse{}
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[91]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[93]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6906,7 +7085,7 @@ func (x *EndSpanResponse) String() string {
 func (*EndSpanResponse) ProtoMessage() {}
 
 func (x *EndSpanResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_mosaic_module_v1_module_proto_msgTypes[91]
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[93]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6919,7 +7098,7 @@ func (x *EndSpanResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EndSpanResponse.ProtoReflect.Descriptor instead.
 func (*EndSpanResponse) Descriptor() ([]byte, []int) {
-	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{91}
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{93}
 }
 
 var File_mosaic_module_v1_module_proto protoreflect.FileDescriptor
@@ -6949,7 +7128,7 @@ const file_mosaic_module_v1_module_proto_rawDesc = "" +
 	"\x04logo\x18\x04 \x01(\tR\x04logo\x12B\n" +
 	"\n" +
 	"candidates\x18\x05 \x03(\v2\".mosaic.module.v1.ArtworkCandidateR\n" +
-	"candidates\"\x86\x04\n" +
+	"candidates\"\x9e\x04\n" +
 	"\x04Node\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
 	"\awork_id\x18\x02 \x01(\tR\x06workId\x12\x1b\n" +
@@ -6971,7 +7150,8 @@ const file_mosaic_module_v1_module_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x0e \x01(\tR\tcreatedAt\x12\x1d\n" +
 	"\n" +
-	"updated_at\x18\x0f \x01(\tR\tupdatedAt\"\xd8\x04\n" +
+	"updated_at\x18\x0f \x01(\tR\tupdatedAt\x12\x16\n" +
+	"\x06genres\x18\x10 \x03(\tR\x06genres\"\xd8\x04\n" +
 	"\x04Part\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
 	"\anode_id\x18\x02 \x01(\tR\x06nodeId\x12.\n" +
@@ -7061,12 +7241,20 @@ const file_mosaic_module_v1_module_proto_rawDesc = "" +
 	"\x06poster\x18\x04 \x01(\tR\x06poster\x12\x1d\n" +
 	"\n" +
 	"in_library\x18\x05 \x01(\bR\tinLibrary\x12\x17\n" +
-	"\anode_id\x18\x06 \x01(\tR\x06nodeId\"N\n" +
+	"\anode_id\x18\x06 \x01(\tR\x06nodeId\"\x89\x01\n" +
 	"\aCatalog\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
 	"\vnative_type\x18\x02 \x01(\tR\n" +
 	"nativeType\x12\x12\n" +
-	"\x04name\x18\x03 \x01(\tR\x04name\"F\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x129\n" +
+	"\afilters\x18\x04 \x03(\v2\x1f.mosaic.module.v1.CatalogFilterR\afilters\"z\n" +
+	"\rCatalogFilter\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
+	"\x05label\x18\x02 \x01(\tR\x05label\x12?\n" +
+	"\aoptions\x18\x03 \x03(\v2%.mosaic.module.v1.CatalogFilterOptionR\aoptions\"A\n" +
+	"\x13CatalogFilterOption\x12\x14\n" +
+	"\x05value\x18\x01 \x01(\tR\x05value\x12\x14\n" +
+	"\x05label\x18\x02 \x01(\tR\x05label\"F\n" +
 	"\x06Person\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
 	"\x04role\x18\x02 \x01(\tR\x04role\x12\x14\n" +
@@ -7182,7 +7370,7 @@ const file_mosaic_module_v1_module_proto_rawDesc = "" +
 	"\x06caller\x18\x01 \x01(\v2\x18.mosaic.module.v1.CallerR\x06caller\x12\x1a\n" +
 	"\bsettings\x18\x02 \x01(\fR\bsettings\"I\n" +
 	"\x10CatalogsResponse\x125\n" +
-	"\bcatalogs\x18\x01 \x03(\v2\x19.mosaic.module.v1.CatalogR\bcatalogs\"\xb7\x01\n" +
+	"\bcatalogs\x18\x01 \x03(\v2\x19.mosaic.module.v1.CatalogR\bcatalogs\"\xc1\x02\n" +
 	"\x13CatalogItemsRequest\x120\n" +
 	"\x06caller\x18\x01 \x01(\v2\x18.mosaic.module.v1.CallerR\x06caller\x12\x1a\n" +
 	"\bsettings\x18\x02 \x01(\fR\bsettings\x12\x1d\n" +
@@ -7190,7 +7378,11 @@ const file_mosaic_module_v1_module_proto_rawDesc = "" +
 	"catalog_id\x18\x03 \x01(\tR\tcatalogId\x12\x1f\n" +
 	"\vnative_type\x18\x04 \x01(\tR\n" +
 	"nativeType\x12\x12\n" +
-	"\x04skip\x18\x05 \x01(\x05R\x04skip\"f\n" +
+	"\x04skip\x18\x05 \x01(\x05R\x04skip\x12L\n" +
+	"\afilters\x18\x06 \x03(\v22.mosaic.module.v1.CatalogItemsRequest.FiltersEntryR\afilters\x1a:\n" +
+	"\fFiltersEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"f\n" +
 	"\x14CatalogItemsResponse\x123\n" +
 	"\x05items\x18\x01 \x03(\v2\x1d.mosaic.module.v1.CatalogItemR\x05items\x12\x19\n" +
 	"\bhas_more\x18\x02 \x01(\bR\ahasMore\"\xc0\x01\n" +
@@ -7236,7 +7428,7 @@ const file_mosaic_module_v1_module_proto_rawDesc = "" +
 	"\x06caller\x18\x01 \x01(\v2\x18.mosaic.module.v1.CallerR\x06caller\x12\x1a\n" +
 	"\bsettings\x18\x02 \x01(\fR\bsettings\"$\n" +
 	"\x12SettingsUIResponse\x12\x0e\n" +
-	"\x02ui\x18\x01 \x01(\fR\x02ui\"\xf6\x01\n" +
+	"\x02ui\x18\x01 \x01(\fR\x02ui\"\x8e\x02\n" +
 	"\x15AddContentWorkRequest\x120\n" +
 	"\x06caller\x18\x01 \x01(\v2\x18.mosaic.module.v1.CallerR\x06caller\x12\x1d\n" +
 	"\n" +
@@ -7246,7 +7438,8 @@ const file_mosaic_module_v1_module_proto_rawDesc = "" +
 	"\n" +
 	"attributes\x18\x05 \x01(\fR\n" +
 	"attributes\x123\n" +
-	"\aartwork\x18\x06 \x01(\v2\x19.mosaic.module.v1.ArtworkR\aartwork\"D\n" +
+	"\aartwork\x18\x06 \x01(\v2\x19.mosaic.module.v1.ArtworkR\aartwork\x12\x16\n" +
+	"\x06genres\x18\a \x03(\tR\x06genres\"D\n" +
 	"\x16AddContentWorkResponse\x12*\n" +
 	"\x04work\x18\x01 \x01(\v2\x16.mosaic.module.v1.NodeR\x04work\"\x8e\x03\n" +
 	"\x16AddContentChildRequest\x120\n" +
@@ -7331,7 +7524,7 @@ const file_mosaic_module_v1_module_proto_rawDesc = "" +
 	"resolution\x12%\n" +
 	"\x0fmove_to_node_id\x18\x04 \x01(\tR\fmoveToNodeId\"Z\n" +
 	"\x1dResolveContentBindingResponse\x129\n" +
-	"\abinding\x18\x01 \x01(\v2\x1f.mosaic.module.v1.SourceBindingR\abinding\"\xf2\x01\n" +
+	"\abinding\x18\x01 \x01(\v2\x1f.mosaic.module.v1.SourceBindingR\abinding\"\x8a\x02\n" +
 	"\x14SearchContentRequest\x120\n" +
 	"\x06caller\x18\x01 \x01(\v2\x18.mosaic.module.v1.CallerR\x06caller\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1d\n" +
@@ -7339,7 +7532,8 @@ const file_mosaic_module_v1_module_proto_rawDesc = "" +
 	"media_type\x18\x03 \x01(\tR\tmediaType\x12.\n" +
 	"\x04kind\x18\x04 \x01(\x0e2\x1a.mosaic.module.v1.NodeKindR\x04kind\x12-\n" +
 	"\x12attributes_contain\x18\x05 \x01(\fR\x11attributesContain\x12\x14\n" +
-	"\x05limit\x18\x06 \x01(\x05R\x05limit\"E\n" +
+	"\x05limit\x18\x06 \x01(\x05R\x05limit\x12\x16\n" +
+	"\x06genres\x18\a \x03(\tR\x06genres\"E\n" +
 	"\x15SearchContentResponse\x12,\n" +
 	"\x05nodes\x18\x01 \x03(\v2\x16.mosaic.module.v1.NodeR\x05nodes\"\x80\x01\n" +
 	"\x1eFindContentByExternalIDRequest\x120\n" +
@@ -7562,7 +7756,7 @@ func file_mosaic_module_v1_module_proto_rawDescGZIP() []byte {
 }
 
 var file_mosaic_module_v1_module_proto_enumTypes = make([]protoimpl.EnumInfo, 13)
-var file_mosaic_module_v1_module_proto_msgTypes = make([]protoimpl.MessageInfo, 94)
+var file_mosaic_module_v1_module_proto_msgTypes = make([]protoimpl.MessageInfo, 97)
 var file_mosaic_module_v1_module_proto_goTypes = []any{
 	(ErrorCategory)(0),                      // 0: mosaic.module.v1.ErrorCategory
 	(NodeKind)(0),                           // 1: mosaic.module.v1.NodeKind
@@ -7591,86 +7785,89 @@ var file_mosaic_module_v1_module_proto_goTypes = []any{
 	(*CatalogItem)(nil),                     // 24: mosaic.module.v1.CatalogItem
 	(*RelatedItem)(nil),                     // 25: mosaic.module.v1.RelatedItem
 	(*Catalog)(nil),                         // 26: mosaic.module.v1.Catalog
-	(*Person)(nil),                          // 27: mosaic.module.v1.Person
-	(*EpisodePreview)(nil),                  // 28: mosaic.module.v1.EpisodePreview
-	(*Collection)(nil),                      // 29: mosaic.module.v1.Collection
-	(*Trailer)(nil),                         // 30: mosaic.module.v1.Trailer
-	(*WatchOffer)(nil),                      // 31: mosaic.module.v1.WatchOffer
-	(*WatchAvailability)(nil),               // 32: mosaic.module.v1.WatchAvailability
-	(*ContentMetadata)(nil),                 // 33: mosaic.module.v1.ContentMetadata
-	(*StreamLink)(nil),                      // 34: mosaic.module.v1.StreamLink
-	(*Subtitle)(nil),                        // 35: mosaic.module.v1.Subtitle
-	(*ExternalIdentity)(nil),                // 36: mosaic.module.v1.ExternalIdentity
-	(*Manifest)(nil),                        // 37: mosaic.module.v1.Manifest
-	(*ManifestRequest)(nil),                 // 38: mosaic.module.v1.ManifestRequest
-	(*ManifestResponse)(nil),                // 39: mosaic.module.v1.ManifestResponse
-	(*ImportRequest)(nil),                   // 40: mosaic.module.v1.ImportRequest
-	(*ImportResponse)(nil),                  // 41: mosaic.module.v1.ImportResponse
-	(*MetadataRequest)(nil),                 // 42: mosaic.module.v1.MetadataRequest
-	(*MetadataResponse)(nil),                // 43: mosaic.module.v1.MetadataResponse
-	(*SearchRequest)(nil),                   // 44: mosaic.module.v1.SearchRequest
-	(*SearchResponse)(nil),                  // 45: mosaic.module.v1.SearchResponse
-	(*CatalogsRequest)(nil),                 // 46: mosaic.module.v1.CatalogsRequest
-	(*CatalogsResponse)(nil),                // 47: mosaic.module.v1.CatalogsResponse
-	(*CatalogItemsRequest)(nil),             // 48: mosaic.module.v1.CatalogItemsRequest
-	(*CatalogItemsResponse)(nil),            // 49: mosaic.module.v1.CatalogItemsResponse
-	(*StreamsRequest)(nil),                  // 50: mosaic.module.v1.StreamsRequest
-	(*StreamsResponse)(nil),                 // 51: mosaic.module.v1.StreamsResponse
-	(*SubtitlesRequest)(nil),                // 52: mosaic.module.v1.SubtitlesRequest
-	(*SubtitlesResponse)(nil),               // 53: mosaic.module.v1.SubtitlesResponse
-	(*ArtworkRequest)(nil),                  // 54: mosaic.module.v1.ArtworkRequest
-	(*ArtworkResponse)(nil),                 // 55: mosaic.module.v1.ArtworkResponse
-	(*PlaybackRequest)(nil),                 // 56: mosaic.module.v1.PlaybackRequest
-	(*PlaybackResponse)(nil),                // 57: mosaic.module.v1.PlaybackResponse
-	(*SettingsUIRequest)(nil),               // 58: mosaic.module.v1.SettingsUIRequest
-	(*SettingsUIResponse)(nil),              // 59: mosaic.module.v1.SettingsUIResponse
-	(*AddContentWorkRequest)(nil),           // 60: mosaic.module.v1.AddContentWorkRequest
-	(*AddContentWorkResponse)(nil),          // 61: mosaic.module.v1.AddContentWorkResponse
-	(*AddContentChildRequest)(nil),          // 62: mosaic.module.v1.AddContentChildRequest
-	(*AddContentChildResponse)(nil),         // 63: mosaic.module.v1.AddContentChildResponse
-	(*AttachContentPartRequest)(nil),        // 64: mosaic.module.v1.AttachContentPartRequest
-	(*AttachContentPartResponse)(nil),       // 65: mosaic.module.v1.AttachContentPartResponse
-	(*SetContentArtworkRequest)(nil),        // 66: mosaic.module.v1.SetContentArtworkRequest
-	(*SetContentArtworkResponse)(nil),       // 67: mosaic.module.v1.SetContentArtworkResponse
-	(*RelateContentRequest)(nil),            // 68: mosaic.module.v1.RelateContentRequest
-	(*RelateContentResponse)(nil),           // 69: mosaic.module.v1.RelateContentResponse
-	(*BindContentSourceRequest)(nil),        // 70: mosaic.module.v1.BindContentSourceRequest
-	(*BindContentSourceResponse)(nil),       // 71: mosaic.module.v1.BindContentSourceResponse
-	(*ResolveContentBindingRequest)(nil),    // 72: mosaic.module.v1.ResolveContentBindingRequest
-	(*ResolveContentBindingResponse)(nil),   // 73: mosaic.module.v1.ResolveContentBindingResponse
-	(*SearchContentRequest)(nil),            // 74: mosaic.module.v1.SearchContentRequest
-	(*SearchContentResponse)(nil),           // 75: mosaic.module.v1.SearchContentResponse
-	(*FindContentByExternalIDRequest)(nil),  // 76: mosaic.module.v1.FindContentByExternalIDRequest
-	(*FindContentByExternalIDResponse)(nil), // 77: mosaic.module.v1.FindContentByExternalIDResponse
-	(*GetContentNodeRequest)(nil),           // 78: mosaic.module.v1.GetContentNodeRequest
-	(*GetContentNodeResponse)(nil),          // 79: mosaic.module.v1.GetContentNodeResponse
-	(*ListContentPartsRequest)(nil),         // 80: mosaic.module.v1.ListContentPartsRequest
-	(*ListContentPartsResponse)(nil),        // 81: mosaic.module.v1.ListContentPartsResponse
-	(*PlaybackState)(nil),                   // 82: mosaic.module.v1.PlaybackState
-	(*RecordPlaybackProgressRequest)(nil),   // 83: mosaic.module.v1.RecordPlaybackProgressRequest
-	(*RecordPlaybackProgressResponse)(nil),  // 84: mosaic.module.v1.RecordPlaybackProgressResponse
-	(*SetPlaybackFinishedRequest)(nil),      // 85: mosaic.module.v1.SetPlaybackFinishedRequest
-	(*SetPlaybackFinishedResponse)(nil),     // 86: mosaic.module.v1.SetPlaybackFinishedResponse
-	(*GetPlaybackStateRequest)(nil),         // 87: mosaic.module.v1.GetPlaybackStateRequest
-	(*GetPlaybackStateResponse)(nil),        // 88: mosaic.module.v1.GetPlaybackStateResponse
-	(*ListPlaybackStatesRequest)(nil),       // 89: mosaic.module.v1.ListPlaybackStatesRequest
-	(*ListPlaybackStatesResponse)(nil),      // 90: mosaic.module.v1.ListPlaybackStatesResponse
-	(*ListInProgressRequest)(nil),           // 91: mosaic.module.v1.ListInProgressRequest
-	(*InProgressItem)(nil),                  // 92: mosaic.module.v1.InProgressItem
-	(*ListInProgressResponse)(nil),          // 93: mosaic.module.v1.ListInProgressResponse
-	(*Field)(nil),                           // 94: mosaic.module.v1.Field
-	(*LogRequest)(nil),                      // 95: mosaic.module.v1.LogRequest
-	(*LogResponse)(nil),                     // 96: mosaic.module.v1.LogResponse
-	(*StartSpanRequest)(nil),                // 97: mosaic.module.v1.StartSpanRequest
-	(*StartSpanResponse)(nil),               // 98: mosaic.module.v1.StartSpanResponse
-	(*SpanAttributesRequest)(nil),           // 99: mosaic.module.v1.SpanAttributesRequest
-	(*SpanAttributesResponse)(nil),          // 100: mosaic.module.v1.SpanAttributesResponse
-	(*FailSpanRequest)(nil),                 // 101: mosaic.module.v1.FailSpanRequest
-	(*FailSpanResponse)(nil),                // 102: mosaic.module.v1.FailSpanResponse
-	(*EndSpanRequest)(nil),                  // 103: mosaic.module.v1.EndSpanRequest
-	(*EndSpanResponse)(nil),                 // 104: mosaic.module.v1.EndSpanResponse
-	nil,                                     // 105: mosaic.module.v1.PlaybackResponse.HeadersEntry
-	nil,                                     // 106: mosaic.module.v1.ListPlaybackStatesResponse.StatesEntry
+	(*CatalogFilter)(nil),                   // 27: mosaic.module.v1.CatalogFilter
+	(*CatalogFilterOption)(nil),             // 28: mosaic.module.v1.CatalogFilterOption
+	(*Person)(nil),                          // 29: mosaic.module.v1.Person
+	(*EpisodePreview)(nil),                  // 30: mosaic.module.v1.EpisodePreview
+	(*Collection)(nil),                      // 31: mosaic.module.v1.Collection
+	(*Trailer)(nil),                         // 32: mosaic.module.v1.Trailer
+	(*WatchOffer)(nil),                      // 33: mosaic.module.v1.WatchOffer
+	(*WatchAvailability)(nil),               // 34: mosaic.module.v1.WatchAvailability
+	(*ContentMetadata)(nil),                 // 35: mosaic.module.v1.ContentMetadata
+	(*StreamLink)(nil),                      // 36: mosaic.module.v1.StreamLink
+	(*Subtitle)(nil),                        // 37: mosaic.module.v1.Subtitle
+	(*ExternalIdentity)(nil),                // 38: mosaic.module.v1.ExternalIdentity
+	(*Manifest)(nil),                        // 39: mosaic.module.v1.Manifest
+	(*ManifestRequest)(nil),                 // 40: mosaic.module.v1.ManifestRequest
+	(*ManifestResponse)(nil),                // 41: mosaic.module.v1.ManifestResponse
+	(*ImportRequest)(nil),                   // 42: mosaic.module.v1.ImportRequest
+	(*ImportResponse)(nil),                  // 43: mosaic.module.v1.ImportResponse
+	(*MetadataRequest)(nil),                 // 44: mosaic.module.v1.MetadataRequest
+	(*MetadataResponse)(nil),                // 45: mosaic.module.v1.MetadataResponse
+	(*SearchRequest)(nil),                   // 46: mosaic.module.v1.SearchRequest
+	(*SearchResponse)(nil),                  // 47: mosaic.module.v1.SearchResponse
+	(*CatalogsRequest)(nil),                 // 48: mosaic.module.v1.CatalogsRequest
+	(*CatalogsResponse)(nil),                // 49: mosaic.module.v1.CatalogsResponse
+	(*CatalogItemsRequest)(nil),             // 50: mosaic.module.v1.CatalogItemsRequest
+	(*CatalogItemsResponse)(nil),            // 51: mosaic.module.v1.CatalogItemsResponse
+	(*StreamsRequest)(nil),                  // 52: mosaic.module.v1.StreamsRequest
+	(*StreamsResponse)(nil),                 // 53: mosaic.module.v1.StreamsResponse
+	(*SubtitlesRequest)(nil),                // 54: mosaic.module.v1.SubtitlesRequest
+	(*SubtitlesResponse)(nil),               // 55: mosaic.module.v1.SubtitlesResponse
+	(*ArtworkRequest)(nil),                  // 56: mosaic.module.v1.ArtworkRequest
+	(*ArtworkResponse)(nil),                 // 57: mosaic.module.v1.ArtworkResponse
+	(*PlaybackRequest)(nil),                 // 58: mosaic.module.v1.PlaybackRequest
+	(*PlaybackResponse)(nil),                // 59: mosaic.module.v1.PlaybackResponse
+	(*SettingsUIRequest)(nil),               // 60: mosaic.module.v1.SettingsUIRequest
+	(*SettingsUIResponse)(nil),              // 61: mosaic.module.v1.SettingsUIResponse
+	(*AddContentWorkRequest)(nil),           // 62: mosaic.module.v1.AddContentWorkRequest
+	(*AddContentWorkResponse)(nil),          // 63: mosaic.module.v1.AddContentWorkResponse
+	(*AddContentChildRequest)(nil),          // 64: mosaic.module.v1.AddContentChildRequest
+	(*AddContentChildResponse)(nil),         // 65: mosaic.module.v1.AddContentChildResponse
+	(*AttachContentPartRequest)(nil),        // 66: mosaic.module.v1.AttachContentPartRequest
+	(*AttachContentPartResponse)(nil),       // 67: mosaic.module.v1.AttachContentPartResponse
+	(*SetContentArtworkRequest)(nil),        // 68: mosaic.module.v1.SetContentArtworkRequest
+	(*SetContentArtworkResponse)(nil),       // 69: mosaic.module.v1.SetContentArtworkResponse
+	(*RelateContentRequest)(nil),            // 70: mosaic.module.v1.RelateContentRequest
+	(*RelateContentResponse)(nil),           // 71: mosaic.module.v1.RelateContentResponse
+	(*BindContentSourceRequest)(nil),        // 72: mosaic.module.v1.BindContentSourceRequest
+	(*BindContentSourceResponse)(nil),       // 73: mosaic.module.v1.BindContentSourceResponse
+	(*ResolveContentBindingRequest)(nil),    // 74: mosaic.module.v1.ResolveContentBindingRequest
+	(*ResolveContentBindingResponse)(nil),   // 75: mosaic.module.v1.ResolveContentBindingResponse
+	(*SearchContentRequest)(nil),            // 76: mosaic.module.v1.SearchContentRequest
+	(*SearchContentResponse)(nil),           // 77: mosaic.module.v1.SearchContentResponse
+	(*FindContentByExternalIDRequest)(nil),  // 78: mosaic.module.v1.FindContentByExternalIDRequest
+	(*FindContentByExternalIDResponse)(nil), // 79: mosaic.module.v1.FindContentByExternalIDResponse
+	(*GetContentNodeRequest)(nil),           // 80: mosaic.module.v1.GetContentNodeRequest
+	(*GetContentNodeResponse)(nil),          // 81: mosaic.module.v1.GetContentNodeResponse
+	(*ListContentPartsRequest)(nil),         // 82: mosaic.module.v1.ListContentPartsRequest
+	(*ListContentPartsResponse)(nil),        // 83: mosaic.module.v1.ListContentPartsResponse
+	(*PlaybackState)(nil),                   // 84: mosaic.module.v1.PlaybackState
+	(*RecordPlaybackProgressRequest)(nil),   // 85: mosaic.module.v1.RecordPlaybackProgressRequest
+	(*RecordPlaybackProgressResponse)(nil),  // 86: mosaic.module.v1.RecordPlaybackProgressResponse
+	(*SetPlaybackFinishedRequest)(nil),      // 87: mosaic.module.v1.SetPlaybackFinishedRequest
+	(*SetPlaybackFinishedResponse)(nil),     // 88: mosaic.module.v1.SetPlaybackFinishedResponse
+	(*GetPlaybackStateRequest)(nil),         // 89: mosaic.module.v1.GetPlaybackStateRequest
+	(*GetPlaybackStateResponse)(nil),        // 90: mosaic.module.v1.GetPlaybackStateResponse
+	(*ListPlaybackStatesRequest)(nil),       // 91: mosaic.module.v1.ListPlaybackStatesRequest
+	(*ListPlaybackStatesResponse)(nil),      // 92: mosaic.module.v1.ListPlaybackStatesResponse
+	(*ListInProgressRequest)(nil),           // 93: mosaic.module.v1.ListInProgressRequest
+	(*InProgressItem)(nil),                  // 94: mosaic.module.v1.InProgressItem
+	(*ListInProgressResponse)(nil),          // 95: mosaic.module.v1.ListInProgressResponse
+	(*Field)(nil),                           // 96: mosaic.module.v1.Field
+	(*LogRequest)(nil),                      // 97: mosaic.module.v1.LogRequest
+	(*LogResponse)(nil),                     // 98: mosaic.module.v1.LogResponse
+	(*StartSpanRequest)(nil),                // 99: mosaic.module.v1.StartSpanRequest
+	(*StartSpanResponse)(nil),               // 100: mosaic.module.v1.StartSpanResponse
+	(*SpanAttributesRequest)(nil),           // 101: mosaic.module.v1.SpanAttributesRequest
+	(*SpanAttributesResponse)(nil),          // 102: mosaic.module.v1.SpanAttributesResponse
+	(*FailSpanRequest)(nil),                 // 103: mosaic.module.v1.FailSpanRequest
+	(*FailSpanResponse)(nil),                // 104: mosaic.module.v1.FailSpanResponse
+	(*EndSpanRequest)(nil),                  // 105: mosaic.module.v1.EndSpanRequest
+	(*EndSpanResponse)(nil),                 // 106: mosaic.module.v1.EndSpanResponse
+	nil,                                     // 107: mosaic.module.v1.CatalogItemsRequest.FiltersEntry
+	nil,                                     // 108: mosaic.module.v1.PlaybackResponse.HeadersEntry
+	nil,                                     // 109: mosaic.module.v1.ListPlaybackStatesResponse.StatesEntry
 }
 var file_mosaic_module_v1_module_proto_depIdxs = []int32{
 	0,   // 0: mosaic.module.v1.Error.category:type_name -> mosaic.module.v1.ErrorCategory
@@ -7687,171 +7884,174 @@ var file_mosaic_module_v1_module_proto_depIdxs = []int32{
 	22,  // 11: mosaic.module.v1.SearchResult.ref:type_name -> mosaic.module.v1.ContentRef
 	22,  // 12: mosaic.module.v1.CatalogItem.ref:type_name -> mosaic.module.v1.ContentRef
 	22,  // 13: mosaic.module.v1.RelatedItem.ref:type_name -> mosaic.module.v1.ContentRef
-	25,  // 14: mosaic.module.v1.Collection.items:type_name -> mosaic.module.v1.RelatedItem
-	8,   // 15: mosaic.module.v1.WatchOffer.type:type_name -> mosaic.module.v1.WatchOfferType
-	31,  // 16: mosaic.module.v1.WatchAvailability.offers:type_name -> mosaic.module.v1.WatchOffer
-	22,  // 17: mosaic.module.v1.ContentMetadata.ref:type_name -> mosaic.module.v1.ContentRef
-	27,  // 18: mosaic.module.v1.ContentMetadata.cast:type_name -> mosaic.module.v1.Person
-	28,  // 19: mosaic.module.v1.ContentMetadata.episodes:type_name -> mosaic.module.v1.EpisodePreview
-	25,  // 20: mosaic.module.v1.ContentMetadata.similar:type_name -> mosaic.module.v1.RelatedItem
-	29,  // 21: mosaic.module.v1.ContentMetadata.collection:type_name -> mosaic.module.v1.Collection
-	30,  // 22: mosaic.module.v1.ContentMetadata.trailers:type_name -> mosaic.module.v1.Trailer
-	32,  // 23: mosaic.module.v1.ContentMetadata.watch:type_name -> mosaic.module.v1.WatchAvailability
-	27,  // 24: mosaic.module.v1.ContentMetadata.crew:type_name -> mosaic.module.v1.Person
-	15,  // 25: mosaic.module.v1.StreamLink.location:type_name -> mosaic.module.v1.MediaLocation
-	37,  // 26: mosaic.module.v1.ManifestResponse.manifest:type_name -> mosaic.module.v1.Manifest
-	13,  // 27: mosaic.module.v1.ImportRequest.caller:type_name -> mosaic.module.v1.Caller
-	22,  // 28: mosaic.module.v1.ImportRequest.ref:type_name -> mosaic.module.v1.ContentRef
-	13,  // 29: mosaic.module.v1.MetadataRequest.caller:type_name -> mosaic.module.v1.Caller
-	22,  // 30: mosaic.module.v1.MetadataRequest.ref:type_name -> mosaic.module.v1.ContentRef
-	33,  // 31: mosaic.module.v1.MetadataResponse.metadata:type_name -> mosaic.module.v1.ContentMetadata
-	13,  // 32: mosaic.module.v1.SearchRequest.caller:type_name -> mosaic.module.v1.Caller
-	23,  // 33: mosaic.module.v1.SearchResponse.results:type_name -> mosaic.module.v1.SearchResult
-	13,  // 34: mosaic.module.v1.CatalogsRequest.caller:type_name -> mosaic.module.v1.Caller
-	26,  // 35: mosaic.module.v1.CatalogsResponse.catalogs:type_name -> mosaic.module.v1.Catalog
-	13,  // 36: mosaic.module.v1.CatalogItemsRequest.caller:type_name -> mosaic.module.v1.Caller
-	24,  // 37: mosaic.module.v1.CatalogItemsResponse.items:type_name -> mosaic.module.v1.CatalogItem
-	13,  // 38: mosaic.module.v1.StreamsRequest.caller:type_name -> mosaic.module.v1.Caller
-	22,  // 39: mosaic.module.v1.StreamsRequest.ref:type_name -> mosaic.module.v1.ContentRef
-	34,  // 40: mosaic.module.v1.StreamsResponse.streams:type_name -> mosaic.module.v1.StreamLink
-	13,  // 41: mosaic.module.v1.SubtitlesRequest.caller:type_name -> mosaic.module.v1.Caller
-	22,  // 42: mosaic.module.v1.SubtitlesRequest.ref:type_name -> mosaic.module.v1.ContentRef
-	35,  // 43: mosaic.module.v1.SubtitlesResponse.subtitles:type_name -> mosaic.module.v1.Subtitle
-	13,  // 44: mosaic.module.v1.ArtworkRequest.caller:type_name -> mosaic.module.v1.Caller
-	36,  // 45: mosaic.module.v1.ArtworkRequest.identities:type_name -> mosaic.module.v1.ExternalIdentity
-	16,  // 46: mosaic.module.v1.ArtworkResponse.candidates:type_name -> mosaic.module.v1.ArtworkCandidate
-	13,  // 47: mosaic.module.v1.PlaybackRequest.caller:type_name -> mosaic.module.v1.Caller
-	19,  // 48: mosaic.module.v1.PlaybackRequest.part:type_name -> mosaic.module.v1.Part
-	9,   // 49: mosaic.module.v1.PlaybackResponse.kind:type_name -> mosaic.module.v1.PlaybackKind
-	105, // 50: mosaic.module.v1.PlaybackResponse.headers:type_name -> mosaic.module.v1.PlaybackResponse.HeadersEntry
-	13,  // 51: mosaic.module.v1.SettingsUIRequest.caller:type_name -> mosaic.module.v1.Caller
-	13,  // 52: mosaic.module.v1.AddContentWorkRequest.caller:type_name -> mosaic.module.v1.Caller
-	17,  // 53: mosaic.module.v1.AddContentWorkRequest.artwork:type_name -> mosaic.module.v1.Artwork
-	18,  // 54: mosaic.module.v1.AddContentWorkResponse.work:type_name -> mosaic.module.v1.Node
-	13,  // 55: mosaic.module.v1.AddContentChildRequest.caller:type_name -> mosaic.module.v1.Caller
-	1,   // 56: mosaic.module.v1.AddContentChildRequest.kind:type_name -> mosaic.module.v1.NodeKind
-	17,  // 57: mosaic.module.v1.AddContentChildRequest.artwork:type_name -> mosaic.module.v1.Artwork
-	18,  // 58: mosaic.module.v1.AddContentChildResponse.node:type_name -> mosaic.module.v1.Node
-	13,  // 59: mosaic.module.v1.AttachContentPartRequest.caller:type_name -> mosaic.module.v1.Caller
-	3,   // 60: mosaic.module.v1.AttachContentPartRequest.role:type_name -> mosaic.module.v1.PartRole
-	15,  // 61: mosaic.module.v1.AttachContentPartRequest.location:type_name -> mosaic.module.v1.MediaLocation
-	19,  // 62: mosaic.module.v1.AttachContentPartResponse.part:type_name -> mosaic.module.v1.Part
-	13,  // 63: mosaic.module.v1.SetContentArtworkRequest.caller:type_name -> mosaic.module.v1.Caller
-	17,  // 64: mosaic.module.v1.SetContentArtworkRequest.artwork:type_name -> mosaic.module.v1.Artwork
-	18,  // 65: mosaic.module.v1.SetContentArtworkResponse.node:type_name -> mosaic.module.v1.Node
-	13,  // 66: mosaic.module.v1.RelateContentRequest.caller:type_name -> mosaic.module.v1.Caller
-	5,   // 67: mosaic.module.v1.RelateContentRequest.origin:type_name -> mosaic.module.v1.RelationOrigin
-	20,  // 68: mosaic.module.v1.RelateContentResponse.relation:type_name -> mosaic.module.v1.Relation
-	13,  // 69: mosaic.module.v1.BindContentSourceRequest.caller:type_name -> mosaic.module.v1.Caller
-	6,   // 70: mosaic.module.v1.BindContentSourceRequest.match_method:type_name -> mosaic.module.v1.MatchMethod
-	7,   // 71: mosaic.module.v1.BindContentSourceRequest.status:type_name -> mosaic.module.v1.BindingStatus
-	21,  // 72: mosaic.module.v1.BindContentSourceResponse.binding:type_name -> mosaic.module.v1.SourceBinding
-	13,  // 73: mosaic.module.v1.ResolveContentBindingRequest.caller:type_name -> mosaic.module.v1.Caller
-	10,  // 74: mosaic.module.v1.ResolveContentBindingRequest.resolution:type_name -> mosaic.module.v1.BindingResolution
-	21,  // 75: mosaic.module.v1.ResolveContentBindingResponse.binding:type_name -> mosaic.module.v1.SourceBinding
-	13,  // 76: mosaic.module.v1.SearchContentRequest.caller:type_name -> mosaic.module.v1.Caller
-	1,   // 77: mosaic.module.v1.SearchContentRequest.kind:type_name -> mosaic.module.v1.NodeKind
-	18,  // 78: mosaic.module.v1.SearchContentResponse.nodes:type_name -> mosaic.module.v1.Node
-	13,  // 79: mosaic.module.v1.FindContentByExternalIDRequest.caller:type_name -> mosaic.module.v1.Caller
-	18,  // 80: mosaic.module.v1.FindContentByExternalIDResponse.nodes:type_name -> mosaic.module.v1.Node
-	13,  // 81: mosaic.module.v1.GetContentNodeRequest.caller:type_name -> mosaic.module.v1.Caller
-	18,  // 82: mosaic.module.v1.GetContentNodeResponse.node:type_name -> mosaic.module.v1.Node
-	18,  // 83: mosaic.module.v1.GetContentNodeResponse.children:type_name -> mosaic.module.v1.Node
-	13,  // 84: mosaic.module.v1.ListContentPartsRequest.caller:type_name -> mosaic.module.v1.Caller
-	19,  // 85: mosaic.module.v1.ListContentPartsResponse.parts:type_name -> mosaic.module.v1.Part
-	13,  // 86: mosaic.module.v1.RecordPlaybackProgressRequest.caller:type_name -> mosaic.module.v1.Caller
-	82,  // 87: mosaic.module.v1.RecordPlaybackProgressResponse.state:type_name -> mosaic.module.v1.PlaybackState
-	13,  // 88: mosaic.module.v1.SetPlaybackFinishedRequest.caller:type_name -> mosaic.module.v1.Caller
-	82,  // 89: mosaic.module.v1.SetPlaybackFinishedResponse.state:type_name -> mosaic.module.v1.PlaybackState
-	13,  // 90: mosaic.module.v1.GetPlaybackStateRequest.caller:type_name -> mosaic.module.v1.Caller
-	82,  // 91: mosaic.module.v1.GetPlaybackStateResponse.state:type_name -> mosaic.module.v1.PlaybackState
-	13,  // 92: mosaic.module.v1.ListPlaybackStatesRequest.caller:type_name -> mosaic.module.v1.Caller
-	106, // 93: mosaic.module.v1.ListPlaybackStatesResponse.states:type_name -> mosaic.module.v1.ListPlaybackStatesResponse.StatesEntry
-	13,  // 94: mosaic.module.v1.ListInProgressRequest.caller:type_name -> mosaic.module.v1.Caller
-	18,  // 95: mosaic.module.v1.InProgressItem.node:type_name -> mosaic.module.v1.Node
-	82,  // 96: mosaic.module.v1.InProgressItem.state:type_name -> mosaic.module.v1.PlaybackState
-	92,  // 97: mosaic.module.v1.ListInProgressResponse.items:type_name -> mosaic.module.v1.InProgressItem
-	11,  // 98: mosaic.module.v1.Field.redaction:type_name -> mosaic.module.v1.RedactionClass
-	13,  // 99: mosaic.module.v1.LogRequest.caller:type_name -> mosaic.module.v1.Caller
-	12,  // 100: mosaic.module.v1.LogRequest.level:type_name -> mosaic.module.v1.LogLevel
-	94,  // 101: mosaic.module.v1.LogRequest.fields:type_name -> mosaic.module.v1.Field
-	13,  // 102: mosaic.module.v1.StartSpanRequest.caller:type_name -> mosaic.module.v1.Caller
-	94,  // 103: mosaic.module.v1.StartSpanRequest.attributes:type_name -> mosaic.module.v1.Field
-	13,  // 104: mosaic.module.v1.SpanAttributesRequest.caller:type_name -> mosaic.module.v1.Caller
-	94,  // 105: mosaic.module.v1.SpanAttributesRequest.attributes:type_name -> mosaic.module.v1.Field
-	13,  // 106: mosaic.module.v1.FailSpanRequest.caller:type_name -> mosaic.module.v1.Caller
-	0,   // 107: mosaic.module.v1.FailSpanRequest.category:type_name -> mosaic.module.v1.ErrorCategory
-	13,  // 108: mosaic.module.v1.EndSpanRequest.caller:type_name -> mosaic.module.v1.Caller
-	82,  // 109: mosaic.module.v1.ListPlaybackStatesResponse.StatesEntry.value:type_name -> mosaic.module.v1.PlaybackState
-	38,  // 110: mosaic.module.v1.CapabilityService.GetManifest:input_type -> mosaic.module.v1.ManifestRequest
-	40,  // 111: mosaic.module.v1.CapabilityService.Import:input_type -> mosaic.module.v1.ImportRequest
-	42,  // 112: mosaic.module.v1.CapabilityService.Metadata:input_type -> mosaic.module.v1.MetadataRequest
-	44,  // 113: mosaic.module.v1.CapabilityService.Search:input_type -> mosaic.module.v1.SearchRequest
-	46,  // 114: mosaic.module.v1.CapabilityService.Catalogs:input_type -> mosaic.module.v1.CatalogsRequest
-	48,  // 115: mosaic.module.v1.CapabilityService.CatalogItems:input_type -> mosaic.module.v1.CatalogItemsRequest
-	50,  // 116: mosaic.module.v1.CapabilityService.Streams:input_type -> mosaic.module.v1.StreamsRequest
-	52,  // 117: mosaic.module.v1.CapabilityService.Subtitles:input_type -> mosaic.module.v1.SubtitlesRequest
-	54,  // 118: mosaic.module.v1.CapabilityService.Artwork:input_type -> mosaic.module.v1.ArtworkRequest
-	56,  // 119: mosaic.module.v1.CapabilityService.Playback:input_type -> mosaic.module.v1.PlaybackRequest
-	58,  // 120: mosaic.module.v1.CapabilityService.SettingsUI:input_type -> mosaic.module.v1.SettingsUIRequest
-	60,  // 121: mosaic.module.v1.ContentService.AddContentWork:input_type -> mosaic.module.v1.AddContentWorkRequest
-	62,  // 122: mosaic.module.v1.ContentService.AddContentChild:input_type -> mosaic.module.v1.AddContentChildRequest
-	64,  // 123: mosaic.module.v1.ContentService.AttachContentPart:input_type -> mosaic.module.v1.AttachContentPartRequest
-	66,  // 124: mosaic.module.v1.ContentService.SetContentArtwork:input_type -> mosaic.module.v1.SetContentArtworkRequest
-	68,  // 125: mosaic.module.v1.ContentService.RelateContent:input_type -> mosaic.module.v1.RelateContentRequest
-	70,  // 126: mosaic.module.v1.ContentService.BindContentSource:input_type -> mosaic.module.v1.BindContentSourceRequest
-	72,  // 127: mosaic.module.v1.ContentService.ResolveContentBinding:input_type -> mosaic.module.v1.ResolveContentBindingRequest
-	74,  // 128: mosaic.module.v1.ContentService.SearchContent:input_type -> mosaic.module.v1.SearchContentRequest
-	76,  // 129: mosaic.module.v1.ContentService.FindContentByExternalID:input_type -> mosaic.module.v1.FindContentByExternalIDRequest
-	78,  // 130: mosaic.module.v1.ContentService.GetContentNode:input_type -> mosaic.module.v1.GetContentNodeRequest
-	80,  // 131: mosaic.module.v1.ContentService.ListContentParts:input_type -> mosaic.module.v1.ListContentPartsRequest
-	83,  // 132: mosaic.module.v1.ContentService.RecordPlaybackProgress:input_type -> mosaic.module.v1.RecordPlaybackProgressRequest
-	85,  // 133: mosaic.module.v1.ContentService.SetPlaybackFinished:input_type -> mosaic.module.v1.SetPlaybackFinishedRequest
-	87,  // 134: mosaic.module.v1.ContentService.GetPlaybackState:input_type -> mosaic.module.v1.GetPlaybackStateRequest
-	89,  // 135: mosaic.module.v1.ContentService.ListPlaybackStates:input_type -> mosaic.module.v1.ListPlaybackStatesRequest
-	91,  // 136: mosaic.module.v1.ContentService.ListInProgress:input_type -> mosaic.module.v1.ListInProgressRequest
-	95,  // 137: mosaic.module.v1.TelemetryService.Log:input_type -> mosaic.module.v1.LogRequest
-	97,  // 138: mosaic.module.v1.TelemetryService.StartSpan:input_type -> mosaic.module.v1.StartSpanRequest
-	99,  // 139: mosaic.module.v1.TelemetryService.SetSpanAttributes:input_type -> mosaic.module.v1.SpanAttributesRequest
-	101, // 140: mosaic.module.v1.TelemetryService.FailSpan:input_type -> mosaic.module.v1.FailSpanRequest
-	103, // 141: mosaic.module.v1.TelemetryService.EndSpan:input_type -> mosaic.module.v1.EndSpanRequest
-	39,  // 142: mosaic.module.v1.CapabilityService.GetManifest:output_type -> mosaic.module.v1.ManifestResponse
-	41,  // 143: mosaic.module.v1.CapabilityService.Import:output_type -> mosaic.module.v1.ImportResponse
-	43,  // 144: mosaic.module.v1.CapabilityService.Metadata:output_type -> mosaic.module.v1.MetadataResponse
-	45,  // 145: mosaic.module.v1.CapabilityService.Search:output_type -> mosaic.module.v1.SearchResponse
-	47,  // 146: mosaic.module.v1.CapabilityService.Catalogs:output_type -> mosaic.module.v1.CatalogsResponse
-	49,  // 147: mosaic.module.v1.CapabilityService.CatalogItems:output_type -> mosaic.module.v1.CatalogItemsResponse
-	51,  // 148: mosaic.module.v1.CapabilityService.Streams:output_type -> mosaic.module.v1.StreamsResponse
-	53,  // 149: mosaic.module.v1.CapabilityService.Subtitles:output_type -> mosaic.module.v1.SubtitlesResponse
-	55,  // 150: mosaic.module.v1.CapabilityService.Artwork:output_type -> mosaic.module.v1.ArtworkResponse
-	57,  // 151: mosaic.module.v1.CapabilityService.Playback:output_type -> mosaic.module.v1.PlaybackResponse
-	59,  // 152: mosaic.module.v1.CapabilityService.SettingsUI:output_type -> mosaic.module.v1.SettingsUIResponse
-	61,  // 153: mosaic.module.v1.ContentService.AddContentWork:output_type -> mosaic.module.v1.AddContentWorkResponse
-	63,  // 154: mosaic.module.v1.ContentService.AddContentChild:output_type -> mosaic.module.v1.AddContentChildResponse
-	65,  // 155: mosaic.module.v1.ContentService.AttachContentPart:output_type -> mosaic.module.v1.AttachContentPartResponse
-	67,  // 156: mosaic.module.v1.ContentService.SetContentArtwork:output_type -> mosaic.module.v1.SetContentArtworkResponse
-	69,  // 157: mosaic.module.v1.ContentService.RelateContent:output_type -> mosaic.module.v1.RelateContentResponse
-	71,  // 158: mosaic.module.v1.ContentService.BindContentSource:output_type -> mosaic.module.v1.BindContentSourceResponse
-	73,  // 159: mosaic.module.v1.ContentService.ResolveContentBinding:output_type -> mosaic.module.v1.ResolveContentBindingResponse
-	75,  // 160: mosaic.module.v1.ContentService.SearchContent:output_type -> mosaic.module.v1.SearchContentResponse
-	77,  // 161: mosaic.module.v1.ContentService.FindContentByExternalID:output_type -> mosaic.module.v1.FindContentByExternalIDResponse
-	79,  // 162: mosaic.module.v1.ContentService.GetContentNode:output_type -> mosaic.module.v1.GetContentNodeResponse
-	81,  // 163: mosaic.module.v1.ContentService.ListContentParts:output_type -> mosaic.module.v1.ListContentPartsResponse
-	84,  // 164: mosaic.module.v1.ContentService.RecordPlaybackProgress:output_type -> mosaic.module.v1.RecordPlaybackProgressResponse
-	86,  // 165: mosaic.module.v1.ContentService.SetPlaybackFinished:output_type -> mosaic.module.v1.SetPlaybackFinishedResponse
-	88,  // 166: mosaic.module.v1.ContentService.GetPlaybackState:output_type -> mosaic.module.v1.GetPlaybackStateResponse
-	90,  // 167: mosaic.module.v1.ContentService.ListPlaybackStates:output_type -> mosaic.module.v1.ListPlaybackStatesResponse
-	93,  // 168: mosaic.module.v1.ContentService.ListInProgress:output_type -> mosaic.module.v1.ListInProgressResponse
-	96,  // 169: mosaic.module.v1.TelemetryService.Log:output_type -> mosaic.module.v1.LogResponse
-	98,  // 170: mosaic.module.v1.TelemetryService.StartSpan:output_type -> mosaic.module.v1.StartSpanResponse
-	100, // 171: mosaic.module.v1.TelemetryService.SetSpanAttributes:output_type -> mosaic.module.v1.SpanAttributesResponse
-	102, // 172: mosaic.module.v1.TelemetryService.FailSpan:output_type -> mosaic.module.v1.FailSpanResponse
-	104, // 173: mosaic.module.v1.TelemetryService.EndSpan:output_type -> mosaic.module.v1.EndSpanResponse
-	142, // [142:174] is the sub-list for method output_type
-	110, // [110:142] is the sub-list for method input_type
-	110, // [110:110] is the sub-list for extension type_name
-	110, // [110:110] is the sub-list for extension extendee
-	0,   // [0:110] is the sub-list for field type_name
+	27,  // 14: mosaic.module.v1.Catalog.filters:type_name -> mosaic.module.v1.CatalogFilter
+	28,  // 15: mosaic.module.v1.CatalogFilter.options:type_name -> mosaic.module.v1.CatalogFilterOption
+	25,  // 16: mosaic.module.v1.Collection.items:type_name -> mosaic.module.v1.RelatedItem
+	8,   // 17: mosaic.module.v1.WatchOffer.type:type_name -> mosaic.module.v1.WatchOfferType
+	33,  // 18: mosaic.module.v1.WatchAvailability.offers:type_name -> mosaic.module.v1.WatchOffer
+	22,  // 19: mosaic.module.v1.ContentMetadata.ref:type_name -> mosaic.module.v1.ContentRef
+	29,  // 20: mosaic.module.v1.ContentMetadata.cast:type_name -> mosaic.module.v1.Person
+	30,  // 21: mosaic.module.v1.ContentMetadata.episodes:type_name -> mosaic.module.v1.EpisodePreview
+	25,  // 22: mosaic.module.v1.ContentMetadata.similar:type_name -> mosaic.module.v1.RelatedItem
+	31,  // 23: mosaic.module.v1.ContentMetadata.collection:type_name -> mosaic.module.v1.Collection
+	32,  // 24: mosaic.module.v1.ContentMetadata.trailers:type_name -> mosaic.module.v1.Trailer
+	34,  // 25: mosaic.module.v1.ContentMetadata.watch:type_name -> mosaic.module.v1.WatchAvailability
+	29,  // 26: mosaic.module.v1.ContentMetadata.crew:type_name -> mosaic.module.v1.Person
+	15,  // 27: mosaic.module.v1.StreamLink.location:type_name -> mosaic.module.v1.MediaLocation
+	39,  // 28: mosaic.module.v1.ManifestResponse.manifest:type_name -> mosaic.module.v1.Manifest
+	13,  // 29: mosaic.module.v1.ImportRequest.caller:type_name -> mosaic.module.v1.Caller
+	22,  // 30: mosaic.module.v1.ImportRequest.ref:type_name -> mosaic.module.v1.ContentRef
+	13,  // 31: mosaic.module.v1.MetadataRequest.caller:type_name -> mosaic.module.v1.Caller
+	22,  // 32: mosaic.module.v1.MetadataRequest.ref:type_name -> mosaic.module.v1.ContentRef
+	35,  // 33: mosaic.module.v1.MetadataResponse.metadata:type_name -> mosaic.module.v1.ContentMetadata
+	13,  // 34: mosaic.module.v1.SearchRequest.caller:type_name -> mosaic.module.v1.Caller
+	23,  // 35: mosaic.module.v1.SearchResponse.results:type_name -> mosaic.module.v1.SearchResult
+	13,  // 36: mosaic.module.v1.CatalogsRequest.caller:type_name -> mosaic.module.v1.Caller
+	26,  // 37: mosaic.module.v1.CatalogsResponse.catalogs:type_name -> mosaic.module.v1.Catalog
+	13,  // 38: mosaic.module.v1.CatalogItemsRequest.caller:type_name -> mosaic.module.v1.Caller
+	107, // 39: mosaic.module.v1.CatalogItemsRequest.filters:type_name -> mosaic.module.v1.CatalogItemsRequest.FiltersEntry
+	24,  // 40: mosaic.module.v1.CatalogItemsResponse.items:type_name -> mosaic.module.v1.CatalogItem
+	13,  // 41: mosaic.module.v1.StreamsRequest.caller:type_name -> mosaic.module.v1.Caller
+	22,  // 42: mosaic.module.v1.StreamsRequest.ref:type_name -> mosaic.module.v1.ContentRef
+	36,  // 43: mosaic.module.v1.StreamsResponse.streams:type_name -> mosaic.module.v1.StreamLink
+	13,  // 44: mosaic.module.v1.SubtitlesRequest.caller:type_name -> mosaic.module.v1.Caller
+	22,  // 45: mosaic.module.v1.SubtitlesRequest.ref:type_name -> mosaic.module.v1.ContentRef
+	37,  // 46: mosaic.module.v1.SubtitlesResponse.subtitles:type_name -> mosaic.module.v1.Subtitle
+	13,  // 47: mosaic.module.v1.ArtworkRequest.caller:type_name -> mosaic.module.v1.Caller
+	38,  // 48: mosaic.module.v1.ArtworkRequest.identities:type_name -> mosaic.module.v1.ExternalIdentity
+	16,  // 49: mosaic.module.v1.ArtworkResponse.candidates:type_name -> mosaic.module.v1.ArtworkCandidate
+	13,  // 50: mosaic.module.v1.PlaybackRequest.caller:type_name -> mosaic.module.v1.Caller
+	19,  // 51: mosaic.module.v1.PlaybackRequest.part:type_name -> mosaic.module.v1.Part
+	9,   // 52: mosaic.module.v1.PlaybackResponse.kind:type_name -> mosaic.module.v1.PlaybackKind
+	108, // 53: mosaic.module.v1.PlaybackResponse.headers:type_name -> mosaic.module.v1.PlaybackResponse.HeadersEntry
+	13,  // 54: mosaic.module.v1.SettingsUIRequest.caller:type_name -> mosaic.module.v1.Caller
+	13,  // 55: mosaic.module.v1.AddContentWorkRequest.caller:type_name -> mosaic.module.v1.Caller
+	17,  // 56: mosaic.module.v1.AddContentWorkRequest.artwork:type_name -> mosaic.module.v1.Artwork
+	18,  // 57: mosaic.module.v1.AddContentWorkResponse.work:type_name -> mosaic.module.v1.Node
+	13,  // 58: mosaic.module.v1.AddContentChildRequest.caller:type_name -> mosaic.module.v1.Caller
+	1,   // 59: mosaic.module.v1.AddContentChildRequest.kind:type_name -> mosaic.module.v1.NodeKind
+	17,  // 60: mosaic.module.v1.AddContentChildRequest.artwork:type_name -> mosaic.module.v1.Artwork
+	18,  // 61: mosaic.module.v1.AddContentChildResponse.node:type_name -> mosaic.module.v1.Node
+	13,  // 62: mosaic.module.v1.AttachContentPartRequest.caller:type_name -> mosaic.module.v1.Caller
+	3,   // 63: mosaic.module.v1.AttachContentPartRequest.role:type_name -> mosaic.module.v1.PartRole
+	15,  // 64: mosaic.module.v1.AttachContentPartRequest.location:type_name -> mosaic.module.v1.MediaLocation
+	19,  // 65: mosaic.module.v1.AttachContentPartResponse.part:type_name -> mosaic.module.v1.Part
+	13,  // 66: mosaic.module.v1.SetContentArtworkRequest.caller:type_name -> mosaic.module.v1.Caller
+	17,  // 67: mosaic.module.v1.SetContentArtworkRequest.artwork:type_name -> mosaic.module.v1.Artwork
+	18,  // 68: mosaic.module.v1.SetContentArtworkResponse.node:type_name -> mosaic.module.v1.Node
+	13,  // 69: mosaic.module.v1.RelateContentRequest.caller:type_name -> mosaic.module.v1.Caller
+	5,   // 70: mosaic.module.v1.RelateContentRequest.origin:type_name -> mosaic.module.v1.RelationOrigin
+	20,  // 71: mosaic.module.v1.RelateContentResponse.relation:type_name -> mosaic.module.v1.Relation
+	13,  // 72: mosaic.module.v1.BindContentSourceRequest.caller:type_name -> mosaic.module.v1.Caller
+	6,   // 73: mosaic.module.v1.BindContentSourceRequest.match_method:type_name -> mosaic.module.v1.MatchMethod
+	7,   // 74: mosaic.module.v1.BindContentSourceRequest.status:type_name -> mosaic.module.v1.BindingStatus
+	21,  // 75: mosaic.module.v1.BindContentSourceResponse.binding:type_name -> mosaic.module.v1.SourceBinding
+	13,  // 76: mosaic.module.v1.ResolveContentBindingRequest.caller:type_name -> mosaic.module.v1.Caller
+	10,  // 77: mosaic.module.v1.ResolveContentBindingRequest.resolution:type_name -> mosaic.module.v1.BindingResolution
+	21,  // 78: mosaic.module.v1.ResolveContentBindingResponse.binding:type_name -> mosaic.module.v1.SourceBinding
+	13,  // 79: mosaic.module.v1.SearchContentRequest.caller:type_name -> mosaic.module.v1.Caller
+	1,   // 80: mosaic.module.v1.SearchContentRequest.kind:type_name -> mosaic.module.v1.NodeKind
+	18,  // 81: mosaic.module.v1.SearchContentResponse.nodes:type_name -> mosaic.module.v1.Node
+	13,  // 82: mosaic.module.v1.FindContentByExternalIDRequest.caller:type_name -> mosaic.module.v1.Caller
+	18,  // 83: mosaic.module.v1.FindContentByExternalIDResponse.nodes:type_name -> mosaic.module.v1.Node
+	13,  // 84: mosaic.module.v1.GetContentNodeRequest.caller:type_name -> mosaic.module.v1.Caller
+	18,  // 85: mosaic.module.v1.GetContentNodeResponse.node:type_name -> mosaic.module.v1.Node
+	18,  // 86: mosaic.module.v1.GetContentNodeResponse.children:type_name -> mosaic.module.v1.Node
+	13,  // 87: mosaic.module.v1.ListContentPartsRequest.caller:type_name -> mosaic.module.v1.Caller
+	19,  // 88: mosaic.module.v1.ListContentPartsResponse.parts:type_name -> mosaic.module.v1.Part
+	13,  // 89: mosaic.module.v1.RecordPlaybackProgressRequest.caller:type_name -> mosaic.module.v1.Caller
+	84,  // 90: mosaic.module.v1.RecordPlaybackProgressResponse.state:type_name -> mosaic.module.v1.PlaybackState
+	13,  // 91: mosaic.module.v1.SetPlaybackFinishedRequest.caller:type_name -> mosaic.module.v1.Caller
+	84,  // 92: mosaic.module.v1.SetPlaybackFinishedResponse.state:type_name -> mosaic.module.v1.PlaybackState
+	13,  // 93: mosaic.module.v1.GetPlaybackStateRequest.caller:type_name -> mosaic.module.v1.Caller
+	84,  // 94: mosaic.module.v1.GetPlaybackStateResponse.state:type_name -> mosaic.module.v1.PlaybackState
+	13,  // 95: mosaic.module.v1.ListPlaybackStatesRequest.caller:type_name -> mosaic.module.v1.Caller
+	109, // 96: mosaic.module.v1.ListPlaybackStatesResponse.states:type_name -> mosaic.module.v1.ListPlaybackStatesResponse.StatesEntry
+	13,  // 97: mosaic.module.v1.ListInProgressRequest.caller:type_name -> mosaic.module.v1.Caller
+	18,  // 98: mosaic.module.v1.InProgressItem.node:type_name -> mosaic.module.v1.Node
+	84,  // 99: mosaic.module.v1.InProgressItem.state:type_name -> mosaic.module.v1.PlaybackState
+	94,  // 100: mosaic.module.v1.ListInProgressResponse.items:type_name -> mosaic.module.v1.InProgressItem
+	11,  // 101: mosaic.module.v1.Field.redaction:type_name -> mosaic.module.v1.RedactionClass
+	13,  // 102: mosaic.module.v1.LogRequest.caller:type_name -> mosaic.module.v1.Caller
+	12,  // 103: mosaic.module.v1.LogRequest.level:type_name -> mosaic.module.v1.LogLevel
+	96,  // 104: mosaic.module.v1.LogRequest.fields:type_name -> mosaic.module.v1.Field
+	13,  // 105: mosaic.module.v1.StartSpanRequest.caller:type_name -> mosaic.module.v1.Caller
+	96,  // 106: mosaic.module.v1.StartSpanRequest.attributes:type_name -> mosaic.module.v1.Field
+	13,  // 107: mosaic.module.v1.SpanAttributesRequest.caller:type_name -> mosaic.module.v1.Caller
+	96,  // 108: mosaic.module.v1.SpanAttributesRequest.attributes:type_name -> mosaic.module.v1.Field
+	13,  // 109: mosaic.module.v1.FailSpanRequest.caller:type_name -> mosaic.module.v1.Caller
+	0,   // 110: mosaic.module.v1.FailSpanRequest.category:type_name -> mosaic.module.v1.ErrorCategory
+	13,  // 111: mosaic.module.v1.EndSpanRequest.caller:type_name -> mosaic.module.v1.Caller
+	84,  // 112: mosaic.module.v1.ListPlaybackStatesResponse.StatesEntry.value:type_name -> mosaic.module.v1.PlaybackState
+	40,  // 113: mosaic.module.v1.CapabilityService.GetManifest:input_type -> mosaic.module.v1.ManifestRequest
+	42,  // 114: mosaic.module.v1.CapabilityService.Import:input_type -> mosaic.module.v1.ImportRequest
+	44,  // 115: mosaic.module.v1.CapabilityService.Metadata:input_type -> mosaic.module.v1.MetadataRequest
+	46,  // 116: mosaic.module.v1.CapabilityService.Search:input_type -> mosaic.module.v1.SearchRequest
+	48,  // 117: mosaic.module.v1.CapabilityService.Catalogs:input_type -> mosaic.module.v1.CatalogsRequest
+	50,  // 118: mosaic.module.v1.CapabilityService.CatalogItems:input_type -> mosaic.module.v1.CatalogItemsRequest
+	52,  // 119: mosaic.module.v1.CapabilityService.Streams:input_type -> mosaic.module.v1.StreamsRequest
+	54,  // 120: mosaic.module.v1.CapabilityService.Subtitles:input_type -> mosaic.module.v1.SubtitlesRequest
+	56,  // 121: mosaic.module.v1.CapabilityService.Artwork:input_type -> mosaic.module.v1.ArtworkRequest
+	58,  // 122: mosaic.module.v1.CapabilityService.Playback:input_type -> mosaic.module.v1.PlaybackRequest
+	60,  // 123: mosaic.module.v1.CapabilityService.SettingsUI:input_type -> mosaic.module.v1.SettingsUIRequest
+	62,  // 124: mosaic.module.v1.ContentService.AddContentWork:input_type -> mosaic.module.v1.AddContentWorkRequest
+	64,  // 125: mosaic.module.v1.ContentService.AddContentChild:input_type -> mosaic.module.v1.AddContentChildRequest
+	66,  // 126: mosaic.module.v1.ContentService.AttachContentPart:input_type -> mosaic.module.v1.AttachContentPartRequest
+	68,  // 127: mosaic.module.v1.ContentService.SetContentArtwork:input_type -> mosaic.module.v1.SetContentArtworkRequest
+	70,  // 128: mosaic.module.v1.ContentService.RelateContent:input_type -> mosaic.module.v1.RelateContentRequest
+	72,  // 129: mosaic.module.v1.ContentService.BindContentSource:input_type -> mosaic.module.v1.BindContentSourceRequest
+	74,  // 130: mosaic.module.v1.ContentService.ResolveContentBinding:input_type -> mosaic.module.v1.ResolveContentBindingRequest
+	76,  // 131: mosaic.module.v1.ContentService.SearchContent:input_type -> mosaic.module.v1.SearchContentRequest
+	78,  // 132: mosaic.module.v1.ContentService.FindContentByExternalID:input_type -> mosaic.module.v1.FindContentByExternalIDRequest
+	80,  // 133: mosaic.module.v1.ContentService.GetContentNode:input_type -> mosaic.module.v1.GetContentNodeRequest
+	82,  // 134: mosaic.module.v1.ContentService.ListContentParts:input_type -> mosaic.module.v1.ListContentPartsRequest
+	85,  // 135: mosaic.module.v1.ContentService.RecordPlaybackProgress:input_type -> mosaic.module.v1.RecordPlaybackProgressRequest
+	87,  // 136: mosaic.module.v1.ContentService.SetPlaybackFinished:input_type -> mosaic.module.v1.SetPlaybackFinishedRequest
+	89,  // 137: mosaic.module.v1.ContentService.GetPlaybackState:input_type -> mosaic.module.v1.GetPlaybackStateRequest
+	91,  // 138: mosaic.module.v1.ContentService.ListPlaybackStates:input_type -> mosaic.module.v1.ListPlaybackStatesRequest
+	93,  // 139: mosaic.module.v1.ContentService.ListInProgress:input_type -> mosaic.module.v1.ListInProgressRequest
+	97,  // 140: mosaic.module.v1.TelemetryService.Log:input_type -> mosaic.module.v1.LogRequest
+	99,  // 141: mosaic.module.v1.TelemetryService.StartSpan:input_type -> mosaic.module.v1.StartSpanRequest
+	101, // 142: mosaic.module.v1.TelemetryService.SetSpanAttributes:input_type -> mosaic.module.v1.SpanAttributesRequest
+	103, // 143: mosaic.module.v1.TelemetryService.FailSpan:input_type -> mosaic.module.v1.FailSpanRequest
+	105, // 144: mosaic.module.v1.TelemetryService.EndSpan:input_type -> mosaic.module.v1.EndSpanRequest
+	41,  // 145: mosaic.module.v1.CapabilityService.GetManifest:output_type -> mosaic.module.v1.ManifestResponse
+	43,  // 146: mosaic.module.v1.CapabilityService.Import:output_type -> mosaic.module.v1.ImportResponse
+	45,  // 147: mosaic.module.v1.CapabilityService.Metadata:output_type -> mosaic.module.v1.MetadataResponse
+	47,  // 148: mosaic.module.v1.CapabilityService.Search:output_type -> mosaic.module.v1.SearchResponse
+	49,  // 149: mosaic.module.v1.CapabilityService.Catalogs:output_type -> mosaic.module.v1.CatalogsResponse
+	51,  // 150: mosaic.module.v1.CapabilityService.CatalogItems:output_type -> mosaic.module.v1.CatalogItemsResponse
+	53,  // 151: mosaic.module.v1.CapabilityService.Streams:output_type -> mosaic.module.v1.StreamsResponse
+	55,  // 152: mosaic.module.v1.CapabilityService.Subtitles:output_type -> mosaic.module.v1.SubtitlesResponse
+	57,  // 153: mosaic.module.v1.CapabilityService.Artwork:output_type -> mosaic.module.v1.ArtworkResponse
+	59,  // 154: mosaic.module.v1.CapabilityService.Playback:output_type -> mosaic.module.v1.PlaybackResponse
+	61,  // 155: mosaic.module.v1.CapabilityService.SettingsUI:output_type -> mosaic.module.v1.SettingsUIResponse
+	63,  // 156: mosaic.module.v1.ContentService.AddContentWork:output_type -> mosaic.module.v1.AddContentWorkResponse
+	65,  // 157: mosaic.module.v1.ContentService.AddContentChild:output_type -> mosaic.module.v1.AddContentChildResponse
+	67,  // 158: mosaic.module.v1.ContentService.AttachContentPart:output_type -> mosaic.module.v1.AttachContentPartResponse
+	69,  // 159: mosaic.module.v1.ContentService.SetContentArtwork:output_type -> mosaic.module.v1.SetContentArtworkResponse
+	71,  // 160: mosaic.module.v1.ContentService.RelateContent:output_type -> mosaic.module.v1.RelateContentResponse
+	73,  // 161: mosaic.module.v1.ContentService.BindContentSource:output_type -> mosaic.module.v1.BindContentSourceResponse
+	75,  // 162: mosaic.module.v1.ContentService.ResolveContentBinding:output_type -> mosaic.module.v1.ResolveContentBindingResponse
+	77,  // 163: mosaic.module.v1.ContentService.SearchContent:output_type -> mosaic.module.v1.SearchContentResponse
+	79,  // 164: mosaic.module.v1.ContentService.FindContentByExternalID:output_type -> mosaic.module.v1.FindContentByExternalIDResponse
+	81,  // 165: mosaic.module.v1.ContentService.GetContentNode:output_type -> mosaic.module.v1.GetContentNodeResponse
+	83,  // 166: mosaic.module.v1.ContentService.ListContentParts:output_type -> mosaic.module.v1.ListContentPartsResponse
+	86,  // 167: mosaic.module.v1.ContentService.RecordPlaybackProgress:output_type -> mosaic.module.v1.RecordPlaybackProgressResponse
+	88,  // 168: mosaic.module.v1.ContentService.SetPlaybackFinished:output_type -> mosaic.module.v1.SetPlaybackFinishedResponse
+	90,  // 169: mosaic.module.v1.ContentService.GetPlaybackState:output_type -> mosaic.module.v1.GetPlaybackStateResponse
+	92,  // 170: mosaic.module.v1.ContentService.ListPlaybackStates:output_type -> mosaic.module.v1.ListPlaybackStatesResponse
+	95,  // 171: mosaic.module.v1.ContentService.ListInProgress:output_type -> mosaic.module.v1.ListInProgressResponse
+	98,  // 172: mosaic.module.v1.TelemetryService.Log:output_type -> mosaic.module.v1.LogResponse
+	100, // 173: mosaic.module.v1.TelemetryService.StartSpan:output_type -> mosaic.module.v1.StartSpanResponse
+	102, // 174: mosaic.module.v1.TelemetryService.SetSpanAttributes:output_type -> mosaic.module.v1.SpanAttributesResponse
+	104, // 175: mosaic.module.v1.TelemetryService.FailSpan:output_type -> mosaic.module.v1.FailSpanResponse
+	106, // 176: mosaic.module.v1.TelemetryService.EndSpan:output_type -> mosaic.module.v1.EndSpanResponse
+	145, // [145:177] is the sub-list for method output_type
+	113, // [113:145] is the sub-list for method input_type
+	113, // [113:113] is the sub-list for extension type_name
+	113, // [113:113] is the sub-list for extension extendee
+	0,   // [0:113] is the sub-list for field type_name
 }
 
 func init() { file_mosaic_module_v1_module_proto_init() }
@@ -7859,14 +8059,14 @@ func file_mosaic_module_v1_module_proto_init() {
 	if File_mosaic_module_v1_module_proto != nil {
 		return
 	}
-	file_mosaic_module_v1_module_proto_msgTypes[20].OneofWrappers = []any{}
+	file_mosaic_module_v1_module_proto_msgTypes[22].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_mosaic_module_v1_module_proto_rawDesc), len(file_mosaic_module_v1_module_proto_rawDesc)),
 			NumEnums:      13,
-			NumMessages:   94,
+			NumMessages:   97,
 			NumExtensions: 0,
 			NumServices:   3,
 		},

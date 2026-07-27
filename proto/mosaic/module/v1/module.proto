@@ -193,6 +193,9 @@ message Node {
   // contracts in this workspace already carry them.
   string created_at = 14;
   string updated_at = 15;
+  // The work's genres as its source named them, stored on the node and indexed
+  // so the library can be browsed by one. Set on a Work and empty beneath it.
+  repeated string genres = 16;
 }
 
 // Part is playable bytes attached to an item.
@@ -330,6 +333,31 @@ message Catalog {
   string id = 1;
   string native_type = 2;
   string name = 3;
+  // The narrowings this catalog accepts, each declared with the values it
+  // accepts. Empty means it takes none, which is what every provider said
+  // before this field existed.
+  repeated CatalogFilter filters = 4;
+}
+
+// One narrowing a Catalog accepts — a genre, a streaming service, a decade —
+// declared with its permitted values so a consumer builds its control from the
+// source's own list and can never send a value the source did not name.
+message CatalogFilter {
+  // The source-native parameter name ("genre"), opaque to the Platform and
+  // sent straight back on CatalogItemsRequest.filters.
+  string name = 1;
+  // What a user reads above the control ("Genre"). Carried separately from the
+  // name because they diverge in practice — one popular catalogue carries a
+  // *year* under a parameter called "genre".
+  string label = 2;
+  repeated CatalogFilterOption options = 3;
+}
+
+// One selectable value of a CatalogFilter. Value and label are separate because
+// a source may address a genre by a numeric id and name it in words.
+message CatalogFilterOption {
+  string value = 1;
+  string label = 2;
 }
 
 message Person {
@@ -540,6 +568,14 @@ message CatalogItemsRequest {
   string catalog_id = 3;
   string native_type = 4;
   int32 skip = 5;
+  // The selected narrowings, keyed by CatalogFilter.name and holding one of
+  // that filter's declared option values. Empty means no narrowing, which is
+  // what every caller sent before this field existed.
+  //
+  // A provider must decline a name or value it does not recognise rather than
+  // returning the unfiltered page: quietly widening a query answers a question
+  // nobody asked, and the answer looks right.
+  map<string, string> filters = 6;
 }
 
 message CatalogItemsResponse {
@@ -666,6 +702,10 @@ message AddContentWorkRequest {
   bytes external_ids = 4;
   bytes attributes = 5;
   Artwork artwork = 6;
+  // The work's genres, as the source names them. Stored on the node rather
+  // than smuggled into attributes: genres are universal and filtered in bulk,
+  // and a facet that reads an unvalidated document cannot be indexed honestly.
+  repeated string genres = 7;
 }
 
 message AddContentWorkResponse {
@@ -782,6 +822,9 @@ message SearchContentRequest {
   NodeKind kind = 4;
   bytes attributes_contain = 5;
   int32 limit = 6;
+  // Narrows to nodes carrying every genre listed — conjunctive, because that is
+  // what two lit chips on a facet control mean.
+  repeated string genres = 7;
 }
 
 message SearchContentResponse {
