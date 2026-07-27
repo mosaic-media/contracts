@@ -12,7 +12,7 @@ Three tiers, and the difference between them is what a change costs:
 | Tier | What it is | Cost of adding one |
 |---|---|---|
 | **Primitives** (25) | Native code every client implements | A client release, on every platform |
-| **Components** (43) | Definitions the Platform serves as data | Nothing — a file in `definitions/` |
+| **Components** (44) | Definitions the Platform serves as data | Nothing — a file in `definitions/` |
 | **Actions** (12) | Behaviours a client interprets | A client release |
 
 ## Type names
@@ -411,6 +411,7 @@ expands whatever it is sent.
 - **`EpisodeRow`** — EpisodeRow renders one episode under a season.
 - **`PersonChip`** — PersonChip is a cast/crew chip.
 - **`GenreTag`** — GenreTag is a genre chip.
+- **`FilterChip`** — FilterChip is one selectable narrowing on a browse surface: a pressable pill that draws its own selected state, with an optional count of what it would leave.
 - **`EmptyState`** — EmptyState is a titled empty placeholder, with an optional explanation beneath it and a call to action.
 - **`AppShell`** — AppShell is the application frame (ADR 0031): the brand bar, the nav and the region the current screen renders into.
 - **`DetailHero`** — DetailHero is a title's cinematic header — backdrop, logo and the actions docked over it.

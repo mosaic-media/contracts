@@ -984,6 +984,12 @@
       "doc": "OnTap sets the node's primary action."
     },
     {
+      "func": "FacetCount",
+      "key": "count",
+      "type": "string",
+      "doc": "FacetCount sets how many items a narrowing would leave, shown inside the chip that offers it. A string rather than a number because it is a label: the count is formatted where the fact is known, and a chip is not the place to decide how a large number reads."
+    },
+    {
       "func": "Title",
       "key": "title",
       "type": "string",
@@ -1756,6 +1762,23 @@
           "name": "label",
           "key": "label",
           "type": "string"
+        }
+      ]
+    },
+    {
+      "func": "FilterChip",
+      "type": "FilterChip",
+      "doc": "FilterChip is one selectable narrowing on a browse surface: a pressable pill that draws its own selected state, with an optional count of what it would leave.",
+      "positional": [
+        {
+          "name": "label",
+          "key": "label",
+          "type": "string"
+        },
+        {
+          "name": "selected",
+          "key": "selected",
+          "type": "bool"
         }
       ]
     },

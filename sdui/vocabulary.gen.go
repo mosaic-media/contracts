@@ -65,6 +65,7 @@ const (
 	TypeEpisodeRow       = "EpisodeRow"
 	TypePersonChip       = "PersonChip"
 	TypeGenreTag         = "GenreTag"
+	TypeFilterChip       = "FilterChip"
 	TypeEmptyState       = "EmptyState"
 	TypeAppShell         = "AppShell"
 	TypeDetailHero       = "DetailHero"
@@ -323,6 +324,7 @@ var Components = []string{
 	"EpisodeRow",
 	"PersonChip",
 	"GenreTag",
+	"FilterChip",
 	"EmptyState",
 	"AppShell",
 	"DetailHero",

@@ -361,6 +361,7 @@ export const components: string[] = [
   "EpisodeRow",
   "PersonChip",
   "GenreTag",
+  "FilterChip",
   "EmptyState",
   "AppShell",
   "DetailHero",

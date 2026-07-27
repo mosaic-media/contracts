@@ -180,6 +180,11 @@ func GenreTag(label string, els ...El) *Element {
 	return compose("GenreTag", map[string]any{"label": label}, els)
 }
 
+// FilterChip is one selectable narrowing on a browse surface: a pressable pill that draws its own selected state, with an optional count of what it would leave.
+func FilterChip(label string, selected bool, els ...El) *Element {
+	return compose("FilterChip", map[string]any{"label": label, "selected": selected}, els)
+}
+
 // EmptyState is a titled empty placeholder, with an optional explanation beneath it and a call to action.
 func EmptyState(icon string, title string, els ...El) *Element {
 	return compose("EmptyState", map[string]any{"icon": icon, "title": title}, els)
@@ -358,6 +363,9 @@ func Account(els ...El) El { return Slot("account", els...) }
 
 // OnTap sets the node's primary action.
 func OnTap(v Action) El { return Prop("action", v) }
+
+// FacetCount sets how many items a narrowing would leave, shown inside the chip that offers it. A string rather than a number because it is a label: the count is formatted where the fact is known, and a chip is not the place to decide how a large number reads.
+func FacetCount(v string) El { return Prop("count", v) }
 
 // Title sets a screen or component title.
 func Title(v string) El { return Prop("title", v) }
@@ -638,6 +646,9 @@ func LoadMore(v Action) El { return Prop("loadMore", v) }
 
 // BindOnTap sets "action" from the named path instead of from a value.
 func BindOnTap(path string) El { return Prop("action", sdui.Bind(path)) }
+
+// BindFacetCount sets "count" from the named path instead of from a value.
+func BindFacetCount(path string) El { return Prop("count", sdui.Bind(path)) }
 
 // BindTitle sets "title" from the named path instead of from a value.
 func BindTitle(path string) El { return Prop("title", sdui.Bind(path)) }

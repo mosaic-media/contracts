@@ -1,0 +1,112 @@
+{
+  "name": "FilterChip",
+  "params": {
+    "selected": false
+  },
+  "template": {
+    "type": "Fragment",
+    "children": [
+      {
+        "type": "Pressable",
+        "props": {
+          "$if": {
+            "$bind": "selected"
+          },
+          "action": {
+            "$bind": "action"
+          },
+          "style": {
+            "direction": "row",
+            "align": "center",
+            "gap": 1,
+            "bg": "accent",
+            "color": "on-accent",
+            "radius": "pill",
+            "px": 3,
+            "py": 1
+          }
+        },
+        "children": [
+          {
+            "type": "Text",
+            "props": {
+              "text": {
+                "$bind": "label"
+              },
+              "style": {
+                "variant": "xs",
+                "weight": "medium"
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "$if": {
+                "$bind": "count"
+              },
+              "text": {
+                "$bind": "count"
+              },
+              "style": {
+                "variant": "xs",
+                "color": "on-accent-muted"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "Pressable",
+        "props": {
+          "$ifNot": {
+            "$bind": "selected"
+          },
+          "action": {
+            "$bind": "action"
+          },
+          "style": {
+            "direction": "row",
+            "align": "center",
+            "gap": 1,
+            "bg": "surface-raised",
+            "glass": true,
+            "border": true,
+            "radius": "pill",
+            "px": 3,
+            "py": 1
+          }
+        },
+        "children": [
+          {
+            "type": "Text",
+            "props": {
+              "text": {
+                "$bind": "label"
+              },
+              "style": {
+                "variant": "xs",
+                "color": "text"
+              }
+            }
+          },
+          {
+            "type": "Text",
+            "props": {
+              "$if": {
+                "$bind": "count"
+              },
+              "text": {
+                "$bind": "count"
+              },
+              "style": {
+                "variant": "xs",
+                "color": "text-muted"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

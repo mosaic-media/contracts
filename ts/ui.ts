@@ -263,6 +263,11 @@ export function GenreTag(label: string, ...els: Elish[]): Element {
   return compose("GenreTag", { label }, els);
 }
 
+/** FilterChip is one selectable narrowing on a browse surface: a pressable pill that draws its own selected state, with an optional count of what it would leave. */
+export function FilterChip(label: string, selected: boolean, ...els: Elish[]): Element {
+  return compose("FilterChip", { label, selected }, els);
+}
+
 /** EmptyState is a titled empty placeholder, with an optional explanation beneath it and a call to action. */
 export function EmptyState(icon: string, title: string, ...els: Elish[]): Element {
   return compose("EmptyState", { icon, title }, els);
@@ -480,6 +485,11 @@ export function Account(...els: Elish[]): El {
 /** OnTap sets the node's primary action. */
 export function OnTap(v: Action): El {
   return Prop("action", v);
+}
+
+/** FacetCount sets how many items a narrowing would leave, shown inside the chip that offers it. A string rather than a number because it is a label: the count is formatted where the fact is known, and a chip is not the place to decide how a large number reads. */
+export function FacetCount(v: string): El {
+  return Prop("count", v);
 }
 
 /** Title sets a screen or component title. */
@@ -938,6 +948,11 @@ export function LoadMore(v: Action): El {
 /** BindOnTap sets "action" from the named path instead of from a value. */
 export function BindOnTap(path: string): El {
   return Prop("action", bind(path));
+}
+
+/** BindFacetCount sets "count" from the named path instead of from a value. */
+export function BindFacetCount(path: string): El {
+  return Prop("count", bind(path));
 }
 
 /** BindTitle sets "title" from the named path instead of from a value. */
