@@ -464,6 +464,16 @@ message StreamLink {
   int64 size_bytes = 4;
   int32 seeders = 5;
   MediaLocation location = 6;
+  // What a client needs to know whether it can play this candidate at all. Same
+  // names and same spellings as on a Part, because that is where a resolved
+  // candidate ends up — the values are moved across, not translated.
+  //
+  // Best-effort: a module parses them from release text at its own boundary
+  // (ADR 0051), which is a guess rather than a measurement. Empty means the
+  // source did not say, exactly like every other descriptive field here.
+  string container = 7;
+  string video_codec = 8;
+  string audio_codec = 9;
 }
 
 message Subtitle {
@@ -608,6 +618,12 @@ message SubtitlesRequest {
   Caller caller = 1;
   bytes settings = 2;
   ContentRef ref = 3;
+  // The same coordinates StreamsRequest carries, numbered the same, and for the
+  // same reason (ADR 0073): a provider asked about content it did not source
+  // gets a shared external identity with no native id, and composes its own
+  // episode addressing from these. Zero for a film.
+  int32 season = 4;
+  int32 episode = 5;
 }
 
 message SubtitlesResponse {

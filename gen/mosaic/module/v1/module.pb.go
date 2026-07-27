@@ -2857,13 +2857,23 @@ func (x *ContentMetadata) GetCrew() []*Person {
 }
 
 type StreamLink struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Label         string                 `protobuf:"bytes,1,opt,name=label,proto3" json:"label,omitempty"`
-	Title         string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
-	Quality       string                 `protobuf:"bytes,3,opt,name=quality,proto3" json:"quality,omitempty"`
-	SizeBytes     int64                  `protobuf:"varint,4,opt,name=size_bytes,json=sizeBytes,proto3" json:"size_bytes,omitempty"`
-	Seeders       int32                  `protobuf:"varint,5,opt,name=seeders,proto3" json:"seeders,omitempty"`
-	Location      *MediaLocation         `protobuf:"bytes,6,opt,name=location,proto3" json:"location,omitempty"`
+	state     protoimpl.MessageState `protogen:"open.v1"`
+	Label     string                 `protobuf:"bytes,1,opt,name=label,proto3" json:"label,omitempty"`
+	Title     string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	Quality   string                 `protobuf:"bytes,3,opt,name=quality,proto3" json:"quality,omitempty"`
+	SizeBytes int64                  `protobuf:"varint,4,opt,name=size_bytes,json=sizeBytes,proto3" json:"size_bytes,omitempty"`
+	Seeders   int32                  `protobuf:"varint,5,opt,name=seeders,proto3" json:"seeders,omitempty"`
+	Location  *MediaLocation         `protobuf:"bytes,6,opt,name=location,proto3" json:"location,omitempty"`
+	// What a client needs to know whether it can play this candidate at all. Same
+	// names and same spellings as on a Part, because that is where a resolved
+	// candidate ends up — the values are moved across, not translated.
+	//
+	// Best-effort: a module parses them from release text at its own boundary
+	// (ADR 0051), which is a guess rather than a measurement. Empty means the
+	// source did not say, exactly like every other descriptive field here.
+	Container     string `protobuf:"bytes,7,opt,name=container,proto3" json:"container,omitempty"`
+	VideoCodec    string `protobuf:"bytes,8,opt,name=video_codec,json=videoCodec,proto3" json:"video_codec,omitempty"`
+	AudioCodec    string `protobuf:"bytes,9,opt,name=audio_codec,json=audioCodec,proto3" json:"audio_codec,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2938,6 +2948,27 @@ func (x *StreamLink) GetLocation() *MediaLocation {
 		return x.Location
 	}
 	return nil
+}
+
+func (x *StreamLink) GetContainer() string {
+	if x != nil {
+		return x.Container
+	}
+	return ""
+}
+
+func (x *StreamLink) GetVideoCodec() string {
+	if x != nil {
+		return x.VideoCodec
+	}
+	return ""
+}
+
+func (x *StreamLink) GetAudioCodec() string {
+	if x != nil {
+		return x.AudioCodec
+	}
+	return ""
 }
 
 type Subtitle struct {
@@ -3957,10 +3988,16 @@ func (x *StreamsResponse) GetStreams() []*StreamLink {
 }
 
 type SubtitlesRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Caller        *Caller                `protobuf:"bytes,1,opt,name=caller,proto3" json:"caller,omitempty"`
-	Settings      []byte                 `protobuf:"bytes,2,opt,name=settings,proto3" json:"settings,omitempty"`
-	Ref           *ContentRef            `protobuf:"bytes,3,opt,name=ref,proto3" json:"ref,omitempty"`
+	state    protoimpl.MessageState `protogen:"open.v1"`
+	Caller   *Caller                `protobuf:"bytes,1,opt,name=caller,proto3" json:"caller,omitempty"`
+	Settings []byte                 `protobuf:"bytes,2,opt,name=settings,proto3" json:"settings,omitempty"`
+	Ref      *ContentRef            `protobuf:"bytes,3,opt,name=ref,proto3" json:"ref,omitempty"`
+	// The same coordinates StreamsRequest carries, numbered the same, and for the
+	// same reason (ADR 0073): a provider asked about content it did not source
+	// gets a shared external identity with no native id, and composes its own
+	// episode addressing from these. Zero for a film.
+	Season        int32 `protobuf:"varint,4,opt,name=season,proto3" json:"season,omitempty"`
+	Episode       int32 `protobuf:"varint,5,opt,name=episode,proto3" json:"episode,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -4014,6 +4051,20 @@ func (x *SubtitlesRequest) GetRef() *ContentRef {
 		return x.Ref
 	}
 	return nil
+}
+
+func (x *SubtitlesRequest) GetSeason() int32 {
+	if x != nil {
+		return x.Season
+	}
+	return 0
+}
+
+func (x *SubtitlesRequest) GetEpisode() int32 {
+	if x != nil {
+		return x.Episode
+	}
+	return 0
 }
 
 type SubtitlesResponse struct {
@@ -7313,7 +7364,7 @@ const file_mosaic_module_v1_module_proto_rawDesc = "" +
 	"\x05watch\x18\x12 \x01(\v2#.mosaic.module.v1.WatchAvailabilityH\x01R\x05watch\x88\x01\x01\x12,\n" +
 	"\x04crew\x18\x13 \x03(\v2\x18.mosaic.module.v1.PersonR\x04crewB\r\n" +
 	"\v_collectionB\b\n" +
-	"\x06_watch\"\xc8\x01\n" +
+	"\x06_watch\"\xa8\x02\n" +
 	"\n" +
 	"StreamLink\x12\x14\n" +
 	"\x05label\x18\x01 \x01(\tR\x05label\x12\x14\n" +
@@ -7322,7 +7373,12 @@ const file_mosaic_module_v1_module_proto_rawDesc = "" +
 	"\n" +
 	"size_bytes\x18\x04 \x01(\x03R\tsizeBytes\x12\x18\n" +
 	"\aseeders\x18\x05 \x01(\x05R\aseeders\x12;\n" +
-	"\blocation\x18\x06 \x01(\v2\x1f.mosaic.module.v1.MediaLocationR\blocation\"H\n" +
+	"\blocation\x18\x06 \x01(\v2\x1f.mosaic.module.v1.MediaLocationR\blocation\x12\x1c\n" +
+	"\tcontainer\x18\a \x01(\tR\tcontainer\x12\x1f\n" +
+	"\vvideo_codec\x18\b \x01(\tR\n" +
+	"videoCodec\x12\x1f\n" +
+	"\vaudio_codec\x18\t \x01(\tR\n" +
+	"audioCodec\"H\n" +
 	"\bSubtitle\x12\x1a\n" +
 	"\blanguage\x18\x01 \x01(\tR\blanguage\x12\x10\n" +
 	"\x03url\x18\x02 \x01(\tR\x03url\x12\x0e\n" +
@@ -7393,11 +7449,13 @@ const file_mosaic_module_v1_module_proto_rawDesc = "" +
 	"\x06season\x18\x04 \x01(\x05R\x06season\x12\x18\n" +
 	"\aepisode\x18\x05 \x01(\x05R\aepisode\"I\n" +
 	"\x0fStreamsResponse\x126\n" +
-	"\astreams\x18\x01 \x03(\v2\x1c.mosaic.module.v1.StreamLinkR\astreams\"\x90\x01\n" +
+	"\astreams\x18\x01 \x03(\v2\x1c.mosaic.module.v1.StreamLinkR\astreams\"\xc2\x01\n" +
 	"\x10SubtitlesRequest\x120\n" +
 	"\x06caller\x18\x01 \x01(\v2\x18.mosaic.module.v1.CallerR\x06caller\x12\x1a\n" +
 	"\bsettings\x18\x02 \x01(\fR\bsettings\x12.\n" +
-	"\x03ref\x18\x03 \x01(\v2\x1c.mosaic.module.v1.ContentRefR\x03ref\"M\n" +
+	"\x03ref\x18\x03 \x01(\v2\x1c.mosaic.module.v1.ContentRefR\x03ref\x12\x16\n" +
+	"\x06season\x18\x04 \x01(\x05R\x06season\x12\x18\n" +
+	"\aepisode\x18\x05 \x01(\x05R\aepisode\"M\n" +
 	"\x11SubtitlesResponse\x128\n" +
 	"\tsubtitles\x18\x01 \x03(\v2\x1a.mosaic.module.v1.SubtitleR\tsubtitles\"\xd9\x01\n" +
 	"\x0eArtworkRequest\x120\n" +
