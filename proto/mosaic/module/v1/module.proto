@@ -474,6 +474,26 @@ message StreamLink {
   string container = 7;
   string video_codec = 8;
   string audio_codec = 9;
+  // The dimensions and the dynamic range, on the same terms as the three above.
+  //
+  // These are the inputs that let a consumer avoid transcoding, which is the
+  // outcome worth the most: width and height decide whether a candidate carries
+  // more pixels than a client can display, and hdr_format decides whether it
+  // needs tone-mapping — the most expensive thing a Platform does with a
+  // release, and until now invisible to any ranking.
+  //
+  // The dimensions are recovered rather than new. Both stream providers already
+  // derive them from the resolution label they parse and discarded them at the
+  // boundary, because `quality` was the only place a resolution could go; that
+  // field keeps its meaning as the label a source displayed.
+  //
+  // Nominal, like `quality`: "2160p" means 3840x2160 whatever the real aspect.
+  // Spell hdr_format as a Part does — "HDR10", "HLG", "DolbyVision" — and leave
+  // it empty for SDR or unstated, deliberately the same answer, because a source
+  // that does not say is not asserting SDR.
+  int32 width = 10;
+  int32 height = 11;
+  string hdr_format = 12;
 }
 
 message Subtitle {

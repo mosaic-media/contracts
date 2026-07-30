@@ -2871,9 +2871,29 @@ type StreamLink struct {
 	// Best-effort: a module parses them from release text at its own boundary
 	// (ADR 0051), which is a guess rather than a measurement. Empty means the
 	// source did not say, exactly like every other descriptive field here.
-	Container     string `protobuf:"bytes,7,opt,name=container,proto3" json:"container,omitempty"`
-	VideoCodec    string `protobuf:"bytes,8,opt,name=video_codec,json=videoCodec,proto3" json:"video_codec,omitempty"`
-	AudioCodec    string `protobuf:"bytes,9,opt,name=audio_codec,json=audioCodec,proto3" json:"audio_codec,omitempty"`
+	Container  string `protobuf:"bytes,7,opt,name=container,proto3" json:"container,omitempty"`
+	VideoCodec string `protobuf:"bytes,8,opt,name=video_codec,json=videoCodec,proto3" json:"video_codec,omitempty"`
+	AudioCodec string `protobuf:"bytes,9,opt,name=audio_codec,json=audioCodec,proto3" json:"audio_codec,omitempty"`
+	// The dimensions and the dynamic range, on the same terms as the three above.
+	//
+	// These are the inputs that let a consumer avoid transcoding, which is the
+	// outcome worth the most: width and height decide whether a candidate carries
+	// more pixels than a client can display, and hdr_format decides whether it
+	// needs tone-mapping — the most expensive thing a Platform does with a
+	// release, and until now invisible to any ranking.
+	//
+	// The dimensions are recovered rather than new. Both stream providers already
+	// derive them from the resolution label they parse and discarded them at the
+	// boundary, because `quality` was the only place a resolution could go; that
+	// field keeps its meaning as the label a source displayed.
+	//
+	// Nominal, like `quality`: "2160p" means 3840x2160 whatever the real aspect.
+	// Spell hdr_format as a Part does — "HDR10", "HLG", "DolbyVision" — and leave
+	// it empty for SDR or unstated, deliberately the same answer, because a source
+	// that does not say is not asserting SDR.
+	Width         int32  `protobuf:"varint,10,opt,name=width,proto3" json:"width,omitempty"`
+	Height        int32  `protobuf:"varint,11,opt,name=height,proto3" json:"height,omitempty"`
+	HdrFormat     string `protobuf:"bytes,12,opt,name=hdr_format,json=hdrFormat,proto3" json:"hdr_format,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2967,6 +2987,27 @@ func (x *StreamLink) GetVideoCodec() string {
 func (x *StreamLink) GetAudioCodec() string {
 	if x != nil {
 		return x.AudioCodec
+	}
+	return ""
+}
+
+func (x *StreamLink) GetWidth() int32 {
+	if x != nil {
+		return x.Width
+	}
+	return 0
+}
+
+func (x *StreamLink) GetHeight() int32 {
+	if x != nil {
+		return x.Height
+	}
+	return 0
+}
+
+func (x *StreamLink) GetHdrFormat() string {
+	if x != nil {
+		return x.HdrFormat
 	}
 	return ""
 }
@@ -7364,7 +7405,7 @@ const file_mosaic_module_v1_module_proto_rawDesc = "" +
 	"\x05watch\x18\x12 \x01(\v2#.mosaic.module.v1.WatchAvailabilityH\x01R\x05watch\x88\x01\x01\x12,\n" +
 	"\x04crew\x18\x13 \x03(\v2\x18.mosaic.module.v1.PersonR\x04crewB\r\n" +
 	"\v_collectionB\b\n" +
-	"\x06_watch\"\xa8\x02\n" +
+	"\x06_watch\"\xf5\x02\n" +
 	"\n" +
 	"StreamLink\x12\x14\n" +
 	"\x05label\x18\x01 \x01(\tR\x05label\x12\x14\n" +
@@ -7378,7 +7419,12 @@ const file_mosaic_module_v1_module_proto_rawDesc = "" +
 	"\vvideo_codec\x18\b \x01(\tR\n" +
 	"videoCodec\x12\x1f\n" +
 	"\vaudio_codec\x18\t \x01(\tR\n" +
-	"audioCodec\"H\n" +
+	"audioCodec\x12\x14\n" +
+	"\x05width\x18\n" +
+	" \x01(\x05R\x05width\x12\x16\n" +
+	"\x06height\x18\v \x01(\x05R\x06height\x12\x1d\n" +
+	"\n" +
+	"hdr_format\x18\f \x01(\tR\thdrFormat\"H\n" +
 	"\bSubtitle\x12\x1a\n" +
 	"\blanguage\x18\x01 \x01(\tR\blanguage\x12\x10\n" +
 	"\x03url\x18\x02 \x01(\tR\x03url\x12\x0e\n" +
