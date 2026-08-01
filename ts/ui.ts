@@ -572,6 +572,11 @@ export function PartID(v: string): El {
   return Prop("partId", v);
 }
 
+/** SubtitleTracks are the authored subtitle scripts a Player may draw itself (ADR 0115). Deliberately not named Subtitles: Subtitle is a different prop on a different tier, and two builders one letter apart is how a prop ends up set on something that does not render it. */
+export function SubtitleTracks(v: Props[]): El {
+  return Prop("subtitleTracks", v);
+}
+
 /** Disabled greys a control and stops it emitting. */
 export function Disabled(v: boolean): El {
   return Prop("disabled", v);
@@ -1033,6 +1038,11 @@ export function BindNodeID(path: string): El {
 /** BindPartID sets "partId" from the named path instead of from a value. */
 export function BindPartID(path: string): El {
   return Prop("partId", bind(path));
+}
+
+/** BindSubtitleTracks sets "subtitleTracks" from the named path instead of from a value. */
+export function BindSubtitleTracks(path: string): El {
+  return Prop("subtitleTracks", bind(path));
 }
 
 /** BindDisabled sets "disabled" from the named path instead of from a value. */

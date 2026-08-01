@@ -262,7 +262,8 @@
         "mimeType",
         "resumeAt",
         "nodeId",
-        "partId"
+        "partId",
+        "subtitleTracks"
       ]
     }
   ],

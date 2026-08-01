@@ -415,6 +415,9 @@ func NodeID(v string) El { return Prop("nodeId", v) }
 // PartID names the release a Player is playing, recorded with the position so a resume returns to the same encode (ADR 0046).
 func PartID(v string) El { return Prop("partId", v) }
 
+// SubtitleTracks are the authored subtitle scripts a Player may draw itself (ADR 0115). Deliberately not named Subtitles: Subtitle is a different prop on a different tier, and two builders one letter apart is how a prop ends up set on something that does not render it.
+func SubtitleTracks(v []any) El { return Prop("subtitleTracks", v) }
+
 // Disabled greys a control and stops it emitting.
 func Disabled(v bool) El { return Prop("disabled", v) }
 
@@ -697,6 +700,9 @@ func BindNodeID(path string) El { return Prop("nodeId", sdui.Bind(path)) }
 
 // BindPartID sets "partId" from the named path instead of from a value.
 func BindPartID(path string) El { return Prop("partId", sdui.Bind(path)) }
+
+// BindSubtitleTracks sets "subtitleTracks" from the named path instead of from a value.
+func BindSubtitleTracks(path string) El { return Prop("subtitleTracks", sdui.Bind(path)) }
 
 // BindDisabled sets "disabled" from the named path instead of from a value.
 func BindDisabled(path string) El { return Prop("disabled", sdui.Bind(path)) }

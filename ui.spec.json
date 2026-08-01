@@ -972,6 +972,11 @@
           "key": "partId",
           "type": "string",
           "doc": "Release actually being played."
+        },
+        {
+          "key": "subtitleTracks",
+          "type": "array:subtitleTrack",
+          "doc": "Authored subtitle scripts the client draws itself \u2014 each a src, a format, a language, a label and whether it is the one the viewer's preference chose (ADR 0115). They ride beside the HLS subtitle renditions rather than replacing them, so a client that cannot render a script ignores this and still has subtitles."
         }
       ]
     }
@@ -1084,6 +1089,12 @@
       "key": "partId",
       "type": "string",
       "doc": "PartID names the release a Player is playing, recorded with the position so a resume returns to the same encode (ADR 0046)."
+    },
+    {
+      "func": "SubtitleTracks",
+      "key": "subtitleTracks",
+      "type": "[]props",
+      "doc": "SubtitleTracks are the authored subtitle scripts a Player may draw itself (ADR 0115). Deliberately not named Subtitles: Subtitle is a different prop on a different tier, and two builders one letter apart is how a prop ends up set on something that does not render it."
     },
     {
       "func": "Disabled",

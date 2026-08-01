@@ -391,6 +391,7 @@ Player is the playback surface.
 | `resumeAt` | `number` | Seconds to seek to once the media is seekable. |
 | `nodeId` | `string` | Content node this playback reports progress against. |
 | `partId` | `string` | Release actually being played. |
+| `subtitleTracks` | `array:subtitleTrack` | Authored subtitle scripts the client draws itself — each a src, a format, a language, a label and whether it is the one the viewer's preference chose (ADR 0115). They ride beside the HLS subtitle renditions rather than replacing them, so a client that cannot render a script ignores this and still has subtitles. |
 
 ## Components
 
