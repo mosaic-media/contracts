@@ -1264,6 +1264,8 @@ const (
 	TelemetryService_SetSpanAttributes_FullMethodName = "/mosaic.module.v1.TelemetryService/SetSpanAttributes"
 	TelemetryService_FailSpan_FullMethodName          = "/mosaic.module.v1.TelemetryService/FailSpan"
 	TelemetryService_EndSpan_FullMethodName           = "/mosaic.module.v1.TelemetryService/EndSpan"
+	TelemetryService_Count_FullMethodName             = "/mosaic.module.v1.TelemetryService/Count"
+	TelemetryService_Measure_FullMethodName           = "/mosaic.module.v1.TelemetryService/Measure"
 )
 
 // TelemetryServiceClient is the client API for TelemetryService service.
@@ -1281,6 +1283,13 @@ type TelemetryServiceClient interface {
 	SetSpanAttributes(ctx context.Context, in *SpanAttributesRequest, opts ...grpc.CallOption) (*SpanAttributesResponse, error)
 	FailSpan(ctx context.Context, in *FailSpanRequest, opts ...grpc.CallOption) (*FailSpanResponse, error)
 	EndSpan(ctx context.Context, in *EndSpanRequest, opts ...grpc.CallOption) (*EndSpanResponse, error)
+	// The metric half (ADR 0130). It crosses the wire for the same reason the
+	// rest does — and for one specific to metrics: ADR 0059 refused to publish a
+	// counter that silently discards, and a bridge that answered these calls with
+	// nothing would build exactly that, reachable only by the modules that run
+	// out of process (ADR 0077) and only in production.
+	Count(ctx context.Context, in *CountRequest, opts ...grpc.CallOption) (*CountResponse, error)
+	Measure(ctx context.Context, in *MeasureRequest, opts ...grpc.CallOption) (*MeasureResponse, error)
 }
 
 type telemetryServiceClient struct {
@@ -1341,6 +1350,26 @@ func (c *telemetryServiceClient) EndSpan(ctx context.Context, in *EndSpanRequest
 	return out, nil
 }
 
+func (c *telemetryServiceClient) Count(ctx context.Context, in *CountRequest, opts ...grpc.CallOption) (*CountResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CountResponse)
+	err := c.cc.Invoke(ctx, TelemetryService_Count_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *telemetryServiceClient) Measure(ctx context.Context, in *MeasureRequest, opts ...grpc.CallOption) (*MeasureResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MeasureResponse)
+	err := c.cc.Invoke(ctx, TelemetryService_Measure_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TelemetryServiceServer is the server API for TelemetryService service.
 // All implementations must embed UnimplementedTelemetryServiceServer
 // for forward compatibility.
@@ -1356,6 +1385,13 @@ type TelemetryServiceServer interface {
 	SetSpanAttributes(context.Context, *SpanAttributesRequest) (*SpanAttributesResponse, error)
 	FailSpan(context.Context, *FailSpanRequest) (*FailSpanResponse, error)
 	EndSpan(context.Context, *EndSpanRequest) (*EndSpanResponse, error)
+	// The metric half (ADR 0130). It crosses the wire for the same reason the
+	// rest does — and for one specific to metrics: ADR 0059 refused to publish a
+	// counter that silently discards, and a bridge that answered these calls with
+	// nothing would build exactly that, reachable only by the modules that run
+	// out of process (ADR 0077) and only in production.
+	Count(context.Context, *CountRequest) (*CountResponse, error)
+	Measure(context.Context, *MeasureRequest) (*MeasureResponse, error)
 	mustEmbedUnimplementedTelemetryServiceServer()
 }
 
@@ -1380,6 +1416,12 @@ func (UnimplementedTelemetryServiceServer) FailSpan(context.Context, *FailSpanRe
 }
 func (UnimplementedTelemetryServiceServer) EndSpan(context.Context, *EndSpanRequest) (*EndSpanResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EndSpan not implemented")
+}
+func (UnimplementedTelemetryServiceServer) Count(context.Context, *CountRequest) (*CountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Count not implemented")
+}
+func (UnimplementedTelemetryServiceServer) Measure(context.Context, *MeasureRequest) (*MeasureResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Measure not implemented")
 }
 func (UnimplementedTelemetryServiceServer) mustEmbedUnimplementedTelemetryServiceServer() {}
 func (UnimplementedTelemetryServiceServer) testEmbeddedByValue()                          {}
@@ -1492,6 +1534,42 @@ func _TelemetryService_EndSpan_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TelemetryService_Count_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TelemetryServiceServer).Count(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TelemetryService_Count_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TelemetryServiceServer).Count(ctx, req.(*CountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TelemetryService_Measure_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MeasureRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TelemetryServiceServer).Measure(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TelemetryService_Measure_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TelemetryServiceServer).Measure(ctx, req.(*MeasureRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TelemetryService_ServiceDesc is the grpc.ServiceDesc for TelemetryService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1518,6 +1596,14 @@ var TelemetryService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "EndSpan",
 			Handler:    _TelemetryService_EndSpan_Handler,
+		},
+		{
+			MethodName: "Count",
+			Handler:    _TelemetryService_Count_Handler,
+		},
+		{
+			MethodName: "Measure",
+			Handler:    _TelemetryService_Measure_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -1084,6 +1084,51 @@ message EndSpanRequest {
 
 message EndSpanResponse {}
 
+// MetricUnit is the closed vocabulary of units a Measure may carry (ADR 0130).
+//
+// Closed, because a unit is what lets a backend convert between scales and a
+// reader label an axis — and a free-form string produces `ms`, `millis`,
+// `milliseconds` and `Ms` across four modules describing one quantity, which
+// nothing ever reconciles. The values map onto OpenTelemetry's own annotations,
+// so an exported instrument is already correct for anything reading UCUM.
+enum MetricUnit {
+  // Unitless. Also what an unrecognised unit becomes: the measurement is worth
+  // more than its annotation, and an instrument carrying a unit nothing knows
+  // is worse than one carrying none, since a backend converts against it.
+  METRIC_UNIT_UNSPECIFIED = 0;
+  METRIC_UNIT_SECONDS = 1;
+  METRIC_UNIT_BYTES = 2;
+  METRIC_UNIT_ITEMS = 3;
+}
+
+// CountRequest adds to a monotonic counter.
+//
+// **The attributes are dimensions, and dimensions are not log fields**, which is
+// the one asymmetry worth knowing at this boundary: every distinct combination
+// of values is a series that lives as long as the Platform process, where a log
+// record ages out under retention. The Platform bounds how many a module may
+// create — see ADR 0130 — so an out-of-process module cannot exhaust the host it
+// is not running in.
+message CountRequest {
+  Caller caller = 1;
+  string name = 2;
+  int64 delta = 3;
+  repeated Field attributes = 4;
+}
+
+message CountResponse {}
+
+// MeasureRequest records one observation into a distribution.
+message MeasureRequest {
+  Caller caller = 1;
+  string name = 2;
+  double value = 3;
+  MetricUnit unit = 4;
+  repeated Field attributes = 5;
+}
+
+message MeasureResponse {}
+
 // TelemetryService is how a module observes (ADR 0059). The SDK declares its own
 // interface rather than re-exporting OpenTelemetry, specifically so a contract
 // does not distribute the Platform's taste in libraries — and that decision is
@@ -1095,4 +1140,11 @@ service TelemetryService {
   rpc SetSpanAttributes(SpanAttributesRequest) returns (SpanAttributesResponse);
   rpc FailSpan(FailSpanRequest) returns (FailSpanResponse);
   rpc EndSpan(EndSpanRequest) returns (EndSpanResponse);
+  // The metric half (ADR 0130). It crosses the wire for the same reason the
+  // rest does — and for one specific to metrics: ADR 0059 refused to publish a
+  // counter that silently discards, and a bridge that answered these calls with
+  // nothing would build exactly that, reachable only by the modules that run
+  // out of process (ADR 0077) and only in production.
+  rpc Count(CountRequest) returns (CountResponse);
+  rpc Measure(MeasureRequest) returns (MeasureResponse);
 }

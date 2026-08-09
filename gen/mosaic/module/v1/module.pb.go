@@ -773,6 +773,68 @@ func (LogLevel) EnumDescriptor() ([]byte, []int) {
 	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{12}
 }
 
+// MetricUnit is the closed vocabulary of units a Measure may carry (ADR 0130).
+//
+// Closed, because a unit is what lets a backend convert between scales and a
+// reader label an axis — and a free-form string produces `ms`, `millis`,
+// `milliseconds` and `Ms` across four modules describing one quantity, which
+// nothing ever reconciles. The values map onto OpenTelemetry's own annotations,
+// so an exported instrument is already correct for anything reading UCUM.
+type MetricUnit int32
+
+const (
+	// Unitless. Also what an unrecognised unit becomes: the measurement is worth
+	// more than its annotation, and an instrument carrying a unit nothing knows
+	// is worse than one carrying none, since a backend converts against it.
+	MetricUnit_METRIC_UNIT_UNSPECIFIED MetricUnit = 0
+	MetricUnit_METRIC_UNIT_SECONDS     MetricUnit = 1
+	MetricUnit_METRIC_UNIT_BYTES       MetricUnit = 2
+	MetricUnit_METRIC_UNIT_ITEMS       MetricUnit = 3
+)
+
+// Enum value maps for MetricUnit.
+var (
+	MetricUnit_name = map[int32]string{
+		0: "METRIC_UNIT_UNSPECIFIED",
+		1: "METRIC_UNIT_SECONDS",
+		2: "METRIC_UNIT_BYTES",
+		3: "METRIC_UNIT_ITEMS",
+	}
+	MetricUnit_value = map[string]int32{
+		"METRIC_UNIT_UNSPECIFIED": 0,
+		"METRIC_UNIT_SECONDS":     1,
+		"METRIC_UNIT_BYTES":       2,
+		"METRIC_UNIT_ITEMS":       3,
+	}
+)
+
+func (x MetricUnit) Enum() *MetricUnit {
+	p := new(MetricUnit)
+	*p = x
+	return p
+}
+
+func (x MetricUnit) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (MetricUnit) Descriptor() protoreflect.EnumDescriptor {
+	return file_mosaic_module_v1_module_proto_enumTypes[13].Descriptor()
+}
+
+func (MetricUnit) Type() protoreflect.EnumType {
+	return &file_mosaic_module_v1_module_proto_enumTypes[13]
+}
+
+func (x MetricUnit) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use MetricUnit.Descriptor instead.
+func (MetricUnit) EnumDescriptor() ([]byte, []int) {
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{13}
+}
+
 // Caller is the principal a module acts as, and it is the one type whose
 // meaning *changes* by crossing the boundary (ADR 0064).
 //
@@ -7193,6 +7255,231 @@ func (*EndSpanResponse) Descriptor() ([]byte, []int) {
 	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{93}
 }
 
+// CountRequest adds to a monotonic counter.
+//
+// **The attributes are dimensions, and dimensions are not log fields**, which is
+// the one asymmetry worth knowing at this boundary: every distinct combination
+// of values is a series that lives as long as the Platform process, where a log
+// record ages out under retention. The Platform bounds how many a module may
+// create — see ADR 0130 — so an out-of-process module cannot exhaust the host it
+// is not running in.
+type CountRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Caller        *Caller                `protobuf:"bytes,1,opt,name=caller,proto3" json:"caller,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Delta         int64                  `protobuf:"varint,3,opt,name=delta,proto3" json:"delta,omitempty"`
+	Attributes    []*Field               `protobuf:"bytes,4,rep,name=attributes,proto3" json:"attributes,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CountRequest) Reset() {
+	*x = CountRequest{}
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[94]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CountRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CountRequest) ProtoMessage() {}
+
+func (x *CountRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[94]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CountRequest.ProtoReflect.Descriptor instead.
+func (*CountRequest) Descriptor() ([]byte, []int) {
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{94}
+}
+
+func (x *CountRequest) GetCaller() *Caller {
+	if x != nil {
+		return x.Caller
+	}
+	return nil
+}
+
+func (x *CountRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CountRequest) GetDelta() int64 {
+	if x != nil {
+		return x.Delta
+	}
+	return 0
+}
+
+func (x *CountRequest) GetAttributes() []*Field {
+	if x != nil {
+		return x.Attributes
+	}
+	return nil
+}
+
+type CountResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CountResponse) Reset() {
+	*x = CountResponse{}
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[95]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CountResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CountResponse) ProtoMessage() {}
+
+func (x *CountResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[95]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CountResponse.ProtoReflect.Descriptor instead.
+func (*CountResponse) Descriptor() ([]byte, []int) {
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{95}
+}
+
+// MeasureRequest records one observation into a distribution.
+type MeasureRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Caller        *Caller                `protobuf:"bytes,1,opt,name=caller,proto3" json:"caller,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Value         float64                `protobuf:"fixed64,3,opt,name=value,proto3" json:"value,omitempty"`
+	Unit          MetricUnit             `protobuf:"varint,4,opt,name=unit,proto3,enum=mosaic.module.v1.MetricUnit" json:"unit,omitempty"`
+	Attributes    []*Field               `protobuf:"bytes,5,rep,name=attributes,proto3" json:"attributes,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MeasureRequest) Reset() {
+	*x = MeasureRequest{}
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[96]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MeasureRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MeasureRequest) ProtoMessage() {}
+
+func (x *MeasureRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[96]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MeasureRequest.ProtoReflect.Descriptor instead.
+func (*MeasureRequest) Descriptor() ([]byte, []int) {
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{96}
+}
+
+func (x *MeasureRequest) GetCaller() *Caller {
+	if x != nil {
+		return x.Caller
+	}
+	return nil
+}
+
+func (x *MeasureRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *MeasureRequest) GetValue() float64 {
+	if x != nil {
+		return x.Value
+	}
+	return 0
+}
+
+func (x *MeasureRequest) GetUnit() MetricUnit {
+	if x != nil {
+		return x.Unit
+	}
+	return MetricUnit_METRIC_UNIT_UNSPECIFIED
+}
+
+func (x *MeasureRequest) GetAttributes() []*Field {
+	if x != nil {
+		return x.Attributes
+	}
+	return nil
+}
+
+type MeasureResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MeasureResponse) Reset() {
+	*x = MeasureResponse{}
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[97]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MeasureResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MeasureResponse) ProtoMessage() {}
+
+func (x *MeasureResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_mosaic_module_v1_module_proto_msgTypes[97]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MeasureResponse.ProtoReflect.Descriptor instead.
+func (*MeasureResponse) Descriptor() ([]byte, []int) {
+	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{97}
+}
+
 var File_mosaic_module_v1_module_proto protoreflect.FileDescriptor
 
 const file_mosaic_module_v1_module_proto_rawDesc = "" +
@@ -7740,7 +8027,24 @@ const file_mosaic_module_v1_module_proto_rawDesc = "" +
 	"\x0eEndSpanRequest\x120\n" +
 	"\x06caller\x18\x01 \x01(\v2\x18.mosaic.module.v1.CallerR\x06caller\x12\x17\n" +
 	"\aspan_id\x18\x02 \x01(\tR\x06spanId\"\x11\n" +
-	"\x0fEndSpanResponse*\x96\x02\n" +
+	"\x0fEndSpanResponse\"\xa3\x01\n" +
+	"\fCountRequest\x120\n" +
+	"\x06caller\x18\x01 \x01(\v2\x18.mosaic.module.v1.CallerR\x06caller\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x14\n" +
+	"\x05delta\x18\x03 \x01(\x03R\x05delta\x127\n" +
+	"\n" +
+	"attributes\x18\x04 \x03(\v2\x17.mosaic.module.v1.FieldR\n" +
+	"attributes\"\x0f\n" +
+	"\rCountResponse\"\xd7\x01\n" +
+	"\x0eMeasureRequest\x120\n" +
+	"\x06caller\x18\x01 \x01(\v2\x18.mosaic.module.v1.CallerR\x06caller\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x14\n" +
+	"\x05value\x18\x03 \x01(\x01R\x05value\x120\n" +
+	"\x04unit\x18\x04 \x01(\x0e2\x1c.mosaic.module.v1.MetricUnitR\x04unit\x127\n" +
+	"\n" +
+	"attributes\x18\x05 \x03(\v2\x17.mosaic.module.v1.FieldR\n" +
+	"attributes\"\x11\n" +
+	"\x0fMeasureResponse*\x96\x02\n" +
 	"\rErrorCategory\x12\x1e\n" +
 	"\x1aERROR_CATEGORY_UNSPECIFIED\x10\x00\x12#\n" +
 	"\x1fERROR_CATEGORY_INVALID_ARGUMENT\x10\x01\x12\"\n" +
@@ -7809,7 +8113,13 @@ const file_mosaic_module_v1_module_proto_rawDesc = "" +
 	"\x0fLOG_LEVEL_DEBUG\x10\x01\x12\x12\n" +
 	"\x0eLOG_LEVEL_INFO\x10\x02\x12\x12\n" +
 	"\x0eLOG_LEVEL_WARN\x10\x03\x12\x13\n" +
-	"\x0fLOG_LEVEL_ERROR\x10\x042\xaa\a\n" +
+	"\x0fLOG_LEVEL_ERROR\x10\x04*p\n" +
+	"\n" +
+	"MetricUnit\x12\x1b\n" +
+	"\x17METRIC_UNIT_UNSPECIFIED\x10\x00\x12\x17\n" +
+	"\x13METRIC_UNIT_SECONDS\x10\x01\x12\x15\n" +
+	"\x11METRIC_UNIT_BYTES\x10\x02\x12\x15\n" +
+	"\x11METRIC_UNIT_ITEMS\x10\x032\xaa\a\n" +
 	"\x11CapabilityService\x12T\n" +
 	"\vGetManifest\x12!.mosaic.module.v1.ManifestRequest\x1a\".mosaic.module.v1.ManifestResponse\x12K\n" +
 	"\x06Import\x12\x1f.mosaic.module.v1.ImportRequest\x1a .mosaic.module.v1.ImportResponse\x12Q\n" +
@@ -7839,13 +8149,15 @@ const file_mosaic_module_v1_module_proto_rawDesc = "" +
 	"\x13SetPlaybackFinished\x12,.mosaic.module.v1.SetPlaybackFinishedRequest\x1a-.mosaic.module.v1.SetPlaybackFinishedResponse\x12i\n" +
 	"\x10GetPlaybackState\x12).mosaic.module.v1.GetPlaybackStateRequest\x1a*.mosaic.module.v1.GetPlaybackStateResponse\x12o\n" +
 	"\x12ListPlaybackStates\x12+.mosaic.module.v1.ListPlaybackStatesRequest\x1a,.mosaic.module.v1.ListPlaybackStatesResponse\x12c\n" +
-	"\x0eListInProgress\x12'.mosaic.module.v1.ListInProgressRequest\x1a(.mosaic.module.v1.ListInProgressResponse2\xb7\x03\n" +
+	"\x0eListInProgress\x12'.mosaic.module.v1.ListInProgressRequest\x1a(.mosaic.module.v1.ListInProgressResponse2\xd1\x04\n" +
 	"\x10TelemetryService\x12B\n" +
 	"\x03Log\x12\x1c.mosaic.module.v1.LogRequest\x1a\x1d.mosaic.module.v1.LogResponse\x12T\n" +
 	"\tStartSpan\x12\".mosaic.module.v1.StartSpanRequest\x1a#.mosaic.module.v1.StartSpanResponse\x12f\n" +
 	"\x11SetSpanAttributes\x12'.mosaic.module.v1.SpanAttributesRequest\x1a(.mosaic.module.v1.SpanAttributesResponse\x12Q\n" +
 	"\bFailSpan\x12!.mosaic.module.v1.FailSpanRequest\x1a\".mosaic.module.v1.FailSpanResponse\x12N\n" +
-	"\aEndSpan\x12 .mosaic.module.v1.EndSpanRequest\x1a!.mosaic.module.v1.EndSpanResponseBAZ?github.com/mosaic-media/contracts/gen/mosaic/module/v1;modulev1b\x06proto3"
+	"\aEndSpan\x12 .mosaic.module.v1.EndSpanRequest\x1a!.mosaic.module.v1.EndSpanResponse\x12H\n" +
+	"\x05Count\x12\x1e.mosaic.module.v1.CountRequest\x1a\x1f.mosaic.module.v1.CountResponse\x12N\n" +
+	"\aMeasure\x12 .mosaic.module.v1.MeasureRequest\x1a!.mosaic.module.v1.MeasureResponseBAZ?github.com/mosaic-media/contracts/gen/mosaic/module/v1;modulev1b\x06proto3"
 
 var (
 	file_mosaic_module_v1_module_proto_rawDescOnce sync.Once
@@ -7859,8 +8171,8 @@ func file_mosaic_module_v1_module_proto_rawDescGZIP() []byte {
 	return file_mosaic_module_v1_module_proto_rawDescData
 }
 
-var file_mosaic_module_v1_module_proto_enumTypes = make([]protoimpl.EnumInfo, 13)
-var file_mosaic_module_v1_module_proto_msgTypes = make([]protoimpl.MessageInfo, 97)
+var file_mosaic_module_v1_module_proto_enumTypes = make([]protoimpl.EnumInfo, 14)
+var file_mosaic_module_v1_module_proto_msgTypes = make([]protoimpl.MessageInfo, 101)
 var file_mosaic_module_v1_module_proto_goTypes = []any{
 	(ErrorCategory)(0),                      // 0: mosaic.module.v1.ErrorCategory
 	(NodeKind)(0),                           // 1: mosaic.module.v1.NodeKind
@@ -7875,287 +8187,301 @@ var file_mosaic_module_v1_module_proto_goTypes = []any{
 	(BindingResolution)(0),                  // 10: mosaic.module.v1.BindingResolution
 	(RedactionClass)(0),                     // 11: mosaic.module.v1.RedactionClass
 	(LogLevel)(0),                           // 12: mosaic.module.v1.LogLevel
-	(*Caller)(nil),                          // 13: mosaic.module.v1.Caller
-	(*Error)(nil),                           // 14: mosaic.module.v1.Error
-	(*MediaLocation)(nil),                   // 15: mosaic.module.v1.MediaLocation
-	(*ArtworkCandidate)(nil),                // 16: mosaic.module.v1.ArtworkCandidate
-	(*Artwork)(nil),                         // 17: mosaic.module.v1.Artwork
-	(*Node)(nil),                            // 18: mosaic.module.v1.Node
-	(*Part)(nil),                            // 19: mosaic.module.v1.Part
-	(*Relation)(nil),                        // 20: mosaic.module.v1.Relation
-	(*SourceBinding)(nil),                   // 21: mosaic.module.v1.SourceBinding
-	(*ContentRef)(nil),                      // 22: mosaic.module.v1.ContentRef
-	(*SearchResult)(nil),                    // 23: mosaic.module.v1.SearchResult
-	(*CatalogItem)(nil),                     // 24: mosaic.module.v1.CatalogItem
-	(*RelatedItem)(nil),                     // 25: mosaic.module.v1.RelatedItem
-	(*Catalog)(nil),                         // 26: mosaic.module.v1.Catalog
-	(*CatalogFilter)(nil),                   // 27: mosaic.module.v1.CatalogFilter
-	(*CatalogFilterOption)(nil),             // 28: mosaic.module.v1.CatalogFilterOption
-	(*Person)(nil),                          // 29: mosaic.module.v1.Person
-	(*EpisodePreview)(nil),                  // 30: mosaic.module.v1.EpisodePreview
-	(*Collection)(nil),                      // 31: mosaic.module.v1.Collection
-	(*Trailer)(nil),                         // 32: mosaic.module.v1.Trailer
-	(*WatchOffer)(nil),                      // 33: mosaic.module.v1.WatchOffer
-	(*WatchAvailability)(nil),               // 34: mosaic.module.v1.WatchAvailability
-	(*ContentMetadata)(nil),                 // 35: mosaic.module.v1.ContentMetadata
-	(*StreamLink)(nil),                      // 36: mosaic.module.v1.StreamLink
-	(*Subtitle)(nil),                        // 37: mosaic.module.v1.Subtitle
-	(*ExternalIdentity)(nil),                // 38: mosaic.module.v1.ExternalIdentity
-	(*Manifest)(nil),                        // 39: mosaic.module.v1.Manifest
-	(*ManifestRequest)(nil),                 // 40: mosaic.module.v1.ManifestRequest
-	(*ManifestResponse)(nil),                // 41: mosaic.module.v1.ManifestResponse
-	(*ImportRequest)(nil),                   // 42: mosaic.module.v1.ImportRequest
-	(*ImportResponse)(nil),                  // 43: mosaic.module.v1.ImportResponse
-	(*MetadataRequest)(nil),                 // 44: mosaic.module.v1.MetadataRequest
-	(*MetadataResponse)(nil),                // 45: mosaic.module.v1.MetadataResponse
-	(*SearchRequest)(nil),                   // 46: mosaic.module.v1.SearchRequest
-	(*SearchResponse)(nil),                  // 47: mosaic.module.v1.SearchResponse
-	(*CatalogsRequest)(nil),                 // 48: mosaic.module.v1.CatalogsRequest
-	(*CatalogsResponse)(nil),                // 49: mosaic.module.v1.CatalogsResponse
-	(*CatalogItemsRequest)(nil),             // 50: mosaic.module.v1.CatalogItemsRequest
-	(*CatalogItemsResponse)(nil),            // 51: mosaic.module.v1.CatalogItemsResponse
-	(*StreamsRequest)(nil),                  // 52: mosaic.module.v1.StreamsRequest
-	(*StreamsResponse)(nil),                 // 53: mosaic.module.v1.StreamsResponse
-	(*SubtitlesRequest)(nil),                // 54: mosaic.module.v1.SubtitlesRequest
-	(*SubtitlesResponse)(nil),               // 55: mosaic.module.v1.SubtitlesResponse
-	(*ArtworkRequest)(nil),                  // 56: mosaic.module.v1.ArtworkRequest
-	(*ArtworkResponse)(nil),                 // 57: mosaic.module.v1.ArtworkResponse
-	(*PlaybackRequest)(nil),                 // 58: mosaic.module.v1.PlaybackRequest
-	(*PlaybackResponse)(nil),                // 59: mosaic.module.v1.PlaybackResponse
-	(*SettingsUIRequest)(nil),               // 60: mosaic.module.v1.SettingsUIRequest
-	(*SettingsUIResponse)(nil),              // 61: mosaic.module.v1.SettingsUIResponse
-	(*AddContentWorkRequest)(nil),           // 62: mosaic.module.v1.AddContentWorkRequest
-	(*AddContentWorkResponse)(nil),          // 63: mosaic.module.v1.AddContentWorkResponse
-	(*AddContentChildRequest)(nil),          // 64: mosaic.module.v1.AddContentChildRequest
-	(*AddContentChildResponse)(nil),         // 65: mosaic.module.v1.AddContentChildResponse
-	(*AttachContentPartRequest)(nil),        // 66: mosaic.module.v1.AttachContentPartRequest
-	(*AttachContentPartResponse)(nil),       // 67: mosaic.module.v1.AttachContentPartResponse
-	(*SetContentArtworkRequest)(nil),        // 68: mosaic.module.v1.SetContentArtworkRequest
-	(*SetContentArtworkResponse)(nil),       // 69: mosaic.module.v1.SetContentArtworkResponse
-	(*RelateContentRequest)(nil),            // 70: mosaic.module.v1.RelateContentRequest
-	(*RelateContentResponse)(nil),           // 71: mosaic.module.v1.RelateContentResponse
-	(*BindContentSourceRequest)(nil),        // 72: mosaic.module.v1.BindContentSourceRequest
-	(*BindContentSourceResponse)(nil),       // 73: mosaic.module.v1.BindContentSourceResponse
-	(*ResolveContentBindingRequest)(nil),    // 74: mosaic.module.v1.ResolveContentBindingRequest
-	(*ResolveContentBindingResponse)(nil),   // 75: mosaic.module.v1.ResolveContentBindingResponse
-	(*SearchContentRequest)(nil),            // 76: mosaic.module.v1.SearchContentRequest
-	(*SearchContentResponse)(nil),           // 77: mosaic.module.v1.SearchContentResponse
-	(*FindContentByExternalIDRequest)(nil),  // 78: mosaic.module.v1.FindContentByExternalIDRequest
-	(*FindContentByExternalIDResponse)(nil), // 79: mosaic.module.v1.FindContentByExternalIDResponse
-	(*GetContentNodeRequest)(nil),           // 80: mosaic.module.v1.GetContentNodeRequest
-	(*GetContentNodeResponse)(nil),          // 81: mosaic.module.v1.GetContentNodeResponse
-	(*ListContentPartsRequest)(nil),         // 82: mosaic.module.v1.ListContentPartsRequest
-	(*ListContentPartsResponse)(nil),        // 83: mosaic.module.v1.ListContentPartsResponse
-	(*PlaybackState)(nil),                   // 84: mosaic.module.v1.PlaybackState
-	(*RecordPlaybackProgressRequest)(nil),   // 85: mosaic.module.v1.RecordPlaybackProgressRequest
-	(*RecordPlaybackProgressResponse)(nil),  // 86: mosaic.module.v1.RecordPlaybackProgressResponse
-	(*SetPlaybackFinishedRequest)(nil),      // 87: mosaic.module.v1.SetPlaybackFinishedRequest
-	(*SetPlaybackFinishedResponse)(nil),     // 88: mosaic.module.v1.SetPlaybackFinishedResponse
-	(*GetPlaybackStateRequest)(nil),         // 89: mosaic.module.v1.GetPlaybackStateRequest
-	(*GetPlaybackStateResponse)(nil),        // 90: mosaic.module.v1.GetPlaybackStateResponse
-	(*ListPlaybackStatesRequest)(nil),       // 91: mosaic.module.v1.ListPlaybackStatesRequest
-	(*ListPlaybackStatesResponse)(nil),      // 92: mosaic.module.v1.ListPlaybackStatesResponse
-	(*ListInProgressRequest)(nil),           // 93: mosaic.module.v1.ListInProgressRequest
-	(*InProgressItem)(nil),                  // 94: mosaic.module.v1.InProgressItem
-	(*ListInProgressResponse)(nil),          // 95: mosaic.module.v1.ListInProgressResponse
-	(*Field)(nil),                           // 96: mosaic.module.v1.Field
-	(*LogRequest)(nil),                      // 97: mosaic.module.v1.LogRequest
-	(*LogResponse)(nil),                     // 98: mosaic.module.v1.LogResponse
-	(*StartSpanRequest)(nil),                // 99: mosaic.module.v1.StartSpanRequest
-	(*StartSpanResponse)(nil),               // 100: mosaic.module.v1.StartSpanResponse
-	(*SpanAttributesRequest)(nil),           // 101: mosaic.module.v1.SpanAttributesRequest
-	(*SpanAttributesResponse)(nil),          // 102: mosaic.module.v1.SpanAttributesResponse
-	(*FailSpanRequest)(nil),                 // 103: mosaic.module.v1.FailSpanRequest
-	(*FailSpanResponse)(nil),                // 104: mosaic.module.v1.FailSpanResponse
-	(*EndSpanRequest)(nil),                  // 105: mosaic.module.v1.EndSpanRequest
-	(*EndSpanResponse)(nil),                 // 106: mosaic.module.v1.EndSpanResponse
-	nil,                                     // 107: mosaic.module.v1.CatalogItemsRequest.FiltersEntry
-	nil,                                     // 108: mosaic.module.v1.PlaybackResponse.HeadersEntry
-	nil,                                     // 109: mosaic.module.v1.ListPlaybackStatesResponse.StatesEntry
+	(MetricUnit)(0),                         // 13: mosaic.module.v1.MetricUnit
+	(*Caller)(nil),                          // 14: mosaic.module.v1.Caller
+	(*Error)(nil),                           // 15: mosaic.module.v1.Error
+	(*MediaLocation)(nil),                   // 16: mosaic.module.v1.MediaLocation
+	(*ArtworkCandidate)(nil),                // 17: mosaic.module.v1.ArtworkCandidate
+	(*Artwork)(nil),                         // 18: mosaic.module.v1.Artwork
+	(*Node)(nil),                            // 19: mosaic.module.v1.Node
+	(*Part)(nil),                            // 20: mosaic.module.v1.Part
+	(*Relation)(nil),                        // 21: mosaic.module.v1.Relation
+	(*SourceBinding)(nil),                   // 22: mosaic.module.v1.SourceBinding
+	(*ContentRef)(nil),                      // 23: mosaic.module.v1.ContentRef
+	(*SearchResult)(nil),                    // 24: mosaic.module.v1.SearchResult
+	(*CatalogItem)(nil),                     // 25: mosaic.module.v1.CatalogItem
+	(*RelatedItem)(nil),                     // 26: mosaic.module.v1.RelatedItem
+	(*Catalog)(nil),                         // 27: mosaic.module.v1.Catalog
+	(*CatalogFilter)(nil),                   // 28: mosaic.module.v1.CatalogFilter
+	(*CatalogFilterOption)(nil),             // 29: mosaic.module.v1.CatalogFilterOption
+	(*Person)(nil),                          // 30: mosaic.module.v1.Person
+	(*EpisodePreview)(nil),                  // 31: mosaic.module.v1.EpisodePreview
+	(*Collection)(nil),                      // 32: mosaic.module.v1.Collection
+	(*Trailer)(nil),                         // 33: mosaic.module.v1.Trailer
+	(*WatchOffer)(nil),                      // 34: mosaic.module.v1.WatchOffer
+	(*WatchAvailability)(nil),               // 35: mosaic.module.v1.WatchAvailability
+	(*ContentMetadata)(nil),                 // 36: mosaic.module.v1.ContentMetadata
+	(*StreamLink)(nil),                      // 37: mosaic.module.v1.StreamLink
+	(*Subtitle)(nil),                        // 38: mosaic.module.v1.Subtitle
+	(*ExternalIdentity)(nil),                // 39: mosaic.module.v1.ExternalIdentity
+	(*Manifest)(nil),                        // 40: mosaic.module.v1.Manifest
+	(*ManifestRequest)(nil),                 // 41: mosaic.module.v1.ManifestRequest
+	(*ManifestResponse)(nil),                // 42: mosaic.module.v1.ManifestResponse
+	(*ImportRequest)(nil),                   // 43: mosaic.module.v1.ImportRequest
+	(*ImportResponse)(nil),                  // 44: mosaic.module.v1.ImportResponse
+	(*MetadataRequest)(nil),                 // 45: mosaic.module.v1.MetadataRequest
+	(*MetadataResponse)(nil),                // 46: mosaic.module.v1.MetadataResponse
+	(*SearchRequest)(nil),                   // 47: mosaic.module.v1.SearchRequest
+	(*SearchResponse)(nil),                  // 48: mosaic.module.v1.SearchResponse
+	(*CatalogsRequest)(nil),                 // 49: mosaic.module.v1.CatalogsRequest
+	(*CatalogsResponse)(nil),                // 50: mosaic.module.v1.CatalogsResponse
+	(*CatalogItemsRequest)(nil),             // 51: mosaic.module.v1.CatalogItemsRequest
+	(*CatalogItemsResponse)(nil),            // 52: mosaic.module.v1.CatalogItemsResponse
+	(*StreamsRequest)(nil),                  // 53: mosaic.module.v1.StreamsRequest
+	(*StreamsResponse)(nil),                 // 54: mosaic.module.v1.StreamsResponse
+	(*SubtitlesRequest)(nil),                // 55: mosaic.module.v1.SubtitlesRequest
+	(*SubtitlesResponse)(nil),               // 56: mosaic.module.v1.SubtitlesResponse
+	(*ArtworkRequest)(nil),                  // 57: mosaic.module.v1.ArtworkRequest
+	(*ArtworkResponse)(nil),                 // 58: mosaic.module.v1.ArtworkResponse
+	(*PlaybackRequest)(nil),                 // 59: mosaic.module.v1.PlaybackRequest
+	(*PlaybackResponse)(nil),                // 60: mosaic.module.v1.PlaybackResponse
+	(*SettingsUIRequest)(nil),               // 61: mosaic.module.v1.SettingsUIRequest
+	(*SettingsUIResponse)(nil),              // 62: mosaic.module.v1.SettingsUIResponse
+	(*AddContentWorkRequest)(nil),           // 63: mosaic.module.v1.AddContentWorkRequest
+	(*AddContentWorkResponse)(nil),          // 64: mosaic.module.v1.AddContentWorkResponse
+	(*AddContentChildRequest)(nil),          // 65: mosaic.module.v1.AddContentChildRequest
+	(*AddContentChildResponse)(nil),         // 66: mosaic.module.v1.AddContentChildResponse
+	(*AttachContentPartRequest)(nil),        // 67: mosaic.module.v1.AttachContentPartRequest
+	(*AttachContentPartResponse)(nil),       // 68: mosaic.module.v1.AttachContentPartResponse
+	(*SetContentArtworkRequest)(nil),        // 69: mosaic.module.v1.SetContentArtworkRequest
+	(*SetContentArtworkResponse)(nil),       // 70: mosaic.module.v1.SetContentArtworkResponse
+	(*RelateContentRequest)(nil),            // 71: mosaic.module.v1.RelateContentRequest
+	(*RelateContentResponse)(nil),           // 72: mosaic.module.v1.RelateContentResponse
+	(*BindContentSourceRequest)(nil),        // 73: mosaic.module.v1.BindContentSourceRequest
+	(*BindContentSourceResponse)(nil),       // 74: mosaic.module.v1.BindContentSourceResponse
+	(*ResolveContentBindingRequest)(nil),    // 75: mosaic.module.v1.ResolveContentBindingRequest
+	(*ResolveContentBindingResponse)(nil),   // 76: mosaic.module.v1.ResolveContentBindingResponse
+	(*SearchContentRequest)(nil),            // 77: mosaic.module.v1.SearchContentRequest
+	(*SearchContentResponse)(nil),           // 78: mosaic.module.v1.SearchContentResponse
+	(*FindContentByExternalIDRequest)(nil),  // 79: mosaic.module.v1.FindContentByExternalIDRequest
+	(*FindContentByExternalIDResponse)(nil), // 80: mosaic.module.v1.FindContentByExternalIDResponse
+	(*GetContentNodeRequest)(nil),           // 81: mosaic.module.v1.GetContentNodeRequest
+	(*GetContentNodeResponse)(nil),          // 82: mosaic.module.v1.GetContentNodeResponse
+	(*ListContentPartsRequest)(nil),         // 83: mosaic.module.v1.ListContentPartsRequest
+	(*ListContentPartsResponse)(nil),        // 84: mosaic.module.v1.ListContentPartsResponse
+	(*PlaybackState)(nil),                   // 85: mosaic.module.v1.PlaybackState
+	(*RecordPlaybackProgressRequest)(nil),   // 86: mosaic.module.v1.RecordPlaybackProgressRequest
+	(*RecordPlaybackProgressResponse)(nil),  // 87: mosaic.module.v1.RecordPlaybackProgressResponse
+	(*SetPlaybackFinishedRequest)(nil),      // 88: mosaic.module.v1.SetPlaybackFinishedRequest
+	(*SetPlaybackFinishedResponse)(nil),     // 89: mosaic.module.v1.SetPlaybackFinishedResponse
+	(*GetPlaybackStateRequest)(nil),         // 90: mosaic.module.v1.GetPlaybackStateRequest
+	(*GetPlaybackStateResponse)(nil),        // 91: mosaic.module.v1.GetPlaybackStateResponse
+	(*ListPlaybackStatesRequest)(nil),       // 92: mosaic.module.v1.ListPlaybackStatesRequest
+	(*ListPlaybackStatesResponse)(nil),      // 93: mosaic.module.v1.ListPlaybackStatesResponse
+	(*ListInProgressRequest)(nil),           // 94: mosaic.module.v1.ListInProgressRequest
+	(*InProgressItem)(nil),                  // 95: mosaic.module.v1.InProgressItem
+	(*ListInProgressResponse)(nil),          // 96: mosaic.module.v1.ListInProgressResponse
+	(*Field)(nil),                           // 97: mosaic.module.v1.Field
+	(*LogRequest)(nil),                      // 98: mosaic.module.v1.LogRequest
+	(*LogResponse)(nil),                     // 99: mosaic.module.v1.LogResponse
+	(*StartSpanRequest)(nil),                // 100: mosaic.module.v1.StartSpanRequest
+	(*StartSpanResponse)(nil),               // 101: mosaic.module.v1.StartSpanResponse
+	(*SpanAttributesRequest)(nil),           // 102: mosaic.module.v1.SpanAttributesRequest
+	(*SpanAttributesResponse)(nil),          // 103: mosaic.module.v1.SpanAttributesResponse
+	(*FailSpanRequest)(nil),                 // 104: mosaic.module.v1.FailSpanRequest
+	(*FailSpanResponse)(nil),                // 105: mosaic.module.v1.FailSpanResponse
+	(*EndSpanRequest)(nil),                  // 106: mosaic.module.v1.EndSpanRequest
+	(*EndSpanResponse)(nil),                 // 107: mosaic.module.v1.EndSpanResponse
+	(*CountRequest)(nil),                    // 108: mosaic.module.v1.CountRequest
+	(*CountResponse)(nil),                   // 109: mosaic.module.v1.CountResponse
+	(*MeasureRequest)(nil),                  // 110: mosaic.module.v1.MeasureRequest
+	(*MeasureResponse)(nil),                 // 111: mosaic.module.v1.MeasureResponse
+	nil,                                     // 112: mosaic.module.v1.CatalogItemsRequest.FiltersEntry
+	nil,                                     // 113: mosaic.module.v1.PlaybackResponse.HeadersEntry
+	nil,                                     // 114: mosaic.module.v1.ListPlaybackStatesResponse.StatesEntry
 }
 var file_mosaic_module_v1_module_proto_depIdxs = []int32{
 	0,   // 0: mosaic.module.v1.Error.category:type_name -> mosaic.module.v1.ErrorCategory
 	4,   // 1: mosaic.module.v1.MediaLocation.scheme:type_name -> mosaic.module.v1.LocationScheme
-	16,  // 2: mosaic.module.v1.Artwork.candidates:type_name -> mosaic.module.v1.ArtworkCandidate
+	17,  // 2: mosaic.module.v1.Artwork.candidates:type_name -> mosaic.module.v1.ArtworkCandidate
 	1,   // 3: mosaic.module.v1.Node.kind:type_name -> mosaic.module.v1.NodeKind
 	2,   // 4: mosaic.module.v1.Node.status:type_name -> mosaic.module.v1.NodeStatus
-	17,  // 5: mosaic.module.v1.Node.artwork:type_name -> mosaic.module.v1.Artwork
+	18,  // 5: mosaic.module.v1.Node.artwork:type_name -> mosaic.module.v1.Artwork
 	3,   // 6: mosaic.module.v1.Part.role:type_name -> mosaic.module.v1.PartRole
-	15,  // 7: mosaic.module.v1.Part.location:type_name -> mosaic.module.v1.MediaLocation
+	16,  // 7: mosaic.module.v1.Part.location:type_name -> mosaic.module.v1.MediaLocation
 	5,   // 8: mosaic.module.v1.Relation.origin:type_name -> mosaic.module.v1.RelationOrigin
 	6,   // 9: mosaic.module.v1.SourceBinding.match_method:type_name -> mosaic.module.v1.MatchMethod
 	7,   // 10: mosaic.module.v1.SourceBinding.status:type_name -> mosaic.module.v1.BindingStatus
-	22,  // 11: mosaic.module.v1.SearchResult.ref:type_name -> mosaic.module.v1.ContentRef
-	22,  // 12: mosaic.module.v1.CatalogItem.ref:type_name -> mosaic.module.v1.ContentRef
-	22,  // 13: mosaic.module.v1.RelatedItem.ref:type_name -> mosaic.module.v1.ContentRef
-	27,  // 14: mosaic.module.v1.Catalog.filters:type_name -> mosaic.module.v1.CatalogFilter
-	28,  // 15: mosaic.module.v1.CatalogFilter.options:type_name -> mosaic.module.v1.CatalogFilterOption
-	25,  // 16: mosaic.module.v1.Collection.items:type_name -> mosaic.module.v1.RelatedItem
+	23,  // 11: mosaic.module.v1.SearchResult.ref:type_name -> mosaic.module.v1.ContentRef
+	23,  // 12: mosaic.module.v1.CatalogItem.ref:type_name -> mosaic.module.v1.ContentRef
+	23,  // 13: mosaic.module.v1.RelatedItem.ref:type_name -> mosaic.module.v1.ContentRef
+	28,  // 14: mosaic.module.v1.Catalog.filters:type_name -> mosaic.module.v1.CatalogFilter
+	29,  // 15: mosaic.module.v1.CatalogFilter.options:type_name -> mosaic.module.v1.CatalogFilterOption
+	26,  // 16: mosaic.module.v1.Collection.items:type_name -> mosaic.module.v1.RelatedItem
 	8,   // 17: mosaic.module.v1.WatchOffer.type:type_name -> mosaic.module.v1.WatchOfferType
-	33,  // 18: mosaic.module.v1.WatchAvailability.offers:type_name -> mosaic.module.v1.WatchOffer
-	22,  // 19: mosaic.module.v1.ContentMetadata.ref:type_name -> mosaic.module.v1.ContentRef
-	29,  // 20: mosaic.module.v1.ContentMetadata.cast:type_name -> mosaic.module.v1.Person
-	30,  // 21: mosaic.module.v1.ContentMetadata.episodes:type_name -> mosaic.module.v1.EpisodePreview
-	25,  // 22: mosaic.module.v1.ContentMetadata.similar:type_name -> mosaic.module.v1.RelatedItem
-	31,  // 23: mosaic.module.v1.ContentMetadata.collection:type_name -> mosaic.module.v1.Collection
-	32,  // 24: mosaic.module.v1.ContentMetadata.trailers:type_name -> mosaic.module.v1.Trailer
-	34,  // 25: mosaic.module.v1.ContentMetadata.watch:type_name -> mosaic.module.v1.WatchAvailability
-	29,  // 26: mosaic.module.v1.ContentMetadata.crew:type_name -> mosaic.module.v1.Person
-	15,  // 27: mosaic.module.v1.StreamLink.location:type_name -> mosaic.module.v1.MediaLocation
-	39,  // 28: mosaic.module.v1.ManifestResponse.manifest:type_name -> mosaic.module.v1.Manifest
-	13,  // 29: mosaic.module.v1.ImportRequest.caller:type_name -> mosaic.module.v1.Caller
-	22,  // 30: mosaic.module.v1.ImportRequest.ref:type_name -> mosaic.module.v1.ContentRef
-	13,  // 31: mosaic.module.v1.MetadataRequest.caller:type_name -> mosaic.module.v1.Caller
-	22,  // 32: mosaic.module.v1.MetadataRequest.ref:type_name -> mosaic.module.v1.ContentRef
-	35,  // 33: mosaic.module.v1.MetadataResponse.metadata:type_name -> mosaic.module.v1.ContentMetadata
-	13,  // 34: mosaic.module.v1.SearchRequest.caller:type_name -> mosaic.module.v1.Caller
-	23,  // 35: mosaic.module.v1.SearchResponse.results:type_name -> mosaic.module.v1.SearchResult
-	13,  // 36: mosaic.module.v1.CatalogsRequest.caller:type_name -> mosaic.module.v1.Caller
-	26,  // 37: mosaic.module.v1.CatalogsResponse.catalogs:type_name -> mosaic.module.v1.Catalog
-	13,  // 38: mosaic.module.v1.CatalogItemsRequest.caller:type_name -> mosaic.module.v1.Caller
-	107, // 39: mosaic.module.v1.CatalogItemsRequest.filters:type_name -> mosaic.module.v1.CatalogItemsRequest.FiltersEntry
-	24,  // 40: mosaic.module.v1.CatalogItemsResponse.items:type_name -> mosaic.module.v1.CatalogItem
-	13,  // 41: mosaic.module.v1.StreamsRequest.caller:type_name -> mosaic.module.v1.Caller
-	22,  // 42: mosaic.module.v1.StreamsRequest.ref:type_name -> mosaic.module.v1.ContentRef
-	36,  // 43: mosaic.module.v1.StreamsResponse.streams:type_name -> mosaic.module.v1.StreamLink
-	13,  // 44: mosaic.module.v1.SubtitlesRequest.caller:type_name -> mosaic.module.v1.Caller
-	22,  // 45: mosaic.module.v1.SubtitlesRequest.ref:type_name -> mosaic.module.v1.ContentRef
-	37,  // 46: mosaic.module.v1.SubtitlesResponse.subtitles:type_name -> mosaic.module.v1.Subtitle
-	13,  // 47: mosaic.module.v1.ArtworkRequest.caller:type_name -> mosaic.module.v1.Caller
-	38,  // 48: mosaic.module.v1.ArtworkRequest.identities:type_name -> mosaic.module.v1.ExternalIdentity
-	16,  // 49: mosaic.module.v1.ArtworkResponse.candidates:type_name -> mosaic.module.v1.ArtworkCandidate
-	13,  // 50: mosaic.module.v1.PlaybackRequest.caller:type_name -> mosaic.module.v1.Caller
-	19,  // 51: mosaic.module.v1.PlaybackRequest.part:type_name -> mosaic.module.v1.Part
+	34,  // 18: mosaic.module.v1.WatchAvailability.offers:type_name -> mosaic.module.v1.WatchOffer
+	23,  // 19: mosaic.module.v1.ContentMetadata.ref:type_name -> mosaic.module.v1.ContentRef
+	30,  // 20: mosaic.module.v1.ContentMetadata.cast:type_name -> mosaic.module.v1.Person
+	31,  // 21: mosaic.module.v1.ContentMetadata.episodes:type_name -> mosaic.module.v1.EpisodePreview
+	26,  // 22: mosaic.module.v1.ContentMetadata.similar:type_name -> mosaic.module.v1.RelatedItem
+	32,  // 23: mosaic.module.v1.ContentMetadata.collection:type_name -> mosaic.module.v1.Collection
+	33,  // 24: mosaic.module.v1.ContentMetadata.trailers:type_name -> mosaic.module.v1.Trailer
+	35,  // 25: mosaic.module.v1.ContentMetadata.watch:type_name -> mosaic.module.v1.WatchAvailability
+	30,  // 26: mosaic.module.v1.ContentMetadata.crew:type_name -> mosaic.module.v1.Person
+	16,  // 27: mosaic.module.v1.StreamLink.location:type_name -> mosaic.module.v1.MediaLocation
+	40,  // 28: mosaic.module.v1.ManifestResponse.manifest:type_name -> mosaic.module.v1.Manifest
+	14,  // 29: mosaic.module.v1.ImportRequest.caller:type_name -> mosaic.module.v1.Caller
+	23,  // 30: mosaic.module.v1.ImportRequest.ref:type_name -> mosaic.module.v1.ContentRef
+	14,  // 31: mosaic.module.v1.MetadataRequest.caller:type_name -> mosaic.module.v1.Caller
+	23,  // 32: mosaic.module.v1.MetadataRequest.ref:type_name -> mosaic.module.v1.ContentRef
+	36,  // 33: mosaic.module.v1.MetadataResponse.metadata:type_name -> mosaic.module.v1.ContentMetadata
+	14,  // 34: mosaic.module.v1.SearchRequest.caller:type_name -> mosaic.module.v1.Caller
+	24,  // 35: mosaic.module.v1.SearchResponse.results:type_name -> mosaic.module.v1.SearchResult
+	14,  // 36: mosaic.module.v1.CatalogsRequest.caller:type_name -> mosaic.module.v1.Caller
+	27,  // 37: mosaic.module.v1.CatalogsResponse.catalogs:type_name -> mosaic.module.v1.Catalog
+	14,  // 38: mosaic.module.v1.CatalogItemsRequest.caller:type_name -> mosaic.module.v1.Caller
+	112, // 39: mosaic.module.v1.CatalogItemsRequest.filters:type_name -> mosaic.module.v1.CatalogItemsRequest.FiltersEntry
+	25,  // 40: mosaic.module.v1.CatalogItemsResponse.items:type_name -> mosaic.module.v1.CatalogItem
+	14,  // 41: mosaic.module.v1.StreamsRequest.caller:type_name -> mosaic.module.v1.Caller
+	23,  // 42: mosaic.module.v1.StreamsRequest.ref:type_name -> mosaic.module.v1.ContentRef
+	37,  // 43: mosaic.module.v1.StreamsResponse.streams:type_name -> mosaic.module.v1.StreamLink
+	14,  // 44: mosaic.module.v1.SubtitlesRequest.caller:type_name -> mosaic.module.v1.Caller
+	23,  // 45: mosaic.module.v1.SubtitlesRequest.ref:type_name -> mosaic.module.v1.ContentRef
+	38,  // 46: mosaic.module.v1.SubtitlesResponse.subtitles:type_name -> mosaic.module.v1.Subtitle
+	14,  // 47: mosaic.module.v1.ArtworkRequest.caller:type_name -> mosaic.module.v1.Caller
+	39,  // 48: mosaic.module.v1.ArtworkRequest.identities:type_name -> mosaic.module.v1.ExternalIdentity
+	17,  // 49: mosaic.module.v1.ArtworkResponse.candidates:type_name -> mosaic.module.v1.ArtworkCandidate
+	14,  // 50: mosaic.module.v1.PlaybackRequest.caller:type_name -> mosaic.module.v1.Caller
+	20,  // 51: mosaic.module.v1.PlaybackRequest.part:type_name -> mosaic.module.v1.Part
 	9,   // 52: mosaic.module.v1.PlaybackResponse.kind:type_name -> mosaic.module.v1.PlaybackKind
-	108, // 53: mosaic.module.v1.PlaybackResponse.headers:type_name -> mosaic.module.v1.PlaybackResponse.HeadersEntry
-	13,  // 54: mosaic.module.v1.SettingsUIRequest.caller:type_name -> mosaic.module.v1.Caller
-	13,  // 55: mosaic.module.v1.AddContentWorkRequest.caller:type_name -> mosaic.module.v1.Caller
-	17,  // 56: mosaic.module.v1.AddContentWorkRequest.artwork:type_name -> mosaic.module.v1.Artwork
-	18,  // 57: mosaic.module.v1.AddContentWorkResponse.work:type_name -> mosaic.module.v1.Node
-	13,  // 58: mosaic.module.v1.AddContentChildRequest.caller:type_name -> mosaic.module.v1.Caller
+	113, // 53: mosaic.module.v1.PlaybackResponse.headers:type_name -> mosaic.module.v1.PlaybackResponse.HeadersEntry
+	14,  // 54: mosaic.module.v1.SettingsUIRequest.caller:type_name -> mosaic.module.v1.Caller
+	14,  // 55: mosaic.module.v1.AddContentWorkRequest.caller:type_name -> mosaic.module.v1.Caller
+	18,  // 56: mosaic.module.v1.AddContentWorkRequest.artwork:type_name -> mosaic.module.v1.Artwork
+	19,  // 57: mosaic.module.v1.AddContentWorkResponse.work:type_name -> mosaic.module.v1.Node
+	14,  // 58: mosaic.module.v1.AddContentChildRequest.caller:type_name -> mosaic.module.v1.Caller
 	1,   // 59: mosaic.module.v1.AddContentChildRequest.kind:type_name -> mosaic.module.v1.NodeKind
-	17,  // 60: mosaic.module.v1.AddContentChildRequest.artwork:type_name -> mosaic.module.v1.Artwork
-	18,  // 61: mosaic.module.v1.AddContentChildResponse.node:type_name -> mosaic.module.v1.Node
-	13,  // 62: mosaic.module.v1.AttachContentPartRequest.caller:type_name -> mosaic.module.v1.Caller
+	18,  // 60: mosaic.module.v1.AddContentChildRequest.artwork:type_name -> mosaic.module.v1.Artwork
+	19,  // 61: mosaic.module.v1.AddContentChildResponse.node:type_name -> mosaic.module.v1.Node
+	14,  // 62: mosaic.module.v1.AttachContentPartRequest.caller:type_name -> mosaic.module.v1.Caller
 	3,   // 63: mosaic.module.v1.AttachContentPartRequest.role:type_name -> mosaic.module.v1.PartRole
-	15,  // 64: mosaic.module.v1.AttachContentPartRequest.location:type_name -> mosaic.module.v1.MediaLocation
-	19,  // 65: mosaic.module.v1.AttachContentPartResponse.part:type_name -> mosaic.module.v1.Part
-	13,  // 66: mosaic.module.v1.SetContentArtworkRequest.caller:type_name -> mosaic.module.v1.Caller
-	17,  // 67: mosaic.module.v1.SetContentArtworkRequest.artwork:type_name -> mosaic.module.v1.Artwork
-	18,  // 68: mosaic.module.v1.SetContentArtworkResponse.node:type_name -> mosaic.module.v1.Node
-	13,  // 69: mosaic.module.v1.RelateContentRequest.caller:type_name -> mosaic.module.v1.Caller
+	16,  // 64: mosaic.module.v1.AttachContentPartRequest.location:type_name -> mosaic.module.v1.MediaLocation
+	20,  // 65: mosaic.module.v1.AttachContentPartResponse.part:type_name -> mosaic.module.v1.Part
+	14,  // 66: mosaic.module.v1.SetContentArtworkRequest.caller:type_name -> mosaic.module.v1.Caller
+	18,  // 67: mosaic.module.v1.SetContentArtworkRequest.artwork:type_name -> mosaic.module.v1.Artwork
+	19,  // 68: mosaic.module.v1.SetContentArtworkResponse.node:type_name -> mosaic.module.v1.Node
+	14,  // 69: mosaic.module.v1.RelateContentRequest.caller:type_name -> mosaic.module.v1.Caller
 	5,   // 70: mosaic.module.v1.RelateContentRequest.origin:type_name -> mosaic.module.v1.RelationOrigin
-	20,  // 71: mosaic.module.v1.RelateContentResponse.relation:type_name -> mosaic.module.v1.Relation
-	13,  // 72: mosaic.module.v1.BindContentSourceRequest.caller:type_name -> mosaic.module.v1.Caller
+	21,  // 71: mosaic.module.v1.RelateContentResponse.relation:type_name -> mosaic.module.v1.Relation
+	14,  // 72: mosaic.module.v1.BindContentSourceRequest.caller:type_name -> mosaic.module.v1.Caller
 	6,   // 73: mosaic.module.v1.BindContentSourceRequest.match_method:type_name -> mosaic.module.v1.MatchMethod
 	7,   // 74: mosaic.module.v1.BindContentSourceRequest.status:type_name -> mosaic.module.v1.BindingStatus
-	21,  // 75: mosaic.module.v1.BindContentSourceResponse.binding:type_name -> mosaic.module.v1.SourceBinding
-	13,  // 76: mosaic.module.v1.ResolveContentBindingRequest.caller:type_name -> mosaic.module.v1.Caller
+	22,  // 75: mosaic.module.v1.BindContentSourceResponse.binding:type_name -> mosaic.module.v1.SourceBinding
+	14,  // 76: mosaic.module.v1.ResolveContentBindingRequest.caller:type_name -> mosaic.module.v1.Caller
 	10,  // 77: mosaic.module.v1.ResolveContentBindingRequest.resolution:type_name -> mosaic.module.v1.BindingResolution
-	21,  // 78: mosaic.module.v1.ResolveContentBindingResponse.binding:type_name -> mosaic.module.v1.SourceBinding
-	13,  // 79: mosaic.module.v1.SearchContentRequest.caller:type_name -> mosaic.module.v1.Caller
+	22,  // 78: mosaic.module.v1.ResolveContentBindingResponse.binding:type_name -> mosaic.module.v1.SourceBinding
+	14,  // 79: mosaic.module.v1.SearchContentRequest.caller:type_name -> mosaic.module.v1.Caller
 	1,   // 80: mosaic.module.v1.SearchContentRequest.kind:type_name -> mosaic.module.v1.NodeKind
-	18,  // 81: mosaic.module.v1.SearchContentResponse.nodes:type_name -> mosaic.module.v1.Node
-	13,  // 82: mosaic.module.v1.FindContentByExternalIDRequest.caller:type_name -> mosaic.module.v1.Caller
-	18,  // 83: mosaic.module.v1.FindContentByExternalIDResponse.nodes:type_name -> mosaic.module.v1.Node
-	13,  // 84: mosaic.module.v1.GetContentNodeRequest.caller:type_name -> mosaic.module.v1.Caller
-	18,  // 85: mosaic.module.v1.GetContentNodeResponse.node:type_name -> mosaic.module.v1.Node
-	18,  // 86: mosaic.module.v1.GetContentNodeResponse.children:type_name -> mosaic.module.v1.Node
-	13,  // 87: mosaic.module.v1.ListContentPartsRequest.caller:type_name -> mosaic.module.v1.Caller
-	19,  // 88: mosaic.module.v1.ListContentPartsResponse.parts:type_name -> mosaic.module.v1.Part
-	13,  // 89: mosaic.module.v1.RecordPlaybackProgressRequest.caller:type_name -> mosaic.module.v1.Caller
-	84,  // 90: mosaic.module.v1.RecordPlaybackProgressResponse.state:type_name -> mosaic.module.v1.PlaybackState
-	13,  // 91: mosaic.module.v1.SetPlaybackFinishedRequest.caller:type_name -> mosaic.module.v1.Caller
-	84,  // 92: mosaic.module.v1.SetPlaybackFinishedResponse.state:type_name -> mosaic.module.v1.PlaybackState
-	13,  // 93: mosaic.module.v1.GetPlaybackStateRequest.caller:type_name -> mosaic.module.v1.Caller
-	84,  // 94: mosaic.module.v1.GetPlaybackStateResponse.state:type_name -> mosaic.module.v1.PlaybackState
-	13,  // 95: mosaic.module.v1.ListPlaybackStatesRequest.caller:type_name -> mosaic.module.v1.Caller
-	109, // 96: mosaic.module.v1.ListPlaybackStatesResponse.states:type_name -> mosaic.module.v1.ListPlaybackStatesResponse.StatesEntry
-	13,  // 97: mosaic.module.v1.ListInProgressRequest.caller:type_name -> mosaic.module.v1.Caller
-	18,  // 98: mosaic.module.v1.InProgressItem.node:type_name -> mosaic.module.v1.Node
-	84,  // 99: mosaic.module.v1.InProgressItem.state:type_name -> mosaic.module.v1.PlaybackState
-	94,  // 100: mosaic.module.v1.ListInProgressResponse.items:type_name -> mosaic.module.v1.InProgressItem
+	19,  // 81: mosaic.module.v1.SearchContentResponse.nodes:type_name -> mosaic.module.v1.Node
+	14,  // 82: mosaic.module.v1.FindContentByExternalIDRequest.caller:type_name -> mosaic.module.v1.Caller
+	19,  // 83: mosaic.module.v1.FindContentByExternalIDResponse.nodes:type_name -> mosaic.module.v1.Node
+	14,  // 84: mosaic.module.v1.GetContentNodeRequest.caller:type_name -> mosaic.module.v1.Caller
+	19,  // 85: mosaic.module.v1.GetContentNodeResponse.node:type_name -> mosaic.module.v1.Node
+	19,  // 86: mosaic.module.v1.GetContentNodeResponse.children:type_name -> mosaic.module.v1.Node
+	14,  // 87: mosaic.module.v1.ListContentPartsRequest.caller:type_name -> mosaic.module.v1.Caller
+	20,  // 88: mosaic.module.v1.ListContentPartsResponse.parts:type_name -> mosaic.module.v1.Part
+	14,  // 89: mosaic.module.v1.RecordPlaybackProgressRequest.caller:type_name -> mosaic.module.v1.Caller
+	85,  // 90: mosaic.module.v1.RecordPlaybackProgressResponse.state:type_name -> mosaic.module.v1.PlaybackState
+	14,  // 91: mosaic.module.v1.SetPlaybackFinishedRequest.caller:type_name -> mosaic.module.v1.Caller
+	85,  // 92: mosaic.module.v1.SetPlaybackFinishedResponse.state:type_name -> mosaic.module.v1.PlaybackState
+	14,  // 93: mosaic.module.v1.GetPlaybackStateRequest.caller:type_name -> mosaic.module.v1.Caller
+	85,  // 94: mosaic.module.v1.GetPlaybackStateResponse.state:type_name -> mosaic.module.v1.PlaybackState
+	14,  // 95: mosaic.module.v1.ListPlaybackStatesRequest.caller:type_name -> mosaic.module.v1.Caller
+	114, // 96: mosaic.module.v1.ListPlaybackStatesResponse.states:type_name -> mosaic.module.v1.ListPlaybackStatesResponse.StatesEntry
+	14,  // 97: mosaic.module.v1.ListInProgressRequest.caller:type_name -> mosaic.module.v1.Caller
+	19,  // 98: mosaic.module.v1.InProgressItem.node:type_name -> mosaic.module.v1.Node
+	85,  // 99: mosaic.module.v1.InProgressItem.state:type_name -> mosaic.module.v1.PlaybackState
+	95,  // 100: mosaic.module.v1.ListInProgressResponse.items:type_name -> mosaic.module.v1.InProgressItem
 	11,  // 101: mosaic.module.v1.Field.redaction:type_name -> mosaic.module.v1.RedactionClass
-	13,  // 102: mosaic.module.v1.LogRequest.caller:type_name -> mosaic.module.v1.Caller
+	14,  // 102: mosaic.module.v1.LogRequest.caller:type_name -> mosaic.module.v1.Caller
 	12,  // 103: mosaic.module.v1.LogRequest.level:type_name -> mosaic.module.v1.LogLevel
-	96,  // 104: mosaic.module.v1.LogRequest.fields:type_name -> mosaic.module.v1.Field
-	13,  // 105: mosaic.module.v1.StartSpanRequest.caller:type_name -> mosaic.module.v1.Caller
-	96,  // 106: mosaic.module.v1.StartSpanRequest.attributes:type_name -> mosaic.module.v1.Field
-	13,  // 107: mosaic.module.v1.SpanAttributesRequest.caller:type_name -> mosaic.module.v1.Caller
-	96,  // 108: mosaic.module.v1.SpanAttributesRequest.attributes:type_name -> mosaic.module.v1.Field
-	13,  // 109: mosaic.module.v1.FailSpanRequest.caller:type_name -> mosaic.module.v1.Caller
+	97,  // 104: mosaic.module.v1.LogRequest.fields:type_name -> mosaic.module.v1.Field
+	14,  // 105: mosaic.module.v1.StartSpanRequest.caller:type_name -> mosaic.module.v1.Caller
+	97,  // 106: mosaic.module.v1.StartSpanRequest.attributes:type_name -> mosaic.module.v1.Field
+	14,  // 107: mosaic.module.v1.SpanAttributesRequest.caller:type_name -> mosaic.module.v1.Caller
+	97,  // 108: mosaic.module.v1.SpanAttributesRequest.attributes:type_name -> mosaic.module.v1.Field
+	14,  // 109: mosaic.module.v1.FailSpanRequest.caller:type_name -> mosaic.module.v1.Caller
 	0,   // 110: mosaic.module.v1.FailSpanRequest.category:type_name -> mosaic.module.v1.ErrorCategory
-	13,  // 111: mosaic.module.v1.EndSpanRequest.caller:type_name -> mosaic.module.v1.Caller
-	84,  // 112: mosaic.module.v1.ListPlaybackStatesResponse.StatesEntry.value:type_name -> mosaic.module.v1.PlaybackState
-	40,  // 113: mosaic.module.v1.CapabilityService.GetManifest:input_type -> mosaic.module.v1.ManifestRequest
-	42,  // 114: mosaic.module.v1.CapabilityService.Import:input_type -> mosaic.module.v1.ImportRequest
-	44,  // 115: mosaic.module.v1.CapabilityService.Metadata:input_type -> mosaic.module.v1.MetadataRequest
-	46,  // 116: mosaic.module.v1.CapabilityService.Search:input_type -> mosaic.module.v1.SearchRequest
-	48,  // 117: mosaic.module.v1.CapabilityService.Catalogs:input_type -> mosaic.module.v1.CatalogsRequest
-	50,  // 118: mosaic.module.v1.CapabilityService.CatalogItems:input_type -> mosaic.module.v1.CatalogItemsRequest
-	52,  // 119: mosaic.module.v1.CapabilityService.Streams:input_type -> mosaic.module.v1.StreamsRequest
-	54,  // 120: mosaic.module.v1.CapabilityService.Subtitles:input_type -> mosaic.module.v1.SubtitlesRequest
-	56,  // 121: mosaic.module.v1.CapabilityService.Artwork:input_type -> mosaic.module.v1.ArtworkRequest
-	58,  // 122: mosaic.module.v1.CapabilityService.Playback:input_type -> mosaic.module.v1.PlaybackRequest
-	60,  // 123: mosaic.module.v1.CapabilityService.SettingsUI:input_type -> mosaic.module.v1.SettingsUIRequest
-	62,  // 124: mosaic.module.v1.ContentService.AddContentWork:input_type -> mosaic.module.v1.AddContentWorkRequest
-	64,  // 125: mosaic.module.v1.ContentService.AddContentChild:input_type -> mosaic.module.v1.AddContentChildRequest
-	66,  // 126: mosaic.module.v1.ContentService.AttachContentPart:input_type -> mosaic.module.v1.AttachContentPartRequest
-	68,  // 127: mosaic.module.v1.ContentService.SetContentArtwork:input_type -> mosaic.module.v1.SetContentArtworkRequest
-	70,  // 128: mosaic.module.v1.ContentService.RelateContent:input_type -> mosaic.module.v1.RelateContentRequest
-	72,  // 129: mosaic.module.v1.ContentService.BindContentSource:input_type -> mosaic.module.v1.BindContentSourceRequest
-	74,  // 130: mosaic.module.v1.ContentService.ResolveContentBinding:input_type -> mosaic.module.v1.ResolveContentBindingRequest
-	76,  // 131: mosaic.module.v1.ContentService.SearchContent:input_type -> mosaic.module.v1.SearchContentRequest
-	78,  // 132: mosaic.module.v1.ContentService.FindContentByExternalID:input_type -> mosaic.module.v1.FindContentByExternalIDRequest
-	80,  // 133: mosaic.module.v1.ContentService.GetContentNode:input_type -> mosaic.module.v1.GetContentNodeRequest
-	82,  // 134: mosaic.module.v1.ContentService.ListContentParts:input_type -> mosaic.module.v1.ListContentPartsRequest
-	85,  // 135: mosaic.module.v1.ContentService.RecordPlaybackProgress:input_type -> mosaic.module.v1.RecordPlaybackProgressRequest
-	87,  // 136: mosaic.module.v1.ContentService.SetPlaybackFinished:input_type -> mosaic.module.v1.SetPlaybackFinishedRequest
-	89,  // 137: mosaic.module.v1.ContentService.GetPlaybackState:input_type -> mosaic.module.v1.GetPlaybackStateRequest
-	91,  // 138: mosaic.module.v1.ContentService.ListPlaybackStates:input_type -> mosaic.module.v1.ListPlaybackStatesRequest
-	93,  // 139: mosaic.module.v1.ContentService.ListInProgress:input_type -> mosaic.module.v1.ListInProgressRequest
-	97,  // 140: mosaic.module.v1.TelemetryService.Log:input_type -> mosaic.module.v1.LogRequest
-	99,  // 141: mosaic.module.v1.TelemetryService.StartSpan:input_type -> mosaic.module.v1.StartSpanRequest
-	101, // 142: mosaic.module.v1.TelemetryService.SetSpanAttributes:input_type -> mosaic.module.v1.SpanAttributesRequest
-	103, // 143: mosaic.module.v1.TelemetryService.FailSpan:input_type -> mosaic.module.v1.FailSpanRequest
-	105, // 144: mosaic.module.v1.TelemetryService.EndSpan:input_type -> mosaic.module.v1.EndSpanRequest
-	41,  // 145: mosaic.module.v1.CapabilityService.GetManifest:output_type -> mosaic.module.v1.ManifestResponse
-	43,  // 146: mosaic.module.v1.CapabilityService.Import:output_type -> mosaic.module.v1.ImportResponse
-	45,  // 147: mosaic.module.v1.CapabilityService.Metadata:output_type -> mosaic.module.v1.MetadataResponse
-	47,  // 148: mosaic.module.v1.CapabilityService.Search:output_type -> mosaic.module.v1.SearchResponse
-	49,  // 149: mosaic.module.v1.CapabilityService.Catalogs:output_type -> mosaic.module.v1.CatalogsResponse
-	51,  // 150: mosaic.module.v1.CapabilityService.CatalogItems:output_type -> mosaic.module.v1.CatalogItemsResponse
-	53,  // 151: mosaic.module.v1.CapabilityService.Streams:output_type -> mosaic.module.v1.StreamsResponse
-	55,  // 152: mosaic.module.v1.CapabilityService.Subtitles:output_type -> mosaic.module.v1.SubtitlesResponse
-	57,  // 153: mosaic.module.v1.CapabilityService.Artwork:output_type -> mosaic.module.v1.ArtworkResponse
-	59,  // 154: mosaic.module.v1.CapabilityService.Playback:output_type -> mosaic.module.v1.PlaybackResponse
-	61,  // 155: mosaic.module.v1.CapabilityService.SettingsUI:output_type -> mosaic.module.v1.SettingsUIResponse
-	63,  // 156: mosaic.module.v1.ContentService.AddContentWork:output_type -> mosaic.module.v1.AddContentWorkResponse
-	65,  // 157: mosaic.module.v1.ContentService.AddContentChild:output_type -> mosaic.module.v1.AddContentChildResponse
-	67,  // 158: mosaic.module.v1.ContentService.AttachContentPart:output_type -> mosaic.module.v1.AttachContentPartResponse
-	69,  // 159: mosaic.module.v1.ContentService.SetContentArtwork:output_type -> mosaic.module.v1.SetContentArtworkResponse
-	71,  // 160: mosaic.module.v1.ContentService.RelateContent:output_type -> mosaic.module.v1.RelateContentResponse
-	73,  // 161: mosaic.module.v1.ContentService.BindContentSource:output_type -> mosaic.module.v1.BindContentSourceResponse
-	75,  // 162: mosaic.module.v1.ContentService.ResolveContentBinding:output_type -> mosaic.module.v1.ResolveContentBindingResponse
-	77,  // 163: mosaic.module.v1.ContentService.SearchContent:output_type -> mosaic.module.v1.SearchContentResponse
-	79,  // 164: mosaic.module.v1.ContentService.FindContentByExternalID:output_type -> mosaic.module.v1.FindContentByExternalIDResponse
-	81,  // 165: mosaic.module.v1.ContentService.GetContentNode:output_type -> mosaic.module.v1.GetContentNodeResponse
-	83,  // 166: mosaic.module.v1.ContentService.ListContentParts:output_type -> mosaic.module.v1.ListContentPartsResponse
-	86,  // 167: mosaic.module.v1.ContentService.RecordPlaybackProgress:output_type -> mosaic.module.v1.RecordPlaybackProgressResponse
-	88,  // 168: mosaic.module.v1.ContentService.SetPlaybackFinished:output_type -> mosaic.module.v1.SetPlaybackFinishedResponse
-	90,  // 169: mosaic.module.v1.ContentService.GetPlaybackState:output_type -> mosaic.module.v1.GetPlaybackStateResponse
-	92,  // 170: mosaic.module.v1.ContentService.ListPlaybackStates:output_type -> mosaic.module.v1.ListPlaybackStatesResponse
-	95,  // 171: mosaic.module.v1.ContentService.ListInProgress:output_type -> mosaic.module.v1.ListInProgressResponse
-	98,  // 172: mosaic.module.v1.TelemetryService.Log:output_type -> mosaic.module.v1.LogResponse
-	100, // 173: mosaic.module.v1.TelemetryService.StartSpan:output_type -> mosaic.module.v1.StartSpanResponse
-	102, // 174: mosaic.module.v1.TelemetryService.SetSpanAttributes:output_type -> mosaic.module.v1.SpanAttributesResponse
-	104, // 175: mosaic.module.v1.TelemetryService.FailSpan:output_type -> mosaic.module.v1.FailSpanResponse
-	106, // 176: mosaic.module.v1.TelemetryService.EndSpan:output_type -> mosaic.module.v1.EndSpanResponse
-	145, // [145:177] is the sub-list for method output_type
-	113, // [113:145] is the sub-list for method input_type
-	113, // [113:113] is the sub-list for extension type_name
-	113, // [113:113] is the sub-list for extension extendee
-	0,   // [0:113] is the sub-list for field type_name
+	14,  // 111: mosaic.module.v1.EndSpanRequest.caller:type_name -> mosaic.module.v1.Caller
+	14,  // 112: mosaic.module.v1.CountRequest.caller:type_name -> mosaic.module.v1.Caller
+	97,  // 113: mosaic.module.v1.CountRequest.attributes:type_name -> mosaic.module.v1.Field
+	14,  // 114: mosaic.module.v1.MeasureRequest.caller:type_name -> mosaic.module.v1.Caller
+	13,  // 115: mosaic.module.v1.MeasureRequest.unit:type_name -> mosaic.module.v1.MetricUnit
+	97,  // 116: mosaic.module.v1.MeasureRequest.attributes:type_name -> mosaic.module.v1.Field
+	85,  // 117: mosaic.module.v1.ListPlaybackStatesResponse.StatesEntry.value:type_name -> mosaic.module.v1.PlaybackState
+	41,  // 118: mosaic.module.v1.CapabilityService.GetManifest:input_type -> mosaic.module.v1.ManifestRequest
+	43,  // 119: mosaic.module.v1.CapabilityService.Import:input_type -> mosaic.module.v1.ImportRequest
+	45,  // 120: mosaic.module.v1.CapabilityService.Metadata:input_type -> mosaic.module.v1.MetadataRequest
+	47,  // 121: mosaic.module.v1.CapabilityService.Search:input_type -> mosaic.module.v1.SearchRequest
+	49,  // 122: mosaic.module.v1.CapabilityService.Catalogs:input_type -> mosaic.module.v1.CatalogsRequest
+	51,  // 123: mosaic.module.v1.CapabilityService.CatalogItems:input_type -> mosaic.module.v1.CatalogItemsRequest
+	53,  // 124: mosaic.module.v1.CapabilityService.Streams:input_type -> mosaic.module.v1.StreamsRequest
+	55,  // 125: mosaic.module.v1.CapabilityService.Subtitles:input_type -> mosaic.module.v1.SubtitlesRequest
+	57,  // 126: mosaic.module.v1.CapabilityService.Artwork:input_type -> mosaic.module.v1.ArtworkRequest
+	59,  // 127: mosaic.module.v1.CapabilityService.Playback:input_type -> mosaic.module.v1.PlaybackRequest
+	61,  // 128: mosaic.module.v1.CapabilityService.SettingsUI:input_type -> mosaic.module.v1.SettingsUIRequest
+	63,  // 129: mosaic.module.v1.ContentService.AddContentWork:input_type -> mosaic.module.v1.AddContentWorkRequest
+	65,  // 130: mosaic.module.v1.ContentService.AddContentChild:input_type -> mosaic.module.v1.AddContentChildRequest
+	67,  // 131: mosaic.module.v1.ContentService.AttachContentPart:input_type -> mosaic.module.v1.AttachContentPartRequest
+	69,  // 132: mosaic.module.v1.ContentService.SetContentArtwork:input_type -> mosaic.module.v1.SetContentArtworkRequest
+	71,  // 133: mosaic.module.v1.ContentService.RelateContent:input_type -> mosaic.module.v1.RelateContentRequest
+	73,  // 134: mosaic.module.v1.ContentService.BindContentSource:input_type -> mosaic.module.v1.BindContentSourceRequest
+	75,  // 135: mosaic.module.v1.ContentService.ResolveContentBinding:input_type -> mosaic.module.v1.ResolveContentBindingRequest
+	77,  // 136: mosaic.module.v1.ContentService.SearchContent:input_type -> mosaic.module.v1.SearchContentRequest
+	79,  // 137: mosaic.module.v1.ContentService.FindContentByExternalID:input_type -> mosaic.module.v1.FindContentByExternalIDRequest
+	81,  // 138: mosaic.module.v1.ContentService.GetContentNode:input_type -> mosaic.module.v1.GetContentNodeRequest
+	83,  // 139: mosaic.module.v1.ContentService.ListContentParts:input_type -> mosaic.module.v1.ListContentPartsRequest
+	86,  // 140: mosaic.module.v1.ContentService.RecordPlaybackProgress:input_type -> mosaic.module.v1.RecordPlaybackProgressRequest
+	88,  // 141: mosaic.module.v1.ContentService.SetPlaybackFinished:input_type -> mosaic.module.v1.SetPlaybackFinishedRequest
+	90,  // 142: mosaic.module.v1.ContentService.GetPlaybackState:input_type -> mosaic.module.v1.GetPlaybackStateRequest
+	92,  // 143: mosaic.module.v1.ContentService.ListPlaybackStates:input_type -> mosaic.module.v1.ListPlaybackStatesRequest
+	94,  // 144: mosaic.module.v1.ContentService.ListInProgress:input_type -> mosaic.module.v1.ListInProgressRequest
+	98,  // 145: mosaic.module.v1.TelemetryService.Log:input_type -> mosaic.module.v1.LogRequest
+	100, // 146: mosaic.module.v1.TelemetryService.StartSpan:input_type -> mosaic.module.v1.StartSpanRequest
+	102, // 147: mosaic.module.v1.TelemetryService.SetSpanAttributes:input_type -> mosaic.module.v1.SpanAttributesRequest
+	104, // 148: mosaic.module.v1.TelemetryService.FailSpan:input_type -> mosaic.module.v1.FailSpanRequest
+	106, // 149: mosaic.module.v1.TelemetryService.EndSpan:input_type -> mosaic.module.v1.EndSpanRequest
+	108, // 150: mosaic.module.v1.TelemetryService.Count:input_type -> mosaic.module.v1.CountRequest
+	110, // 151: mosaic.module.v1.TelemetryService.Measure:input_type -> mosaic.module.v1.MeasureRequest
+	42,  // 152: mosaic.module.v1.CapabilityService.GetManifest:output_type -> mosaic.module.v1.ManifestResponse
+	44,  // 153: mosaic.module.v1.CapabilityService.Import:output_type -> mosaic.module.v1.ImportResponse
+	46,  // 154: mosaic.module.v1.CapabilityService.Metadata:output_type -> mosaic.module.v1.MetadataResponse
+	48,  // 155: mosaic.module.v1.CapabilityService.Search:output_type -> mosaic.module.v1.SearchResponse
+	50,  // 156: mosaic.module.v1.CapabilityService.Catalogs:output_type -> mosaic.module.v1.CatalogsResponse
+	52,  // 157: mosaic.module.v1.CapabilityService.CatalogItems:output_type -> mosaic.module.v1.CatalogItemsResponse
+	54,  // 158: mosaic.module.v1.CapabilityService.Streams:output_type -> mosaic.module.v1.StreamsResponse
+	56,  // 159: mosaic.module.v1.CapabilityService.Subtitles:output_type -> mosaic.module.v1.SubtitlesResponse
+	58,  // 160: mosaic.module.v1.CapabilityService.Artwork:output_type -> mosaic.module.v1.ArtworkResponse
+	60,  // 161: mosaic.module.v1.CapabilityService.Playback:output_type -> mosaic.module.v1.PlaybackResponse
+	62,  // 162: mosaic.module.v1.CapabilityService.SettingsUI:output_type -> mosaic.module.v1.SettingsUIResponse
+	64,  // 163: mosaic.module.v1.ContentService.AddContentWork:output_type -> mosaic.module.v1.AddContentWorkResponse
+	66,  // 164: mosaic.module.v1.ContentService.AddContentChild:output_type -> mosaic.module.v1.AddContentChildResponse
+	68,  // 165: mosaic.module.v1.ContentService.AttachContentPart:output_type -> mosaic.module.v1.AttachContentPartResponse
+	70,  // 166: mosaic.module.v1.ContentService.SetContentArtwork:output_type -> mosaic.module.v1.SetContentArtworkResponse
+	72,  // 167: mosaic.module.v1.ContentService.RelateContent:output_type -> mosaic.module.v1.RelateContentResponse
+	74,  // 168: mosaic.module.v1.ContentService.BindContentSource:output_type -> mosaic.module.v1.BindContentSourceResponse
+	76,  // 169: mosaic.module.v1.ContentService.ResolveContentBinding:output_type -> mosaic.module.v1.ResolveContentBindingResponse
+	78,  // 170: mosaic.module.v1.ContentService.SearchContent:output_type -> mosaic.module.v1.SearchContentResponse
+	80,  // 171: mosaic.module.v1.ContentService.FindContentByExternalID:output_type -> mosaic.module.v1.FindContentByExternalIDResponse
+	82,  // 172: mosaic.module.v1.ContentService.GetContentNode:output_type -> mosaic.module.v1.GetContentNodeResponse
+	84,  // 173: mosaic.module.v1.ContentService.ListContentParts:output_type -> mosaic.module.v1.ListContentPartsResponse
+	87,  // 174: mosaic.module.v1.ContentService.RecordPlaybackProgress:output_type -> mosaic.module.v1.RecordPlaybackProgressResponse
+	89,  // 175: mosaic.module.v1.ContentService.SetPlaybackFinished:output_type -> mosaic.module.v1.SetPlaybackFinishedResponse
+	91,  // 176: mosaic.module.v1.ContentService.GetPlaybackState:output_type -> mosaic.module.v1.GetPlaybackStateResponse
+	93,  // 177: mosaic.module.v1.ContentService.ListPlaybackStates:output_type -> mosaic.module.v1.ListPlaybackStatesResponse
+	96,  // 178: mosaic.module.v1.ContentService.ListInProgress:output_type -> mosaic.module.v1.ListInProgressResponse
+	99,  // 179: mosaic.module.v1.TelemetryService.Log:output_type -> mosaic.module.v1.LogResponse
+	101, // 180: mosaic.module.v1.TelemetryService.StartSpan:output_type -> mosaic.module.v1.StartSpanResponse
+	103, // 181: mosaic.module.v1.TelemetryService.SetSpanAttributes:output_type -> mosaic.module.v1.SpanAttributesResponse
+	105, // 182: mosaic.module.v1.TelemetryService.FailSpan:output_type -> mosaic.module.v1.FailSpanResponse
+	107, // 183: mosaic.module.v1.TelemetryService.EndSpan:output_type -> mosaic.module.v1.EndSpanResponse
+	109, // 184: mosaic.module.v1.TelemetryService.Count:output_type -> mosaic.module.v1.CountResponse
+	111, // 185: mosaic.module.v1.TelemetryService.Measure:output_type -> mosaic.module.v1.MeasureResponse
+	152, // [152:186] is the sub-list for method output_type
+	118, // [118:152] is the sub-list for method input_type
+	118, // [118:118] is the sub-list for extension type_name
+	118, // [118:118] is the sub-list for extension extendee
+	0,   // [0:118] is the sub-list for field type_name
 }
 
 func init() { file_mosaic_module_v1_module_proto_init() }
@@ -8169,8 +8495,8 @@ func file_mosaic_module_v1_module_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_mosaic_module_v1_module_proto_rawDesc), len(file_mosaic_module_v1_module_proto_rawDesc)),
-			NumEnums:      13,
-			NumMessages:   97,
+			NumEnums:      14,
+			NumMessages:   101,
 			NumExtensions: 0,
 			NumServices:   3,
 		},
