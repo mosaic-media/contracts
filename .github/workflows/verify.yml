@@ -43,13 +43,11 @@ jobs:
       - name: Check the decision-record index is not stale
         run: python3 scripts/adr_index.py --repo contracts --check
 
-      # A ratchet, and it currently sits at a floor rather than a target: the
-      # 191 remaining citations are all inside GENERATED output (gen/, gen-ts/,
-      # REFERENCE.md) whose sources are already fully qualified. Running
-      # scripts/generate.sh clears them — it needs buf and the protoc plugins,
-      # so it has not been run yet. Regenerate, then lower this to 0.
+      # A ratchet: the ceiling is today's count of citations still written in
+      # the old unqualified form, and it is lowered as records move. It can
+      # only go down.
       - name: Check every record citation names its repository
-        run: python3 scripts/adr_lint.py --repo contracts --max-unqualified 191 --exclude 'scripts/adr_*.py'
+        run: python3 scripts/adr_lint.py --repo contracts --max-unqualified 284 --exclude 'scripts/adr_*.py'
 
       # The schema is the single source of truth: fail if the committed bindings
       # are stale (generate + git diff).

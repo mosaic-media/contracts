@@ -293,7 +293,7 @@ message Session {
   // call re-authorises server-side against the grants as they are *now*, and
   // this list is a snapshot as they were at issue time; a grant revoked since
   // is still in here and is refused anyway. What it is for is
-  // [platform#24](0036): an affordance the caller could not exercise should not be
+  // [platform#24](0024-capability-gated-affordances.md): an affordance the caller could not exercise should not be
   // drawn, and until now that was a decision only the server could make,
   // because only the server knew. A client that composes its own chrome — a
   // native one deciding whether to draw an admin tab before it asks for a

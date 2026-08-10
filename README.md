@@ -202,4 +202,4 @@ git tag v0.1.0 && git push origin v0.1.0
 
 ## Licence
 
-**Apache-2.0** (see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE)). A contract surface must be permissive so a Module may build its UI against it under any licence, as the SDK is ([platform#1](https://github.com/mosaic-media/platform/blob/main/docs/adr/0001-transactional-store-extensibility.md), [contracts#3](docs/adr/0003-sdui-contract-repository.md)).
+**Apache-2.0** (see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE)). A contract surface must be permissive so a Module may build its UI against it under any licence, as the SDK is ([architecture#1](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0001-licensing.md), [contracts#3](docs/adr/0003-sdui-contract-repository.md)).

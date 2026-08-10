@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 # VENDORED from architecture/scripts/adr_index.py — do not edit here.
-# The source of truth is the architecture repository. This copy exists because
-# the check has to run in this repository's own gate, and a copy that can drift
-# is the problem this whole exercise is about: see P5.1 for the checksum gate
-# that is meant to hold the eleven copies of the shared rules identical.
+# The source of truth is the architecture repository.
 """Generate a repository's decision-record index.
 
 Writes ``docs/adr/README.md``: one row per record, plus the records held in

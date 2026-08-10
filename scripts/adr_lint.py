@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 # VENDORED from architecture/scripts/adr_lint.py — do not edit here.
-# The source of truth is the architecture repository. This copy exists because
-# the check has to run in this repository's own gate, and a copy that can drift
-# is the problem this whole exercise is about: see P5.1 for the checksum gate
-# that is meant to hold the eleven copies of the shared rules identical.
+# The source of truth is the architecture repository.
 """Refuse a decision-record citation that cannot be resolved.
 
 Three rules, and the first is the one this exists for:
@@ -22,7 +19,14 @@ Three rules, and the first is the one this exists for:
    resolved and foreign ones are checked for form alone. Say which ran — a
    check that quietly did less is how this corpus got here.
 
-3. **A cross-repository citation in Markdown must be a link.** Prose can carry
+3. **A link's target must be the record its label names.** A label and a URL are
+   two statements of one fact, and they drift: rewriting `ADR 0015` to
+   `platform#11` while leaving the URL pointing at `0015-…` produces a citation
+   that reads correctly and resolves to the old path. Nineteen of these existed
+   before this rule did, all in doc comments — the one place a Markdown link
+   appears inside a file that is not Markdown.
+
+4. **A cross-repository citation in Markdown must be a link.** Prose can carry
    ``platform#12`` where no URL is possible — a Go comment, a test name — but a
    Markdown file can always link, and a reader in another repository has no
    other way to reach it.
@@ -52,6 +56,9 @@ UNQUALIFIED = re.compile(r"\bADR[\s-]?(\d{1,4})\b")
 # so `issue#12` or a CSS id never reads as a citation.
 QUALIFIED = re.compile(r"\b([a-z][a-z0-9-]*)#(\d+)\b")
 MD_LINK = re.compile(r"\[([^\]]*)\]\(([^)]+)\)")
+# A qualified citation carrying a target, in either the inline Markdown form or
+# Go's link-reference form. Both appear in doc comments.
+QUALIFIED_LINK = re.compile(r"\[([a-z][a-z0-9-]*)#(\d+)\](?:\(|\: )([^)\s]+)")
 
 SKIP_DIRS = {".git", "node_modules", "vendor", "site", "dist", "build", "__pycache__", ".venv"}
 SKIP_NAMES = {"package-lock.json", "go.sum"}
@@ -73,6 +80,14 @@ def text_files(root: Path):
             yield path, path.read_text()
         except (UnicodeDecodeError, OSError):
             continue
+
+
+def index_filenames(repo_root: Path) -> dict[int, str]:
+    """Record number -> filename, for checking that a link points where it says."""
+    d = repo_root / "docs" / "adr"
+    if not d.is_dir():
+        return {}
+    return {int(p.name[:4]): p.name for p in d.glob("*.md") if p.name != "README.md"}
 
 
 def index_numbers(repo_root: Path) -> set[int] | None:
@@ -119,9 +134,16 @@ def main() -> None:
     if own is not None:
         fleet[args.repo] = own
 
+    names: dict[str, dict[int, str]] = {}
+    if args.fleet:
+        for name in REPOS:
+            names[name] = index_filenames(args.fleet / name)
+    names.setdefault(args.repo, index_filenames(args.root))
+
     unqualified: list[str] = []
     dangling: list[str] = []
     unlinked: list[str] = []
+    mistargeted: list[str] = []
     per_number: Counter[int] = Counter()
     per_kind: Counter[str] = Counter()
 
@@ -138,6 +160,15 @@ def main() -> None:
             unqualified.append(f"{rel}:{line_at[m.start()] + 1}: {m.group(0)}")
             per_number[int(m.group(1))] += 1
             per_kind[path.suffix or "(none)"] += 1
+
+        for m in QUALIFIED_LINK.finditer(text):
+            repo, number, url = m.group(1), int(m.group(2)), m.group(3)
+            want = names.get(repo, {}).get(number)
+            if want and not url.endswith(want):
+                mistargeted.append(
+                    f"{rel}:{line_at[m.start()] + 1}: {repo}#{number} links to "
+                    f"{url.split('/')[-1]} — that record is {want}"
+                )
 
         for m in QUALIFIED.finditer(text):
             repo, number = m.group(1), int(m.group(2))
@@ -160,11 +191,13 @@ def main() -> None:
     print(f"unqualified citations : {len(unqualified)}")
     print(f"dangling repo#N       : {len(dangling)}")
     print(f"unlinked cross-repo   : {len(unlinked)}")
+    print(f"link target mismatch  : {len(mistargeted)}")
 
     if unqualified and args.count:
         print(f"\ndistinct records cited unqualified: {len(per_number)}")
         print("by file type: " + ", ".join(f"{k} {v}" for k, v in per_kind.most_common(6)))
-    for label, items in (("unqualified", unqualified), ("dangling", dangling), ("unlinked", unlinked)):
+    for label, items in (("unqualified", unqualified), ("dangling", dangling),
+                         ("unlinked", unlinked), ("mistargeted", mistargeted)):
         for line in items[: args.show]:
             print(f"  [{label}] {line}")
         if len(items) > args.show:
@@ -181,7 +214,7 @@ def main() -> None:
             f"\nThe ceiling is {args.max_unqualified} and only {len(unqualified)} remain — "
             "lower it in the gate, or it stops ratcheting."
         )
-    sys.exit(1 if (over or dangling or unlinked) else 0)
+    sys.exit(1 if (over or dangling or unlinked or mistargeted) else 0)
 
 
 if __name__ == "__main__":
