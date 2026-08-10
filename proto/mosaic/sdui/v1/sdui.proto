@@ -6,7 +6,7 @@
 // into every client language. It is Apache-2.0 — a contract surface a module may
 // build against under any licence.
 //
-// The vocabulary is OPEN by design (ADR 0015): a node's `type` is a free string,
+// The vocabulary is OPEN by design (platform#11): a node's `type` is a free string,
 // and its `props` are an open bag (google.protobuf.Struct). protobuf types the
 // tree skeleton, actions and region operations; the open leaves stay a Struct.
 // This is not the governed-vocabulary fork contracts#3 named.
@@ -80,7 +80,7 @@ enum ActionKind {
 // refinement (it would churn the ergonomic constructors, so it is deferred).
 message Action {
   // 7, 8 and 9 were the GraphQL query action's raw query string, its variables
-  // and the region to refresh into. ADR 0061 deleted GraphQL and removed that
+  // and the region to refresh into. platform#37 deleted GraphQL and removed that
   // kind from the contract; the fields outlived it here because nothing
   // reconciled this file against the schema. The numbers are reserved rather
   // than reused: `query` is a live kind again with an entirely different

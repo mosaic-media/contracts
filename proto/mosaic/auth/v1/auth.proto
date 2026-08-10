@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2026 the Mosaic authors
 
 // Package mosaic.auth.v1 is how a client obtains the session every other
-// first-party call needs (ADR 0061).
+// first-party call needs (platform#37).
 //
 // It is deliberately a service of its own rather than more RPCs on
 // mosaic.session.v1.SessionService. Every request on that service begins with a
@@ -12,7 +12,7 @@
 // whole contract is that they are authenticated. Separating them also lets the
 // Platform mount them behind different interceptors.
 //
-// This surface replaced the GraphQL signIn/signOut mutations when ADR 0061
+// This surface replaced the GraphQL signIn/signOut mutations when platform#37
 // retired the GraphQL transport. Errors carry the Platform's fixed error
 // categories as Connect/gRPC codes — a bad password is UNAUTHENTICATED, not a
 // 200 with an error object.
@@ -31,7 +31,7 @@ option go_package = "github.com/mosaic-media/contracts/gen/mosaic/auth/v1;authv1
 // session to push to.
 service AuthService {
   // Bootstrap is the first call every client makes, before it has anything
-  // (ADR 0101). It answers with the skin, the definitions the doorway needs and
+  // (platform#57). It answers with the skin, the definitions the doorway needs and
   // the doorway itself, in one response — because definitions and the token set
   // are otherwise pushed on connect, which is to say after a session exists, and
   // a client without one has no vocabulary at all rather than a thin one.
@@ -58,7 +58,7 @@ service AuthService {
   // change.
   rpc Invoke(InvokeRequest) returns (InvokeResponse);
   // SignIn authenticates a local user with a password and issues a session.
-  // The returned session id is the opaque ref (ADR 0017) the client presents on
+  // The returned session id is the opaque ref (platform#13) the client presents on
   // every SessionService call.
   //
   // It stays a method of its own rather than becoming a doorway action: an
@@ -69,7 +69,7 @@ service AuthService {
   // passes the same value for both fields; revoking another device's session is
   // an authorised act, which is why the caller is named separately.
   rpc SignOut(SignOutRequest) returns (SignOutResponse);
-  // Refresh exchanges a refresh token for a new pair (ADR 0102). The presented
+  // Refresh exchanges a refresh token for a new pair (platform#58). The presented
   // token is spent by the exchange: rotation is the load-bearing part, and a
   // token presented twice revokes the whole chain rather than being refused on
   // its own.
@@ -81,7 +81,7 @@ service AuthService {
 // It carries no identity, by design. The response is the same whether a
 // username exists or not, so there is nothing here to vary it on.
 message BootstrapRequest {
-  // The same vocabulary declaration Attach carries, so ADR 0084's negotiation
+  // The same vocabulary declaration Attach carries, so platform#52's negotiation
   // applies to the doorway exactly as it applies to every screen after it. It
   // is literally the same message rather than a copy of its shape: two
   // declarations that must not diverge are one declaration.
@@ -108,7 +108,7 @@ message BootstrapResponse {
   // security property, not an optimisation, and it must not be allowed to grow
   // into the whole library out of convenience.
   bytes definitions = 2;
-  // The doorway. Which one is the server's decision, unchanged from ADR 0098:
+  // The doorway. Which one is the server's decision, unchanged from platform#54:
   // the setup tree while the server is unclaimed, the sign-in tree once it is
   // not. A doorway has two states and the client is not told which — it is
   // shown one.
@@ -135,7 +135,7 @@ message InvokeRequest {
   // so.
   string device_id = 3;
   // The same vocabulary declaration Bootstrap carries, so a replacement doorway
-  // is negotiated exactly as the first one was (ADR 0084). Without it the
+  // is negotiated exactly as the first one was (platform#52). Without it the
   // second tree a client is sent would be the one tree nobody degraded.
   mosaic.session.v1.VocabularyProfile vocabulary = 4;
 }
@@ -157,7 +157,7 @@ message InvokeResponse {
     // sign-in form where a setup form was. The definitions travel with it for
     // the same reason they travel with Bootstrap: a client at this point still
     // has no vocabulary but the subset it was last sent, and a tree naming a
-    // component outside that subset would draw the placeholder ADR 0101 exists
+    // component outside that subset would draw the placeholder platform#57 exists
     // to remove.
     Doorway doorway = 2;
     // The submission was refused, per field (contracts#13). It is the same envelope
@@ -197,12 +197,12 @@ message SignInRequest {
 // it.
 message SignInResponse {
   Session session = 1;
-  // The bearer pair (ADR 0102). A client stores both and presents the access
+  // The bearer pair (platform#58). A client stores both and presents the access
   // token on every SessionService call.
   TokenPair tokens = 2;
 }
 
-// TokenPair is the session credential (ADR 0102): a short-lived access token
+// TokenPair is the session credential (platform#58): a short-lived access token
 // presented on every call, and a long-lived refresh token exchanged for a new
 // pair.
 //
@@ -247,7 +247,7 @@ message RefreshResponse {
 
 // SignOutRequest revokes target_session on behalf of caller_session.
 //
-// caller_session is the caller's credential — its access token (ADR 0102), the
+// caller_session is the caller's credential — its access token (platform#58), the
 // same value it presents on every SessionService call. target_session is the
 // **session id** of the device being ended, which is what a device list names
 // and is not itself a credential.
@@ -271,7 +271,7 @@ message Session {
   string device_id = 3;
   google.protobuf.Timestamp issued_at = 4;
   google.protobuf.Timestamp last_seen_at = 5;
-  // The **absolute** expiry (ADR 0102): the moment past which no refresh can
+  // The **absolute** expiry (platform#58): the moment past which no refresh can
   // extend this session, however recently it was used. It is not the access
   // token's lifetime, which is minutes and is carried on TokenPair, and it is
   // not the idle ceiling, which the server applies against last_seen_at and
@@ -293,7 +293,7 @@ message Session {
   // call re-authorises server-side against the grants as they are *now*, and
   // this list is a snapshot as they were at issue time; a grant revoked since
   // is still in here and is refused anyway. What it is for is
-  // [ADR 0036](0036): an affordance the caller could not exercise should not be
+  // [platform#24](0036): an affordance the caller could not exercise should not be
   // drawn, and until now that was a decision only the server could make,
   // because only the server knew. A client that composes its own chrome — a
   // native one deciding whether to draw an admin tab before it asks for a

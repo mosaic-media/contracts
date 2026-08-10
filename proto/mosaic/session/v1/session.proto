@@ -3,15 +3,15 @@
 
 // Package mosaic.session.v1 is the first-party client session transport
 // (contracts#5): a typed, two-lane RPC surface generated from this one .proto into
-// every client language. It supersedes the bespoke WebSocket of ADR 0032 and
-// folds ADR 0033's live handover into stream resume.
+// every client language. It supersedes the bespoke WebSocket of platform#22 and
+// folds supervisor#4's live handover into stream resume.
 //
 // Two lanes, mapping onto the two gRPC shapes supported uniformly on every
 // target client (web via Connect, Flutter, Compose, Swift):
 //
 //   - Lane 1 — intents (unary). Navigate, Invoke, SubmitInput, Attach. Each
 //     resolves to the same application command/query the HTTP path would; the
-//     command boundary (ADR 0016) and caller model (ADR 0017) are unchanged.
+//     command boundary (platform#12) and caller model (platform#13) are unchanged.
 //   - Lane 2 — push (server-streaming). One long-lived Subscribe stream per
 //     session over which the server pushes region updates, shell mutations,
 //     toasts and unsolicited events. resume_cursor replays what a reconnecting
@@ -38,12 +38,12 @@ option go_package = "github.com/mosaic-media/contracts/gen/mosaic/session/v1;ses
 service SessionService {
   // Attach (re)binds this caller to a session and declares the route it wants
   // shown. A reconnecting client calls it to re-assert the exact screen that
-  // was open, the same re-declaration the ADR 0032 socket did on reconnect.
+  // was open, the same re-declaration the platform#22 socket did on reconnect.
   rpc Attach(AttachRequest) returns (Ack);
   // Navigate opens a screen; the server renders it into the content region on
   // the push lane.
   rpc Navigate(NavigateRequest) returns (Ack);
-  // Invoke runs a named action (an SDUI Action, ADR 0029) — a mutation — and
+  // Invoke runs a named action (an SDUI Action, platform#19) — a mutation — and
   // pushes a toast plus a re-render of the current content.
   rpc Invoke(InvokeRequest) returns (Ack);
   // SubmitInput carries one search-as-you-type keystroke. The Platform
@@ -64,8 +64,8 @@ message Ack {}
 
 // AttachRequest binds a session and optionally declares the route to show.
 message AttachRequest {
-  // The caller's opaque credential (ADR 0017), which is its **access token**
-  // since ADR 0102 made the session a bearer pair. The field keeps its name
+  // The caller's opaque credential (platform#13), which is its **access token**
+  // since platform#58 made the session a bearer pair. The field keeps its name
   // because every client sends it in the same place and for the same reason;
   // what changed is that the value is minutes-lived and rotates, so a client
   // that caches it forever will start seeing UNAUTHENTICATED and must refresh
@@ -73,7 +73,7 @@ message AttachRequest {
   string session = 1;
   string screen = 2;  // optional route to (re-)assert; empty leaves it unchanged.
   bytes params = 3;   // optional screen params as a JSON object (see params note).
-  // What this client can actually play (ADR 0047). Optional: a client that
+  // What this client can actually play (web#4). Optional: a client that
   // declares nothing gets whatever the server assumes, which is what every
   // client got before this field existed.
   ClientProfile profile = 4;
@@ -121,17 +121,17 @@ message VocabularyProfile {
 
 // ClientProfile is what a client can decode, declared once per connection.
 //
-// It exists because the server was guessing. Stream selection (ADR 0048) ranks a
+// It exists because the server was guessing. Stream selection (platform#27) ranks a
 // source's candidates against what the caller can play, and with no declaration
 // the Platform hard-coded a desktop browser's abilities at the call site —
 // honest for one client and a lie for the four the transport was built to serve
 // (contracts#5).
 //
 // The client is the only thing that knows. A browser can answer precisely via
-// canPlayType (ADR 0070); a native player knows its own decoders. Neither is
+// canPlayType (web#5); a native player knows its own decoders. Neither is
 // something a server can infer from a user agent without being wrong eventually.
 //
-// It is also what the resolution cache is keyed on (ADR 0049): the Platform
+// It is also what the resolution cache is keyed on (platform#28): the Platform
 // reduces this to a stable class, so clients that decode the same things share
 // one cached resolution rather than each paying for their own.
 message ClientProfile {
@@ -158,7 +158,7 @@ message NavigateRequest {
 }
 
 // InvokeRequest runs a named action. input is the action's argument envelope in
-// the SDUI runtime's JSON shape (ADR 0029), carried opaquely and decoded by the
+// the SDUI runtime's JSON shape (platform#19), carried opaquely and decoded by the
 // action's Platform handler.
 message InvokeRequest {
   string session = 1;
@@ -228,7 +228,7 @@ message FieldError {
   string message = 2;
 }
 
-// RegionUpdate applies one operation to a named region (ADR 0029 / 0031). The
+// RegionUpdate applies one operation to a named region (platform#19 / 0031). The
 // op-set is contract-owned and transport-agnostic: a Compose composable, a
 // SwiftUI view and a React component apply the same ops.
 message RegionUpdate {
@@ -241,19 +241,19 @@ message RegionUpdate {
     REMOVE = 3;
     PATCH = 4;
   }
-  string region = 1; // a named slot (ADR 0029 / 0031), e.g. "content".
+  string region = 1; // a named slot (platform#19 / 0031), e.g. "content".
   Op op = 2;
   mosaic.sdui.v1.UINode ui_node = 3; // the typed UINode subtree (contracts#6).
 }
 
-// ShellUpdate carries the app shell UINode tree (ADR 0031). It is sent once on
+// ShellUpdate carries the app shell UINode tree (platform#21). It is sent once on
 // connect and again only if the shell itself changes.
 message ShellUpdate {
   mosaic.sdui.v1.UINode ui_node = 1; // the typed shell UINode tree (contracts#6).
 }
 
 // Toast is one message in the client's notification stack, in one of two
-// lifetimes (ADR 0052).
+// lifetimes (platform#30).
 //
 // A **toast** is transient: the confirmation an Invoke pushes, which removes
 // itself on a timer. That is right for "import finished" and wrong for a

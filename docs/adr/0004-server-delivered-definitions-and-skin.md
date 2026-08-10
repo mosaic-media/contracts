@@ -24,7 +24,7 @@ tree, *data, not code*. The skin is likewise **tokens** — DTCG values
 that the interface changes without shipping a client.
 
 The current implementation does not deliver that payoff. The React runtime
-([architecture#26](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0026-react-sdui-runtime.md)) **bundles** its definitions
+([web#1](https://github.com/mosaic-media/web/blob/main/docs/adr/0001-react-sdui-runtime.md)) **bundles** its definitions
 (`definitions.ts`, `definitions.layout.ts` as compiled objects) and its tokens
 (CSS) into the `@mosaic-media/sdui-react` package. So a new definition — a new
 card layout, a new row — *or* a re-skin requires a package bump, i.e. a client
@@ -33,7 +33,7 @@ release.
 On web that gap is invisible: redeploying the static Shell is free. For the
 planned **Flutter client it is the whole problem** — every definition tweak or
 theme change becomes an app-store review, which is exactly what SDUI exists to
-avoid. [architecture#39](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0039-server-owned-navigation.md) removed *navigation* from the
+avoid. [web#2](https://github.com/mosaic-media/web/blob/main/docs/adr/0002-server-owned-navigation.md) removed *navigation* from the
 client; the remaining things still baked into the client are **definitions and
 tokens**. This ADR moves them out.
 
@@ -55,19 +55,19 @@ Three tiers, with a hard line between the first and the rest:
   active token set — semi-static, changes with product and design but not per
   interaction.
 - **Live surface (pushed per interaction).** Screens, content and navigation
-  ([architecture#29](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0029-sdui-emit-side.md), [architecture#32](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0032-live-session-websocket.md),
-  [architecture#39](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0039-server-owned-navigation.md)).
+  ([platform#19](https://github.com/mosaic-media/platform/blob/main/docs/adr/0019-sdui-emit-side.md), [platform#22](https://github.com/mosaic-media/platform/blob/main/docs/adr/0022-live-session-websocket.md),
+  [web#2](https://github.com/mosaic-media/web/blob/main/docs/adr/0002-server-owned-navigation.md)).
 
 The UI-library tier works like this:
 
 - **The Platform serves the UI bundle** — the standard definition library
   ([contracts#3](0003-sdui-contract-repository.md)) merged with any definitions the
-  enabled modules contribute ([architecture#38](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0038-module-contributed-settings-ui.md)
+  enabled modules contribute ([sdk#4](https://github.com/mosaic-media/sdk/blob/main/docs/adr/0004-module-contributed-settings-ui.md)
   established that modules ship SDUI as data; this extends it from settings
   screens to reusable definitions), plus the active token set — as a single
   **content-addressed, versioned** payload.
 - **The client fetches it at boot and caches it by version.** It re-fetches only
-  when the version changes; the live-session handshake ([architecture#32](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0032-live-session-websocket.md))
+  when the version changes; the live-session handshake ([platform#22](https://github.com/mosaic-media/platform/blob/main/docs/adr/0022-live-session-websocket.md))
   advertises the current bundle version, so a change propagates without a client
   release and without re-downloading on every connect.
 - **Delivery is negotiated against the client's native-vocabulary version.** The
@@ -119,7 +119,7 @@ split exists precisely to keep rendering native while making *composition* data.
   primitive, action kind, or render capability. Everything else (definitions,
   skin, screens, content, navigation) flows from the server. This is the
   guarantee that makes SDUI real for Flutter, not just web, and it is what
-  [architecture#39](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0039-server-owned-navigation.md) and this ADR together deliver.
+  [web#2](https://github.com/mosaic-media/web/blob/main/docs/adr/0002-server-owned-navigation.md) and this ADR together deliver.
 - **Skinning becomes a server operation** — re-theme, per-deployment palettes,
   seasonal skins, even experiments, without a client release. Token *values* are
   data; only a new token *capability* (a render effect a primitive can't draw) is
@@ -133,7 +133,7 @@ split exists precisely to keep rendering native while making *composition* data.
 - **Graceful degradation is now essential,** not optional: unknown primitive →
   typed fallback.
 - **Modules ship reusable UI as data,** extending
-  [architecture#38](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0038-module-contributed-settings-ui.md) — a module's definitions
+  [sdk#4](https://github.com/mosaic-media/sdk/blob/main/docs/adr/0004-module-contributed-settings-ui.md) — a module's definitions
   merge into the served library, gated by the same capability negotiation.
 - **Honest limits:** the native vocabulary still versions with the client, and a
   definition that needs a new primitive still waits on the release that adds it —
@@ -145,7 +145,7 @@ split exists precisely to keep rendering native while making *composition* data.
 
 ## Implementation implications
 
-Proposed; a slice of its own, sequenced with [architecture#39](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0039-server-owned-navigation.md)
+Proposed; a slice of its own, sequenced with [web#2](https://github.com/mosaic-media/web/blob/main/docs/adr/0002-server-owned-navigation.md)
 so the client contract is settled before the Flutter client is built against it.
 
 - **Platform:** compose and serve the UI bundle for this deployment — the

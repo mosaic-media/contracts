@@ -38,7 +38,7 @@ artifact, and — chosen now — a **protobuf** one, so the wire is typed end to
 
 - *"props are an untyped bag"* — they stay that way. protobuf types the **tree
   skeleton, actions and region operations**; the open props and attributes
-  ([architecture#15](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0015-open-and-closed-vocabularies.md)) ride `google.protobuf.Struct`.
+  ([platform#11](https://github.com/mosaic-media/platform/blob/main/docs/adr/0011-open-and-closed-vocabularies.md)) ride `google.protobuf.Struct`.
   The Struct collapse is real but confined to the leaves that are open *by design*.
 - *"definitions and tokens are JSON data"* — tokens **stay** DTCG JSON (below);
   definitions stay data, carried via canonical protobuf-JSON.
@@ -52,7 +52,7 @@ is renamed `contracts` and publishes two packages; both are Apache-2.0.**
 - **One repo, `contracts`** (renamed from `sdui`) — a **buf workspace** with two
   proto modules:
   - `proto/mosaic/sdui/v1/*` — `UINode`, `Action`, `ComponentDefinition`, the
-    region operations ([architecture#29](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0029-sdui-emit-side.md) / [architecture#31](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0031-server-owned-app-shell.md)).
+    region operations ([platform#19](https://github.com/mosaic-media/platform/blob/main/docs/adr/0019-sdui-emit-side.md) / [platform#21](https://github.com/mosaic-media/platform/blob/main/docs/adr/0021-server-owned-app-shell.md)).
   - `proto/mosaic/session/v1/*` — the `SessionService` two lanes ([contracts#5](0005-cross-client-transport-two-lane-rpc.md)),
     **importing** the sdui module: `RegionUpdate.ui_node` is a typed
     `mosaic.sdui.v1.UINode`, not bytes (**option (b)**).
@@ -63,14 +63,14 @@ is renamed `contracts` and publishes two packages; both are Apache-2.0.**
   The one-way dependency (transport → sdui) means an sdui-only consumer pulls only
   the sdui package.
 - **Both Apache-2.0**, matching the SDK and the SDUI contract before it
-  ([architecture#22](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0022-licensing.md)). The session contract **relicenses** from the
+  ([architecture#1](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0001-licensing.md)). The session contract **relicenses** from the
   AGPL it was mistakenly pushed under.
 - **Carve-outs — what does *not* become protobuf:**
   - **Design tokens stay DTCG JSON.** They are a design-tool interchange format
     (Figma, Style Dictionary); protobuf buys nothing and fights the ecosystem.
     Delivered as data ([contracts#4](0004-server-delivered-definitions-and-skin.md)).
   - **Open props / attributes are `google.protobuf.Struct`.** The vocabulary stays
-    open ([architecture#15](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0015-open-and-closed-vocabularies.md)); this is **not** the
+    open ([platform#11](https://github.com/mosaic-media/platform/blob/main/docs/adr/0011-open-and-closed-vocabularies.md)); this is **not** the
     governance fork [contracts#3](0003-sdui-contract-repository.md) named — no per-component typed messages.
   - **The definition library stays data**, carried and authored via canonical
     protobuf-JSON (`protojson`); clients still register definitions, emit types,
@@ -95,7 +95,7 @@ in `platform/internal/gen` (un-importable, AGPL). Option (b) types the whole wir
 schemas are coupled — `transport.proto` imports `sdui.proto` — so two repos means
 BSR/git buf-dependency management for a dependency that genuinely exists. One
 workspace resolves the import locally with one breaking-change gate, and matches
-[architecture#42](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0042-frontend-workspace.md)'s rule: split a repo only to enforce a
+[web#3](https://github.com/mosaic-media/web/blob/main/docs/adr/0003-frontend-workspace.md)'s rule: split a repo only to enforce a
 boundary, and there is none between two coupled Apache contracts.
 
 **Govern the vocabulary (every component a typed message).** The [contracts#3](0003-sdui-contract-repository.md) fork.
@@ -117,13 +117,13 @@ not closing the open vocabulary.
 - **Tokens are untouched** (DTCG JSON).
 - **The `sdui` → `contracts` rename** is a GitHub rename (redirects) plus a Go
   module-path change `github.com/mosaic-media/sdui` → `…/contracts` — coordinated
-  with its importers and retagged, exactly like the [architecture#43](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0043-repository-naming-convention.md)
+  with its importers and retagged, exactly like the [architecture#2](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0002-repository-naming-convention.md)
   renames. The npm name `@mosaic-media/sdui` is unaffected (scope is decoupled
   from repo name).
 - **This amends [contracts#3](0003-sdui-contract-repository.md)** (format and repo
   identity), **resolves [contracts#5](0005-cross-client-transport-two-lane-rpc.md)'s
   UINode encoding to (b)** and relocates its contract, and is consistent with
-  [architecture#42](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0042-frontend-workspace.md).
+  [web#3](https://github.com/mosaic-media/web/blob/main/docs/adr/0003-frontend-workspace.md).
 
 ## Implementation implications
 

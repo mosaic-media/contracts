@@ -11,7 +11,7 @@ import (
 // Type namespacing: core types are unprefixed, a module's are `moduleId:type`.
 //
 // The vocabulary's `type` is an open string — deliberately, since that is what
-// lets a module introduce a component the Platform never shipped (ADR 0015,
+// lets a module introduce a component the Platform never shipped (platform#11,
 // contracts#2). Open and *flat* is a different thing, and it was flat: two modules
 // could both contribute a `StatChip` and the second to register would replace
 // the first, and a module could contribute a `PosterCard` and take the place of

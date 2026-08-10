@@ -1,22 +1,22 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-FileCopyrightText: 2026 the Mosaic authors
 
-// Package mosaic.module.v1 is the extension module boundary (ADR 0064): the
+// Package mosaic.module.v1 is the extension module boundary (platform#39): the
 // wire an out-of-process module speaks, carried over a Unix domain socket by
-// hashicorp/go-plugin (ADR 0077).
+// hashicorp/go-plugin (sdk#7).
 //
 // **This file is not the contract.** The contract is the hand-written Go in
 // `github.com/mosaic-media/sdk` — `v1.Capability`, the eight provider roles,
 // `v1.ContentService`, `v1.Telemetry`. This is an *implementation* of those
 // interfaces on both sides of a process boundary, and nothing above the
-// Platform's capability registry knows it exists. ADR 0064 chose that
+// Platform's capability registry knows it exists. platform#39 chose that
 // direction deliberately: generating the Go interfaces from this schema would
 // make the contract un-implementable except over RPC, which would break the
 // core tier, and `Caller` could not stay opaque.
 //
 // The cost is that this file and the SDK's Go are two sources of truth that
 // must agree, held together by codegen discipline and tests rather than by the
-// compiler. ADR 0077 records that cost as accepted rather than paid — a
+// compiler. sdk#7 records that cost as accepted rather than paid — a
 // msgpack alternative that would have collapsed it was rejected for reasons
 // that outweighed it.
 //
@@ -31,12 +31,12 @@
 // interfaces these implement are still `v1.Capability` and `v1.Telemetry`.
 //
 // **Versioning.** The proto package version tracks the SDK major version, so
-// there is one number a user reasons about rather than two (ADR 0064).
+// there is one number a user reasons about rather than two (platform#39).
 // `mosaic.module.v1` is the wire for SDK v1.x. Within a major, changes here are
 // additive only: unknown fields are ignored, and a role a module does not serve
 // is reported at handshake rather than discovered at call time.
 //
-// **Provisional in one direction.** ADR 0064 leaves callback chattiness open on
+// **Provisional in one direction.** platform#39 leaves callback chattiness open on
 // purpose and says it must be measured against a real import before the
 // protocol is fixed, with the service shape allowed to send back coarser,
 // batched verbs. Such verbs would be *added* to ContentService, which is an
@@ -50,7 +50,7 @@ option go_package = "github.com/mosaic-media/contracts/gen/mosaic/module/v1;modu
 // ─── Boundary primitives ────────────────────────────────────────────────────
 
 // Caller is the principal a module acts as, and it is the one type whose
-// meaning *changes* by crossing the boundary (ADR 0064).
+// meaning *changes* by crossing the boundary (platform#39).
 //
 // In process, `v1.Caller` wraps a session reference and is meaningless outside
 // the invocation that produced it. Serialized, it becomes something a module
@@ -96,7 +96,7 @@ message Error {
 
 // ─── Content vocabulary ─────────────────────────────────────────────────────
 //
-// The open vocabularies (ADR 0015) stay strings on the wire, exactly as they
+// The open vocabularies (platform#11) stay strings on the wire, exactly as they
 // are in Go and in the database. Making media_type an enum here would close a
 // vocabulary the architecture deliberately leaves open, and every new media
 // type would become a wire change. The closed ones (node kind, part role,
@@ -111,7 +111,7 @@ enum NodeKind {
 }
 
 // NodeStatus records whether a node still has a source behind it. Orphaned is
-// not deleted: ADR 0013 is explicit that removing the last binding leaves the
+// not deleted: platform#9 is explicit that removing the last binding leaves the
 // node standing.
 enum NodeStatus {
   NODE_STATUS_UNSPECIFIED = 0;
@@ -139,7 +139,7 @@ message MediaLocation {
   string ref = 3;
 }
 
-// ArtworkCandidate is one image a source offered for one slot. ADR 0074 makes
+// ArtworkCandidate is one image a source offered for one slot. platform#47 makes
 // artwork a candidate set rather than one string per slot, because a source
 // whose entire value is the set (forty posters, each with a language and a vote
 // count) loses its reason to exist if the Platform keeps one.
@@ -165,7 +165,7 @@ message Artwork {
   repeated ArtworkCandidate candidates = 5;
 }
 
-// Node is one position in the containment tree (ADR 0013). Depth is whatever a
+// Node is one position in the containment tree (platform#9). Depth is whatever a
 // work's real structure needs; nothing may assume a node has a parent or that a
 // work's children are containers.
 message Node {
@@ -175,7 +175,7 @@ message Node {
   // and empty is unambiguous here because a node id is never the empty string.
   string parent_id = 3;
   NodeKind kind = 4;
-  // Open vocabularies (ADR 0015).
+  // Open vocabularies (platform#11).
   string media_type = 5;
   string container_type = 6;
   string item_type = 7;
@@ -183,7 +183,7 @@ message Node {
   double natural_order = 9;
   NodeStatus status = 10;
   // Raw JSON documents, carried uninterpreted. The Platform does not validate
-  // attributes by design (ADR 0013), and external_ids is a flat
+  // attributes by design (platform#9), and external_ids is a flat
   // scheme-to-string map that NodeStore.FindByExternalID reads.
   bytes external_ids = 11;
   bytes attributes = 12;
@@ -231,7 +231,7 @@ enum RelationOrigin {
 
 // Relation is one edge of the association graph. Edges are written once —
 // RelationStore has no Update, and confidence decay is deliberately unbuilt
-// (ADR 0013).
+// (platform#9).
 message Relation {
   string id = 1;
   string from_node_id = 2;
@@ -272,7 +272,7 @@ message SourceBinding {
 
 // ContentRef is the stable handle a virtual result carries so the Platform can
 // dedup it against the library and hand it back to the module to materialise
-// (ADR 0028). Produced by a read role, consumed by Import.
+// (platform#18). Produced by a read role, consumed by Import.
 message ContentRef {
   // Provider is the manifest id of the capability that produced this ref and
   // can materialise it. A search fans out to many providers, so each result
@@ -283,12 +283,12 @@ message ContentRef {
   string native_id = 2;
   string native_type = 3;
   string media_type = 4;
-  // The provider identity the Platform dedups on (ADR 0028's union).
+  // The provider identity the Platform dedups on (platform#18's union).
   string external_scheme = 5;
   string external_id = 6;
 }
 
-// ─── Virtual content (ADR 0028) ─────────────────────────────────────────────
+// ─── Virtual content (platform#18) ─────────────────────────────────────────────
 //
 // These are transient projections, never object-graph nodes. Only Import
 // writes nodes, and it does so from a ContentRef a read role produced.
@@ -368,7 +368,7 @@ message Person {
 
 // EpisodePreview is what a detail screen shows so a user can read the episode
 // list *before* deciding to add a series, including for a virtual series with
-// no materialised tree (ADR 0034). Read-only, never persisted.
+// no materialised tree (sdk#3). Read-only, never persisted.
 message EpisodePreview {
   int32 season = 1;
   int32 episode = 2;
@@ -469,7 +469,7 @@ message StreamLink {
   // candidate ends up — the values are moved across, not translated.
   //
   // Best-effort: a module parses them from release text at its own boundary
-  // (ADR 0051), which is a guess rather than a measurement. Empty means the
+  // (module-stremio-addons#2), which is a guess rather than a measurement. Empty means the
   // source did not say, exactly like every other descriptive field here.
   string container = 7;
   string video_codec = 8;
@@ -516,7 +516,7 @@ message Manifest {
   // The module's own version, not the SDK's.
   string version = 2;
   string name = 3;
-  // The provider roles this module fills (ADR 0027). The handshake verifies
+  // The provider roles this module fills (sdk#2). The handshake verifies
   // that every declared role is actually served, so a role named but not
   // implemented is refused at connect time rather than discovered at call time.
   repeated string provides = 4;
@@ -542,7 +542,7 @@ message ImportRequest {
   Caller caller = 1;
   ContentRef ref = 2;
   // The module's user-managed configuration document — opaque JSON the Platform
-  // stores and hands back without interpreting (ADR 0021). It crosses unchanged,
+  // stores and hands back without interpreting (platform#17). It crosses unchanged,
   // which is a small vindication of having stored it uninterpreted.
   bytes settings = 3;
 }
@@ -639,7 +639,7 @@ message SubtitlesRequest {
   bytes settings = 2;
   ContentRef ref = 3;
   // The same coordinates StreamsRequest carries, numbered the same, and for the
-  // same reason (ADR 0073): a provider asked about content it did not source
+  // same reason (platform#46): a provider asked about content it did not source
   // gets a shared external identity with no native id, and composes its own
   // episode addressing from these. Zero for a film.
   int32 season = 4;
@@ -652,7 +652,7 @@ message SubtitlesResponse {
 
 // ArtworkRequest is keyed by external identities rather than by a ContentRef,
 // because an artwork provider produces no results of its own and is therefore
-// never named by one (ADR 0075). The Platform reaches it through an enrichment
+// never named by one (sdk#6). The Platform reaches it through an enrichment
 // pass over content something else already identified.
 message ArtworkRequest {
   Caller caller = 1;
@@ -703,7 +703,7 @@ message SettingsUIResponse {
 // SDK's `v1.Capability` plus the eight provider roles. The Platform holds a
 // proxy implementing those Go interfaces and dispatching to these methods;
 // the capability registry cannot tell that proxy from a local struct, which is
-// the property the whole design is arranged around (ADR 0064).
+// the property the whole design is arranged around (platform#39).
 //
 // A module serves Manifest and Import always, and each role method only if its
 // manifest declares the matching role. Calling an undeclared role is a
@@ -726,10 +726,10 @@ service CapabilityService {
 
 // ─── ContentService: served by the Platform, called back by the module ──────
 //
-// This is the chatty direction, and the one ADR 0064 leaves open pending
+// This is the chatty direction, and the one platform#39 leaves open pending
 // measurement against a real import. Every method carries the Caller handle,
 // and every one of them re-authenticates and re-authorises as the invoking user
-// (ADR 0017) — a capability originates no authority.
+// (platform#13) — a capability originates no authority.
 
 message AddContentWorkRequest {
   Caller caller = 1;
@@ -899,7 +899,7 @@ message ListContentPartsResponse {
 
 // PlaybackState is per-user. Everything above operates on an install-global
 // graph; a position belongs to a person, and a consumer records progress as its
-// invoking user so a module can never write another user's position (ADR 0046).
+// invoking user so a module can never write another user's position (platform#26).
 message PlaybackState {
   string node_id = 1;
   string part_id = 2;
@@ -970,7 +970,7 @@ message ListInProgressResponse {
 // ContentService is everything a capability does to the object graph, served by
 // the Platform over go-plugin's broker.
 //
-// A module owns no schema (ADR 0012) and no content storage (ADR 0002 §2):
+// A module owns no schema (platform#8) and no content storage (platform#2 §2):
 // content lives in the Platform's object graph, in the Platform's single
 // consistency domain, and nowhere else. What a separate process makes possible
 // is a module-*local* cache or cursor in its own file — which must be
@@ -999,7 +999,7 @@ service ContentService {
 
 // ─── Telemetry: served by the Platform, called back by the module ───────────
 
-// RedactionClass is the PII boundary (ADR 0056). It travels with the field
+// RedactionClass is the PII boundary (platform#34). It travels with the field
 // rather than being inferred at the sink, because a sink that has to guess will
 // guess wrong on exactly the fields that matter.
 enum RedactionClass {
@@ -1051,7 +1051,7 @@ message StartSpanRequest {
   repeated Field attributes = 3;
   // The parent span, empty for a root span within this invocation. The
   // Platform stitches it to the invocation's own trace, so a module never sees
-  // or sets a trace id — ADR 0054 makes the correlation id the trace id, and
+  // or sets a trace id — platform#32 makes the correlation id the trace id, and
   // letting a module choose one would let it forge provenance.
   string parent_span_id = 4;
 }
@@ -1084,7 +1084,7 @@ message EndSpanRequest {
 
 message EndSpanResponse {}
 
-// MetricUnit is the closed vocabulary of units a Measure may carry (ADR 0130).
+// MetricUnit is the closed vocabulary of units a Measure may carry (sdk#9).
 //
 // Closed, because a unit is what lets a backend convert between scales and a
 // reader label an axis — and a free-form string produces `ms`, `millis`,
@@ -1107,7 +1107,7 @@ enum MetricUnit {
 // the one asymmetry worth knowing at this boundary: every distinct combination
 // of values is a series that lives as long as the Platform process, where a log
 // record ages out under retention. The Platform bounds how many a module may
-// create — see ADR 0130 — so an out-of-process module cannot exhaust the host it
+// create — see sdk#9 — so an out-of-process module cannot exhaust the host it
 // is not running in.
 message CountRequest {
   Caller caller = 1;
@@ -1129,22 +1129,22 @@ message MeasureRequest {
 
 message MeasureResponse {}
 
-// TelemetryService is how a module observes (ADR 0059). The SDK declares its own
+// TelemetryService is how a module observes (sdk#5). The SDK declares its own
 // interface rather than re-exporting OpenTelemetry, specifically so a contract
 // does not distribute the Platform's taste in libraries — and that decision is
 // what lets this cross a process boundary at all: the module calls the same
-// methods over a different transport, and ADR 0059's surface is unaffected.
+// methods over a different transport, and sdk#5's surface is unaffected.
 service TelemetryService {
   rpc Log(LogRequest) returns (LogResponse);
   rpc StartSpan(StartSpanRequest) returns (StartSpanResponse);
   rpc SetSpanAttributes(SpanAttributesRequest) returns (SpanAttributesResponse);
   rpc FailSpan(FailSpanRequest) returns (FailSpanResponse);
   rpc EndSpan(EndSpanRequest) returns (EndSpanResponse);
-  // The metric half (ADR 0130). It crosses the wire for the same reason the
-  // rest does — and for one specific to metrics: ADR 0059 refused to publish a
+  // The metric half (sdk#9). It crosses the wire for the same reason the
+  // rest does — and for one specific to metrics: sdk#5 refused to publish a
   // counter that silently discards, and a bridge that answered these calls with
   // nothing would build exactly that, reachable only by the modules that run
-  // out of process (ADR 0077) and only in production.
+  // out of process (sdk#7) and only in production.
   rpc Count(CountRequest) returns (CountResponse);
   rpc Measure(MeasureRequest) returns (MeasureResponse);
 }

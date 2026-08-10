@@ -8,7 +8,7 @@
 
 The SDUI node `type` is an **open** vocabulary, and deliberately so: it is what
 lets a module introduce a component the Platform never shipped, without a client
-release ([architecture#15](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0015-open-and-closed-vocabularies.md),
+release ([platform#11](https://github.com/mosaic-media/platform/blob/main/docs/adr/0011-open-and-closed-vocabularies.md),
 [contracts#2](0002-primitives-and-definitions.md)).
 
 Open and **flat** are different properties, and only the first was ever decided.

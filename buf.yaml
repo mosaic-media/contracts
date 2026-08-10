@@ -5,9 +5,9 @@
 # the SDUI content contract (mosaic/sdui/v1); the session transport contract
 # (mosaic/session/v1), which imports the former so a UINode rides typed; the
 # auth service (mosaic/auth/v1), separate because it is the one call made
-# without a session (ADR 0061); and the extension module boundary
-# (mosaic/module/v1), the wire an out-of-process module speaks (ADR 0064,
-# ADR 0077).
+# without a session (platform#37); and the extension module boundary
+# (mosaic/module/v1), the wire an out-of-process module speaks (platform#39,
+# sdk#7).
 version: v2
 modules:
   - path: proto

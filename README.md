@@ -19,7 +19,7 @@ Two guards keep it honest:
 - **Drift guard** — `scripts/check-generated.sh` regenerates and fails if the committed bindings are stale (run it in CI). Change the schema → regenerate → commit.
 - **Conformance tests** (`conformance/`) — validate what the hand-written builders *produce*, and every file in `definitions/`, against the schema. So even the ergonomic layer cannot drift from the contract.
 
-**JSON Schema, not protobuf, for the *authoring* layer** — the node tree is open (props are an untyped bag by design) and the definitions and tokens are JSON data. See [contracts#3](docs/adr/0003-sdui-contract-repository.md). The *wire* is protobuf end to end: `UINode` is generated as a message too ([contracts#6](docs/adr/0006-contracts-protobuf-workspace.md)), and since [ADR 0061](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0061-one-client-transport.md) protobuf/Connect is the *only* client transport — there is no GraphQL surface left to ride.
+**JSON Schema, not protobuf, for the *authoring* layer** — the node tree is open (props are an untyped bag by design) and the definitions and tokens are JSON data. See [contracts#3](docs/adr/0003-sdui-contract-repository.md). The *wire* is protobuf end to end: `UINode` is generated as a message too ([contracts#6](docs/adr/0006-contracts-protobuf-workspace.md)), and since [platform#37](https://github.com/mosaic-media/platform/blob/main/docs/adr/0037-one-client-transport.md) protobuf/Connect is the *only* client transport — there is no GraphQL surface left to ride.
 
 ## Layout
 
@@ -99,7 +99,7 @@ import tokens from "@mosaic-media/sdui/tokens.json";
 // schemas a Connect-Web client speaks, and the wire UINode message. Pair with
 // @connectrpc/connect + @connectrpc/connect-web.
 //
-//   /auth    — AuthService: sign in, get a session (ADR 0061).
+//   /auth    — AuthService: sign in, get a session ([platform#37](https://github.com/mosaic-media/platform/blob/main/docs/adr/0037-one-client-transport.md)).
 //   /session — SessionService: the two-lane live session ([contracts#5](docs/adr/0005-cross-client-transport-two-lane-rpc.md)).
 //
 // Together they are the whole client surface; there is no second transport.
@@ -202,4 +202,4 @@ git tag v0.1.0 && git push origin v0.1.0
 
 ## Licence
 
-**Apache-2.0** (see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE)). A contract surface must be permissive so a Module may build its UI against it under any licence, as the SDK is ([ADR 0022](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0022-licensing.md), [contracts#3](docs/adr/0003-sdui-contract-repository.md)).
+**Apache-2.0** (see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE)). A contract surface must be permissive so a Module may build its UI against it under any licence, as the SDK is ([platform#1](https://github.com/mosaic-media/platform/blob/main/docs/adr/0001-transactional-store-extensibility.md), [contracts#3](docs/adr/0003-sdui-contract-repository.md)).

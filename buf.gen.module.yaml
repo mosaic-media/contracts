@@ -14,7 +14,7 @@
 # clients, where Connect's HTTP semantics are the whole point (contracts#5).
 #
 # The module wire is not served to a client. It is served to
-# `hashicorp/go-plugin` (ADR 0077), whose plugin interface hands you a
+# `hashicorp/go-plugin` (sdk#7), whose plugin interface hands you a
 # `*grpc.Server` to register on and a `*grpc.ClientConn` to dial:
 #
 #     GRPCServer(*plugin.GRPCBroker, *grpc.Server) error

@@ -45,7 +45,7 @@ nothing else.**
 - **An object is a binding only with exactly that one key and a non-empty string
   path.** Carrying the marker beside anything else leaves a literal object. This
   is the same closed reading the action-kind check uses
-  ([architecture#84](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0084-vocabulary-negotiation-and-deliberate-degradation.md)) and for
+  ([platform#52](https://github.com/mosaic-media/platform/blob/main/docs/adr/0052-vocabulary-negotiation-and-deliberate-degradation.md)) and for
   the same reason: a producer's own data with a field of that name must never be
   silently replaced by a lookup.
 - **A malformed binding is refused, not passed through.** An empty path or a
@@ -126,7 +126,7 @@ the literal is overwritten.
 - **Bindings resolve against a scope the client owns.** The server cannot know
   what a binding will resolve to, which is the point, and also means a binding to
   a param the server did not send draws nothing. The unknown-type report from
-  [architecture#84](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0084-vocabulary-negotiation-and-deliberate-degradation.md) has no equivalent for props; that gap is real and unaddressed.
+  [platform#52](https://github.com/mosaic-media/platform/blob/main/docs/adr/0052-vocabulary-negotiation-and-deliberate-degradation.md) has no equivalent for props; that gap is real and unaddressed.
 - **Verified live**: the search screen emitting `title: {"$bind": "text"}`
   rendered the search term as its heading against the running dev stack, and the
   definition library still expanded correctly beneath it.

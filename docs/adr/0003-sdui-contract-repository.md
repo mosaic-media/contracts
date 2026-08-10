@@ -1,6 +1,6 @@
 # The SDUI contract repository
 
-**Status:** Accepted; the extraction stands. The repository has been renamed twice since — `mosaic-sdui` → `sdui` ([architecture#43](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0043-repository-naming-convention.md)) → `contracts` ([contracts#6](0006-contracts-protobuf-workspace.md), which also made the wire protobuf). The contract itself did not move with it: `mosaic.sdui.v1`, the `sdui` package and the npm name `@mosaic-media/sdui` are unchanged
+**Status:** Accepted; the extraction stands. The repository has been renamed twice since — `mosaic-sdui` → `sdui` ([architecture#2](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0002-repository-naming-convention.md)) → `contracts` ([contracts#6](0006-contracts-protobuf-workspace.md), which also made the wire protobuf). The contract itself did not move with it: `mosaic.sdui.v1`, the `sdui` package and the npm name `@mosaic-media/sdui` are unchanged
 **Date:** 2026-07-20
 
 ## Context
@@ -19,7 +19,7 @@ Extract the SDUI contract into its own repository, **[`mosaic-sdui`](https://git
 
 **The contract is JSON Schema, not protobuf.** Three properties of SDUI decide it: the node vocabulary is *open* and its props are an untyped bag by design; the payload rides GraphQL as *JSON*; and the definition library and tokens are themselves *JSON data*. Protobuf's typed-message value collapses to `google.protobuf.Struct` exactly where the data lives, and it mismatches the JSON/GraphQL transport. JSON Schema fits all three and still generates types per language.
 
-Licensed **Apache-2.0**, like the SDK — a contract surface must be permissive so a Module may build its UI against it under any licence (this extends [architecture#22](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0022-licensing.md)'s list to the SDUI contract).
+Licensed **Apache-2.0**, like the SDK — a contract surface must be permissive so a Module may build its UI against it under any licence (this extends [architecture#1](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0001-licensing.md)'s list to the SDUI contract).
 
 ## Alternatives considered
 
@@ -33,7 +33,7 @@ Licensed **Apache-2.0**, like the SDK — a contract surface must be permissive 
 
 - The Platform's emit-side and any UI-contributing Module build against one typed Go binding; the Shell — and a Dart client later — render against the same schema and the same definitions.
 - A new shared surface to version. Until it is tagged, producers wire it with a `replace` directive, as the SDK did in local development.
-- **Open question — the governed-vocabulary fork.** Whether the component vocabulary stays *open* (props an untyped bag, an unknown type rendering a placeholder) or becomes *governed* (each component a typed, registered contract). The `media_types` registry deferred in [architecture#15](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0015-open-and-closed-vocabularies.md) and the still-undecided module-manifest shape point toward governance; if that direction is taken, protobuf becomes the natural format and this decision is revisited. For now the vocabulary is open and the contract is JSON.
+- **Open question — the governed-vocabulary fork.** Whether the component vocabulary stays *open* (props an untyped bag, an unknown type rendering a placeholder) or becomes *governed* (each component a typed, registered contract). The `media_types` registry deferred in [platform#11](https://github.com/mosaic-media/platform/blob/main/docs/adr/0011-open-and-closed-vocabularies.md) and the still-undecided module-manifest shape point toward governance; if that direction is taken, protobuf becomes the natural format and this decision is revisited. For now the vocabulary is open and the contract is JSON.
 
 ## Implementation
 

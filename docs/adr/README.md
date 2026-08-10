@@ -32,22 +32,34 @@ Decisions held elsewhere that these records cite. They bind work here and are no
 
 **`architecture`**
 
-- [architecture#4](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0004-supervisor-as-host-manager.md)
-- [architecture#15](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0015-open-and-closed-vocabularies.md)
-- [architecture#16](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0016-published-contract-surface.md)
-- [architecture#17](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0017-how-a-capability-acts.md)
-- [architecture#19](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0019-module-capability-and-invocation.md)
-- [architecture#21](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0021-module-settings.md)
-- [architecture#22](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0022-licensing.md)
-- [architecture#26](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0026-react-sdui-runtime.md)
-- [architecture#29](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0029-sdui-emit-side.md)
-- [architecture#31](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0031-server-owned-app-shell.md)
-- [architecture#32](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0032-live-session-websocket.md)
-- [architecture#33](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0033-supervisor-driven-live-handover.md)
-- [architecture#38](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0038-module-contributed-settings-ui.md)
-- [architecture#39](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0039-server-owned-navigation.md)
-- [architecture#42](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0042-frontend-workspace.md)
-- [architecture#43](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0043-repository-naming-convention.md)
-- [architecture#61](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0061-one-client-transport.md)
-- [architecture#84](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0084-vocabulary-negotiation-and-deliberate-degradation.md)
-- [architecture#90](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0090-lifecycle-triggers-and-the-absent-telemetry-lane.md)
+- [architecture#1](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0001-licensing.md)
+- [architecture#2](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0002-repository-naming-convention.md)
+
+**`platform`**
+
+- [platform#11](https://github.com/mosaic-media/platform/blob/main/docs/adr/0011-open-and-closed-vocabularies.md)
+- [platform#12](https://github.com/mosaic-media/platform/blob/main/docs/adr/0012-published-contract-surface.md)
+- [platform#13](https://github.com/mosaic-media/platform/blob/main/docs/adr/0013-how-a-capability-acts.md)
+- [platform#15](https://github.com/mosaic-media/platform/blob/main/docs/adr/0015-module-capability-and-invocation.md)
+- [platform#17](https://github.com/mosaic-media/platform/blob/main/docs/adr/0017-module-settings.md)
+- [platform#19](https://github.com/mosaic-media/platform/blob/main/docs/adr/0019-sdui-emit-side.md)
+- [platform#21](https://github.com/mosaic-media/platform/blob/main/docs/adr/0021-server-owned-app-shell.md)
+- [platform#22](https://github.com/mosaic-media/platform/blob/main/docs/adr/0022-live-session-websocket.md)
+- [platform#37](https://github.com/mosaic-media/platform/blob/main/docs/adr/0037-one-client-transport.md)
+- [platform#52](https://github.com/mosaic-media/platform/blob/main/docs/adr/0052-vocabulary-negotiation-and-deliberate-degradation.md)
+
+**`sdk`**
+
+- [sdk#4](https://github.com/mosaic-media/sdk/blob/main/docs/adr/0004-module-contributed-settings-ui.md)
+
+**`supervisor`**
+
+- [supervisor#1](https://github.com/mosaic-media/supervisor/blob/main/docs/adr/0001-supervisor-as-host-manager.md)
+- [supervisor#4](https://github.com/mosaic-media/supervisor/blob/main/docs/adr/0004-supervisor-driven-live-handover.md)
+
+**`web`**
+
+- [web#1](https://github.com/mosaic-media/web/blob/main/docs/adr/0001-react-sdui-runtime.md)
+- [web#2](https://github.com/mosaic-media/web/blob/main/docs/adr/0002-server-owned-navigation.md)
+- [web#3](https://github.com/mosaic-media/web/blob/main/docs/adr/0003-frontend-workspace.md)
+- [web#6](https://github.com/mosaic-media/web/blob/main/docs/adr/0006-lifecycle-triggers-and-the-absent-telemetry-lane.md)

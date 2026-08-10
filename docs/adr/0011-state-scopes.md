@@ -92,7 +92,7 @@ an inner one depending on merge direction. The lookup walks the chain instead.
   are the ones forms unblock.
 - **`State` is a primitive that draws nothing**, which is a new shape in the
   tier — every other primitive renders something. The negotiation from
-  [architecture#84](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0084-vocabulary-negotiation-and-deliberate-degradation.md) handles
+  [platform#52](https://github.com/mosaic-media/platform/blob/main/docs/adr/0052-vocabulary-negotiation-and-deliberate-degradation.md) handles
   it correctly by construction: a client that does not declare `State` has the
   whole subtree dropped, which is right, because the children would bind to
   nothing.

@@ -89,7 +89,7 @@ never exercised, which is how a feature becomes wrong without anyone noticing.
 
 - **Two silent no-ops were found by the browser and by nothing else**, and both
   are the same shape as the `display: contents` bug in
-  [architecture#90](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0090-lifecycle-triggers-and-the-absent-telemetry-lane.md):
+  [web#6](https://github.com/mosaic-media/web/blob/main/docs/adr/0006-lifecycle-triggers-and-the-absent-telemetry-lane.md):
   1. The focus host was resolved **during render**, before React attached the
      ref, so every effect saw `null` and never re-ran. The hook compiled, the
      build was green, and nothing was ever focusable.

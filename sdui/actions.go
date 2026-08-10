@@ -28,7 +28,7 @@ func Back() Action { return Action{Kind: KindBack} }
 func OpenURL(url string) Action { return Action{Kind: KindOpenURL, URL: strp(url)} }
 
 // Invoke runs a Platform action by name — an intent the session transport
-// dispatches (ADR 0061). The field is called Mutation for the same reason the
+// dispatches (platform#37). The field is called Mutation for the same reason the
 // contract's is: it names a Platform write, whatever the transport calls it.
 func Invoke(mutation string, input map[string]any) Action {
 	return Action{Kind: KindInvoke, Mutation: strp(mutation), Input: input}
@@ -63,7 +63,7 @@ func Sequence(actions ...Action) Action {
 // Query re-reads a screen's data without changing the route — the refresh a
 // search field wants when the term changes but the URL should not.
 //
-// A kind called `query` was removed from the contract by ADR 0061 along with
+// A kind called `query` was removed from the contract by platform#37 along with
 // GraphQL; that one carried a raw GraphQL string and a region name, and was
 // unimplementable once there was no endpoint to send it to. This is a different
 // action wearing the same name: it names a screen the server already knows how

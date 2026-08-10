@@ -55,7 +55,7 @@ echo "generating design tokens -> tokens/tokens.css"
 node scripts/gen-tokens.mjs
 
 # The protobuf bindings (contracts#6): Go + Connect stubs and TypeScript for the
-# client-facing contracts, Go + gRPC stubs for the module wire (ADR 0064). Two
+# client-facing contracts, Go + gRPC stubs for the module wire (platform#39). Two
 # templates because the two surfaces need different plugins — Connect for a
 # browser-facing contract, gRPC for what go-plugin registers on a *grpc.Server —
 # and the split is deliberate, not duplication (buf.gen.module.yaml says why).

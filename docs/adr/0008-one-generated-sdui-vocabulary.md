@@ -43,7 +43,7 @@ while looking is an instance of that single fault:
   warn against, used because there was nothing else to use.
 - **Six of the ten wire action kinds were unauthorable from Go**, and one
   (`query`) had been removed from the schema by
-  [architecture#61](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0061-one-client-transport.md) while surviving in the proto, fields
+  [platform#37](https://github.com/mosaic-media/platform/blob/main/docs/adr/0037-one-client-transport.md) while surviving in the proto, fields
   and all.
 
 The benchmark for what a complete answer looks like is deliberately external.
@@ -78,7 +78,7 @@ generated from it.**
   what it registers is exactly what the contract declares. That sentence could
   not previously be written as a test in any language.
 
-**`query` returns to the contract as a different action.** [architecture#61](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0061-one-client-transport.md) removed a
+**`query` returns to the contract as a different action.** [platform#37](https://github.com/mosaic-media/platform/blob/main/docs/adr/0037-one-client-transport.md) removed a
 kind of that name which carried a raw GraphQL string and a region to refresh
 into; it was unimplementable with no endpoint to send it to. The kind declared
 here names a screen the server already knows how to build, exactly as `navigate`

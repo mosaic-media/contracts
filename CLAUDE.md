@@ -57,7 +57,7 @@ name.
 
 - **Apache-2.0**, the permissive surface a third party builds against, unlike the
   Platform's AGPL and the web client's
-  ([architecture#22](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0022-licensing.md)).
+  ([architecture#1](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0001-licensing.md)).
 - **A component in the vocabulary is a *primitive* or a *definition***
   ([contracts#2](docs/adr/0002-primitives-and-definitions.md)). Growing the
   primitive set is the only thing that requires a client release, so it is a
@@ -241,7 +241,7 @@ editing the copy here is the drift these scripts exist to catch.
 **`contracts#7`, written as a link.** Same repository:
 `[contracts#7](docs/adr/0007-components-are-authored-only-in-the-contract.md)`.
 Another repository: the label plus the full GitHub URL, as
-[architecture#16](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0016-published-contract-surface.md)
+[platform#12](https://github.com/mosaic-media/platform/blob/main/docs/adr/0012-published-contract-surface.md)
 is written here.
 
 **The bare form is refused by lint**, and the reason is that it fails *open*
