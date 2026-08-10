@@ -25,6 +25,15 @@ format consumed by four client languages, where codegen is exactly right, wherea
 the SDK's job is Go interfaces a third party *implements* in its own process,
 which protobuf cannot express.
 
+**One SDK rule does not travel across that difference.**
+[ADR 0135](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0135-the-sdk-carries-no-implementation.md)
+returns the SDK to zero dependencies, because a Go surface a third party compiles
+against distributes the Platform's taste the moment it names a library. This
+repository's `go.mod` requires protobuf, gRPC and Connect because generated
+bindings do not run without their runtime — that is the generator's output, not
+an implementation this contract is choosing for anybody. Do not strip it in the
+SDK's name.
+
 **Never hand-edit a generated file.** Change the schema or the `.proto`,
 regenerate, commit both. The drift guard (`scripts/check-generated.sh`)
 regenerates and fails if the committed bindings are stale, and the conformance
