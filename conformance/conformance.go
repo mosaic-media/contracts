@@ -36,7 +36,7 @@ type Fixture struct {
 	Primitives []Primitive `json:"primitives"`
 	// Components are the node types the Platform serves as definitions. A client
 	// implements none of them — one appearing in a client's registry is the
-	// drift ADR 0082 was written about.
+	// drift contracts#7 was written about.
 	Components []string `json:"components"`
 	Actions    []string `json:"actions"`
 	Validators []string `json:"validators"`

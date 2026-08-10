@@ -1,5 +1,5 @@
 {
-  "//": "Golden cases for the six validators (ADR 0094). Every client runs these and must produce the same message for the same input — not merely the same pass/fail, because a message is what a person reads and two clients disagreeing about wording is two products. `values` is the rest of the scope, which only `matches` reads.",
+  "//": "Golden cases for the six validators (contracts#17). Every client runs these and must produce the same message for the same input — not merely the same pass/fail, because a message is what a person reads and two clients disagreeing about wording is two products. `values` is the rest of the scope, which only `matches` reads.",
   "cases": [
     {"name": "required rejects an empty string", "rules": {"required": true}, "value": "", "expect": "Required"},
     {"name": "required rejects whitespace only", "rules": {"required": true}, "value": "   ", "expect": "Required"},

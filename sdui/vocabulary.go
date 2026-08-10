@@ -39,7 +39,7 @@ type PrimitiveSpec struct {
 	// Native is the justification for the entry: what a definition cannot do.
 	// It is required, and lint refuses a primitive without one, because growing
 	// this set is the only change in the vocabulary that costs a client release
-	// (ADR 0024). An addition nobody had to justify is one nobody priced.
+	// (contracts#2). An addition nobody had to justify is one nobody priced.
 	Native string
 	// Children reports whether the client renders this node's child list. A leaf
 	// that is handed children drops them silently, which is why the contract

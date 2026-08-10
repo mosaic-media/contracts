@@ -1,5 +1,5 @@
 {
-  "//": "The Mosaic SDUI vocabulary — the single source of truth for what a client renders and what the emit-side may author. It has three tiers and they are generated, never hand-written: `primitives` are the native vocabulary every client must implement (growing this set needs a client release — ADR 0024); `components` are definitions, authored as data in definitions/*.json and delivered by the Platform at runtime (free); `actions` are the behaviours a client interprets. Run `go run ./tools/genui` to regenerate the authoring builders and the vocabulary registry; do not hand-edit the generated files. `go run ./tools/genui -lint` fails when any tier drifts from another — that check is the whole reason this file is one file.",
+  "//": "The Mosaic SDUI vocabulary — the single source of truth for what a client renders and what the emit-side may author. It has three tiers and they are generated, never hand-written: `primitives` are the native vocabulary every client must implement (growing this set needs a client release — contracts#2); `components` are definitions, authored as data in definitions/*.json and delivered by the Platform at runtime (free); `actions` are the behaviours a client interprets. Run `go run ./tools/genui` to regenerate the authoring builders and the vocabulary registry; do not hand-edit the generated files. `go run ./tools/genui -lint` fails when any tier drifts from another — that check is the whole reason this file is one file.",
   "version": "3.1.0",
   "//typeSeparator": "The separator between a module's id and its own type name. Core types — every primitive and every component in this file — are unprefixed and may not contain it; a module's types are `moduleId:type`. One character, chosen because it cannot appear in a module id and reads as a namespace in every client language.",
   "typeSeparator": ":",
@@ -1346,7 +1346,7 @@
       "func": "Validators",
       "key": "validators",
       "type": "props",
-      "doc": "Validators are the rules a client enforces before it submits — the six the contract declares, no more. A server rejection lands in the same slot (ADR 0089), so this is the fast half of one statement rather than the whole of it. It is sugar because a field's rules were being set with ui.Prop(\"validators\", …) at every call site in every module, which is precisely the untyped setting that let ui.Subtitle onto a Stack."
+      "doc": "Validators are the rules a client enforces before it submits — the six the contract declares, no more. A server rejection lands in the same slot (contracts#13), so this is the fast half of one statement rather than the whole of it. It is sugar because a field's rules were being set with ui.Prop(\"validators\", …) at every call site in every module, which is precisely the untyped setting that let ui.Subtitle onto a Stack."
     },
     {
       "func": "VisibleWhen",

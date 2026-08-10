@@ -39,6 +39,16 @@ RUN set -eux; \
     go install connectrpc.com/connect/cmd/protoc-gen-connect-go@v1.20.0; \
     go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.5.1
 
+# Python for the decision-record checks (scripts/adr_index.py, adr_lint.py).
+# This image is golang-on-bookworm and carries no interpreter of its own; the
+# checks live here rather than only in the workflow because this repository's
+# rule is that what you run locally is what refuses the push, and a gate that
+# exists in only one of the two is how they drift apart.
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends python3; \
+    rm -rf /var/lib/apt/lists/*
+
 # The drift guard's verdict is `git diff`, and git refuses to read a
 # bind-mounted repository owned by a different uid than the one running it —
 # it reports dubious ownership and exits non-zero, which looks exactly like

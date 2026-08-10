@@ -3,11 +3,11 @@
 
 // Package definitions is the standard SDUI component library as data — one JSON
 // file per component, each a name, its default params and a template of
-// primitives (ADR 0024).
+// primitives (contracts#2).
 //
 // **This is the only place a component is authored.** A component is data, not
 // code: the Platform serves this library to every client over the session
-// (ADR 0040), and a client renders it by expanding the template against the
+// (contracts#4), and a client renders it by expanding the template against the
 // primitives it implements natively. A component written as code in a client
 // repository is renderable by that client alone, which is the whole thing the
 // definition model exists to prevent — so it is a bug, not a shortcut.

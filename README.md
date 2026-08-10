@@ -17,9 +17,9 @@ schema/sdui.schema.json        ← the contract (JSON Schema 2020-12). Edit this
 Two guards keep it honest:
 
 - **Drift guard** — `scripts/check-generated.sh` regenerates and fails if the committed bindings are stale (run it in CI). Change the schema → regenerate → commit.
-- **Conformance tests** (`sdui/conformance_test.go`) — validate what the hand-written builders *produce*, and every file in `definitions/`, against the schema. So even the ergonomic layer cannot drift from the contract.
+- **Conformance tests** (`conformance/`) — validate what the hand-written builders *produce*, and every file in `definitions/`, against the schema. So even the ergonomic layer cannot drift from the contract.
 
-**JSON Schema, not protobuf, for the *authoring* layer** — the node tree is open (props are an untyped bag by design) and the definitions and tokens are JSON data. See [ADR 0025](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0025-sdui-contract-repository.md). The *wire* is protobuf end to end: `UINode` is generated as a message too ([ADR 0044](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0044-contracts-protobuf-workspace.md)), and since [ADR 0061](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0061-one-client-transport.md) protobuf/Connect is the *only* client transport — there is no GraphQL surface left to ride.
+**JSON Schema, not protobuf, for the *authoring* layer** — the node tree is open (props are an untyped bag by design) and the definitions and tokens are JSON data. See [contracts#3](docs/adr/0003-sdui-contract-repository.md). The *wire* is protobuf end to end: `UINode` is generated as a message too ([contracts#6](docs/adr/0006-contracts-protobuf-workspace.md)), and since [ADR 0061](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0061-one-client-transport.md) protobuf/Connect is the *only* client transport — there is no GraphQL surface left to ride.
 
 ## Layout
 
@@ -100,7 +100,7 @@ import tokens from "@mosaic-media/sdui/tokens.json";
 // @connectrpc/connect + @connectrpc/connect-web.
 //
 //   /auth    — AuthService: sign in, get a session (ADR 0061).
-//   /session — SessionService: the two-lane live session (ADR 0041).
+//   /session — SessionService: the two-lane live session ([contracts#5](docs/adr/0005-cross-client-transport-two-lane-rpc.md)).
 //
 // Together they are the whole client surface; there is no second transport.
 import { AuthService } from "@mosaic-media/sdui/auth";
@@ -141,7 +141,7 @@ const home = Screen(
 
 ## The standard definitions
 
-The reusable components — `PosterCard`, `HeroBanner`, `Section`, `Badge`, … — live here as `ComponentDefinition` data, not per-client code. A client registers them; a producer emits `{ "type": "HeroBanner", … }` and it renders identically on every client, with the Module shipping **zero** UI code. A Module can ship its own definitions the same way. Only the irreducible **primitives** are per-client native code; definitions compose only those ([ADR 0024](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0024-primitives-and-definitions.md)).
+The reusable components — `PosterCard`, `HeroBanner`, `Section`, `Badge`, … — live here as `ComponentDefinition` data, not per-client code. A client registers them; a producer emits `{ "type": "HeroBanner", … }` and it renders identically on every client, with the Module shipping **zero** UI code. A Module can ship its own definitions the same way. Only the irreducible **primitives** are per-client native code; definitions compose only those ([contracts#2](docs/adr/0002-primitives-and-definitions.md)).
 
 ## Regenerating
 
@@ -202,4 +202,4 @@ git tag v0.1.0 && git push origin v0.1.0
 
 ## Licence
 
-**Apache-2.0** (see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE)). A contract surface must be permissive so a Module may build its UI against it under any licence, as the SDK is ([ADR 0022](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0022-licensing.md), [ADR 0025](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0025-sdui-contract-repository.md)).
+**Apache-2.0** (see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE)). A contract surface must be permissive so a Module may build its UI against it under any licence, as the SDK is ([ADR 0022](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0022-licensing.md), [contracts#3](docs/adr/0003-sdui-contract-repository.md)).

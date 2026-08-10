@@ -54,7 +54,7 @@ node scripts/gen-definitions.mjs
 echo "generating design tokens -> tokens/tokens.css"
 node scripts/gen-tokens.mjs
 
-# The protobuf bindings (ADR 0044): Go + Connect stubs and TypeScript for the
+# The protobuf bindings (contracts#6): Go + Connect stubs and TypeScript for the
 # client-facing contracts, Go + gRPC stubs for the module wire (ADR 0064). Two
 # templates because the two surfaces need different plugins — Connect for a
 # browser-facing contract, gRPC for what go-plugin registers on a *grpc.Server —

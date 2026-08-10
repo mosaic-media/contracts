@@ -37,12 +37,31 @@ jobs:
       - name: Package version matches the tag
         run: node scripts/check-versions.mjs
 
+      # Mirrors docker-compose.test.yml. The record checks replace what
+      # `mkdocs --strict` used to do for the corpus while it lived in one
+      # repository: it validated a link only while both ends were in docs/.
+      - name: Check the decision-record index is not stale
+        run: python3 scripts/adr_index.py --repo contracts --check
+
+      # A ratchet: the ceiling is today's count of citations still written in
+      # the old unqualified form, and it is lowered as records move. It can
+      # only go down.
+      - name: Check every record citation names its repository
+        run: python3 scripts/adr_lint.py --repo contracts --max-unqualified 284 --exclude 'scripts/adr_*.py'
+
       # The schema is the single source of truth: fail if the committed bindings
       # are stale (generate + git diff).
       - name: Generated bindings are current
         run: bash scripts/check-generated.sh
 
-      # Go build + unit + schema-conformance tests.
+      # `go build ./...` before the tests, matching docker-compose.test.yml. It
+      # was absent here while the container ran it, so a package that compiled
+      # nowhere but a developer's machine could pass the gate that refuses the
+      # push.
+      - name: Go build
+        run: go build ./...
+
+      # Go unit + schema-conformance tests.
       - name: Go test
         run: go test ./...
 
@@ -52,4 +71,4 @@ jobs:
         # `typescript`, so `npx typescript@5 tsc` leaves npx with no executable
         # matching the package name and fails ("could not determine executable
         # to run") on npm 10.9+. -p names the package; tsc is the command.
-        run: npx --yes -p typescript@5 tsc --noEmit --strict --module esnext --moduleResolution bundler ts/contract.gen.ts ts/ui_runtime.ts ts/ui.ts
+        run: npx --yes -p typescript@5 tsc --noEmit --strict --module esnext --moduleResolution bundler ts/contract.gen.ts ts/ui_runtime.ts ts/ui.ts ts/vocabulary.gen.ts ts/binding.ts

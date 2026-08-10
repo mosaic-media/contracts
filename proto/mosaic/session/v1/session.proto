@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2026 the Mosaic authors
 
 // Package mosaic.session.v1 is the first-party client session transport
-// (ADR 0041): a typed, two-lane RPC surface generated from this one .proto into
+// (contracts#5): a typed, two-lane RPC surface generated from this one .proto into
 // every client language. It supersedes the bespoke WebSocket of ADR 0032 and
 // folds ADR 0033's live handover into stream resume.
 //
@@ -21,7 +21,7 @@
 // pair browsers support, so the wire stays uniform across all four clients.
 //
 // UINode subtrees ride the envelope as the typed mosaic.sdui.v1.UINode — ADR
-// 0044 (option (b) of ADR 0041): the SDUI contract is protobuf, so the whole
+// 0044 (option (b) of contracts#5): the SDUI contract is protobuf, so the whole
 // wire is typed end to end. Open bags that are genuinely screen- or
 // action-specific (params, input, event payloads) still ride as JSON bytes.
 syntax = "proto3";
@@ -102,7 +102,7 @@ message AttachRequest {
 // contract rather than against a list somebody maintains.
 //
 // Components are deliberately absent. They are definitions the server delivers
-// (ADR 0040), so a client renders whatever it is sent; what it can fail to draw
+// (contracts#4), so a client renders whatever it is sent; what it can fail to draw
 // is a *primitive* inside a definition's template, which is what
 // ComponentDefinition.fallback answers.
 message VocabularyProfile {
@@ -125,7 +125,7 @@ message VocabularyProfile {
 // source's candidates against what the caller can play, and with no declaration
 // the Platform hard-coded a desktop browser's abilities at the call site —
 // honest for one client and a lie for the four the transport was built to serve
-// (ADR 0041).
+// (contracts#5).
 //
 // The client is the only thing that knows. A browser can answer precisely via
 // canPlayType (ADR 0070); a native player knows its own decoders. Neither is
@@ -243,13 +243,13 @@ message RegionUpdate {
   }
   string region = 1; // a named slot (ADR 0029 / 0031), e.g. "content".
   Op op = 2;
-  mosaic.sdui.v1.UINode ui_node = 3; // the typed UINode subtree (ADR 0044).
+  mosaic.sdui.v1.UINode ui_node = 3; // the typed UINode subtree (contracts#6).
 }
 
 // ShellUpdate carries the app shell UINode tree (ADR 0031). It is sent once on
 // connect and again only if the shell itself changes.
 message ShellUpdate {
-  mosaic.sdui.v1.UINode ui_node = 1; // the typed shell UINode tree (ADR 0044).
+  mosaic.sdui.v1.UINode ui_node = 1; // the typed shell UINode tree (contracts#6).
 }
 
 // Toast is one message in the client's notification stack, in one of two

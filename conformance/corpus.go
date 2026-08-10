@@ -11,7 +11,7 @@ import (
 )
 
 // The corpus: golden cases every client runs to prove it behaves like the
-// others (ADR 0094).
+// others (contracts#17).
 //
 // The vocabulary fixture beside this says *what* the contract contains. It does
 // not say how any of it behaves, and behaviour is where clients diverge — two

@@ -2,7 +2,7 @@
 // producer side. The Platform and Modules build a tree of Nodes (generated
 // protobuf UINodes) carrying Action envelopes; a client renders it.
 //
-// This is the faithful protobuf port (ADR 0044): the UINode tree is the typed
+// This is the faithful protobuf port (contracts#6): the UINode tree is the typed
 // mosaic.sdui.v1.UINode, so it rides the transport (RegionUpdate.ui_node) as a
 // typed message. Actions and enums keep their JSON form inside the open props
 // bag — props is a protobuf Struct, so anything in it is JSON-encoded regardless.
@@ -18,7 +18,7 @@ import (
 // messages carry a do-not-copy marker, so producers pass them by pointer).
 type Node = *sduiv1.UINode
 
-// ComponentDefinition is a component expressed as data (ADR 0024).
+// ComponentDefinition is a component expressed as data (contracts#2).
 type ComponentDefinition = *sduiv1.ComponentDefinition
 
 // Props is a component's open property bag. It is JSON-encoded into the node's

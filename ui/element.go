@@ -29,7 +29,7 @@ import (
 type Node = *sduiv1.UINode
 
 // Action is a declarative behaviour envelope, re-exported from the producer
-// binding; it rides the open props bag as JSON (ADR 0044). Author one with the
+// binding; it rides the open props bag as JSON (contracts#6). Author one with the
 // generated constructors (Navigate, Invoke, Play).
 type Action = sdui.Action
 

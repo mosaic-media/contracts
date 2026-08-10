@@ -11,7 +11,7 @@
 #
 # `buf.gen.yaml` generates **Connect** stubs, which are right for the
 # client-facing contracts: those are served over h2c to browsers and native
-# clients, where Connect's HTTP semantics are the whole point (ADR 0041).
+# clients, where Connect's HTTP semantics are the whole point (contracts#5).
 #
 # The module wire is not served to a client. It is served to
 # `hashicorp/go-plugin` (ADR 0077), whose plugin interface hands you a

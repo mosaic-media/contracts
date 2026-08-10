@@ -47,6 +47,8 @@ services:
       - |
         git rev-parse --git-dir > /dev/null
         node scripts/check-versions.mjs
+        python3 scripts/adr_index.py --repo contracts --check
+        python3 scripts/adr_lint.py --repo contracts --max-unqualified 284 --exclude 'scripts/adr_*.py'
         bash scripts/check-generated.sh
         go build ./...
         go test ./...

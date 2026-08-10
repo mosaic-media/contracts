@@ -8,7 +8,7 @@ import (
 )
 
 // TestActionsAreCleanPerKind pins the JSON shape of each Action kind — the
-// envelope that rides inside a node's open props bag (ADR 0044). Screens
+// envelope that rides inside a node's open props bag (contracts#6). Screens
 // themselves are authored and exercised in the ui package; here we only assert
 // the action encoding, which producers depend on being stable.
 func TestActionsAreCleanPerKind(t *testing.T) {

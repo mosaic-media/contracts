@@ -67,7 +67,7 @@ func TestFixtureMatchesRegistry(t *testing.T) {
 }
 
 // Every primitive states why it is native. Growing this tier is the only change
-// in the vocabulary that costs a client release (ADR 0024), and an entry with no
+// in the vocabulary that costs a client release (contracts#2), and an entry with no
 // justification is one that was added without anyone pricing it.
 func TestEveryPrimitiveJustifiesItself(t *testing.T) {
 	for _, p := range sdui.Primitives {

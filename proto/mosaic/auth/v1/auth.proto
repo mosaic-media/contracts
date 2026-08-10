@@ -99,7 +99,7 @@ message BootstrapRequest {
 // tree was right, the vocabulary was absent, and nothing anywhere reported a
 // mismatch.
 message BootstrapResponse {
-  // The design token set (ADR 0040), as the same DTCG document the session
+  // The design token set (contracts#4), as the same DTCG document the session
   // pushes. Without it the doorway would be the one screen drawn unstyled.
   bytes tokens = 1;
   // The component definitions the tree needs, **transitively closed over it and
@@ -160,7 +160,7 @@ message InvokeResponse {
     // component outside that subset would draw the placeholder ADR 0101 exists
     // to remove.
     Doorway doorway = 2;
-    // The submission was refused, per field (ADR 0089). It is the same envelope
+    // The submission was refused, per field (contracts#13). It is the same envelope
     // the session lane pushes, so a rejection renders identically whichever
     // lane it arrived on.
     mosaic.session.v1.FieldErrors field_errors = 3;

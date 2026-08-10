@@ -12,7 +12,7 @@ import (
 //
 // The vocabulary's `type` is an open string — deliberately, since that is what
 // lets a module introduce a component the Platform never shipped (ADR 0015,
-// ADR 0024). Open and *flat* is a different thing, and it was flat: two modules
+// contracts#2). Open and *flat* is a different thing, and it was flat: two modules
 // could both contribute a `StatChip` and the second to register would replace
 // the first, and a module could contribute a `PosterCard` and take the place of
 // the core component on every screen in the product. Neither collision produces

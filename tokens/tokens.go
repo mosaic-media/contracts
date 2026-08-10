@@ -7,7 +7,7 @@
 // It is the skin half of what the SDUI contract carries: [definitions] say what
 // a screen is made of, these say what it looks like. The Platform serves both
 // over the session, so a re-skin reaches a running client without a client
-// release — which is the whole point of ADR 0040's UI-library tier and the half
+// release — which is the whole point of contracts#4's UI-library tier and the half
 // of it that had never been built. The client's own stylesheet held the values
 // and this file held a stale copy of some of them.
 //

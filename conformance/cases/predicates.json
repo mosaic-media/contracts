@@ -1,5 +1,5 @@
 {
-  "//": "Golden cases for the six predicates (ADR 0094). The unreadable ones matter most: an unrecognised shape must be FALSE on every client, because visibleWhen showing a control it could not reason about is what puts an admin-only affordance on somebody's screen.",
+  "//": "Golden cases for the six predicates (contracts#17). The unreadable ones matter most: an unrecognised shape must be FALSE on every client, because visibleWhen showing a control it could not reason about is what puts an admin-only affordance on somebody's screen.",
   "values": {"kind": "series", "name": "", "season": 2, "flag": true},
   "cases": [
     {"name": "equals", "predicate": {"field": "kind", "equals": "series"}, "expect": true},

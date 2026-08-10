@@ -15,7 +15,7 @@ import (
 // These tests keep schema/sdui.schema.json honest for the parts still expressed
 // as JSON: the Action envelope (which rides inside the open props bag) and the
 // standard definition files. The built UINode tree itself is now the protobuf
-// mosaic.sdui.v1.UINode (ADR 0044) — a typed message, not JSON-Schema-shaped — so
+// mosaic.sdui.v1.UINode (contracts#6) — a typed message, not JSON-Schema-shaped — so
 // it is exercised structurally in sdui_test.go rather than validated here.
 
 func compile(t *testing.T, ptr string) *jsonschema.Schema {

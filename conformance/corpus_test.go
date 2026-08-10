@@ -118,7 +118,7 @@ func TestExpansionCorpusIsWellFormed(t *testing.T) {
 // like a detail. The merge decided whose value wins when a form and its action
 // both name a field, it got that backwards, and it lived inline in the
 // dispatcher where nothing could call it. The symptom was a settings form that
-// reported success and saved nothing (ADR 0096). It was found by filling the
+// reported success and saved nothing (contracts#19). It was found by filling the
 // form in, which is the only way it could have been found.
 func TestSubmitCorpusIsWellFormed(t *testing.T) {
 	raw, err := conformance.Cases("submit")

@@ -9,7 +9,7 @@
 //
 // The spec has three tiers and one tool emits all three. `primitives` are the
 // native vocabulary a client must implement (growing the set needs a client
-// release — ADR 0024), `components` are definitions delivered as data
+// release — contracts#2), `components` are definitions delivered as data
 // (definitions/*.json), and `actions` are the behaviours a client interprets.
 // Before this tool knew about primitives that tier existed only as TypeScript
 // in one client, so a second client could not be written from the published
@@ -357,7 +357,7 @@ func genGo(sp spec) []byte {
 
 	if len(sp.Actions) > 0 {
 		b.WriteString("// Action constructors, re-exported from the producer binding; they ride the open\n")
-		b.WriteString("// props bag as JSON (ADR 0044).\n")
+		b.WriteString("// props bag as JSON (contracts#6).\n")
 		b.WriteString("var (\n")
 		for _, a := range sp.Actions {
 			fmt.Fprintf(&b, "\t%s = sdui.%s\n", a.Func, a.Sdui)
@@ -437,7 +437,7 @@ func genTS(sp spec) []byte {
 	b.WriteString("export type { Action, UINode } from \"./contract.gen.js\";\n\n")
 
 	b.WriteString("// ── primitives ─────────────────────────────────────────────────────────────\n")
-	b.WriteString("// The native tier: node types a client implements itself (ADR 0024).\n\n")
+	b.WriteString("// The native tier: node types a client implements itself (contracts#2).\n\n")
 	for _, p := range sp.Primitives {
 		fmt.Fprintf(&b, "/** %s\n *\n *  Native: %s */\n", p.Doc, p.Native)
 		params := []string{}
@@ -511,7 +511,7 @@ func genTS(sp spec) []byte {
 
 	if len(sp.Actions) > 0 {
 		b.WriteString("// ── actions ────────────────────────────────────────────────────────────────\n")
-		b.WriteString("// Actions ride inside the open props bag as JSON (ADR 0044); each constructor\n")
+		b.WriteString("// Actions ride inside the open props bag as JSON (contracts#6); each constructor\n")
 		b.WriteString("// hides the discriminator and the optional fields.\n\n")
 		for _, a := range sp.Actions {
 			if a.Doc != "" {
@@ -751,7 +751,7 @@ func genVocabularyTS(sp spec) []byte {
 
 	fmt.Fprintf(&b, "/** The single key that makes a prop value a binding rather than a literal. */\nexport const bindingMarker = %s;\n\n", strconv.Quote(sp.BindingMarker))
 
-	b.WriteString("/** The native tier — what a client must implement (ADR 0024). */\n")
+	b.WriteString("/** The native tier — what a client must implement (contracts#2). */\n")
 	b.WriteString("export const primitives: PrimitiveSpec[] = [\n")
 	for _, p := range sp.Primitives {
 		fmt.Fprintf(&b, "  {\n    type: %s,\n    tier: %s,\n    doc: %s,\n    native: %s,\n    children: %t,\n    props: [\n",
@@ -893,7 +893,7 @@ func genFixture(sp spec) []byte {
 
 // ── reference ────────────────────────────────────────────────────────────────
 
-// genReference emits the published vocabulary reference (ADR 0095).
+// genReference emits the published vocabulary reference (contracts#18).
 //
 // It is generated for the same reason the bindings are: a hand-written reference
 // is a fourth place the vocabulary is written down, and this repository already
@@ -1160,7 +1160,7 @@ func runLint(sp spec, root string) []string {
 	}
 
 	// Per-primitive justification. The tier costs a client release per addition
-	// (ADR 0024), so an entry that does not say why a definition cannot express
+	// (contracts#2), so an entry that does not say why a definition cannot express
 	// it is an addition made without paying attention to what it costs.
 	knownTiers := map[string]bool{
 		"presentational": true, "interactive": true, "field": true,

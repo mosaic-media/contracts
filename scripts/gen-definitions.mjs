@@ -31,7 +31,7 @@ import type { ComponentDefinition } from "./contract.gen.js";
 
 /** The standard component library: every component, as data. A client registers
  *  these and can then render any screen the Platform emits. The Platform serves
- *  the same library over the session (ADR 0040), which is the path a running
+ *  the same library over the session (contracts#4), which is the path a running
  *  client uses; this module is for a consumer with no Platform to ask. */
 export const DEFINITIONS: ComponentDefinition[] = ${JSON.stringify(defs, null, 2)};
 `;

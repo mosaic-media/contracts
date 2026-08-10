@@ -1,5 +1,5 @@
 {
-  "//": "Golden cases for binding resolution (ADR 0094). The near-misses are the point: an object carrying the marker beside anything else is a literal object, and reinterpreting it would silently replace a producer's own data with a lookup.",
+  "//": "Golden cases for binding resolution (contracts#17). The near-misses are the point: an object carrying the marker beside anything else is a literal object, and reinterpreting it would silently replace a producer's own data with a lookup.",
   "scope": {"ref": "tt0087544", "title": "Nausicaä", "year": 1984, "nested": {"deep": "found"}, "flag": true},
   "cases": [
     {"name": "a bare literal is untouched", "props": {"title": "literal"}, "expect": {"title": "literal"}},
