@@ -1,10 +1,13 @@
 # Retiring `$value`, and the merge rule it hid
 
-**Status:** Accepted (built). The `$value` substitution and the `SubmitField`
-primitive are gone from the contract, the client and all four external module
-repositories. Verified live for TMDB, which is the only one of the four linked
-into the Platform binary; the other three are covered by their own tests and by
-the shared corpus, not by a browser.
+**Status:** Accepted (built). Partly supersedes
+[contracts#20](0020-bindings-scopes-and-forms.md), whose merge rule — "the
+scope's values merge *under* the action's input" — this reverses, and whose
+`SubmitField` primitive this removes. The `$value` substitution and the
+`SubmitField` primitive are gone from the contract, the client and all four
+external module repositories. Verified live for TMDB, which is the only one of
+the four linked into the Platform binary; the other three are covered by their
+own tests and by the shared corpus, not by a browser.
 
 **Date:** 2026-07-25
 
