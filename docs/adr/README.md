@@ -22,7 +22,7 @@ A record is cited from another repository as `contracts#N`, written as a link to
 | 17 | [The conformance corpus](0017-the-conformance-corpus.md) | Accepted (built) |
 | 18 | [The generated vocabulary reference](0018-the-generated-vocabulary-reference.md) | Accepted (built) |
 | 19 | [Retiring `$value`, and the merge rule it hid](0019-retiring-value.md) | Accepted (built). |
-| 20 | [Bindings, scopes and forms, and no expression language](0020-bindings-scopes-and-forms.md) | Accepted (built). Consolidates contracts#20, contracts#20 and contracts#20, whose bodies this replaces. |
+| 20 | [Bindings, scopes and forms, and no expression language](0020-bindings-scopes-and-forms.md) | Accepted (built). |
 
 ## Records this repository depends on
 

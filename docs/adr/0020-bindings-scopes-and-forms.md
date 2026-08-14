@@ -1,7 +1,9 @@
 # Bindings, scopes and forms, and no expression language
 
-**Status:** Accepted (built). Consolidates contracts#20, contracts#20 and
-contracts#20, whose bodies this replaces. Partly superseded: the merge rule —
+**Status:** Accepted (built). Consolidates the three input-handling records,
+whose bodies this replaces and whose retired numbers stay retired — citing one
+would either dangle or resolve to a later record that happens to hold it. Partly
+superseded: the merge rule —
 "the scope's values merge *under* the action's input" — was reversed by
 [contracts#19](0019-retiring-value.md), which also removed the `SubmitField`
 primitive this record left in place. The rest stands and is built.
