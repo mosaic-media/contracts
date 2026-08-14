@@ -15,9 +15,6 @@ A record is cited from another repository as `contracts#N`, written as a link to
 | 7 | [Components are authored only in the contract, and clients bundle none](0007-components-are-authored-only-in-the-contract.md) | Accepted (built) |
 | 8 | [One generated SDUI vocabulary](0008-one-generated-sdui-vocabulary.md) | Accepted (built) |
 | 9 | [Module types are namespaced](0009-module-types-are-namespaced.md) | Accepted (built) |
-| 10 | [Bindable props, and no expression language](0010-bindable-props.md) | Accepted (built) |
-| 11 | [State scopes](0011-state-scopes.md) | Accepted (built) |
-| 12 | [Fields and forms](0012-fields-and-forms.md) | Partly superseded: the merge rule — "the scope's values merge under the action's input" — was reversed by [contracts#19](0019-retiring-value.md), which also removed the SubmitField primitive this record left in place. |
 | 13 | [Validation, and the symmetric rejection](0013-validation-and-the-symmetric-rejection.md) | Accepted (built) |
 | 14 | [Accessibility in the contract](0014-accessibility-in-the-contract.md) | Accepted (built) |
 | 15 | [Focus and spatial navigation](0015-focus-and-spatial-navigation.md) | Accepted (built) |
@@ -25,6 +22,7 @@ A record is cited from another repository as `contracts#N`, written as a link to
 | 17 | [The conformance corpus](0017-the-conformance-corpus.md) | Accepted (built) |
 | 18 | [The generated vocabulary reference](0018-the-generated-vocabulary-reference.md) | Accepted (built) |
 | 19 | [Retiring `$value`, and the merge rule it hid](0019-retiring-value.md) | Accepted (built). |
+| 20 | [Bindings, scopes and forms, and no expression language](0020-bindings-scopes-and-forms.md) | Accepted (built). Consolidates contracts#20, contracts#20 and contracts#20, whose bodies this replaces. |
 
 ## Records this repository depends on
 

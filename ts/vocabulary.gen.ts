@@ -341,7 +341,7 @@ export const primitives: PrimitiveSpec[] = [
       { key: "resumeAt", type: "number", doc: "Seconds to seek to once the media is seekable." },
       { key: "nodeId", type: "string", doc: "Content node this playback reports progress against." },
       { key: "partId", type: "string", doc: "Release actually being played." },
-      { key: "subtitleTracks", type: "array:subtitleTrack", doc: "Authored subtitle scripts the client draws itself — each a src, a format, a language, a label and whether it is the one the viewer's preference chose ([platform#70](https://github.com/mosaic-media/platform/blob/main/docs/adr/0070-a-styled-subtitle-goes-to-the-client.md)). They ride beside the HLS subtitle renditions rather than replacing them, so a client that cannot render a script ignores this and still has subtitles." },
+      { key: "subtitleTracks", type: "array:subtitleTrack", doc: "Authored subtitle scripts the client draws itself — each a src, a format, a language, a label and whether it is the one the viewer's preference chose ([platform#83](https://github.com/mosaic-media/platform/blob/main/docs/adr/0083-subtitles-answer-to-a-persons-language-preference.md)). They ride beside the HLS subtitle renditions rather than replacing them, so a client that cannot render a script ignores this and still has subtitles." },
     ],
   },
 ];

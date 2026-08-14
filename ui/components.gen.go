@@ -415,7 +415,7 @@ func NodeID(v string) El { return Prop("nodeId", v) }
 // PartID names the release a Player is playing, recorded with the position so a resume returns to the same encode ([platform#26](https://github.com/mosaic-media/platform/blob/main/docs/adr/0026-playback-state-is-platform-owned.md)).
 func PartID(v string) El { return Prop("partId", v) }
 
-// SubtitleTracks are the authored subtitle scripts a Player may draw itself ([platform#70](https://github.com/mosaic-media/platform/blob/main/docs/adr/0070-a-styled-subtitle-goes-to-the-client.md)). Deliberately not named Subtitles: Subtitle is a different prop on a different tier, and two builders one letter apart is how a prop ends up set on something that does not render it.
+// SubtitleTracks are the authored subtitle scripts a Player may draw itself ([platform#83](https://github.com/mosaic-media/platform/blob/main/docs/adr/0083-subtitles-answer-to-a-persons-language-preference.md)). Deliberately not named Subtitles: Subtitle is a different prop on a different tier, and two builders one letter apart is how a prop ends up set on something that does not render it.
 func SubtitleTracks(v []any) El { return Prop("subtitleTracks", v) }
 
 // Disabled greys a control and stops it emitting.

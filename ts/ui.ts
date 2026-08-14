@@ -572,7 +572,7 @@ export function PartID(v: string): El {
   return Prop("partId", v);
 }
 
-/** SubtitleTracks are the authored subtitle scripts a Player may draw itself ([platform#70](https://github.com/mosaic-media/platform/blob/main/docs/adr/0070-a-styled-subtitle-goes-to-the-client.md)). Deliberately not named Subtitles: Subtitle is a different prop on a different tier, and two builders one letter apart is how a prop ends up set on something that does not render it. */
+/** SubtitleTracks are the authored subtitle scripts a Player may draw itself ([platform#83](https://github.com/mosaic-media/platform/blob/main/docs/adr/0083-subtitles-answer-to-a-persons-language-preference.md)). Deliberately not named Subtitles: Subtitle is a different prop on a different tier, and two builders one letter apart is how a prop ends up set on something that does not render it. */
 export function SubtitleTracks(v: Props[]): El {
   return Prop("subtitleTracks", v);
 }

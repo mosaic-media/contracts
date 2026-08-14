@@ -1,5 +1,5 @@
 {
-  "$comment": "Golden cases for the submit merge (contracts#19): what a form sends, given the values it collected and the action it carries. The rule this asserts is that the scope wins over the action's own input for the names the form declares. That is the reverse of what contracts#12 decided, and the reversal is here rather than in prose because the original rule was wrong in a way no build could see: it discarded what a person typed and reported success. `into` is the destination, absent for the top level.",
+  "$comment": "Golden cases for the submit merge (contracts#19): what a form sends, given the values it collected and the action it carries. The rule this asserts is that the scope wins over the action's own input for the names the form declares. That is the reverse of what contracts#20 decided, and the reversal is here rather than in prose because the original rule was wrong in a way no build could see: it discarded what a person typed and reported success. `into` is the destination, absent for the top level.",
   "cases": [
     {
       "name": "values land at the top of the input when there is no destination",

@@ -6,7 +6,7 @@
 
 ## Context
 
-[contracts#12](0012-fields-and-forms.md) made a screen able to carry several fields
+[contracts#20](0020-bindings-scopes-and-forms.md) made a screen able to carry several fields
 and submit them together. It could not say that any of them was wrong.
 
 The vocabulary has declared six validators and six predicates since it was
@@ -111,4 +111,4 @@ field it is about.
   it. The first will be whatever creates a user, which is the screen this whole
   thread was opened for.
 - **`$value` still works and is still owed.** Nothing in this slice changed that
-  — see [contracts#12](0012-fields-and-forms.md).
+  — see [contracts#20](0020-bindings-scopes-and-forms.md).

@@ -976,7 +976,7 @@
         {
           "key": "subtitleTracks",
           "type": "array:subtitleTrack",
-          "doc": "Authored subtitle scripts the client draws itself \u2014 each a src, a format, a language, a label and whether it is the one the viewer's preference chose ([platform#70](https://github.com/mosaic-media/platform/blob/main/docs/adr/0070-a-styled-subtitle-goes-to-the-client.md)). They ride beside the HLS subtitle renditions rather than replacing them, so a client that cannot render a script ignores this and still has subtitles."
+          "doc": "Authored subtitle scripts the client draws itself \u2014 each a src, a format, a language, a label and whether it is the one the viewer's preference chose ([platform#83](https://github.com/mosaic-media/platform/blob/main/docs/adr/0083-subtitles-answer-to-a-persons-language-preference.md)). They ride beside the HLS subtitle renditions rather than replacing them, so a client that cannot render a script ignores this and still has subtitles."
         }
       ]
     }
@@ -1094,7 +1094,7 @@
       "func": "SubtitleTracks",
       "key": "subtitleTracks",
       "type": "[]props",
-      "doc": "SubtitleTracks are the authored subtitle scripts a Player may draw itself ([platform#70](https://github.com/mosaic-media/platform/blob/main/docs/adr/0070-a-styled-subtitle-goes-to-the-client.md)). Deliberately not named Subtitles: Subtitle is a different prop on a different tier, and two builders one letter apart is how a prop ends up set on something that does not render it."
+      "doc": "SubtitleTracks are the authored subtitle scripts a Player may draw itself ([platform#83](https://github.com/mosaic-media/platform/blob/main/docs/adr/0083-subtitles-answer-to-a-persons-language-preference.md)). Deliberately not named Subtitles: Subtitle is a different prop on a different tier, and two builders one letter apart is how a prop ends up set on something that does not render it."
     },
     {
       "func": "Disabled",

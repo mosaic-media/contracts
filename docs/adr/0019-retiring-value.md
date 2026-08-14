@@ -13,7 +13,7 @@ own tests and by the shared corpus, not by a browser.
 
 ## Context
 
-[contracts#12](0012-fields-and-forms.md) built fields and forms and left one thing
+[contracts#20](0020-bindings-scopes-and-forms.md) built fields and forms and left one thing
 behind: `SubmitField`, a primitive whose submit action carried the literal string
 `$value`, which the client substituted with whatever had been typed. It was the
 mechanism that predated scopes, it was documented as owed, and it survived four
@@ -47,7 +47,7 @@ reversed.**
   costs a client release, and it is taken here because the primitive's entire
   reason for existing was the gap the destination closes.
 - **The scope wins over the action's input** for the names the form declares.
-  This reverses [contracts#12](0012-fields-and-forms.md), which said the opposite and gave a reason that sounded
+  This reverses [contracts#20](0020-bindings-scopes-and-forms.md), which said the opposite and gave a reason that sounded
   right: a server that pinned a field is stating something a form must not
   overwrite. See below — this is the substantive part of the record.
 - **Appending is the module's business, not the wire's.** Two of the nine sites
@@ -62,7 +62,7 @@ reversed.**
 
 ## The reversal, which is the part worth reading
 
-[contracts#12](0012-fields-and-forms.md)'s rule was that collected values merge *under* the action's input. The
+[contracts#20](0020-bindings-scopes-and-forms.md)'s rule was that collected values merge *under* the action's input. The
 reasoning was that a producer who set a field explicitly meant it.
 
 What that missed is that a module rewriting its settings has no way to set
