@@ -1,22 +1,22 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-FileCopyrightText: 2026 the Mosaic authors
 
-// Package mosaic.module.v1 is the extension module boundary (ADR 0064): the
+// Package mosaic.module.v1 is the extension module boundary (platform#39): the
 // wire an out-of-process module speaks, carried over a Unix domain socket by
-// hashicorp/go-plugin (ADR 0077).
+// hashicorp/go-plugin (sdk#7).
 //
 // **This file is not the contract.** The contract is the hand-written Go in
 // `github.com/mosaic-media/sdk` — `v1.Capability`, the eight provider roles,
 // `v1.ContentService`, `v1.Telemetry`. This is an *implementation* of those
 // interfaces on both sides of a process boundary, and nothing above the
-// Platform's capability registry knows it exists. ADR 0064 chose that
+// Platform's capability registry knows it exists. platform#39 chose that
 // direction deliberately: generating the Go interfaces from this schema would
 // make the contract un-implementable except over RPC, which would break the
 // core tier, and `Caller` could not stay opaque.
 //
 // The cost is that this file and the SDK's Go are two sources of truth that
 // must agree, held together by codegen discipline and tests rather than by the
-// compiler. ADR 0077 records that cost as accepted rather than paid — a
+// compiler. sdk#7 records that cost as accepted rather than paid — a
 // msgpack alternative that would have collapsed it was rejected for reasons
 // that outweighed it.
 //
@@ -31,12 +31,12 @@
 // interfaces these implement are still `v1.Capability` and `v1.Telemetry`.
 //
 // **Versioning.** The proto package version tracks the SDK major version, so
-// there is one number a user reasons about rather than two (ADR 0064).
+// there is one number a user reasons about rather than two (platform#39).
 // `mosaic.module.v1` is the wire for SDK v1.x. Within a major, changes here are
 // additive only: unknown fields are ignored, and a role a module does not serve
 // is reported at handshake rather than discovered at call time.
 //
-// **Provisional in one direction.** ADR 0064 leaves callback chattiness open on
+// **Provisional in one direction.** platform#39 leaves callback chattiness open on
 // purpose and says it must be measured against a real import before the
 // protocol is fixed, with the service shape allowed to send back coarser,
 // batched verbs. Such verbs would be *added* to ContentService, which is an
@@ -191,7 +191,7 @@ func (NodeKind) EnumDescriptor() ([]byte, []int) {
 }
 
 // NodeStatus records whether a node still has a source behind it. Orphaned is
-// not deleted: ADR 0013 is explicit that removing the last binding leaves the
+// not deleted: platform#9 is explicit that removing the last binding leaves the
 // node standing.
 type NodeStatus int32
 
@@ -657,7 +657,7 @@ func (BindingResolution) EnumDescriptor() ([]byte, []int) {
 	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{10}
 }
 
-// RedactionClass is the PII boundary (ADR 0056). It travels with the field
+// RedactionClass is the PII boundary (platform#34). It travels with the field
 // rather than being inferred at the sink, because a sink that has to guess will
 // guess wrong on exactly the fields that matter.
 type RedactionClass int32
@@ -773,7 +773,7 @@ func (LogLevel) EnumDescriptor() ([]byte, []int) {
 	return file_mosaic_module_v1_module_proto_rawDescGZIP(), []int{12}
 }
 
-// MetricUnit is the closed vocabulary of units a Measure may carry (ADR 0130).
+// MetricUnit is the closed vocabulary of units a Measure may carry (sdk#9).
 //
 // Closed, because a unit is what lets a backend convert between scales and a
 // reader label an axis — and a free-form string produces `ms`, `millis`,
@@ -836,7 +836,7 @@ func (MetricUnit) EnumDescriptor() ([]byte, []int) {
 }
 
 // Caller is the principal a module acts as, and it is the one type whose
-// meaning *changes* by crossing the boundary (ADR 0064).
+// meaning *changes* by crossing the boundary (platform#39).
 //
 // In process, `v1.Caller` wraps a session reference and is meaningless outside
 // the invocation that produced it. Serialized, it becomes something a module
@@ -1010,7 +1010,7 @@ func (x *MediaLocation) GetRef() string {
 	return ""
 }
 
-// ArtworkCandidate is one image a source offered for one slot. ADR 0074 makes
+// ArtworkCandidate is one image a source offered for one slot. platform#47 makes
 // artwork a candidate set rather than one string per slot, because a source
 // whose entire value is the set (forty posters, each with a language and a vote
 // count) loses its reason to exist if the Platform keeps one.
@@ -1172,7 +1172,7 @@ func (x *Artwork) GetCandidates() []*ArtworkCandidate {
 	return nil
 }
 
-// Node is one position in the containment tree (ADR 0013). Depth is whatever a
+// Node is one position in the containment tree (platform#9). Depth is whatever a
 // work's real structure needs; nothing may assume a node has a parent or that a
 // work's children are containers.
 type Node struct {
@@ -1183,7 +1183,7 @@ type Node struct {
 	// and empty is unambiguous here because a node id is never the empty string.
 	ParentId string   `protobuf:"bytes,3,opt,name=parent_id,json=parentId,proto3" json:"parent_id,omitempty"`
 	Kind     NodeKind `protobuf:"varint,4,opt,name=kind,proto3,enum=mosaic.module.v1.NodeKind" json:"kind,omitempty"`
-	// Open vocabularies (ADR 0015).
+	// Open vocabularies (platform#11).
 	MediaType     string     `protobuf:"bytes,5,opt,name=media_type,json=mediaType,proto3" json:"media_type,omitempty"`
 	ContainerType string     `protobuf:"bytes,6,opt,name=container_type,json=containerType,proto3" json:"container_type,omitempty"`
 	ItemType      string     `protobuf:"bytes,7,opt,name=item_type,json=itemType,proto3" json:"item_type,omitempty"`
@@ -1191,7 +1191,7 @@ type Node struct {
 	NaturalOrder  float64    `protobuf:"fixed64,9,opt,name=natural_order,json=naturalOrder,proto3" json:"natural_order,omitempty"`
 	Status        NodeStatus `protobuf:"varint,10,opt,name=status,proto3,enum=mosaic.module.v1.NodeStatus" json:"status,omitempty"`
 	// Raw JSON documents, carried uninterpreted. The Platform does not validate
-	// attributes by design (ADR 0013), and external_ids is a flat
+	// attributes by design (platform#9), and external_ids is a flat
 	// scheme-to-string map that NodeStore.FindByExternalID reads.
 	ExternalIds []byte   `protobuf:"bytes,11,opt,name=external_ids,json=externalIds,proto3" json:"external_ids,omitempty"`
 	Attributes  []byte   `protobuf:"bytes,12,opt,name=attributes,proto3" json:"attributes,omitempty"`
@@ -1535,7 +1535,7 @@ func (x *Part) GetUpdatedAt() string {
 
 // Relation is one edge of the association graph. Edges are written once —
 // RelationStore has no Update, and confidence decay is deliberately unbuilt
-// (ADR 0013).
+// (platform#9).
 type Relation struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -1739,7 +1739,7 @@ func (x *SourceBinding) GetUpdatedAt() string {
 
 // ContentRef is the stable handle a virtual result carries so the Platform can
 // dedup it against the library and hand it back to the module to materialise
-// (ADR 0028). Produced by a read role, consumed by Import.
+// (platform#18). Produced by a read role, consumed by Import.
 type ContentRef struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Provider is the manifest id of the capability that produced this ref and
@@ -1751,7 +1751,7 @@ type ContentRef struct {
 	NativeId   string `protobuf:"bytes,2,opt,name=native_id,json=nativeId,proto3" json:"native_id,omitempty"`
 	NativeType string `protobuf:"bytes,3,opt,name=native_type,json=nativeType,proto3" json:"native_type,omitempty"`
 	MediaType  string `protobuf:"bytes,4,opt,name=media_type,json=mediaType,proto3" json:"media_type,omitempty"`
-	// The provider identity the Platform dedups on (ADR 0028's union).
+	// The provider identity the Platform dedups on (platform#18's union).
 	ExternalScheme string `protobuf:"bytes,5,opt,name=external_scheme,json=externalScheme,proto3" json:"external_scheme,omitempty"`
 	ExternalId     string `protobuf:"bytes,6,opt,name=external_id,json=externalId,proto3" json:"external_id,omitempty"`
 	unknownFields  protoimpl.UnknownFields
@@ -2346,7 +2346,7 @@ func (x *Person) GetPhoto() string {
 
 // EpisodePreview is what a detail screen shows so a user can read the episode
 // list *before* deciding to add a series, including for a virtual series with
-// no materialised tree (ADR 0034). Read-only, never persisted.
+// no materialised tree (sdk#3). Read-only, never persisted.
 type EpisodePreview struct {
 	state     protoimpl.MessageState `protogen:"open.v1"`
 	Season    int32                  `protobuf:"varint,1,opt,name=season,proto3" json:"season,omitempty"`
@@ -2931,7 +2931,7 @@ type StreamLink struct {
 	// candidate ends up — the values are moved across, not translated.
 	//
 	// Best-effort: a module parses them from release text at its own boundary
-	// (ADR 0051), which is a guess rather than a measurement. Empty means the
+	// (module-stremio-addons#2), which is a guess rather than a measurement. Empty means the
 	// source did not say, exactly like every other descriptive field here.
 	Container  string `protobuf:"bytes,7,opt,name=container,proto3" json:"container,omitempty"`
 	VideoCodec string `protobuf:"bytes,8,opt,name=video_codec,json=videoCodec,proto3" json:"video_codec,omitempty"`
@@ -3194,7 +3194,7 @@ type Manifest struct {
 	// The module's own version, not the SDK's.
 	Version string `protobuf:"bytes,2,opt,name=version,proto3" json:"version,omitempty"`
 	Name    string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	// The provider roles this module fills (ADR 0027). The handshake verifies
+	// The provider roles this module fills (sdk#2). The handshake verifies
 	// that every declared role is actually served, so a role named but not
 	// implemented is refused at connect time rather than discovered at call time.
 	Provides []string `protobuf:"bytes,4,rep,name=provides,proto3" json:"provides,omitempty"`
@@ -3362,7 +3362,7 @@ type ImportRequest struct {
 	Caller *Caller                `protobuf:"bytes,1,opt,name=caller,proto3" json:"caller,omitempty"`
 	Ref    *ContentRef            `protobuf:"bytes,2,opt,name=ref,proto3" json:"ref,omitempty"`
 	// The module's user-managed configuration document — opaque JSON the Platform
-	// stores and hands back without interpreting (ADR 0021). It crosses unchanged,
+	// stores and hands back without interpreting (platform#17). It crosses unchanged,
 	// which is a small vindication of having stored it uninterpreted.
 	Settings      []byte `protobuf:"bytes,3,opt,name=settings,proto3" json:"settings,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -4096,7 +4096,7 @@ type SubtitlesRequest struct {
 	Settings []byte                 `protobuf:"bytes,2,opt,name=settings,proto3" json:"settings,omitempty"`
 	Ref      *ContentRef            `protobuf:"bytes,3,opt,name=ref,proto3" json:"ref,omitempty"`
 	// The same coordinates StreamsRequest carries, numbered the same, and for the
-	// same reason (ADR 0073): a provider asked about content it did not source
+	// same reason (platform#46): a provider asked about content it did not source
 	// gets a shared external identity with no native id, and composes its own
 	// episode addressing from these. Zero for a film.
 	Season        int32 `protobuf:"varint,4,opt,name=season,proto3" json:"season,omitempty"`
@@ -4216,7 +4216,7 @@ func (x *SubtitlesResponse) GetSubtitles() []*Subtitle {
 
 // ArtworkRequest is keyed by external identities rather than by a ContentRef,
 // because an artwork provider produces no results of its own and is therefore
-// never named by one (ADR 0075). The Platform reaches it through an enrichment
+// never named by one (sdk#6). The Platform reaches it through an enrichment
 // pass over content something else already identified.
 type ArtworkRequest struct {
 	state      protoimpl.MessageState `protogen:"open.v1"`
@@ -6004,7 +6004,7 @@ func (x *ListContentPartsResponse) GetParts() []*Part {
 
 // PlaybackState is per-user. Everything above operates on an install-global
 // graph; a position belongs to a person, and a consumer records progress as its
-// invoking user so a module can never write another user's position (ADR 0046).
+// invoking user so a module can never write another user's position (platform#26).
 type PlaybackState struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	NodeId        string                 `protobuf:"bytes,1,opt,name=node_id,json=nodeId,proto3" json:"node_id,omitempty"`
@@ -6858,7 +6858,7 @@ type StartSpanRequest struct {
 	Attributes []*Field               `protobuf:"bytes,3,rep,name=attributes,proto3" json:"attributes,omitempty"`
 	// The parent span, empty for a root span within this invocation. The
 	// Platform stitches it to the invocation's own trace, so a module never sees
-	// or sets a trace id — ADR 0054 makes the correlation id the trace id, and
+	// or sets a trace id — platform#32 makes the correlation id the trace id, and
 	// letting a module choose one would let it forge provenance.
 	ParentSpanId  string `protobuf:"bytes,4,opt,name=parent_span_id,json=parentSpanId,proto3" json:"parent_span_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -7261,7 +7261,7 @@ func (*EndSpanResponse) Descriptor() ([]byte, []int) {
 // the one asymmetry worth knowing at this boundary: every distinct combination
 // of values is a series that lives as long as the Platform process, where a log
 // record ages out under retention. The Platform bounds how many a module may
-// create — see ADR 0130 — so an out-of-process module cannot exhaust the host it
+// create — see sdk#9 — so an out-of-process module cannot exhaust the host it
 // is not running in.
 type CountRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`

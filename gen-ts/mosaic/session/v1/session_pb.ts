@@ -2,16 +2,16 @@
 // SPDX-FileCopyrightText: 2026 the Mosaic authors
 
 // Package mosaic.session.v1 is the first-party client session transport
-// (ADR 0041): a typed, two-lane RPC surface generated from this one .proto into
-// every client language. It supersedes the bespoke WebSocket of ADR 0032 and
-// folds ADR 0033's live handover into stream resume.
+// (contracts#5): a typed, two-lane RPC surface generated from this one .proto into
+// every client language. It supersedes the bespoke WebSocket of platform#22 and
+// folds supervisor#4's live handover into stream resume.
 //
 // Two lanes, mapping onto the two gRPC shapes supported uniformly on every
 // target client (web via Connect, Flutter, Compose, Swift):
 //
 //   - Lane 1 — intents (unary). Navigate, Invoke, SubmitInput, Attach. Each
 //     resolves to the same application command/query the HTTP path would; the
-//     command boundary (ADR 0016) and caller model (ADR 0017) are unchanged.
+//     command boundary (platform#12) and caller model (platform#13) are unchanged.
 //   - Lane 2 — push (server-streaming). One long-lived Subscribe stream per
 //     session over which the server pushes region updates, shell mutations,
 //     toasts and unsolicited events. resume_cursor replays what a reconnecting
@@ -21,7 +21,7 @@
 // pair browsers support, so the wire stays uniform across all four clients.
 //
 // UINode subtrees ride the envelope as the typed mosaic.sdui.v1.UINode — ADR
-// 0044 (option (b) of ADR 0041): the SDUI contract is protobuf, so the whole
+// 0044 (option (b) of contracts#5): the SDUI contract is protobuf, so the whole
 // wire is typed end to end. Open bags that are genuinely screen- or
 // action-specific (params, input, event payloads) still ride as JSON bytes.
 
@@ -65,8 +65,8 @@ export const AckSchema: GenMessage<Ack> = /*@__PURE__*/
  */
 export type AttachRequest = Message<"mosaic.session.v1.AttachRequest"> & {
   /**
-   * The caller's opaque credential (ADR 0017), which is its **access token**
-   * since ADR 0102 made the session a bearer pair. The field keeps its name
+   * The caller's opaque credential (platform#13), which is its **access token**
+   * since platform#58 made the session a bearer pair. The field keeps its name
    * because every client sends it in the same place and for the same reason;
    * what changed is that the value is minutes-lived and rotates, so a client
    * that caches it forever will start seeing UNAUTHENTICATED and must refresh
@@ -91,7 +91,7 @@ export type AttachRequest = Message<"mosaic.session.v1.AttachRequest"> & {
   params: Uint8Array;
 
   /**
-   * What this client can actually play (ADR 0047). Optional: a client that
+   * What this client can actually play (web#4). Optional: a client that
    * declares nothing gets whatever the server assumes, which is what every
    * client got before this field existed.
    *
@@ -136,7 +136,7 @@ export const AttachRequestSchema: GenMessage<AttachRequest> = /*@__PURE__*/
  * contract rather than against a list somebody maintains.
  *
  * Components are deliberately absent. They are definitions the server delivers
- * (ADR 0040), so a client renders whatever it is sent; what it can fail to draw
+ * (contracts#4), so a client renders whatever it is sent; what it can fail to draw
  * is a *primitive* inside a definition's template, which is what
  * ComponentDefinition.fallback answers.
  *
@@ -180,17 +180,17 @@ export const VocabularyProfileSchema: GenMessage<VocabularyProfile> = /*@__PURE_
 /**
  * ClientProfile is what a client can decode, declared once per connection.
  *
- * It exists because the server was guessing. Stream selection (ADR 0048) ranks a
+ * It exists because the server was guessing. Stream selection (platform#27) ranks a
  * source's candidates against what the caller can play, and with no declaration
  * the Platform hard-coded a desktop browser's abilities at the call site —
  * honest for one client and a lie for the four the transport was built to serve
- * (ADR 0041).
+ * (contracts#5).
  *
  * The client is the only thing that knows. A browser can answer precisely via
- * canPlayType (ADR 0070); a native player knows its own decoders. Neither is
+ * canPlayType (web#5); a native player knows its own decoders. Neither is
  * something a server can infer from a user agent without being wrong eventually.
  *
- * It is also what the resolution cache is keyed on (ADR 0049): the Platform
+ * It is also what the resolution cache is keyed on (platform#28): the Platform
  * reduces this to a stable class, so clients that decode the same things share
  * one cached resolution rather than each paying for their own.
  *
@@ -274,7 +274,7 @@ export const NavigateRequestSchema: GenMessage<NavigateRequest> = /*@__PURE__*/
 
 /**
  * InvokeRequest runs a named action. input is the action's argument envelope in
- * the SDUI runtime's JSON shape (ADR 0029), carried opaquely and decoded by the
+ * the SDUI runtime's JSON shape (platform#19), carried opaquely and decoded by the
  * action's Platform handler.
  *
  * @generated from message mosaic.session.v1.InvokeRequest
@@ -496,7 +496,7 @@ export const FieldErrorSchema: GenMessage<FieldError> = /*@__PURE__*/
   messageDesc(file_mosaic_session_v1_session, 10);
 
 /**
- * RegionUpdate applies one operation to a named region (ADR 0029 / 0031). The
+ * RegionUpdate applies one operation to a named region (platform#19 / 0031). The
  * op-set is contract-owned and transport-agnostic: a Compose composable, a
  * SwiftUI view and a React component apply the same ops.
  *
@@ -504,7 +504,7 @@ export const FieldErrorSchema: GenMessage<FieldError> = /*@__PURE__*/
  */
 export type RegionUpdate = Message<"mosaic.session.v1.RegionUpdate"> & {
   /**
-   * a named slot (ADR 0029 / 0031), e.g. "content".
+   * a named slot (platform#19 / 0031), e.g. "content".
    *
    * @generated from field: string region = 1;
    */
@@ -516,7 +516,7 @@ export type RegionUpdate = Message<"mosaic.session.v1.RegionUpdate"> & {
   op: RegionUpdate_Op;
 
   /**
-   * the typed UINode subtree (ADR 0044).
+   * the typed UINode subtree (contracts#6).
    *
    * @generated from field: mosaic.sdui.v1.UINode ui_node = 3;
    */
@@ -570,14 +570,14 @@ export const RegionUpdate_OpSchema: GenEnum<RegionUpdate_Op> = /*@__PURE__*/
   enumDesc(file_mosaic_session_v1_session, 11, 0);
 
 /**
- * ShellUpdate carries the app shell UINode tree (ADR 0031). It is sent once on
+ * ShellUpdate carries the app shell UINode tree (platform#21). It is sent once on
  * connect and again only if the shell itself changes.
  *
  * @generated from message mosaic.session.v1.ShellUpdate
  */
 export type ShellUpdate = Message<"mosaic.session.v1.ShellUpdate"> & {
   /**
-   * the typed shell UINode tree (ADR 0044).
+   * the typed shell UINode tree (contracts#6).
    *
    * @generated from field: mosaic.sdui.v1.UINode ui_node = 1;
    */
@@ -593,7 +593,7 @@ export const ShellUpdateSchema: GenMessage<ShellUpdate> = /*@__PURE__*/
 
 /**
  * Toast is one message in the client's notification stack, in one of two
- * lifetimes (ADR 0052).
+ * lifetimes (platform#30).
  *
  * A **toast** is transient: the confirmation an Invoke pushes, which removes
  * itself on a timer. That is right for "import finished" and wrong for a
@@ -703,7 +703,7 @@ export const SessionService: GenService<{
   /**
    * Attach (re)binds this caller to a session and declares the route it wants
    * shown. A reconnecting client calls it to re-assert the exact screen that
-   * was open, the same re-declaration the ADR 0032 socket did on reconnect.
+   * was open, the same re-declaration the platform#22 socket did on reconnect.
    *
    * @generated from rpc mosaic.session.v1.SessionService.Attach
    */
@@ -724,7 +724,7 @@ export const SessionService: GenService<{
     output: typeof AckSchema;
   },
   /**
-   * Invoke runs a named action (an SDUI Action, ADR 0029) — a mutation — and
+   * Invoke runs a named action (an SDUI Action, platform#19) — a mutation — and
    * pushes a toast plus a re-render of the current content.
    *
    * @generated from rpc mosaic.session.v1.SessionService.Invoke

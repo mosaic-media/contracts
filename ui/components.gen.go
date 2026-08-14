@@ -109,7 +109,7 @@ func ProgressRing(els ...El) *Element { return compose("ProgressRing", nil, els)
 func Skeleton(els ...El) *Element { return compose("Skeleton", nil, els) }
 
 // Player is the playback surface.
-// Native: The client owns the decoding pipeline and the transport controls (ADR 0047, ADR 0070). A scrub bar cannot be driven over a network at frame rate.
+// Native: The client owns the decoding pipeline and the transport controls ([web#4](https://github.com/mosaic-media/web/blob/main/docs/adr/0004-player-as-client-primitive.md), [web#5](https://github.com/mosaic-media/web/blob/main/docs/adr/0005-the-web-player-is-the-browser.md)). A scrub bar cannot be driven over a network at frame rate.
 func Player(src string, els ...El) *Element {
 	return compose("Player", map[string]any{"src": src}, els)
 }
@@ -190,7 +190,7 @@ func EmptyState(icon string, title string, els ...El) *Element {
 	return compose("EmptyState", map[string]any{"icon": icon, "title": title}, els)
 }
 
-// AppShell is the application frame (ADR 0031): the brand bar, the nav and the region the current screen renders into.
+// AppShell is the application frame ([platform#21](https://github.com/mosaic-media/platform/blob/main/docs/adr/0021-server-owned-app-shell.md)): the brand bar, the nav and the region the current screen renders into.
 func AppShell(title string, els ...El) *Element {
 	return compose("AppShell", map[string]any{"title": title}, els)
 }
@@ -208,7 +208,7 @@ func ErrorState(category string, els ...El) *Element {
 	return compose("ErrorState", map[string]any{"category": category}, els)
 }
 
-// ExtensionCard is one extension module — what it is, what it can do, and where its bytes come from (ADR 0081).
+// ExtensionCard is one extension module — what it is, what it can do, and where its bytes come from ([platform#51](https://github.com/mosaic-media/platform/blob/main/docs/adr/0051-extension-installation-is-user-initiated-and-persistent.md)).
 func ExtensionCard(name string, els ...El) *Element {
 	return compose("ExtensionCard", map[string]any{"name": name}, els)
 }
@@ -249,7 +249,7 @@ func Select(label string, els ...El) *Element {
 	return compose("Select", map[string]any{"label": label}, els)
 }
 
-// SettingsFrame is the Platform-owned settings chrome (ADR 0038): a nav beside the panel the open section fills.
+// SettingsFrame is the Platform-owned settings chrome ([sdk#4](https://github.com/mosaic-media/sdk/blob/main/docs/adr/0004-module-contributed-settings-ui.md)): a nav beside the panel the open section fills.
 func SettingsFrame(title string, els ...El) *Element {
 	return compose("SettingsFrame", map[string]any{"title": title}, els)
 }
@@ -292,7 +292,7 @@ func SettingsNavGroup(label string, els ...El) *Element {
 	return compose("SettingsNavGroup", map[string]any{"label": label}, els)
 }
 
-// SettingsNavItem is one settings nav row. The server marks the active one — it is the side that knows the params (ADR 0039).
+// SettingsNavItem is one settings nav row. The server marks the active one — it is the side that knows the params ([web#2](https://github.com/mosaic-media/web/blob/main/docs/adr/0002-server-owned-navigation.md)).
 func SettingsNavItem(label string, icon string, els ...El) *Element {
 	return compose("SettingsNavItem", map[string]any{"label": label, "icon": icon}, els)
 }
@@ -403,19 +403,19 @@ func Meta(v ...string) El { return Prop("meta", v) }
 // Genres sets a DetailHeader's genre list.
 func Genres(v ...string) El { return Prop("genres", v) }
 
-// ResumeAt sets the position in seconds a Player starts from (ADR 0046).
+// ResumeAt sets the position in seconds a Player starts from ([platform#26](https://github.com/mosaic-media/platform/blob/main/docs/adr/0026-playback-state-is-platform-owned.md)).
 func ResumeAt(v float64) El { return Prop("resumeAt", v) }
 
 // MimeType sets the media type a Player should expect, so a client can pick a pipeline before it fetches.
 func MimeType(v string) El { return Prop("mimeType", v) }
 
-// NodeID names the item a Player is playing, so the client can report its position back against it (ADR 0046).
+// NodeID names the item a Player is playing, so the client can report its position back against it ([platform#26](https://github.com/mosaic-media/platform/blob/main/docs/adr/0026-playback-state-is-platform-owned.md)).
 func NodeID(v string) El { return Prop("nodeId", v) }
 
-// PartID names the release a Player is playing, recorded with the position so a resume returns to the same encode (ADR 0046).
+// PartID names the release a Player is playing, recorded with the position so a resume returns to the same encode ([platform#26](https://github.com/mosaic-media/platform/blob/main/docs/adr/0026-playback-state-is-platform-owned.md)).
 func PartID(v string) El { return Prop("partId", v) }
 
-// SubtitleTracks are the authored subtitle scripts a Player may draw itself (ADR 0115). Deliberately not named Subtitles: Subtitle is a different prop on a different tier, and two builders one letter apart is how a prop ends up set on something that does not render it.
+// SubtitleTracks are the authored subtitle scripts a Player may draw itself ([platform#70](https://github.com/mosaic-media/platform/blob/main/docs/adr/0070-a-styled-subtitle-goes-to-the-client.md)). Deliberately not named Subtitles: Subtitle is a different prop on a different tier, and two builders one letter apart is how a prop ends up set on something that does not render it.
 func SubtitleTracks(v []any) El { return Prop("subtitleTracks", v) }
 
 // Disabled greys a control and stops it emitting.
@@ -541,7 +541,7 @@ func Help(v string) El { return Prop("help", v) }
 // InputType selects the keyboard/validation a field asks for.
 func InputType(v string) El { return Prop("inputType", v) }
 
-// Validators are the rules a client enforces before it submits — the six the contract declares, no more. A server rejection lands in the same slot (ADR 0089), so this is the fast half of one statement rather than the whole of it. It is sugar because a field's rules were being set with ui.Prop("validators", …) at every call site in every module, which is precisely the untyped setting that let ui.Subtitle onto a Stack.
+// Validators are the rules a client enforces before it submits — the six the contract declares, no more. A server rejection lands in the same slot (contracts#13), so this is the fast half of one statement rather than the whole of it. It is sugar because a field's rules were being set with ui.Prop("validators", …) at every call site in every module, which is precisely the untyped setting that let ui.Subtitle onto a Stack.
 func Validators(v map[string]any) El { return Prop("validators", v) }
 
 // VisibleWhen hides a node until a predicate over the enclosing State scope holds. Absent means visible; unreadable means hidden, because a control shown because its rule could not be read is the fail-open case.
@@ -937,7 +937,7 @@ const (
 )
 
 // Action constructors, re-exported from the producer binding; they ride the open
-// props bag as JSON (ADR 0044).
+// props bag as JSON (contracts#6).
 var (
 	Navigate     = sdui.Navigate
 	Invoke       = sdui.Invoke

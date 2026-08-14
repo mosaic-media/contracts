@@ -124,7 +124,7 @@ export interface Responsive {
  * except explicit dimensions. This is the technology-agnostic seam: it is the intersection
  * of what a flexbox client and a Flutter client can render identically, so a definition
  * written once renders the same everywhere. A client implements this vocabulary natively;
- * growing it is the only change that requires a client release (ADR 0024).
+ * growing it is the only change that requires a client release (contracts#2).
  */
 export interface BoxStyle {
     /**

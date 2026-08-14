@@ -14,7 +14,7 @@ export type { Binding } from "./binding.js";
 export type { Action, UINode } from "./contract.gen.js";
 
 // ── primitives ─────────────────────────────────────────────────────────────
-// The native tier: node types a client implements itself (ADR 0024).
+// The native tier: node types a client implements itself (contracts#2).
 
 /** Box is the layout container every composition is built from.
  *
@@ -186,7 +186,7 @@ export function Skeleton(...els: Elish[]): Element {
 
 /** Player is the playback surface.
  *
- *  Native: The client owns the decoding pipeline and the transport controls (ADR 0047, ADR 0070). A scrub bar cannot be driven over a network at frame rate. */
+ *  Native: The client owns the decoding pipeline and the transport controls ([web#4](https://github.com/mosaic-media/web/blob/main/docs/adr/0004-player-as-client-primitive.md), [web#5](https://github.com/mosaic-media/web/blob/main/docs/adr/0005-the-web-player-is-the-browser.md)). A scrub bar cannot be driven over a network at frame rate. */
 export function Player(src: string, ...els: Elish[]): Element {
   return compose("Player", { src }, els);
 }
@@ -273,7 +273,7 @@ export function EmptyState(icon: string, title: string, ...els: Elish[]): Elemen
   return compose("EmptyState", { icon, title }, els);
 }
 
-/** AppShell is the application frame (ADR 0031): the brand bar, the nav and the region the current screen renders into. */
+/** AppShell is the application frame ([platform#21](https://github.com/mosaic-media/platform/blob/main/docs/adr/0021-server-owned-app-shell.md)): the brand bar, the nav and the region the current screen renders into. */
 export function AppShell(title: string, ...els: Elish[]): Element {
   return compose("AppShell", { title }, els);
 }
@@ -293,7 +293,7 @@ export function ErrorState(category: string, ...els: Elish[]): Element {
   return compose("ErrorState", { category }, els);
 }
 
-/** ExtensionCard is one extension module — what it is, what it can do, and where its bytes come from (ADR 0081). */
+/** ExtensionCard is one extension module — what it is, what it can do, and where its bytes come from ([platform#51](https://github.com/mosaic-media/platform/blob/main/docs/adr/0051-extension-installation-is-user-initiated-and-persistent.md)). */
 export function ExtensionCard(name: string, ...els: Elish[]): Element {
   return compose("ExtensionCard", { name }, els);
 }
@@ -338,7 +338,7 @@ export function Select(label: string, ...els: Elish[]): Element {
   return compose("Select", { label }, els);
 }
 
-/** SettingsFrame is the Platform-owned settings chrome (ADR 0038): a nav beside the panel the open section fills. */
+/** SettingsFrame is the Platform-owned settings chrome ([sdk#4](https://github.com/mosaic-media/sdk/blob/main/docs/adr/0004-module-contributed-settings-ui.md)): a nav beside the panel the open section fills. */
 export function SettingsFrame(title: string, ...els: Elish[]): Element {
   return compose("SettingsFrame", { title }, els);
 }
@@ -383,7 +383,7 @@ export function SettingsNavGroup(label: string, ...els: Elish[]): Element {
   return compose("SettingsNavGroup", { label }, els);
 }
 
-/** SettingsNavItem is one settings nav row. The server marks the active one — it is the side that knows the params (ADR 0039). */
+/** SettingsNavItem is one settings nav row. The server marks the active one — it is the side that knows the params ([web#2](https://github.com/mosaic-media/web/blob/main/docs/adr/0002-server-owned-navigation.md)). */
 export function SettingsNavItem(label: string, icon: string, ...els: Elish[]): Element {
   return compose("SettingsNavItem", { label, icon }, els);
 }
@@ -552,7 +552,7 @@ export function Genres(...v: string[]): El {
   return Prop("genres", v);
 }
 
-/** ResumeAt sets the position in seconds a Player starts from (ADR 0046). */
+/** ResumeAt sets the position in seconds a Player starts from ([platform#26](https://github.com/mosaic-media/platform/blob/main/docs/adr/0026-playback-state-is-platform-owned.md)). */
 export function ResumeAt(v: number): El {
   return Prop("resumeAt", v);
 }
@@ -562,17 +562,17 @@ export function MimeType(v: string): El {
   return Prop("mimeType", v);
 }
 
-/** NodeID names the item a Player is playing, so the client can report its position back against it (ADR 0046). */
+/** NodeID names the item a Player is playing, so the client can report its position back against it ([platform#26](https://github.com/mosaic-media/platform/blob/main/docs/adr/0026-playback-state-is-platform-owned.md)). */
 export function NodeID(v: string): El {
   return Prop("nodeId", v);
 }
 
-/** PartID names the release a Player is playing, recorded with the position so a resume returns to the same encode (ADR 0046). */
+/** PartID names the release a Player is playing, recorded with the position so a resume returns to the same encode ([platform#26](https://github.com/mosaic-media/platform/blob/main/docs/adr/0026-playback-state-is-platform-owned.md)). */
 export function PartID(v: string): El {
   return Prop("partId", v);
 }
 
-/** SubtitleTracks are the authored subtitle scripts a Player may draw itself (ADR 0115). Deliberately not named Subtitles: Subtitle is a different prop on a different tier, and two builders one letter apart is how a prop ends up set on something that does not render it. */
+/** SubtitleTracks are the authored subtitle scripts a Player may draw itself ([platform#70](https://github.com/mosaic-media/platform/blob/main/docs/adr/0070-a-styled-subtitle-goes-to-the-client.md)). Deliberately not named Subtitles: Subtitle is a different prop on a different tier, and two builders one letter apart is how a prop ends up set on something that does not render it. */
 export function SubtitleTracks(v: Props[]): El {
   return Prop("subtitleTracks", v);
 }
@@ -782,7 +782,7 @@ export function InputType(v: string): El {
   return Prop("inputType", v);
 }
 
-/** Validators are the rules a client enforces before it submits — the six the contract declares, no more. A server rejection lands in the same slot (ADR 0089), so this is the fast half of one statement rather than the whole of it. It is sugar because a field's rules were being set with ui.Prop("validators", …) at every call site in every module, which is precisely the untyped setting that let ui.Subtitle onto a Stack. */
+/** Validators are the rules a client enforces before it submits — the six the contract declares, no more. A server rejection lands in the same slot (contracts#13), so this is the fast half of one statement rather than the whole of it. It is sugar because a field's rules were being set with ui.Prop("validators", …) at every call site in every module, which is precisely the untyped setting that let ui.Subtitle onto a Stack. */
 export function Validators(v: Props): El {
   return Prop("validators", v);
 }
@@ -1426,7 +1426,7 @@ export const ToneDanger = Tone.Danger;
 export const ToneInfo = Tone.Info;
 
 // ── actions ────────────────────────────────────────────────────────────────
-// Actions ride inside the open props bag as JSON (ADR 0044); each constructor
+// Actions ride inside the open props bag as JSON (contracts#6); each constructor
 // hides the discriminator and the optional fields.
 
 /** Navigate pushes a screen, optionally with params. */

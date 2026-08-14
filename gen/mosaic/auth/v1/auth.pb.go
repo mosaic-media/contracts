@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2026 the Mosaic authors
 
 // Package mosaic.auth.v1 is how a client obtains the session every other
-// first-party call needs (ADR 0061).
+// first-party call needs (platform#37).
 //
 // It is deliberately a service of its own rather than more RPCs on
 // mosaic.session.v1.SessionService. Every request on that service begins with a
@@ -12,7 +12,7 @@
 // whole contract is that they are authenticated. Separating them also lets the
 // Platform mount them behind different interceptors.
 //
-// This surface replaced the GraphQL signIn/signOut mutations when ADR 0061
+// This surface replaced the GraphQL signIn/signOut mutations when platform#37
 // retired the GraphQL transport. Errors carry the Platform's fixed error
 // categories as Connect/gRPC codes — a bad password is UNAUTHENTICATED, not a
 // 200 with an error object.
@@ -49,7 +49,7 @@ const (
 // username exists or not, so there is nothing here to vary it on.
 type BootstrapRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The same vocabulary declaration Attach carries, so ADR 0084's negotiation
+	// The same vocabulary declaration Attach carries, so platform#52's negotiation
 	// applies to the doorway exactly as it applies to every screen after it. It
 	// is literally the same message rather than a copy of its shape: two
 	// declarations that must not diverge are one declaration.
@@ -107,7 +107,7 @@ func (x *BootstrapRequest) GetVocabulary() *v1.VocabularyProfile {
 // mismatch.
 type BootstrapResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The design token set (ADR 0040), as the same DTCG document the session
+	// The design token set (contracts#4), as the same DTCG document the session
 	// pushes. Without it the doorway would be the one screen drawn unstyled.
 	Tokens []byte `protobuf:"bytes,1,opt,name=tokens,proto3" json:"tokens,omitempty"`
 	// The component definitions the tree needs, **transitively closed over it and
@@ -116,7 +116,7 @@ type BootstrapResponse struct {
 	// security property, not an optimisation, and it must not be allowed to grow
 	// into the whole library out of convenience.
 	Definitions []byte `protobuf:"bytes,2,opt,name=definitions,proto3" json:"definitions,omitempty"`
-	// The doorway. Which one is the server's decision, unchanged from ADR 0098:
+	// The doorway. Which one is the server's decision, unchanged from platform#54:
 	// the setup tree while the server is unclaimed, the sign-in tree once it is
 	// not. A doorway has two states and the client is not told which — it is
 	// shown one.
@@ -197,7 +197,7 @@ type InvokeRequest struct {
 	// so.
 	DeviceId string `protobuf:"bytes,3,opt,name=device_id,json=deviceId,proto3" json:"device_id,omitempty"`
 	// The same vocabulary declaration Bootstrap carries, so a replacement doorway
-	// is negotiated exactly as the first one was (ADR 0084). Without it the
+	// is negotiated exactly as the first one was (platform#52). Without it the
 	// second tree a client is sent would be the one tree nobody degraded.
 	Vocabulary    *v1.VocabularyProfile `protobuf:"bytes,4,opt,name=vocabulary,proto3" json:"vocabulary,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -361,13 +361,13 @@ type InvokeResponse_Doorway struct {
 	// sign-in form where a setup form was. The definitions travel with it for
 	// the same reason they travel with Bootstrap: a client at this point still
 	// has no vocabulary but the subset it was last sent, and a tree naming a
-	// component outside that subset would draw the placeholder ADR 0101 exists
+	// component outside that subset would draw the placeholder platform#57 exists
 	// to remove.
 	Doorway *Doorway `protobuf:"bytes,2,opt,name=doorway,proto3,oneof"`
 }
 
 type InvokeResponse_FieldErrors struct {
-	// The submission was refused, per field (ADR 0089). It is the same envelope
+	// The submission was refused, per field (contracts#13). It is the same envelope
 	// the session lane pushes, so a rejection renders identically whichever
 	// lane it arrived on.
 	FieldErrors *v1.FieldErrors `protobuf:"bytes,3,opt,name=field_errors,json=fieldErrors,proto3,oneof"`
@@ -558,7 +558,7 @@ func (x *SignInRequest) GetDeviceId() string {
 type SignInResponse struct {
 	state   protoimpl.MessageState `protogen:"open.v1"`
 	Session *Session               `protobuf:"bytes,1,opt,name=session,proto3" json:"session,omitempty"`
-	// The bearer pair (ADR 0102). A client stores both and presents the access
+	// The bearer pair (platform#58). A client stores both and presents the access
 	// token on every SessionService call.
 	Tokens        *TokenPair `protobuf:"bytes,2,opt,name=tokens,proto3" json:"tokens,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -609,7 +609,7 @@ func (x *SignInResponse) GetTokens() *TokenPair {
 	return nil
 }
 
-// TokenPair is the session credential (ADR 0102): a short-lived access token
+// TokenPair is the session credential (platform#58): a short-lived access token
 // presented on every call, and a long-lived refresh token exchanged for a new
 // pair.
 //
@@ -809,7 +809,7 @@ func (x *RefreshResponse) GetTokens() *TokenPair {
 
 // SignOutRequest revokes target_session on behalf of caller_session.
 //
-// caller_session is the caller's credential — its access token (ADR 0102), the
+// caller_session is the caller's credential — its access token (platform#58), the
 // same value it presents on every SessionService call. target_session is the
 // **session id** of the device being ended, which is what a device list names
 // and is not itself a credential.
@@ -921,7 +921,7 @@ type Session struct {
 	DeviceId   string                 `protobuf:"bytes,3,opt,name=device_id,json=deviceId,proto3" json:"device_id,omitempty"`
 	IssuedAt   *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=issued_at,json=issuedAt,proto3" json:"issued_at,omitempty"`
 	LastSeenAt *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=last_seen_at,json=lastSeenAt,proto3" json:"last_seen_at,omitempty"`
-	// The **absolute** expiry (ADR 0102): the moment past which no refresh can
+	// The **absolute** expiry (platform#58): the moment past which no refresh can
 	// extend this session, however recently it was used. It is not the access
 	// token's lifetime, which is minutes and is carried on TokenPair, and it is
 	// not the idle ceiling, which the server applies against last_seen_at and
@@ -943,7 +943,7 @@ type Session struct {
 	// call re-authorises server-side against the grants as they are *now*, and
 	// this list is a snapshot as they were at issue time; a grant revoked since
 	// is still in here and is refused anyway. What it is for is
-	// [ADR 0036](0036): an affordance the caller could not exercise should not be
+	// [platform#24](0024-capability-gated-affordances.md): an affordance the caller could not exercise should not be
 	// drawn, and until now that was a decision only the server could make,
 	// because only the server knew. A client that composes its own chrome — a
 	// native one deciding whether to draw an admin tab before it asks for a

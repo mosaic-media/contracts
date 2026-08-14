@@ -928,7 +928,7 @@
       "type": "Player",
       "tier": "player",
       "doc": "Player is the playback surface.",
-      "native": "The client owns the decoding pipeline and the transport controls (web#4, web#5). A scrub bar cannot be driven over a network at frame rate.",
+      "native": "The client owns the decoding pipeline and the transport controls ([web#4](https://github.com/mosaic-media/web/blob/main/docs/adr/0004-player-as-client-primitive.md), [web#5](https://github.com/mosaic-media/web/blob/main/docs/adr/0005-the-web-player-is-the-browser.md)). A scrub bar cannot be driven over a network at frame rate.",
       "children": false,
       "positional": [
         {
@@ -976,7 +976,7 @@
         {
           "key": "subtitleTracks",
           "type": "array:subtitleTrack",
-          "doc": "Authored subtitle scripts the client draws itself \u2014 each a src, a format, a language, a label and whether it is the one the viewer's preference chose (platform#70). They ride beside the HLS subtitle renditions rather than replacing them, so a client that cannot render a script ignores this and still has subtitles."
+          "doc": "Authored subtitle scripts the client draws itself \u2014 each a src, a format, a language, a label and whether it is the one the viewer's preference chose ([platform#70](https://github.com/mosaic-media/platform/blob/main/docs/adr/0070-a-styled-subtitle-goes-to-the-client.md)). They ride beside the HLS subtitle renditions rather than replacing them, so a client that cannot render a script ignores this and still has subtitles."
         }
       ]
     }
@@ -1070,7 +1070,7 @@
       "func": "ResumeAt",
       "key": "resumeAt",
       "type": "number",
-      "doc": "ResumeAt sets the position in seconds a Player starts from (platform#26)."
+      "doc": "ResumeAt sets the position in seconds a Player starts from ([platform#26](https://github.com/mosaic-media/platform/blob/main/docs/adr/0026-playback-state-is-platform-owned.md))."
     },
     {
       "func": "MimeType",
@@ -1082,19 +1082,19 @@
       "func": "NodeID",
       "key": "nodeId",
       "type": "string",
-      "doc": "NodeID names the item a Player is playing, so the client can report its position back against it (platform#26)."
+      "doc": "NodeID names the item a Player is playing, so the client can report its position back against it ([platform#26](https://github.com/mosaic-media/platform/blob/main/docs/adr/0026-playback-state-is-platform-owned.md))."
     },
     {
       "func": "PartID",
       "key": "partId",
       "type": "string",
-      "doc": "PartID names the release a Player is playing, recorded with the position so a resume returns to the same encode (platform#26)."
+      "doc": "PartID names the release a Player is playing, recorded with the position so a resume returns to the same encode ([platform#26](https://github.com/mosaic-media/platform/blob/main/docs/adr/0026-playback-state-is-platform-owned.md))."
     },
     {
       "func": "SubtitleTracks",
       "key": "subtitleTracks",
       "type": "[]props",
-      "doc": "SubtitleTracks are the authored subtitle scripts a Player may draw itself (platform#70). Deliberately not named Subtitles: Subtitle is a different prop on a different tier, and two builders one letter apart is how a prop ends up set on something that does not render it."
+      "doc": "SubtitleTracks are the authored subtitle scripts a Player may draw itself ([platform#70](https://github.com/mosaic-media/platform/blob/main/docs/adr/0070-a-styled-subtitle-goes-to-the-client.md)). Deliberately not named Subtitles: Subtitle is a different prop on a different tier, and two builders one letter apart is how a prop ends up set on something that does not render it."
     },
     {
       "func": "Disabled",
@@ -1813,7 +1813,7 @@
     {
       "func": "AppShell",
       "type": "AppShell",
-      "doc": "AppShell is the application frame (platform#21): the brand bar, the nav and the region the current screen renders into.",
+      "doc": "AppShell is the application frame ([platform#21](https://github.com/mosaic-media/platform/blob/main/docs/adr/0021-server-owned-app-shell.md)): the brand bar, the nav and the region the current screen renders into.",
       "positional": [
         {
           "name": "title",
@@ -1854,7 +1854,7 @@
     {
       "func": "ExtensionCard",
       "type": "ExtensionCard",
-      "doc": "ExtensionCard is one extension module — what it is, what it can do, and where its bytes come from (platform#51).",
+      "doc": "ExtensionCard is one extension module — what it is, what it can do, and where its bytes come from ([platform#51](https://github.com/mosaic-media/platform/blob/main/docs/adr/0051-extension-installation-is-user-initiated-and-persistent.md)).",
       "positional": [
         {
           "name": "name",
@@ -1958,7 +1958,7 @@
     {
       "func": "SettingsFrame",
       "type": "SettingsFrame",
-      "doc": "SettingsFrame is the Platform-owned settings chrome (sdk#4): a nav beside the panel the open section fills.",
+      "doc": "SettingsFrame is the Platform-owned settings chrome ([sdk#4](https://github.com/mosaic-media/sdk/blob/main/docs/adr/0004-module-contributed-settings-ui.md)): a nav beside the panel the open section fills.",
       "positional": [
         {
           "name": "title",
@@ -2041,7 +2041,7 @@
     {
       "func": "SettingsNavItem",
       "type": "SettingsNavItem",
-      "doc": "SettingsNavItem is one settings nav row. The server marks the active one — it is the side that knows the params (web#2).",
+      "doc": "SettingsNavItem is one settings nav row. The server marks the active one — it is the side that knows the params ([web#2](https://github.com/mosaic-media/web/blob/main/docs/adr/0002-server-owned-navigation.md)).",
       "positional": [
         {
           "name": "label",

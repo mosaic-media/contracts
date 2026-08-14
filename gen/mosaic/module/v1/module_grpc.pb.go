@@ -1,22 +1,22 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-FileCopyrightText: 2026 the Mosaic authors
 
-// Package mosaic.module.v1 is the extension module boundary (ADR 0064): the
+// Package mosaic.module.v1 is the extension module boundary (platform#39): the
 // wire an out-of-process module speaks, carried over a Unix domain socket by
-// hashicorp/go-plugin (ADR 0077).
+// hashicorp/go-plugin (sdk#7).
 //
 // **This file is not the contract.** The contract is the hand-written Go in
 // `github.com/mosaic-media/sdk` — `v1.Capability`, the eight provider roles,
 // `v1.ContentService`, `v1.Telemetry`. This is an *implementation* of those
 // interfaces on both sides of a process boundary, and nothing above the
-// Platform's capability registry knows it exists. ADR 0064 chose that
+// Platform's capability registry knows it exists. platform#39 chose that
 // direction deliberately: generating the Go interfaces from this schema would
 // make the contract un-implementable except over RPC, which would break the
 // core tier, and `Caller` could not stay opaque.
 //
 // The cost is that this file and the SDK's Go are two sources of truth that
 // must agree, held together by codegen discipline and tests rather than by the
-// compiler. ADR 0077 records that cost as accepted rather than paid — a
+// compiler. sdk#7 records that cost as accepted rather than paid — a
 // msgpack alternative that would have collapsed it was rejected for reasons
 // that outweighed it.
 //
@@ -31,12 +31,12 @@
 // interfaces these implement are still `v1.Capability` and `v1.Telemetry`.
 //
 // **Versioning.** The proto package version tracks the SDK major version, so
-// there is one number a user reasons about rather than two (ADR 0064).
+// there is one number a user reasons about rather than two (platform#39).
 // `mosaic.module.v1` is the wire for SDK v1.x. Within a major, changes here are
 // additive only: unknown fields are ignored, and a role a module does not serve
 // is reported at handshake rather than discovered at call time.
 //
-// **Provisional in one direction.** ADR 0064 leaves callback chattiness open on
+// **Provisional in one direction.** platform#39 leaves callback chattiness open on
 // purpose and says it must be measured against a real import before the
 // protocol is fixed, with the service shape allowed to send back coarser,
 // batched verbs. Such verbs would be *added* to ContentService, which is an
@@ -84,7 +84,7 @@ const (
 // SDK's `v1.Capability` plus the eight provider roles. The Platform holds a
 // proxy implementing those Go interfaces and dispatching to these methods;
 // the capability registry cannot tell that proxy from a local struct, which is
-// the property the whole design is arranged around (ADR 0064).
+// the property the whole design is arranged around (platform#39).
 //
 // A module serves Manifest and Import always, and each role method only if its
 // manifest declares the matching role. Calling an undeclared role is a
@@ -230,7 +230,7 @@ func (c *capabilityServiceClient) SettingsUI(ctx context.Context, in *SettingsUI
 // SDK's `v1.Capability` plus the eight provider roles. The Platform holds a
 // proxy implementing those Go interfaces and dispatching to these methods;
 // the capability registry cannot tell that proxy from a local struct, which is
-// the property the whole design is arranged around (ADR 0064).
+// the property the whole design is arranged around (platform#39).
 //
 // A module serves Manifest and Import always, and each role method only if its
 // manifest declares the matching role. Calling an undeclared role is a
@@ -592,7 +592,7 @@ const (
 // ContentService is everything a capability does to the object graph, served by
 // the Platform over go-plugin's broker.
 //
-// A module owns no schema (ADR 0012) and no content storage (ADR 0002 §2):
+// A module owns no schema (platform#8) and no content storage (platform#2 §2):
 // content lives in the Platform's object graph, in the Platform's single
 // consistency domain, and nowhere else. What a separate process makes possible
 // is a module-*local* cache or cursor in its own file — which must be
@@ -792,7 +792,7 @@ func (c *contentServiceClient) ListInProgress(ctx context.Context, in *ListInPro
 // ContentService is everything a capability does to the object graph, served by
 // the Platform over go-plugin's broker.
 //
-// A module owns no schema (ADR 0012) and no content storage (ADR 0002 §2):
+// A module owns no schema (platform#8) and no content storage (platform#2 §2):
 // content lives in the Platform's object graph, in the Platform's single
 // consistency domain, and nowhere else. What a separate process makes possible
 // is a module-*local* cache or cursor in its own file — which must be
@@ -1272,22 +1272,22 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
-// TelemetryService is how a module observes (ADR 0059). The SDK declares its own
+// TelemetryService is how a module observes (sdk#5). The SDK declares its own
 // interface rather than re-exporting OpenTelemetry, specifically so a contract
 // does not distribute the Platform's taste in libraries — and that decision is
 // what lets this cross a process boundary at all: the module calls the same
-// methods over a different transport, and ADR 0059's surface is unaffected.
+// methods over a different transport, and sdk#5's surface is unaffected.
 type TelemetryServiceClient interface {
 	Log(ctx context.Context, in *LogRequest, opts ...grpc.CallOption) (*LogResponse, error)
 	StartSpan(ctx context.Context, in *StartSpanRequest, opts ...grpc.CallOption) (*StartSpanResponse, error)
 	SetSpanAttributes(ctx context.Context, in *SpanAttributesRequest, opts ...grpc.CallOption) (*SpanAttributesResponse, error)
 	FailSpan(ctx context.Context, in *FailSpanRequest, opts ...grpc.CallOption) (*FailSpanResponse, error)
 	EndSpan(ctx context.Context, in *EndSpanRequest, opts ...grpc.CallOption) (*EndSpanResponse, error)
-	// The metric half (ADR 0130). It crosses the wire for the same reason the
-	// rest does — and for one specific to metrics: ADR 0059 refused to publish a
+	// The metric half (sdk#9). It crosses the wire for the same reason the
+	// rest does — and for one specific to metrics: sdk#5 refused to publish a
 	// counter that silently discards, and a bridge that answered these calls with
 	// nothing would build exactly that, reachable only by the modules that run
-	// out of process (ADR 0077) and only in production.
+	// out of process (sdk#7) and only in production.
 	Count(ctx context.Context, in *CountRequest, opts ...grpc.CallOption) (*CountResponse, error)
 	Measure(ctx context.Context, in *MeasureRequest, opts ...grpc.CallOption) (*MeasureResponse, error)
 }
@@ -1374,22 +1374,22 @@ func (c *telemetryServiceClient) Measure(ctx context.Context, in *MeasureRequest
 // All implementations must embed UnimplementedTelemetryServiceServer
 // for forward compatibility.
 //
-// TelemetryService is how a module observes (ADR 0059). The SDK declares its own
+// TelemetryService is how a module observes (sdk#5). The SDK declares its own
 // interface rather than re-exporting OpenTelemetry, specifically so a contract
 // does not distribute the Platform's taste in libraries — and that decision is
 // what lets this cross a process boundary at all: the module calls the same
-// methods over a different transport, and ADR 0059's surface is unaffected.
+// methods over a different transport, and sdk#5's surface is unaffected.
 type TelemetryServiceServer interface {
 	Log(context.Context, *LogRequest) (*LogResponse, error)
 	StartSpan(context.Context, *StartSpanRequest) (*StartSpanResponse, error)
 	SetSpanAttributes(context.Context, *SpanAttributesRequest) (*SpanAttributesResponse, error)
 	FailSpan(context.Context, *FailSpanRequest) (*FailSpanResponse, error)
 	EndSpan(context.Context, *EndSpanRequest) (*EndSpanResponse, error)
-	// The metric half (ADR 0130). It crosses the wire for the same reason the
-	// rest does — and for one specific to metrics: ADR 0059 refused to publish a
+	// The metric half (sdk#9). It crosses the wire for the same reason the
+	// rest does — and for one specific to metrics: sdk#5 refused to publish a
 	// counter that silently discards, and a bridge that answered these calls with
 	// nothing would build exactly that, reachable only by the modules that run
-	// out of process (ADR 0077) and only in production.
+	// out of process (sdk#7) and only in production.
 	Count(context.Context, *CountRequest) (*CountResponse, error)
 	Measure(context.Context, *MeasureRequest) (*MeasureResponse, error)
 	mustEmbedUnimplementedTelemetryServiceServer()

@@ -378,7 +378,7 @@ Skeleton is an animated loading placeholder.
 
 Player is the playback surface.
 
-*Native because:* The client owns the decoding pipeline and the transport controls (ADR 0047, ADR 0070). A scrub bar cannot be driven over a network at frame rate.
+*Native because:* The client owns the decoding pipeline and the transport controls ([web#4](https://github.com/mosaic-media/web/blob/main/docs/adr/0004-player-as-client-primitive.md), [web#5](https://github.com/mosaic-media/web/blob/main/docs/adr/0005-the-web-player-is-the-browser.md)). A scrub bar cannot be driven over a network at frame rate.
 
 *Tier:* player · *Renders children:* false
 
@@ -391,7 +391,7 @@ Player is the playback surface.
 | `resumeAt` | `number` | Seconds to seek to once the media is seekable. |
 | `nodeId` | `string` | Content node this playback reports progress against. |
 | `partId` | `string` | Release actually being played. |
-| `subtitleTracks` | `array:subtitleTrack` | Authored subtitle scripts the client draws itself — each a src, a format, a language, a label and whether it is the one the viewer's preference chose (ADR 0115). They ride beside the HLS subtitle renditions rather than replacing them, so a client that cannot render a script ignores this and still has subtitles. |
+| `subtitleTracks` | `array:subtitleTrack` | Authored subtitle scripts the client draws itself — each a src, a format, a language, a label and whether it is the one the viewer's preference chose ([platform#70](https://github.com/mosaic-media/platform/blob/main/docs/adr/0070-a-styled-subtitle-goes-to-the-client.md)). They ride beside the HLS subtitle renditions rather than replacing them, so a client that cannot render a script ignores this and still has subtitles. |
 
 ## Components
 
@@ -414,11 +414,11 @@ expands whatever it is sent.
 - **`GenreTag`** — GenreTag is a genre chip.
 - **`FilterChip`** — FilterChip is one selectable narrowing on a browse surface: a pressable pill that draws its own selected state, with an optional count of what it would leave.
 - **`EmptyState`** — EmptyState is a titled empty placeholder, with an optional explanation beneath it and a call to action.
-- **`AppShell`** — AppShell is the application frame (ADR 0031): the brand bar, the nav and the region the current screen renders into.
+- **`AppShell`** — AppShell is the application frame ([platform#21](https://github.com/mosaic-media/platform/blob/main/docs/adr/0021-server-owned-app-shell.md)): the brand bar, the nav and the region the current screen renders into.
 - **`DetailHero`** — DetailHero is a title's cinematic header — backdrop, logo and the actions docked over it.
 - **`Divider`** — Divider is a rule, optionally labelled.
 - **`ErrorState`** — ErrorState renders a Platform error category as something a person can act on.
-- **`ExtensionCard`** — ExtensionCard is one extension module — what it is, what it can do, and where its bytes come from (ADR 0081).
+- **`ExtensionCard`** — ExtensionCard is one extension module — what it is, what it can do, and where its bytes come from ([platform#51](https://github.com/mosaic-media/platform/blob/main/docs/adr/0051-extension-installation-is-user-initiated-and-persistent.md)).
 - **`IconButton`** — IconButton is a Button reduced to its icon; the label stays for assistive tech.
 - **`InfoPanel`** — InfoPanel is a docked facts panel — a rating and a run of label/value rows. The mockups draw a control under it ("Change device"); it is not here because Mosaic has no device registry to change between, and a panel is the wrong place to learn that.
 - **`FactCard`** — FactCard is one labelled card in a row of technical facts — what a release is, how it will be delivered, where its metadata came from. Distinct from InfoPanel because the shape is different and so is the job: a panel answers about the title in label/value pairs, a card states three short facts about one aspect of it and sits in a grid of siblings.
@@ -427,7 +427,7 @@ expands whatever it is sent.
 - **`PlaybackBar`** — PlaybackBar is the resume strip for something already started.
 - **`RelatedRail`** — RelatedRail is a titled rail that says so when it is empty.
 - **`Select`** — Select is a labelled dropdown over server-supplied options.
-- **`SettingsFrame`** — SettingsFrame is the Platform-owned settings chrome (ADR 0038): a nav beside the panel the open section fills.
+- **`SettingsFrame`** — SettingsFrame is the Platform-owned settings chrome ([sdk#4](https://github.com/mosaic-media/sdk/blob/main/docs/adr/0004-module-contributed-settings-ui.md)): a nav beside the panel the open section fills.
 - **`SpanRow`** — SpanRow is one span of a waterfall: its name, indented by depth, a bar showing its share of the whole, and its duration. The share is the point — a waterfall exists to answer which part of this was the time, and a duration alone does not.
 - **`DetailPanel`** — DetailPanel is a titled working surface: a header carrying a name, an identifier and a summary, over a body. Flat rather than acrylic — it is the administrative side of the app, where there is no artwork behind the surface for the material to bend.
 - **`StatCard`** — StatCard is one figure with a name over it — a percentile, an error rate, a throughput. Distinct from FactCard, which states three short sentences about an aspect of something; this states one number and exists to be scanned in a row of its siblings.
@@ -436,7 +436,7 @@ expands whatever it is sent.
 - **`TraceRow`** — TraceRow is one trace in a list: what ran, its id, how long it took, and a status dot when something inside it failed.
 - **`SettingsRow`** — SettingsRow is one line of a settings panel — a label, an optional explanation of what it does, and a control or a value on the right. It is the workhorse of every panel in the design, which is why it is a component rather than a Stack assembled per screen: a panel that builds its own rows is a panel that drifts from the others.
 - **`SettingsNavGroup`** — SettingsNavGroup is one labelled run of settings nav rows.
-- **`SettingsNavItem`** — SettingsNavItem is one settings nav row. The server marks the active one — it is the side that knows the params (ADR 0039).
+- **`SettingsNavItem`** — SettingsNavItem is one settings nav row. The server marks the active one — it is the side that knows the params ([web#2](https://github.com/mosaic-media/web/blob/main/docs/adr/0002-server-owned-navigation.md)).
 - **`SourcePicker`** — SourcePicker lists the resolved sources for a Part.
 - **`StatusIndicator`** — StatusIndicator is a coloured dot with a label.
 - **`TextField`** — TextField is a labelled text input with optional help.

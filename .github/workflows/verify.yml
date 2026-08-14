@@ -47,7 +47,7 @@ jobs:
       # the old unqualified form, and it is lowered as records move. It can
       # only go down.
       - name: Check every record citation names its repository
-        run: python3 scripts/adr_lint.py --repo contracts --max-unqualified 284 --exclude 'scripts/adr_*.py'
+        run: python3 scripts/adr_lint.py --repo contracts --exclude 'scripts/adr_*.py'
 
       # The schema is the single source of truth: fail if the committed bindings
       # are stale (generate + git diff).

@@ -2,16 +2,16 @@
 // SPDX-FileCopyrightText: 2026 the Mosaic authors
 
 // Package mosaic.session.v1 is the first-party client session transport
-// (ADR 0041): a typed, two-lane RPC surface generated from this one .proto into
-// every client language. It supersedes the bespoke WebSocket of ADR 0032 and
-// folds ADR 0033's live handover into stream resume.
+// (contracts#5): a typed, two-lane RPC surface generated from this one .proto into
+// every client language. It supersedes the bespoke WebSocket of platform#22 and
+// folds supervisor#4's live handover into stream resume.
 //
 // Two lanes, mapping onto the two gRPC shapes supported uniformly on every
 // target client (web via Connect, Flutter, Compose, Swift):
 //
 //   - Lane 1 — intents (unary). Navigate, Invoke, SubmitInput, Attach. Each
 //     resolves to the same application command/query the HTTP path would; the
-//     command boundary (ADR 0016) and caller model (ADR 0017) are unchanged.
+//     command boundary (platform#12) and caller model (platform#13) are unchanged.
 //   - Lane 2 — push (server-streaming). One long-lived Subscribe stream per
 //     session over which the server pushes region updates, shell mutations,
 //     toasts and unsolicited events. resume_cursor replays what a reconnecting
@@ -21,7 +21,7 @@
 // pair browsers support, so the wire stays uniform across all four clients.
 //
 // UINode subtrees ride the envelope as the typed mosaic.sdui.v1.UINode — ADR
-// 0044 (option (b) of ADR 0041): the SDUI contract is protobuf, so the whole
+// 0044 (option (b) of contracts#5): the SDUI contract is protobuf, so the whole
 // wire is typed end to end. Open bags that are genuinely screen- or
 // action-specific (params, input, event payloads) still ride as JSON bytes.
 
@@ -148,8 +148,8 @@ func (*Ack) Descriptor() ([]byte, []int) {
 // AttachRequest binds a session and optionally declares the route to show.
 type AttachRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The caller's opaque credential (ADR 0017), which is its **access token**
-	// since ADR 0102 made the session a bearer pair. The field keeps its name
+	// The caller's opaque credential (platform#13), which is its **access token**
+	// since platform#58 made the session a bearer pair. The field keeps its name
 	// because every client sends it in the same place and for the same reason;
 	// what changed is that the value is minutes-lived and rotates, so a client
 	// that caches it forever will start seeing UNAUTHENTICATED and must refresh
@@ -157,7 +157,7 @@ type AttachRequest struct {
 	Session string `protobuf:"bytes,1,opt,name=session,proto3" json:"session,omitempty"`
 	Screen  string `protobuf:"bytes,2,opt,name=screen,proto3" json:"screen,omitempty"` // optional route to (re-)assert; empty leaves it unchanged.
 	Params  []byte `protobuf:"bytes,3,opt,name=params,proto3" json:"params,omitempty"` // optional screen params as a JSON object (see params note).
-	// What this client can actually play (ADR 0047). Optional: a client that
+	// What this client can actually play (web#4). Optional: a client that
 	// declares nothing gets whatever the server assumes, which is what every
 	// client got before this field existed.
 	Profile *ClientProfile `protobuf:"bytes,4,opt,name=profile,proto3" json:"profile,omitempty"`
@@ -253,7 +253,7 @@ func (x *AttachRequest) GetVocabulary() *VocabularyProfile {
 // contract rather than against a list somebody maintains.
 //
 // Components are deliberately absent. They are definitions the server delivers
-// (ADR 0040), so a client renders whatever it is sent; what it can fail to draw
+// (contracts#4), so a client renders whatever it is sent; what it can fail to draw
 // is a *primitive* inside a definition's template, which is what
 // ComponentDefinition.fallback answers.
 type VocabularyProfile struct {
@@ -326,17 +326,17 @@ func (x *VocabularyProfile) GetActions() []string {
 
 // ClientProfile is what a client can decode, declared once per connection.
 //
-// It exists because the server was guessing. Stream selection (ADR 0048) ranks a
+// It exists because the server was guessing. Stream selection (platform#27) ranks a
 // source's candidates against what the caller can play, and with no declaration
 // the Platform hard-coded a desktop browser's abilities at the call site —
 // honest for one client and a lie for the four the transport was built to serve
-// (ADR 0041).
+// (contracts#5).
 //
 // The client is the only thing that knows. A browser can answer precisely via
-// canPlayType (ADR 0070); a native player knows its own decoders. Neither is
+// canPlayType (web#5); a native player knows its own decoders. Neither is
 // something a server can infer from a user agent without being wrong eventually.
 //
-// It is also what the resolution cache is keyed on (ADR 0049): the Platform
+// It is also what the resolution cache is keyed on (platform#28): the Platform
 // reduces this to a stable class, so clients that decode the same things share
 // one cached resolution rather than each paying for their own.
 type ClientProfile struct {
@@ -485,7 +485,7 @@ func (x *NavigateRequest) GetParams() []byte {
 }
 
 // InvokeRequest runs a named action. input is the action's argument envelope in
-// the SDUI runtime's JSON shape (ADR 0029), carried opaquely and decoded by the
+// the SDUI runtime's JSON shape (platform#19), carried opaquely and decoded by the
 // action's Platform handler.
 type InvokeRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -924,14 +924,14 @@ func (x *FieldError) GetMessage() string {
 	return ""
 }
 
-// RegionUpdate applies one operation to a named region (ADR 0029 / 0031). The
+// RegionUpdate applies one operation to a named region (platform#19 / 0031). The
 // op-set is contract-owned and transport-agnostic: a Compose composable, a
 // SwiftUI view and a React component apply the same ops.
 type RegionUpdate struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Region        string                 `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"` // a named slot (ADR 0029 / 0031), e.g. "content".
+	Region        string                 `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"` // a named slot (platform#19 / 0031), e.g. "content".
 	Op            RegionUpdate_Op        `protobuf:"varint,2,opt,name=op,proto3,enum=mosaic.session.v1.RegionUpdate_Op" json:"op,omitempty"`
-	UiNode        *v1.UINode             `protobuf:"bytes,3,opt,name=ui_node,json=uiNode,proto3" json:"ui_node,omitempty"` // the typed UINode subtree (ADR 0044).
+	UiNode        *v1.UINode             `protobuf:"bytes,3,opt,name=ui_node,json=uiNode,proto3" json:"ui_node,omitempty"` // the typed UINode subtree (contracts#6).
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -987,11 +987,11 @@ func (x *RegionUpdate) GetUiNode() *v1.UINode {
 	return nil
 }
 
-// ShellUpdate carries the app shell UINode tree (ADR 0031). It is sent once on
+// ShellUpdate carries the app shell UINode tree (platform#21). It is sent once on
 // connect and again only if the shell itself changes.
 type ShellUpdate struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UiNode        *v1.UINode             `protobuf:"bytes,1,opt,name=ui_node,json=uiNode,proto3" json:"ui_node,omitempty"` // the typed shell UINode tree (ADR 0044).
+	UiNode        *v1.UINode             `protobuf:"bytes,1,opt,name=ui_node,json=uiNode,proto3" json:"ui_node,omitempty"` // the typed shell UINode tree (contracts#6).
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1034,7 +1034,7 @@ func (x *ShellUpdate) GetUiNode() *v1.UINode {
 }
 
 // Toast is one message in the client's notification stack, in one of two
-// lifetimes (ADR 0052).
+// lifetimes (platform#30).
 //
 // A **toast** is transient: the confirmation an Invoke pushes, which removes
 // itself on a timer. That is right for "import finished" and wrong for a

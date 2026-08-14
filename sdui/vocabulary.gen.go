@@ -296,7 +296,7 @@ var Primitives = []PrimitiveSpec{
 		{Key: "shape", Type: "enum:poster|line|block|circle", Doc: "Placeholder shape."},
 		{Key: "count", Type: "number", Doc: "How many to render."},
 	}},
-	{Type: "Player", Tier: "player", Doc: "Player is the playback surface.", Native: "The client owns the decoding pipeline and the transport controls (ADR 0047, ADR 0070). A scrub bar cannot be driven over a network at frame rate.", Children: false, Props: []PropSpec{
+	{Type: "Player", Tier: "player", Doc: "Player is the playback surface.", Native: "The client owns the decoding pipeline and the transport controls ([web#4](https://github.com/mosaic-media/web/blob/main/docs/adr/0004-player-as-client-primitive.md), [web#5](https://github.com/mosaic-media/web/blob/main/docs/adr/0005-the-web-player-is-the-browser.md)). A scrub bar cannot be driven over a network at frame rate.", Children: false, Props: []PropSpec{
 		{Key: "src", Type: "string", Doc: "Playback URL issued by the Platform."},
 		{Key: "title", Type: "string", Doc: "Title shown in the player chrome."},
 		{Key: "poster", Type: "string", Doc: "Poster shown before the first frame."},
@@ -304,7 +304,7 @@ var Primitives = []PrimitiveSpec{
 		{Key: "resumeAt", Type: "number", Doc: "Seconds to seek to once the media is seekable."},
 		{Key: "nodeId", Type: "string", Doc: "Content node this playback reports progress against."},
 		{Key: "partId", Type: "string", Doc: "Release actually being played."},
-		{Key: "subtitleTracks", Type: "array:subtitleTrack", Doc: "Authored subtitle scripts the client draws itself — each a src, a format, a language, a label and whether it is the one the viewer's preference chose (ADR 0115). They ride beside the HLS subtitle renditions rather than replacing them, so a client that cannot render a script ignores this and still has subtitles."},
+		{Key: "subtitleTracks", Type: "array:subtitleTrack", Doc: "Authored subtitle scripts the client draws itself — each a src, a format, a language, a label and whether it is the one the viewer's preference chose ([platform#70](https://github.com/mosaic-media/platform/blob/main/docs/adr/0070-a-styled-subtitle-goes-to-the-client.md)). They ride beside the HLS subtitle renditions rather than replacing them, so a client that cannot render a script ignores this and still has subtitles."},
 	}},
 }
 

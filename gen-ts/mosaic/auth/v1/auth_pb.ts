@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2026 the Mosaic authors
 
 // Package mosaic.auth.v1 is how a client obtains the session every other
-// first-party call needs (ADR 0061).
+// first-party call needs (platform#37).
 //
 // It is deliberately a service of its own rather than more RPCs on
 // mosaic.session.v1.SessionService. Every request on that service begins with a
@@ -12,7 +12,7 @@
 // whole contract is that they are authenticated. Separating them also lets the
 // Platform mount them behind different interceptors.
 //
-// This surface replaced the GraphQL signIn/signOut mutations when ADR 0061
+// This surface replaced the GraphQL signIn/signOut mutations when platform#37
 // retired the GraphQL transport. Errors carry the Platform's fixed error
 // categories as Connect/gRPC codes — a bad password is UNAUTHENTICATED, not a
 // 200 with an error object.
@@ -47,7 +47,7 @@ export const file_mosaic_auth_v1_auth: GenFile = /*@__PURE__*/
  */
 export type BootstrapRequest = Message<"mosaic.auth.v1.BootstrapRequest"> & {
   /**
-   * The same vocabulary declaration Attach carries, so ADR 0084's negotiation
+   * The same vocabulary declaration Attach carries, so platform#52's negotiation
    * applies to the doorway exactly as it applies to every screen after it. It
    * is literally the same message rather than a copy of its shape: two
    * declarations that must not diverge are one declaration.
@@ -80,7 +80,7 @@ export const BootstrapRequestSchema: GenMessage<BootstrapRequest> = /*@__PURE__*
  */
 export type BootstrapResponse = Message<"mosaic.auth.v1.BootstrapResponse"> & {
   /**
-   * The design token set (ADR 0040), as the same DTCG document the session
+   * The design token set (contracts#4), as the same DTCG document the session
    * pushes. Without it the doorway would be the one screen drawn unstyled.
    *
    * @generated from field: bytes tokens = 1;
@@ -99,7 +99,7 @@ export type BootstrapResponse = Message<"mosaic.auth.v1.BootstrapResponse"> & {
   definitions: Uint8Array;
 
   /**
-   * The doorway. Which one is the server's decision, unchanged from ADR 0098:
+   * The doorway. Which one is the server's decision, unchanged from platform#54:
    * the setup tree while the server is unclaimed, the sign-in tree once it is
    * not. A doorway has two states and the client is not told which — it is
    * shown one.
@@ -156,7 +156,7 @@ export type InvokeRequest = Message<"mosaic.auth.v1.InvokeRequest"> & {
 
   /**
    * The same vocabulary declaration Bootstrap carries, so a replacement doorway
-   * is negotiated exactly as the first one was (ADR 0084). Without it the
+   * is negotiated exactly as the first one was (platform#52). Without it the
    * second tree a client is sent would be the one tree nobody degraded.
    *
    * @generated from field: mosaic.session.v1.VocabularyProfile vocabulary = 4;
@@ -202,7 +202,7 @@ export type InvokeResponse = Message<"mosaic.auth.v1.InvokeResponse"> & {
      * sign-in form where a setup form was. The definitions travel with it for
      * the same reason they travel with Bootstrap: a client at this point still
      * has no vocabulary but the subset it was last sent, and a tree naming a
-     * component outside that subset would draw the placeholder ADR 0101 exists
+     * component outside that subset would draw the placeholder platform#57 exists
      * to remove.
      *
      * @generated from field: mosaic.auth.v1.Doorway doorway = 2;
@@ -211,7 +211,7 @@ export type InvokeResponse = Message<"mosaic.auth.v1.InvokeResponse"> & {
     case: "doorway";
   } | {
     /**
-     * The submission was refused, per field (ADR 0089). It is the same envelope
+     * The submission was refused, per field (contracts#13). It is the same envelope
      * the session lane pushes, so a rejection renders identically whichever
      * lane it arrived on.
      *
@@ -326,7 +326,7 @@ export type SignInResponse = Message<"mosaic.auth.v1.SignInResponse"> & {
   session?: Session | undefined;
 
   /**
-   * The bearer pair (ADR 0102). A client stores both and presents the access
+   * The bearer pair (platform#58). A client stores both and presents the access
    * token on every SessionService call.
    *
    * @generated from field: mosaic.auth.v1.TokenPair tokens = 2;
@@ -342,7 +342,7 @@ export const SignInResponseSchema: GenMessage<SignInResponse> = /*@__PURE__*/
   messageDesc(file_mosaic_auth_v1_auth, 7);
 
 /**
- * TokenPair is the session credential (ADR 0102): a short-lived access token
+ * TokenPair is the session credential (platform#58): a short-lived access token
  * presented on every call, and a long-lived refresh token exchanged for a new
  * pair.
  *
@@ -450,7 +450,7 @@ export const RefreshResponseSchema: GenMessage<RefreshResponse> = /*@__PURE__*/
 /**
  * SignOutRequest revokes target_session on behalf of caller_session.
  *
- * caller_session is the caller's credential — its access token (ADR 0102), the
+ * caller_session is the caller's credential — its access token (platform#58), the
  * same value it presents on every SessionService call. target_session is the
  * **session id** of the device being ended, which is what a device list names
  * and is not itself a credential.
@@ -530,7 +530,7 @@ export type Session = Message<"mosaic.auth.v1.Session"> & {
   lastSeenAt?: Timestamp | undefined;
 
   /**
-   * The **absolute** expiry (ADR 0102): the moment past which no refresh can
+   * The **absolute** expiry (platform#58): the moment past which no refresh can
    * extend this session, however recently it was used. It is not the access
    * token's lifetime, which is minutes and is carried on TokenPair, and it is
    * not the idle ceiling, which the server applies against last_seen_at and
@@ -561,7 +561,7 @@ export type Session = Message<"mosaic.auth.v1.Session"> & {
    * call re-authorises server-side against the grants as they are *now*, and
    * this list is a snapshot as they were at issue time; a grant revoked since
    * is still in here and is refused anyway. What it is for is
-   * [ADR 0036](0036): an affordance the caller could not exercise should not be
+   * [platform#24](0024-capability-gated-affordances.md): an affordance the caller could not exercise should not be
    * drawn, and until now that was a decision only the server could make,
    * because only the server knew. A client that composes its own chrome — a
    * native one deciding whether to draw an admin tab before it asks for a
@@ -589,7 +589,7 @@ export const SessionSchema: GenMessage<Session> = /*@__PURE__*/
 export const AuthService: GenService<{
   /**
    * Bootstrap is the first call every client makes, before it has anything
-   * (ADR 0101). It answers with the skin, the definitions the doorway needs and
+   * (platform#57). It answers with the skin, the definitions the doorway needs and
    * the doorway itself, in one response — because definitions and the token set
    * are otherwise pushed on connect, which is to say after a session exists, and
    * a client without one has no vocabulary at all rather than a thin one.
@@ -632,7 +632,7 @@ export const AuthService: GenService<{
   },
   /**
    * SignIn authenticates a local user with a password and issues a session.
-   * The returned session id is the opaque ref (ADR 0017) the client presents on
+   * The returned session id is the opaque ref (platform#13) the client presents on
    * every SessionService call.
    *
    * It stays a method of its own rather than becoming a doorway action: an
@@ -659,7 +659,7 @@ export const AuthService: GenService<{
     output: typeof SignOutResponseSchema;
   },
   /**
-   * Refresh exchanges a refresh token for a new pair (ADR 0102). The presented
+   * Refresh exchanges a refresh token for a new pair (platform#58). The presented
    * token is spent by the exchange: rotation is the load-bearing part, and a
    * token presented twice revokes the whole chain rather than being refused on
    * its own.

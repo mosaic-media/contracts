@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2026 the Mosaic authors
 
 // Package mosaic.auth.v1 is how a client obtains the session every other
-// first-party call needs (ADR 0061).
+// first-party call needs (platform#37).
 //
 // It is deliberately a service of its own rather than more RPCs on
 // mosaic.session.v1.SessionService. Every request on that service begins with a
@@ -12,7 +12,7 @@
 // whole contract is that they are authenticated. Separating them also lets the
 // Platform mount them behind different interceptors.
 //
-// This surface replaced the GraphQL signIn/signOut mutations when ADR 0061
+// This surface replaced the GraphQL signIn/signOut mutations when platform#37
 // retired the GraphQL transport. Errors carry the Platform's fixed error
 // categories as Connect/gRPC codes — a bad password is UNAUTHENTICATED, not a
 // 200 with an error object.
@@ -67,7 +67,7 @@ const (
 // AuthServiceClient is a client for the mosaic.auth.v1.AuthService service.
 type AuthServiceClient interface {
 	// Bootstrap is the first call every client makes, before it has anything
-	// (ADR 0101). It answers with the skin, the definitions the doorway needs and
+	// (platform#57). It answers with the skin, the definitions the doorway needs and
 	// the doorway itself, in one response — because definitions and the token set
 	// are otherwise pushed on connect, which is to say after a session exists, and
 	// a client without one has no vocabulary at all rather than a thin one.
@@ -94,7 +94,7 @@ type AuthServiceClient interface {
 	// change.
 	Invoke(context.Context, *connect.Request[v1.InvokeRequest]) (*connect.Response[v1.InvokeResponse], error)
 	// SignIn authenticates a local user with a password and issues a session.
-	// The returned session id is the opaque ref (ADR 0017) the client presents on
+	// The returned session id is the opaque ref (platform#13) the client presents on
 	// every SessionService call.
 	//
 	// It stays a method of its own rather than becoming a doorway action: an
@@ -105,7 +105,7 @@ type AuthServiceClient interface {
 	// passes the same value for both fields; revoking another device's session is
 	// an authorised act, which is why the caller is named separately.
 	SignOut(context.Context, *connect.Request[v1.SignOutRequest]) (*connect.Response[v1.SignOutResponse], error)
-	// Refresh exchanges a refresh token for a new pair (ADR 0102). The presented
+	// Refresh exchanges a refresh token for a new pair (platform#58). The presented
 	// token is spent by the exchange: rotation is the load-bearing part, and a
 	// token presented twice revokes the whole chain rather than being refused on
 	// its own.
@@ -193,7 +193,7 @@ func (c *authServiceClient) Refresh(ctx context.Context, req *connect.Request[v1
 // AuthServiceHandler is an implementation of the mosaic.auth.v1.AuthService service.
 type AuthServiceHandler interface {
 	// Bootstrap is the first call every client makes, before it has anything
-	// (ADR 0101). It answers with the skin, the definitions the doorway needs and
+	// (platform#57). It answers with the skin, the definitions the doorway needs and
 	// the doorway itself, in one response — because definitions and the token set
 	// are otherwise pushed on connect, which is to say after a session exists, and
 	// a client without one has no vocabulary at all rather than a thin one.
@@ -220,7 +220,7 @@ type AuthServiceHandler interface {
 	// change.
 	Invoke(context.Context, *connect.Request[v1.InvokeRequest]) (*connect.Response[v1.InvokeResponse], error)
 	// SignIn authenticates a local user with a password and issues a session.
-	// The returned session id is the opaque ref (ADR 0017) the client presents on
+	// The returned session id is the opaque ref (platform#13) the client presents on
 	// every SessionService call.
 	//
 	// It stays a method of its own rather than becoming a doorway action: an
@@ -231,7 +231,7 @@ type AuthServiceHandler interface {
 	// passes the same value for both fields; revoking another device's session is
 	// an authorised act, which is why the caller is named separately.
 	SignOut(context.Context, *connect.Request[v1.SignOutRequest]) (*connect.Response[v1.SignOutResponse], error)
-	// Refresh exchanges a refresh token for a new pair (ADR 0102). The presented
+	// Refresh exchanges a refresh token for a new pair (platform#58). The presented
 	// token is spent by the exchange: rotation is the load-bearing part, and a
 	// token presented twice revokes the whole chain rather than being refused on
 	// its own.

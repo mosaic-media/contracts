@@ -2,16 +2,16 @@
 // SPDX-FileCopyrightText: 2026 the Mosaic authors
 
 // Package mosaic.session.v1 is the first-party client session transport
-// (ADR 0041): a typed, two-lane RPC surface generated from this one .proto into
-// every client language. It supersedes the bespoke WebSocket of ADR 0032 and
-// folds ADR 0033's live handover into stream resume.
+// (contracts#5): a typed, two-lane RPC surface generated from this one .proto into
+// every client language. It supersedes the bespoke WebSocket of platform#22 and
+// folds supervisor#4's live handover into stream resume.
 //
 // Two lanes, mapping onto the two gRPC shapes supported uniformly on every
 // target client (web via Connect, Flutter, Compose, Swift):
 //
 //   - Lane 1 — intents (unary). Navigate, Invoke, SubmitInput, Attach. Each
 //     resolves to the same application command/query the HTTP path would; the
-//     command boundary (ADR 0016) and caller model (ADR 0017) are unchanged.
+//     command boundary (platform#12) and caller model (platform#13) are unchanged.
 //   - Lane 2 — push (server-streaming). One long-lived Subscribe stream per
 //     session over which the server pushes region updates, shell mutations,
 //     toasts and unsolicited events. resume_cursor replays what a reconnecting
@@ -21,7 +21,7 @@
 // pair browsers support, so the wire stays uniform across all four clients.
 //
 // UINode subtrees ride the envelope as the typed mosaic.sdui.v1.UINode — ADR
-// 0044 (option (b) of ADR 0041): the SDUI contract is protobuf, so the whole
+// 0044 (option (b) of contracts#5): the SDUI contract is protobuf, so the whole
 // wire is typed end to end. Open bags that are genuinely screen- or
 // action-specific (params, input, event payloads) still ride as JSON bytes.
 
@@ -78,12 +78,12 @@ const (
 type SessionServiceClient interface {
 	// Attach (re)binds this caller to a session and declares the route it wants
 	// shown. A reconnecting client calls it to re-assert the exact screen that
-	// was open, the same re-declaration the ADR 0032 socket did on reconnect.
+	// was open, the same re-declaration the platform#22 socket did on reconnect.
 	Attach(context.Context, *connect.Request[v1.AttachRequest]) (*connect.Response[v1.Ack], error)
 	// Navigate opens a screen; the server renders it into the content region on
 	// the push lane.
 	Navigate(context.Context, *connect.Request[v1.NavigateRequest]) (*connect.Response[v1.Ack], error)
-	// Invoke runs a named action (an SDUI Action, ADR 0029) — a mutation — and
+	// Invoke runs a named action (an SDUI Action, platform#19) — a mutation — and
 	// pushes a toast plus a re-render of the current content.
 	Invoke(context.Context, *connect.Request[v1.InvokeRequest]) (*connect.Response[v1.Ack], error)
 	// SubmitInput carries one search-as-you-type keystroke. The Platform
@@ -178,12 +178,12 @@ func (c *sessionServiceClient) Subscribe(ctx context.Context, req *connect.Reque
 type SessionServiceHandler interface {
 	// Attach (re)binds this caller to a session and declares the route it wants
 	// shown. A reconnecting client calls it to re-assert the exact screen that
-	// was open, the same re-declaration the ADR 0032 socket did on reconnect.
+	// was open, the same re-declaration the platform#22 socket did on reconnect.
 	Attach(context.Context, *connect.Request[v1.AttachRequest]) (*connect.Response[v1.Ack], error)
 	// Navigate opens a screen; the server renders it into the content region on
 	// the push lane.
 	Navigate(context.Context, *connect.Request[v1.NavigateRequest]) (*connect.Response[v1.Ack], error)
-	// Invoke runs a named action (an SDUI Action, ADR 0029) — a mutation — and
+	// Invoke runs a named action (an SDUI Action, platform#19) — a mutation — and
 	// pushes a toast plus a re-render of the current content.
 	Invoke(context.Context, *connect.Request[v1.InvokeRequest]) (*connect.Response[v1.Ack], error)
 	// SubmitInput carries one search-as-you-type keystroke. The Platform
