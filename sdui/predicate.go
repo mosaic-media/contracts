@@ -3,19 +3,14 @@
 
 package sdui
 
-// The six predicates: conditions a client can evaluate against scope values.
-//
-// `visibleWhen` is the reason they exist, and the shape it did *not* take is the
-// point. A bespoke "show this when that field is set" prop would have answered
-// the first screen that needed it and nothing else, and the second screen would
-// have earned a second prop. A closed predicate set answers all of them with one
-// concept — and refuses the third thing, which is an expression language.
+// The closed predicate set: conditions a client can evaluate against scope
+// values. `visibleWhen` is what reads them.
 //
 // There is no arithmetic, no comparison beyond equality, no function call and no
-// path into anything but a named field. Each of the six is a line of code in
-// every client language, which is the bar: a condition a client cannot evaluate
-// identically is a screen that differs between platforms for reasons nobody can
-// see.
+// path into anything but a named field — deliberately not an expression
+// language. Each of the six is a line of code in every client language, which is
+// the bar: a condition a client cannot evaluate identically is a screen that
+// differs between platforms for reasons nobody can see.
 //
 // A predicate is a JSON object with exactly one shape:
 //
@@ -31,8 +26,8 @@ type Predicate = map[string]any
 
 // Evaluate answers a predicate against a set of values.
 //
-// An unrecognised shape is **false**, and the direction matters: a condition
-// nothing understands must not reveal something. `visibleWhen` deciding to show
+// An unrecognised shape evaluates to false, and the direction matters: a
+// condition nothing understands must not reveal something. `visibleWhen` showing
 // a control because it could not read its own rule is the fail-open case, and it
 // is the one that puts an admin-only affordance on a screen.
 func Evaluate(p Predicate, values map[string]any) bool {

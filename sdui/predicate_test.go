@@ -49,9 +49,9 @@ func TestTheSixPredicates(t *testing.T) {
 	}
 }
 
-// An unreadable condition is false, never true. visibleWhen deciding to *show* a
-// control because it could not understand its own rule is the fail-open case,
-// and it is the one that puts an admin-only affordance on somebody's screen.
+// An unreadable condition is false, never true. visibleWhen showing a control
+// because it could not understand its own rule is the fail-open case, and it is
+// the one that puts an admin-only affordance on somebody's screen.
 func TestAnUnreadablePredicateHidesRatherThanShows(t *testing.T) {
 	for _, p := range []sdui.Predicate{
 		nil,

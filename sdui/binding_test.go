@@ -60,7 +60,7 @@ func TestATypeMayNotBeBound(t *testing.T) {
 }
 
 // The near-misses that would otherwise be sent, read as literal objects, and
-// draw nothing — the failure shape this whole thread exists to stop.
+// draw nothing.
 func TestAMalformedBindingIsRefusedRatherThanIgnored(t *testing.T) {
 	for _, props := range []map[string]any{
 		{"title": map[string]any{"$bind": ""}},
@@ -89,9 +89,8 @@ func TestOrdinaryPropsPassValidation(t *testing.T) {
 	}
 }
 
-// The marker is the same string a definition template uses, on purpose: the two
-// were separate mechanisms that happened to share a spelling, and are now one
-// concept applied at two moments.
+// The marker is the same string a definition template uses, on purpose: a prop
+// binding and a template binding are one concept applied at two moments.
 func TestTheMarkerIsTheTemplateBindingSpelling(t *testing.T) {
 	if sdui.BindingMarker != "$bind" {
 		t.Errorf("BindingMarker = %q; definitions/*.json use $bind", sdui.BindingMarker)

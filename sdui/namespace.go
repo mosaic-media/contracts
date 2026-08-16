@@ -12,11 +12,11 @@ import (
 //
 // The vocabulary's `type` is an open string — deliberately, since that is what
 // lets a module introduce a component the Platform never shipped (platform#11,
-// contracts#2). Open and *flat* is a different thing, and it was flat: two modules
-// could both contribute a `StatChip` and the second to register would replace
-// the first, and a module could contribute a `PosterCard` and take the place of
-// the core component on every screen in the product. Neither collision produces
-// an error anywhere. The client's registry is a map, and the last writer wins.
+// contracts#2). Open and flat is a different thing: without a namespace two
+// modules could both contribute a `StatChip`, and a module could contribute a
+// `PosterCard` and take the place of the core component on every screen in the
+// product. Neither collision produces an error anywhere — the client's registry
+// is a map, and the last writer wins.
 //
 // A namespace fixes both by construction rather than by policing: a module's
 // type carries the id of the module that owns it, so two modules cannot name the
@@ -29,7 +29,7 @@ import (
 // what divides the two halves.
 
 // coreTypes is every type the contract itself defines — both tiers. A module may
-// use any of them; what it may not do is *be* one.
+// use any of them; what it may not do is claim to be one.
 var coreTypes = func() map[string]bool {
 	m := make(map[string]bool, len(Primitives)+len(Components))
 	for _, p := range Primitives {
@@ -61,7 +61,7 @@ func SplitType(t string) (moduleID, local string, namespaced bool) {
 
 // ValidateModuleType reports whether a module may emit a node of this type.
 //
-// Three answers, and the middle one is the whole point:
+// Three answers:
 //
 //   - a core type is fine — composing a settings screen out of the standard
 //     vocabulary is exactly what a module is meant to do;
@@ -69,9 +69,8 @@ func SplitType(t string) (moduleID, local string, namespaced bool) {
 //   - anything else is refused, whether it is an unprefixed name that would
 //     shadow or collide, or another module's namespace.
 //
-// The last case is worth naming separately from the first: a module reaching
-// into another module's namespace is not a mistake in the same way an unprefixed
-// name is, and the error says which happened.
+// The error distinguishes the last case from the first: reaching into another
+// module's namespace is a different mistake from an unprefixed name.
 func ValidateModuleType(moduleID, t string) error {
 	if t == "" {
 		return fmt.Errorf("a node has no type")

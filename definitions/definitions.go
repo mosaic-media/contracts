@@ -5,7 +5,7 @@
 // file per component, each a name, its default params and a template of
 // primitives (contracts#2).
 //
-// **This is the only place a component is authored.** A component is data, not
+// This is the only place a component is authored. A component is data, not
 // code: the Platform serves this library to every client over the session
 // (contracts#4), and a client renders it by expanding the template against the
 // primitives it implements natively. A component written as code in a client

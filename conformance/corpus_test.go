@@ -114,12 +114,10 @@ func TestExpansionCorpusIsWellFormed(t *testing.T) {
 // client dispatcher's behaviour and this repository has no dispatcher. Writing
 // one in Go to run the corpus is the same manufactured drift as an expander.
 //
-// It is worth saying why this file exists at all, since the rule in it looks
-// like a detail. The merge decided whose value wins when a form and its action
-// both name a field, it got that backwards, and it lived inline in the
-// dispatcher where nothing could call it. The symptom was a settings form that
-// reported success and saved nothing (contracts#19). It was found by filling the
-// form in, which is the only way it could have been found.
+// The rule it pins is whose value wins when a form and its action both name a
+// field. Getting that backwards fails silently — a settings form that reports
+// success and saves nothing (contracts#19) — so the rule is written down here
+// rather than left inline in a dispatcher where nothing can call it.
 func TestSubmitCorpusIsWellFormed(t *testing.T) {
 	raw, err := conformance.Cases("submit")
 	if err != nil {

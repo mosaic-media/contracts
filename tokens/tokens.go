@@ -7,11 +7,9 @@
 // It is the skin half of what the SDUI contract carries: [definitions] say what
 // a screen is made of, these say what it looks like. The Platform serves both
 // over the session, so a re-skin reaches a running client without a client
-// release — which is the whole point of contracts#4's UI-library tier and the half
-// of it that had never been built. The client's own stylesheet held the values
-// and this file held a stale copy of some of them.
+// release — contracts#4's UI-library tier.
 //
-// What is not here: anything DERIVED from a token — a colour mixed from the
+// What is not here: anything derived from a token — a colour mixed from the
 // accent, a gradient composed of two tokens, the acrylic material's layers.
 // Those are formulas, and a formula belongs to the client that evaluates it.
 package tokens
@@ -35,6 +33,9 @@ func Set() []byte { return raw }
 // client needs. It runs in the Platform's start-up path: a token set that a
 // client cannot apply leaves the whole interface unstyled, which is a failure
 // worth catching at boot rather than in a browser.
+//
+// Only the base scale and the dark theme are required; a set carrying no light
+// theme passes.
 func Validate() error {
 	var doc struct {
 		Base   map[string]json.RawMessage `json:"base"`

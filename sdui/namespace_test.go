@@ -29,7 +29,7 @@ func TestAModuleMayEmitItsOwnNamespace(t *testing.T) {
 	}
 }
 
-// The first of the two live holes: an unprefixed name nobody owns. Two modules
+// The first of the two collisions: an unprefixed name nobody owns. Two modules
 // both calling it StatChip would collide in the client's registry, last writer
 // winning, with no error anywhere.
 func TestAnUnprefixedUnknownTypeIsRefused(t *testing.T) {
@@ -43,7 +43,7 @@ func TestAnUnprefixedUnknownTypeIsRefused(t *testing.T) {
 }
 
 // The second: a module naming a core component takes its place on every screen.
-// It is refused for the same reason but says something different, because the
+// Refused for the same reason as the first, with a different error, because the
 // mistake is different.
 func TestAModuleMayNotTakeACoreTypesName(t *testing.T) {
 	// Emitting a PosterCard node is fine — that is composing.

@@ -20,8 +20,8 @@
 // Deliberately no bidirectional streaming: unary + server-streaming are the one
 // pair browsers support, so the wire stays uniform across all four clients.
 //
-// UINode subtrees ride the envelope as the typed mosaic.sdui.v1.UINode — ADR
-// 0044 (option (b) of contracts#5): the SDUI contract is protobuf, so the whole
+// UINode subtrees ride the envelope as the typed mosaic.sdui.v1.UINode —
+// contracts#6 (option (b) of contracts#5): the SDUI contract is protobuf, so the whole
 // wire is typed end to end. Open bags that are genuinely screen- or
 // action-specific (params, input, event payloads) still ride as JSON bytes.
 
@@ -748,8 +748,8 @@ export const SessionService: GenService<{
   },
   /**
    * Subscribe opens the push lane: one long-lived server-stream per session.
-   * resume_cursor replays what a reconnecting client missed (superseding ADR
-   * 0033's handover).
+   * resume_cursor replays what a reconnecting client missed (superseding
+   * supervisor#4's handover).
    *
    * @generated from rpc mosaic.session.v1.SessionService.Subscribe
    */

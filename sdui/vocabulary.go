@@ -6,15 +6,10 @@ package sdui
 // The vocabulary registry's types. The data is generated into vocabulary.gen.go
 // from ui.spec.json; these are the shapes it fills.
 //
-// The registry exists because the vocabulary was previously knowable only by
-// reading a client's source. The primitive tier — the set a client must
-// implement natively — lived as TypeScript in the React client alone, so a Swift
-// or Kotlin client could not be written from the published contract at all, and
-// nothing anywhere could report that the three written-down vocabularies (this
-// module, the JSON Schema and the proto) had stopped agreeing. Publishing the
-// vocabulary as data is what makes "does this client implement the contract?" a
-// question with an answer; conformance/vocabulary.json is the same data for a
-// consumer that is not Go.
+// Publishing the vocabulary as data is what makes "does this client implement
+// the contract?" a question with an answer: a Swift or Kotlin client can be
+// written from the published contract without reading another client's source.
+// conformance/vocabulary.json is the same data for a consumer that is not Go.
 
 // PropSpec is one property a primitive reads.
 type PropSpec struct {

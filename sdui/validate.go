@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-// The six validators, and why there are only six.
+// The closed validator set: rules a server states and a client enforces.
 //
 // A validator is a rule stated by the server and enforced by the client. That
 // arrangement fails open by construction if the set is open: a server naming a
@@ -61,15 +61,17 @@ func ValidateField(field string, value any, rules RuleSet, values map[string]any
 // validatorOrder is the order rules are applied in — cheapest and most
 // fundamental first, so "this is required" wins over "this is too short", which
 // is the message a person can act on.
+//
+// It must name every validator in the generated Validators registry. ValidateField
+// iterates this slice and nothing else, so a rule missing here is one
+// ValidateRuleSet accepts and no field is ever checked against.
 var validatorOrder = []string{"required", "minLength", "maxLength", "pattern", "matches", "oneOf"}
 
 // KnownValidator reports whether a name is one of the six the contract declares.
 //
-// A rule outside the set is refused rather than ignored, and that direction is
-// the whole reason the set is closed: ignoring an unknown rule produces a field
-// that accepts anything, silently, with the bad data arriving somewhere else
-// later. Refusing it produces a complaint at the boundary, addressed to whoever
-// wrote the rule.
+// A rule outside the set is refused rather than ignored. Refusing complains at
+// the boundary, addressed to whoever wrote the rule; ignoring produces a field
+// that accepts anything, silently.
 func KnownValidator(name string) bool {
 	for _, v := range Validators {
 		if v.Name == name {

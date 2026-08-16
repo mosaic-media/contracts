@@ -5,18 +5,17 @@ package sdui
 
 import "sort"
 
-// Focus, and why it is in the contract rather than in each client's judgement.
+// Focus lives in the contract rather than in each client's judgement.
 //
-// A web client can mostly get away without this: the browser has a tab order and
+// A web client can mostly get away without it: the browser has a tab order and
 // a focus ring, and a keyboard user gets something. A television cannot. There is
 // no tab key on a remote; there is a direction pad, and every press has to
-// resolve to exactly one node or the viewer is stuck. That is why this slice is
-// in the thread at all — it is the precondition for a TV client, and the one
-// thing on the list that cannot be added afterwards, because a vocabulary
-// without a focus model has every client inventing one and no two agreeing.
+// resolve to exactly one node or the viewer is stuck. A vocabulary without a
+// focus model has every client inventing one and no two agreeing, which is why
+// it cannot be added afterwards.
 //
 // The mechanism is geometric and belongs to the client: given the focused node
-// and a direction, find the nearest focusable node that way. What the *contract*
+// and a direction, find the nearest focusable node that way. What the contract
 // carries is the four things geometry cannot know — which nodes are worth
 // landing on, which sets of them behave as one stop, where focus should start,
 // and the specific cases where the geometric answer is wrong.

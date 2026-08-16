@@ -69,10 +69,9 @@ func TestTheVarTypeSetIsThree(t *testing.T) {
 }
 
 // Submit's destination is where the scope's values land in the action's input.
-// Without one they could only ever land at the top level, which is why `$value`
-// — a literal substituted anywhere in the action — outlived every attempt to
-// replace it: a module's configureModule takes a whole settings document, and
-// the field that was typed belongs inside it.
+// Without one they could only ever land at the top level, and an input is rarely
+// flat: a module's configureModule takes a whole settings document, and the
+// field that was typed belongs inside it.
 func TestSubmitCarriesItsDestination(t *testing.T) {
 	a := sdui.Submit(sdui.Invoke("configureModule", map[string]any{"moduleId": "tmdb"}), "settings")
 	if a.Kind != sdui.KindSubmit || len(a.Actions) != 1 {
@@ -88,8 +87,8 @@ func TestSubmitCarriesItsDestination(t *testing.T) {
 	}
 }
 
-// SubmitField is gone. It existed only to carry `$value`, and a primitive that
-// exists for a mechanism outlives the mechanism only by accident.
+// SubmitField must not reappear in the primitive tier: it existed only to carry
+// the $value substitution, which the vocabulary no longer has.
 func TestSubmitFieldIsNoLongerAPrimitive(t *testing.T) {
 	for _, p := range sdui.Primitives {
 		if p.Type == "SubmitField" {

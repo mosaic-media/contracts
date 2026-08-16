@@ -5,23 +5,16 @@ package sdui
 
 // State scopes: named variables a subtree can bind to and write.
 //
-// A tree describes one moment. Something has to remember what was typed between
-// two of them, and until now nothing did — a TextInput held its value in the
-// client's own component state where nothing could read it, and the only way to
-// get a value back out was SubmitField substituting the literal string "$value"
-// into an action, one field at a time. That is why no screen in Mosaic can carry
-// two inputs.
-//
 // A State node declares variables and scopes them to its children. A binding
 // resolves against the nearest enclosing scope that declares the name, then
-// outward, and finally against the screen's params — so a name means the closest
-// thing to where it is used, which is the rule every language with lexical scope
-// already has and the only one that behaves predictably when scopes nest.
+// outward, and finally against the screen's params, so a name means the closest
+// thing to where it is used — lexical scoping, and the only rule that behaves
+// predictably when scopes nest.
 //
-// The variables are **declared**, not inferred from what gets written. A client
-// must know a name exists before anything writes to it (so a typo is a refusal
-// rather than a new variable nobody reads) and must know what type to coerce a
-// written value to, because the wire carries setValue's value as a string.
+// The variables are declared, not inferred from what gets written. A client must
+// know a name exists before anything writes to it (so a typo is a refusal rather
+// than a new variable nobody reads) and must know what type to coerce a written
+// value to, because the wire carries setValue's value as a string.
 
 // VarType is the closed set of types a state variable may have.
 //
@@ -43,7 +36,7 @@ type StateVar struct {
 	Type string `json:"type"`
 	// Value is the initial value. Its absence is not the same as a zero: a
 	// string variable with no initial value is empty, and one initialised to ""
-	// is also empty, but a *number* with no initial value is unset and a client
+	// is also empty, but a number with no initial value is unset and a client
 	// must not invent 0 for it — a slider that jumps to zero on first render is
 	// the visible form of that mistake.
 	Value any `json:"value,omitempty"`

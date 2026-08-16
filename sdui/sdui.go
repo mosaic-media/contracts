@@ -2,12 +2,10 @@
 // producer side. The Platform and Modules build a tree of Nodes (generated
 // protobuf UINodes) carrying Action envelopes; a client renders it.
 //
-// This is the faithful protobuf port (contracts#6): the UINode tree is the typed
-// mosaic.sdui.v1.UINode, so it rides the transport (RegionUpdate.ui_node) as a
-// typed message. Actions and enums keep their JSON form inside the open props
-// bag — props is a protobuf Struct, so anything in it is JSON-encoded regardless.
-// A later ergonomics redesign may hoist actions and enums into typed fields;
-// this port changes only the tree type, not the wire.
+// The tree is the typed mosaic.sdui.v1.UINode (contracts#6), so it rides the
+// transport as RegionUpdate.ui_node. Actions and enums keep their JSON form
+// inside the open props bag: props is a protobuf Struct, so anything in it is
+// JSON-encoded regardless.
 package sdui
 
 import (
@@ -26,18 +24,18 @@ type ComponentDefinition = *sduiv1.ComponentDefinition
 type Props = map[string]any
 
 // ActionKind, Tone and Surface are the string enums that ride inside the open
-// props bag. The generated protobuf enums exist for a future typed-action
-// redesign; the faithful port keeps these as the JSON strings clients read.
+// props bag. The generated protobuf enums are not what goes on the wire; these
+// JSON strings are what clients read.
 type (
 	ActionKind = string
 	Tone       = string
 	Surface    = string
 )
 
-// Action is a declarative behaviour envelope — data, never code. Faithful port:
-// actions ride inside the open props bag as JSON, so this is a JSON-shaped struct
-// rather than the (for now unused) protobuf Action message. Each kind uses a
-// subset of the fields; the constructors in actions.go hide the pointer optionals.
+// Action is a declarative behaviour envelope — data, never code. Actions ride
+// inside the open props bag as JSON, so this is a JSON-shaped struct rather than
+// the unused protobuf Action message. Each kind uses a subset of the fields; the
+// constructors in actions.go hide the pointer optionals.
 type Action struct {
 	Kind     ActionKind     `json:"kind"`
 	Screen   *string        `json:"screen,omitempty"`
@@ -57,7 +55,6 @@ type Action struct {
 }
 
 // The action kind, tone, surface and node-type constants are generated into
-// vocabulary.gen.go from ui.spec.json. They were hand-written here and in a
-// components.go beside it, and both had drifted: the constant list named three
-// primitives as components and omitted every real one, while the kinds it
-// declared were one short of the proto's and three short of the vocabulary's.
+// vocabulary.gen.go from ui.spec.json. Do not declare them by hand here: only
+// the generated file is drift-guarded against the spec, so a second copy in this
+// package can disagree with the vocabulary without anything reporting it.

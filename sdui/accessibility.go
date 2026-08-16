@@ -5,21 +5,16 @@ package sdui
 
 import "sort"
 
-// Accessibility in the contract, rather than in each client's judgement.
-//
-// The props are optional and nothing has to set them, which is exactly why they
-// are declared *now*: an optional prop added later is additive, but a vocabulary
-// that never had a role model cannot grow one without revisiting every
-// definition — and a client that has been inferring roles from types for a year
-// has to be talked out of its inferences first.
+// Accessibility lives in the contract, rather than in each client's judgement.
+// The props are optional and nothing has to set them.
 //
 // A role is the piece that has to be a closed set. It is not passed through: a
 // web client maps it to an ARIA attribute, a Compose client to a semantics
 // property, a SwiftUI client to a trait. A role the server can name and a client
 // maps to nothing produces a control that is invisible to a screen reader and
-// looks perfectly correct to everybody else — which is the least detectable
-// failure this contract can produce, because the people who would notice are the
-// ones least likely to be asked.
+// looks perfectly correct to everybody else — the least detectable failure this
+// contract can produce, because the people who would notice are the ones least
+// likely to be asked.
 //
 // The accessible label is deliberately not `label`. A visible label and an
 // accessible name are different things, and one key meaning both is how a

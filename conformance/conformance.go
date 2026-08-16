@@ -6,10 +6,7 @@
 //
 // A client is conformant when the node types it renders natively are exactly the
 // primitives listed here, and the action kinds it interprets are exactly these
-// kinds. That sentence could not be written as a test before: the primitive tier
-// existed only as TypeScript inside the React client, so "what should this client
-// implement?" had no answer outside that client's own source, and a second client
-// in Swift or Kotlin could not be written from the published contract at all.
+// kinds.
 //
 // The fixture is generated from ui.spec.json and is shipped both ways — embedded
 // here for a Go consumer, and exported from the npm package as

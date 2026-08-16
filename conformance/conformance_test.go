@@ -124,8 +124,8 @@ func TestEveryComponentHasADefinition(t *testing.T) {
 }
 
 // Every node type a definition's template expands into exists in the vocabulary.
-// This is the check that would have caught a definition referring to a component
-// that had been renamed, which expands to a node no client can render.
+// A template naming a renamed or missing component expands to a node no client
+// can render.
 func TestDefinitionTemplatesReferenceKnownTypes(t *testing.T) {
 	known := map[string]bool{}
 	for _, p := range sdui.Primitives {

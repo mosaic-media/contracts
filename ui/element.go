@@ -5,8 +5,8 @@
 // like a widget tree" ergonomics (Flutter/Compose/Vaadin, the gomponents
 // pattern in Go). A component takes ...El, and children, props and slots are all
 // Els that intermix, so a screen reads as a tree rather than a builder with
-// option bags. The tree compiles to the same protobuf UINode the wire uses (ADR
-// 0044) at Build(); only the authoring changes, not the payload.
+// option bags. The tree compiles to the same protobuf UINode the wire uses
+// (contracts#6) at Build(); only the authoring changes, not the payload.
 //
 // This file is the hand-written runtime — the Element machinery and the
 // control-flow/escape-hatch options (Prop, ID, Slot, Group, When). The component
@@ -48,7 +48,7 @@ const (
 // it — a confirmation, a picker, a detail sheet.
 //
 // It is hand-written rather than generated because it is the one action whose
-// argument is a *tree*: the node rides inside the action, so the authoring layer
+// argument is a tree: the node rides inside the action, so the authoring layer
 // has to build it. The generated constructors take scalars and prop bags.
 //
 // Reach for it when what you are presenting is a decision about the screen
@@ -107,8 +107,8 @@ func (e *Element) Build() Node {
 
 // BuildJSON compiles the element and marshals it to the canonical protojson
 // UINode encoding — the bytes a client (or the Platform) decodes with protojson.
-// It lets a producer that returns wire bytes (e.g. a module's settings UI, ADR
-// 0038) emit them without importing protojson itself.
+// It lets a producer that returns wire bytes (e.g. a module's settings UI,
+// sdk#4) emit them without importing protojson itself.
 func (e *Element) BuildJSON() ([]byte, error) {
 	return protojson.Marshal(e.Build())
 }
@@ -143,6 +143,10 @@ func Prop(key string, val any) El { return opt(func(e *Element) { setProp(e, key
 func ID(id string) El { return opt(func(e *Element) { e.id = id }) }
 
 // Slot fills a named slot with the given elements' nodes.
+//
+// Only children reach the slot: an El that sets a prop or an id applies to the
+// scratch element and is discarded. Filling the same slot twice appends rather
+// than replacing.
 func Slot(name string, els ...El) El {
 	return opt(func(parent *Element) {
 		scratch := &Element{}
@@ -180,6 +184,10 @@ func When(cond bool, el El) El {
 }
 
 // toStruct JSON-encodes the open props bag into a protobuf Struct.
+//
+// A failure returns nil, which drops the whole bag rather than reporting it: one
+// value that will not JSON-encode — a func, a channel, a NaN — silently removes
+// every prop on that node.
 func toStruct(props map[string]any) *structpb.Struct {
 	b, err := json.Marshal(props)
 	if err != nil {

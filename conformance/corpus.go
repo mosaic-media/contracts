@@ -13,17 +13,14 @@ import (
 // The corpus: golden cases every client runs to prove it behaves like the
 // others (contracts#17).
 //
-// The vocabulary fixture beside this says *what* the contract contains. It does
+// The vocabulary fixture beside this says what the contract contains. It does
 // not say how any of it behaves, and behaviour is where clients diverge — two
 // implementations of "resolve a binding" agree about the easy cases and differ
 // about the empty string, the missing path and the object that merely looks like
 // a binding. Those are the cases here.
 //
-// It is the mechanism rather than the content that matters: this is how DivKit
-// holds four platforms in parity, and it is what makes a second Mosaic client a
-// tractable piece of work rather than an act of faith. A client that passes the
-// corpus behaves like the one that exists; a client that does not knows exactly
-// where it differs.
+// A client that passes the corpus behaves like the one that exists; a client
+// that does not knows exactly where it differs.
 
 //go:embed cases/*.json
 var caseFiles embed.FS
