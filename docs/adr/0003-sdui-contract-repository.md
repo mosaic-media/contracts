@@ -1,6 +1,10 @@
 # The SDUI contract repository
 
 **Status:** Accepted; the extraction stands. The repository has been renamed twice since — `mosaic-sdui` → `sdui` ([architecture#2](https://github.com/mosaic-media/architecture/blob/main/docs/adr/0002-repository-naming-convention.md)) → `contracts` ([contracts#6](0006-contracts-protobuf-workspace.md), which also made the wire protobuf). The contract itself did not move with it: `mosaic.sdui.v1`, the `sdui` package and the npm name `@mosaic-media/sdui` are unchanged
+**The governed-vocabulary fork below is settled, and was taken:**
+[contracts#7](0007-components-are-authored-only-in-the-contract.md) and
+[contracts#8](0008-one-generated-sdui-vocabulary.md) made the vocabulary generated
+and governed, and the repository is built on it.
 **Date:** 2026-07-20
 
 ## Context
